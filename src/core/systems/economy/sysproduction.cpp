@@ -52,6 +52,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     }
 
     // So we will add a random chance to increase or decrease profit
+    // As we get more profit we should increase profit, as we get less profit we should reduce the size of the factory
     double diff =
         1 +
         production_config.max_factory_delta / (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
@@ -67,6 +68,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     double past_util = size.utilization;
     size.utilization =
         std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
+    size.utilization = std::max(1., size.utilization);
     // Check if it's clamped and then check for the thing
     size.diff_delta = size.utilization - past_util;
 
