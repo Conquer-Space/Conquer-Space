@@ -32,3 +32,5 @@ tools/run-clang-tidy.py
 *.editorconfig
 
 NodeEditor.json
+
+*_market.csv

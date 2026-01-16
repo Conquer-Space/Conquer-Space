@@ -55,10 +55,7 @@ void SysMarketCsvHistory::DoSystem() {
             });
         stream << std::accumulate(double_list.begin(), double_list.end(), std::string(),
                                   [](const std::string& ss, const std::string& s) {
-                                      std::string output = ss.empty() ? s : ss;
-                                      output += ",";
-                                      output += s;
-                                      return output;
+                                      return ss.empty() ? s : (std::string(ss).append(",").append(s));
                                   });
         stream << "\n";
     }
@@ -88,10 +85,7 @@ void SysMarketCsvHistory::WriteCsvHeader(const entt::entity entity) {
                          // Literally Ocaml moment
                          const std::string output_string = std::accumulate(
                              view.begin(), view.end(), std::string(), [](const std::string& ss, const std::string& s) {
-                                 std::string output = ss.empty() ? s : ss;
-                                 output += ",";
-                                 output += s;
-                                 return output;
+                                 return ss.empty() ? s : (std::string(ss).append(",").append(s));
                              });
 
                          return output_string;
@@ -99,10 +93,7 @@ void SysMarketCsvHistory::WriteCsvHeader(const entt::entity entity) {
 
     stream << std::accumulate(row_list.begin(), row_list.end(), std::string(),
                               [](const std::string& ss, const std::string& s) {
-                                  std::string output = ss.empty() ? s : ss;
-                                  output += ",";
-                                  output += s;
-                                  return output;
+                                  return ss.empty() ? s : (std::string(ss).append(",").append(s));
                               });
     stream << "\n";
 }

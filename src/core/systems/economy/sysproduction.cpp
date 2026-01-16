@@ -52,6 +52,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     }
 
     // So we will add a random chance to increase or decrease profit
+    // As we get more profit we should increase profit, as we get less profit we should reduce the size of the factory
     double diff =
         1 +
         production_config.max_factory_delta / (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
@@ -67,6 +68,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     double past_util = size.utilization;
     size.utilization =
         std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
+    size.utilization = std::max(1., size.utilization);
     // Check if it's clamped and then check for the thing
     size.diff_delta = size.utilization - past_util;
 
@@ -84,7 +86,8 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         size.wages *= 0.95;
     }
 
-    if (pl_ratio > 0.5 && size.continuous_gains > 10 && !industry_node.all_of<components::Construction>()) {
+    if (pl_ratio > 0.25 && size.continuous_gains > 10 && size.utilization >= size.size &&
+        !industry_node.all_of<components::Construction>()) {
         // what's the ratio we should expand the factory at lol
         // Now we should expand it...
         // pl_ratio should be maybe
@@ -98,6 +101,8 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         // Also scale the scale with this
         double workers_count = std::floor(employer.population_fufilled / recipe.workers);
         size.utilization = std::min(workers_count, size.utilization);
+        // We should still minimize
+        size.utilization = std::max(1., size.utilization);
     }
     if (costs.profit < 0) {
         size.continuous_losses++;
@@ -169,6 +174,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     market.consumption += input;
     market.production += output;
+    costs.amount_sold = recipe.output.amount * size.utilization;
 
     double output_transport_cost = output.GetSum() * infra_cost;
     double input_transport_cost = input.GetSum() * infra_cost;
@@ -179,12 +185,12 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
     // the production
-    costs.materialcosts = (input * market.price).GetSum();
+    costs.material_costs = (input * market.price).GetSum();
     costs.wages = employer.population_fufilled * size.wages;
     costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
     costs.revenue = (output * market.price).GetSum();
-    costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
+    costs.profit = costs.revenue - costs.maintenance - costs.material_costs - costs.wages - costs.transport;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += costs.profit;
     /*

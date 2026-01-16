@@ -406,6 +406,11 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
 
         ImGui::TableSetColumnIndex(7);
         ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.revenue)));
+        if (ImGui::IsItemHovered()) {
+            ImGui::BeginTooltip();
+            ImGui::TextFmt("Items sold: {}", income_component.amount_sold);
+            ImGui::EndTooltip();
+        }
         ImGui::TableSetColumnIndex(8);
         ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.profit)));
     }

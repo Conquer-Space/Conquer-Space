@@ -46,6 +46,9 @@
                 productivity: 10
             }
         ]
+        tags: [
+            log_market
+        ]
     }
     {
         identifier: arkansas
@@ -60,6 +63,7 @@
     }
     {
         identifier: california
+        name: California
         color:
         [
             73
@@ -87,9 +91,13 @@
                 productivity: 2000
             }
         ]
+        tag: [
+            log_market
+        ]
     }
     {
         identifier: colorado
+        name: Colorado
         color:
         [
             182
@@ -112,6 +120,7 @@
     }
     {
         identifier: delaware
+        name: Delaware
         color:
         [
             115

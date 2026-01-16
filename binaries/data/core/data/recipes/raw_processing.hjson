@@ -83,7 +83,7 @@
             heavy_machinery: 0.1
         }
         output: {
-            coal: 800
+            coal: 1200
         }
         cost: {
             labor: {

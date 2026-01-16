@@ -73,24 +73,33 @@ void SysPlanetaryTrade::DoSystem() {
 
             // Determine supply and demand for the market
             market.trade.clear();
+            // Exports
             for (auto good : GetUniverse().GoodIterator()) {
                 if (p_market.supply[good] == 0) {
                     continue;
                 }
                 // Remove local production so that we don't confound this with our local production
-                market.trade[good] -= std::max(
+                double change = (market.price[good] / p_market.price[good]);
+                double export_amount = std::max(
                     (market.supply[good] / p_market.supply[good] * p_market.demand[good]) - market.consumption[good],
                     0.);
+                export_amount *= change;
+                market.trade[good] -= export_amount;
             }
 
+            // Imports
             for (auto good : GetUniverse().GoodIterator()) {
                 if (p_market.demand[good] == 0) {
                     continue;
                 }
                 // Remove local consumption so that we don't confound this with local production
-                market.trade[good] += std::max(
+                // We should account with price because if it's above, we should weight it more...
+                double change = (market.price[good] / p_market.price[good]);
+                double import_amount = std::max(
                     (market.demand[good] / p_market.demand[good] * p_market.supply[good]) - market.production[good],
                     0.);
+                import_amount *= change;
+                market.trade[good] += import_amount;
             }
             // Let's get trade deficit
             // A positve trade value means that it's importing goods, a negative value means that it's exporting goods
