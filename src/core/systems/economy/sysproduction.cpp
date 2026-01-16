@@ -169,6 +169,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     market.consumption += input;
     market.production += output;
+    costs.amount_sold = recipe.output.amount * size.utilization;
 
     double output_transport_cost = output.GetSum() * infra_cost;
     double input_transport_cost = input.GetSum() * infra_cost;
@@ -179,12 +180,12 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
     // the production
-    costs.materialcosts = (input * market.price).GetSum();
+    costs.material_costs = (input * market.price).GetSum();
     costs.wages = employer.population_fufilled * size.wages;
     costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
     costs.revenue = (output * market.price).GetSum();
-    costs.profit = costs.revenue - costs.maintenance - costs.materialcosts - costs.wages - costs.transport;
+    costs.profit = costs.revenue - costs.maintenance - costs.material_costs - costs.wages - costs.transport;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += costs.profit;
     /*

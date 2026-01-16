@@ -113,7 +113,7 @@ struct IndustrySize {
 struct CostBreakdown {
     double revenue;
     // How much it paid in materials to produce goods
-    double materialcosts;
+    double material_costs;
     // How much cash it took to maintain the factory
     double maintenance;
     // How much it paid to people
@@ -122,12 +122,15 @@ struct CostBreakdown {
     // How much it paid in transport fees
     double transport;
 
+    double amount_sold = 0;
+
     void Reset() {
         revenue = 0;
-        materialcosts = 0;
+        material_costs = 0;
         maintenance = 0;
         wages = 0;
         profit = 0;
+        amount_sold = 0;
         transport = 0;
     }
 };

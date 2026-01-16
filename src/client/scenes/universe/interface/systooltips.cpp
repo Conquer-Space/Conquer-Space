@@ -92,7 +92,7 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
     }
     if (universe.all_of<components::CostBreakdown>(entity)) {
         components::CostBreakdown costs = universe.get<components::CostBreakdown>(entity);
-        ImGui::TextFmt("Material Cost: {}", NumberToHumanString(costs.materialcosts));
+        ImGui::TextFmt("Material Cost: {}", NumberToHumanString(costs.material_costs));
         ImGui::TextFmt("Wage Cost: {}", NumberToHumanString(costs.wages));
         ImGui::TextFmt("Maintenance Cost: {}", NumberToHumanString(costs.maintenance));
         ImGui::TextFmt("Transport Costs: {}", NumberToHumanString(costs.transport));
