@@ -86,7 +86,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         size.wages *= 0.95;
     }
 
-    if (pl_ratio > 0.5 && size.continuous_gains > 10 && size.utilization >= size.size &&
+    if (pl_ratio > 0.25 && size.continuous_gains > 10 && size.utilization >= size.size &&
         !industry_node.all_of<components::Construction>()) {
         // what's the ratio we should expand the factory at lol
         // Now we should expand it...
@@ -101,6 +101,8 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         // Also scale the scale with this
         double workers_count = std::floor(employer.population_fufilled / recipe.workers);
         size.utilization = std::min(workers_count, size.utilization);
+        // We should still minimize
+        size.utilization = std::max(1., size.utilization);
     }
     if (costs.profit < 0) {
         size.continuous_losses++;
