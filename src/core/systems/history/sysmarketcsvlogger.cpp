@@ -53,9 +53,13 @@ void SysMarketCsvHistory::DoSystem() {
                        std::to_string(market.trade[good]) + "," + std::to_string(market.resource_fulfilled[good]) +
                        "," + std::to_string(market.production[good]) + "," + std::to_string(market.consumption[good]);
             });
-        stream << std::accumulate(
-            double_list.begin(), double_list.end(), std::string(),
-            [](const std::string& ss, const std::string& s) { return ss.empty() ? s : ss + "," + s; });
+        stream << std::accumulate(double_list.begin(), double_list.end(), std::string(),
+                                  [](const std::string& ss, const std::string& s) {
+                                      std::string output = ss.empty() ? s : ss;
+                                      output += ",";
+                                      output += s;
+                                      return output;
+                                  });
         stream << "\n";
     }
 }
@@ -64,30 +68,42 @@ void SysMarketCsvHistory::WriteCsvHeader(const entt::entity entity) {
     auto& stream = output_stream[entity];
     stream << "Date,GDP,Deficit,Last Deficit,Trade Deficit,Last Trade Deficit,";
 
-    auto row_list =
-        (GetUniverse().GoodIterator() | std::views::transform([&](components::GoodEntity good) {
-             const std::string& name =
-                 GetUniverse().get<components::Identifier>(GetUniverse().GetGood(good)).identifier;
-             std::vector<std::string> col_names = {"supply",     "demand",
-                                                   "sd_ratio",   "volume",
-                                                   "price",      "chronic_shortages",
-                                                   "trade",      "resource_fufilled",
-                                                   "production", "consumption"};
+    auto row_list = (GetUniverse().GoodIterator() | std::views::transform([&](components::GoodEntity good) {
+                         const std::string& name =
+                             GetUniverse().get<components::Identifier>(GetUniverse().GetGood(good)).identifier;
+                         std::vector<std::string> col_names = {"supply",     "demand",
+                                                               "sd_ratio",   "volume",
+                                                               "price",      "chronic_shortages",
+                                                               "trade",      "resource_fufilled",
+                                                               "production", "consumption"};
 
-             auto view = col_names | std::ranges::views::transform(
-                                         [name](const std::string& str) -> std::string { return name + "_" + str; });
-             // When we upgrade to cpp23/cpp26 we can use the fold_left function to implement this
-             // Literally Ocaml moment
-             const std::string output_string = std::accumulate(
-                 view.begin(), view.end(), std::string(),
-                 [](const std::string& ss, const std::string& s) { return ss.empty() ? s : ss + "," + s; });
+                         auto view =
+                             col_names | std::ranges::views::transform([name](const std::string& str) -> std::string {
+                                 std::string output = name;
+                                 output += "_";
+                                 output += str;
+                                 return output;
+                             });
+                         // When we upgrade to cpp23/cpp26 we can use the fold_left function to implement this
+                         // Literally Ocaml moment
+                         const std::string output_string = std::accumulate(
+                             view.begin(), view.end(), std::string(), [](const std::string& ss, const std::string& s) {
+                                 std::string output = ss.empty() ? s : ss;
+                                 output += ",";
+                                 output += s;
+                                 return output;
+                             });
 
-             return output_string;
-         }));
+                         return output_string;
+                     }));
 
-    stream << std::accumulate(
-        row_list.begin(), row_list.end(), std::string(),
-        [](const std::string& ss, const std::string& s) { return ss.empty() ? s : ss + "," + s; });
+    stream << std::accumulate(row_list.begin(), row_list.end(), std::string(),
+                              [](const std::string& ss, const std::string& s) {
+                                  std::string output = ss.empty() ? s : ss;
+                                  output += ",";
+                                  output += s;
+                                  return output;
+                              });
     stream << "\n";
 }
 }  // namespace cqsp::core::systems::history
