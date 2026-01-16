@@ -84,7 +84,8 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         size.wages *= 0.95;
     }
 
-    if (pl_ratio > 0.5 && size.continuous_gains > 10 && !industry_node.all_of<components::Construction>()) {
+    if (pl_ratio > 0.5 && size.continuous_gains > 10 && size.utilization >= size.size &&
+        !industry_node.all_of<components::Construction>()) {
         // what's the ratio we should expand the factory at lol
         // Now we should expand it...
         // pl_ratio should be maybe
