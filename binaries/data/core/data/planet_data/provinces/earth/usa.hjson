@@ -179,6 +179,7 @@
     }
     {
         identifier: illinois
+        name: Illinois
         color:
         [
             242
@@ -230,6 +231,9 @@
                 productivity: 40
                 wage: 40
             }
+        ]
+        tags: [
+            log_market
         ]
     }
     {

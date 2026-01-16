@@ -28,6 +28,7 @@
 #include "core/actions/factoryconstructaction.h"
 #include "core/actions/maneuver/commands.h"
 #include "core/actions/shiplaunchaction.h"
+#include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
@@ -167,6 +168,17 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
                 ImGui::TextFmt("{}", GetName(GetUniverse(), entity));
             }
             ImGui::Separator();
+            if (GetUniverse().any_of<components::LogMarket>(current_province)) {
+                // then remove
+                if (ImGui::Button("Stop Logging market")) {
+                    GetUniverse().remove<components::LogMarket>(current_province);
+                }
+            } else {
+                if (ImGui::Button("Log market")) {
+                    GetUniverse().emplace<components::LogMarket>(current_province);
+                }
+            }
+
             // Now market wallet
             DisplayWallet(current_province);
             // Also draw market stats

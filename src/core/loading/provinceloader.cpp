@@ -19,6 +19,7 @@
 #include <spdlog/spdlog.h>
 
 #include "core/actions/factoryconstructaction.h"
+#include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/name.h"
 #include "core/components/organizations.h"
@@ -161,9 +162,10 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
 
     //SPDLOG_INFO("Load Tags");
-    if (!values["tags"].empty()) {
-        for (int i = 0; i < values["tags"].size(); i++) {
-            if (values["tags"][i].to_string() == "capital") {
+    const Hjson::Value& tags_value = values["tags"];
+    if (!tags_value.empty()) {
+        for (int i = 0; i < tags_value.size(); i++) {
+            if (tags_value[i].to_string() == "capital") {
                 // Then it's a capital city of whatever country it's in
                 node.emplace<components::CapitalCity>();
                 // Add to parent country
@@ -181,6 +183,9 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
                     // Remove capital tag on the other capital city
                     Node(universe, country_comp.capital_city).remove<components::CapitalCity>();
                 }
+            }
+            if (tags_value[i].to_string() == "log_market") {
+                node.emplace<components::LogMarket>();
             }
         }
     }

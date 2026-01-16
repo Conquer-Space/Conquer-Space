@@ -34,4 +34,6 @@ class MarketHistory {
     std::map<entt::entity, std::vector<double>> volume;
     std::vector<double> gdp;
 };
+
+class LogMarket {};
 }  // namespace cqsp::core::components

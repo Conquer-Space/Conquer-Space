@@ -87,8 +87,9 @@ class Universe : public entt::registry {
     entt::entity GetGood(const components::GoodEntity entity) const { return good_vector[static_cast<int>(entity)]; }
 
     auto GoodIterator() const {
-        return std::views::iota(0, static_cast<int>(good_vector.size())) |
-               std::ranges::views::transform([](int in) { return static_cast<components::GoodEntity>(in); });
+        return (std::views::iota(0, static_cast<int>(good_vector.size())) |
+                std::ranges::views::transform(
+                    [](int in) -> components::GoodEntity { return static_cast<components::GoodEntity>(in); }));
     }
 
     size_t GoodCount() const { return good_vector.size(); }
@@ -122,7 +123,7 @@ class Universe : public entt::registry {
     bool ToTick() const { return to_tick; }
     void ToggleTick() { to_tick = !to_tick; }
 
-    int GetDate() const { return date.GetDate(); }
+    int GetDate() const { return static_cast<int>(date.GetDate()); }
     std::unique_ptr<cqsp::core::util::IRandom> random;
     std::string uuid;
 

@@ -47,7 +47,7 @@ void SysMarket::DoSystem() {
         if (market_node.any_of<components::infrastructure::SpacePort>()) {
             // Then add output resources to the market
             auto& space_port = market_node.get<components::infrastructure::SpacePort>();
-            market.supply() += space_port.output_resources_rate;
+            market.supply += space_port.output_resources_rate;
 
             // Remove the ones that are less than zero
             space_port.output_resources -= space_port.output_resources_rate;
@@ -64,11 +64,11 @@ void SysMarket::DoSystem() {
 
         // Calculate Supply and demand
         // Add combined supply and demand to compute S/D ratio
-        market.supply() = market.production;
-        market.demand() = market.consumption;
-        market.supply().AddPositive(market.trade);
-        market.demand().AddNegative(market.trade);
-        market.sd_ratio = (market.supply()).SafeDivision(market.demand());
+        market.supply = market.production;
+        market.demand = market.consumption;
+        market.supply.AddPositive(market.trade);
+        market.demand.AddNegative(market.trade);
+        market.sd_ratio = (market.supply).SafeDivision(market.demand);
 
         for (auto good : GetUniverse().GoodIterator()) {
             DeterminePrice(market, good);
@@ -79,8 +79,8 @@ void SysMarket::DoSystem() {
 }
 
 void SysMarket::DetermineShortages(components::Market& market) {
-    components::ResourceLedger& market_supply = market.supply();
-    components::ResourceLedger& market_demand = market.demand();
+    components::ResourceLedger& market_supply = market.supply;
+    components::ResourceLedger& market_demand = market.demand;
     double deficit = 0;
     for (auto good : GetUniverse().GoodIterator()) {
         const double& demand = market_demand[good];
@@ -109,8 +109,8 @@ void SysMarket::DetermineShortages(components::Market& market) {
 
 void SysMarket::DeterminePrice(Market& market, components::GoodEntity good_entity) {
     const double sd_ratio = market.sd_ratio[good_entity];
-    const double supply = market.supply()[good_entity];
-    const double demand = market.demand()[good_entity];
+    const double supply = market.supply[good_entity];
+    const double demand = market.demand[good_entity];
     double& price = market.price[good_entity];
     // Get parent market price
     // Now just adjust cost
@@ -132,12 +132,11 @@ void SysMarket::Init() {
             market.price[good_node] = GetUniverse().get<components::Price>(good_node);
             // Set the supply and demand things as 1 so that they sell for
             // now
-            market.supply()[good_node] = 1;
-            market.demand()[good_node] = 1;
+            market.supply[good_node] = 1;
+            market.demand[good_node] = 1;
             market.market_access[good_node] = GetUniverse().economy_config.market_config.default_market_access;
         }
-        market.sd_ratio = market.supply().SafeDivision(market.demand());
-        market.history.push_back(market);
+        market.sd_ratio = market.supply.SafeDivision(market.demand);
     }
 
     for (auto good_node : GetUniverse().GoodIterator()) {

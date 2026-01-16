@@ -270,9 +270,9 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
         // Mark the cell as red if the thing is not valid
         ImGui::TextFmt("{:.2f}", market.price[selected_good_entity]);
         ImGui::TableSetColumnIndex(2);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply()[selected_good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply[selected_good_entity]));
         ImGui::TableSetColumnIndex(3);
-        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand()[selected_good_entity]));
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand[selected_good_entity]));
         ImGui::TableSetColumnIndex(4);
         ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[selected_good_entity]));
         ImGui::TableSetColumnIndex(5);
@@ -293,9 +293,9 @@ void SysPlanetMarketInformation::PerGoodDetailsRightPanel() {
     // Mark the cell as red if the thing is not valid
     ImGui::TextFmt("{:.2f}", overall_market.price[selected_good_entity]);
     ImGui::TableSetColumnIndex(2);
-    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.supply()[selected_good_entity]));
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.supply[selected_good_entity]));
     ImGui::TableSetColumnIndex(3);
-    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.demand()[selected_good_entity]));
+    ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.demand[selected_good_entity]));
     ImGui::TableSetColumnIndex(4);
     ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(overall_market.production[selected_good_entity]));
     ImGui::TableSetColumnIndex(5);
