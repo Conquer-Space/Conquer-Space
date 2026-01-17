@@ -25,6 +25,6 @@
 #include "core/universe.h"
 
 namespace cqsp::core::loading {
-void LoadTechnologies(Universe &universe, Hjson::Value &value);
+void LoadTechnologies(Universe &universe, const Hjson::Value &value);
 
 }  // namespace cqsp::core::loading

@@ -1,0 +1,31 @@
+{
+    market_config: {
+        /**
+         * Fraction that the price of a good can deviate from the base price.
+         */
+        base_price_deviation: 0.75
+         /**
+         * How much of a deficit we have ((demand - supply) / demand)
+         * to be considered a shortage.
+         */
+        shortage_level: 0.8
+        /**
+         * What to initialize our market access with.
+         */
+        default_market_access: 0.8
+    }
+    production_config: {
+        /**
+         * Multiplier for how much we should increase or decrease production based off profit
+         */
+        profit_multiplier: 0.001
+        /**
+         * The maximum percentage change per economic tick we should modify our economy.
+         */
+        max_factory_delta: 0.01
+        /**
+         * The percentage of a factory that has to be in use
+         */
+        factory_min_utilization: 0.05
+    }
+}

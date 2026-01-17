@@ -57,7 +57,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         1 +
         production_config.max_factory_delta / (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
         production_config.max_factory_delta / 2;
-    diff += GetUniverse().random->GetRandomNormal(0, 0.005);
+    diff += GetUniverse().random->GetRandomNormal(0, 0.001);
     if (shortage) {
         diff -= std::max(GetUniverse().random->GetRandomNormal(0.1, 0.1), 0.02);
     }

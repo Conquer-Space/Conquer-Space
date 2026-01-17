@@ -21,7 +21,7 @@
 namespace cqsp::core::loading {
 using components::bodies::TerrainData;
 
-void LoadTerrainData(Universe& universe, Hjson::Value& value) {
+void LoadTerrainData(Universe& universe, const Hjson::Value& value) {
     for (auto it = value.begin(); it != value.end(); it++) {
         Node terrain_node(universe);
 

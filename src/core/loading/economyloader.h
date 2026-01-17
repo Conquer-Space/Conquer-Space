@@ -21,5 +21,5 @@
 #include "core/universe.h"
 
 namespace cqsp::core::loading {
-void LoadNameLists(cqsp::core::Universe&, const Hjson::Value&);
+void LoadEconomyConfig(Universe& universe, const Hjson::Value& hjson);
 }  // namespace cqsp::core::loading

@@ -35,4 +35,9 @@
         type: hjson
         hints: {}
     }
+    economy_config: {
+        path: economy_config.hjson
+        type: hjson
+        hints: {}
+    }
 }

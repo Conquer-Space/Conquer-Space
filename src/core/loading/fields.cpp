@@ -36,9 +36,9 @@ struct FieldTemplate {
 namespace cqsp::core::loading {
 namespace science = components::science;
 
-void LoadFields(Universe& universe, Hjson::Value& hjson) {
+void LoadFields(Universe& universe, const Hjson::Value& hjson) {
     for (int i = 0; i < hjson.size(); i++) {
-        Hjson::Value val = hjson[i];
+        const Hjson::Value& val = hjson[i];
         if (val["name"].type() != Hjson::Type::String) {
             continue;
         }
