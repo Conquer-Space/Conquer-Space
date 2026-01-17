@@ -19,9 +19,9 @@
 #include "core/actions/names/namegenerator.h"
 
 namespace cqsp::core::loading {
-void LoadNameLists(Universe &universe, Hjson::Value &value) {
+void LoadNameLists(Universe &universe, const Hjson::Value &value) {
     for (int i = 0; i < value.size(); i++) {
-        Hjson::Value &name_list = value[i];
+        const Hjson::Value &name_list = value[i];
         actions::NameGenerator name_gen;
         name_gen.SetRandom(universe.random.get());
 

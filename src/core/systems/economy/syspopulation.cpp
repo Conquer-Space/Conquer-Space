@@ -131,9 +131,6 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         segment.employed_amount = 0;
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
-        // TODO(EhWhoAmI): Don't inject cash, take the money from the government
-        wallet += segment.population * 1;  // Inject cash
-
         market.consumption += consumption;
     }
 }

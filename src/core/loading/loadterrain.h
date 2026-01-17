@@ -21,5 +21,5 @@
 #include "core/universe.h"
 
 namespace cqsp::core::loading {
-void LoadTerrainData(cqsp::core::Universe&, Hjson::Value&);
+void LoadTerrainData(cqsp::core::Universe&, const Hjson::Value&);
 }  // namespace cqsp::core::loading

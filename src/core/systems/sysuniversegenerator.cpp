@@ -58,33 +58,6 @@ void ScriptUniverseGenerator::Generate(Universe& universe) {
     //universe.emplace<components::Civilization>(player);
     universe.emplace<components::Player>(player);
 
-    // Add top level fleet
-    /*
-    auto playerFleet = universe.create();
-    universe.emplace<components::Name>(playerFleet, "navy");
-    universe.emplace<components::ships::Fleet>(playerFleet, player);
-    universe.get<components::Civilization>(player).top_level_fleet = playerFleet;
-    // Add a subfleet
-    auto playerSubFleet = universe.create();
-    universe.emplace<components::Name>(playerSubFleet, "vice-navy");
-    universe.emplace<components::ships::Fleet>(playerSubFleet, playerFleet, player, 1);
-    universe.get<ships::Fleet>(universe.get<components::Civilization>(player).top_level_fleet)
-        .subfleets.push_back(playerSubFleet);
-        */
-    /*
-    sol::optional<sol::table> generator = script_engine["generators"]["data"][1];
-    if (generator) {
-        (*generator)["civ_init"]();
-        //script_engine["civilizations"] = sol::as_table(universe.view<components::Civilization>());
-        (*generator)["universe_gen"]();
-        auto view = universe.view<components::Civilization>();
-        SPDLOG_INFO("Initing planets");
-        for (auto ent : view) {
-            (*generator)["planets"](ent);
-        }
-    } else {
-        SPDLOG_ERROR("No generator");
-    }*/
     SPDLOG_INFO("Done generating");
 }
 }  // namespace cqsp::core::systems::universegenerator

@@ -24,6 +24,7 @@
 #include "client/scripting/clientuielements.h"
 #include "client/scripting/imguifunctions.h"
 #include "core/components/surface.h"
+#include "core/loading/economyloader.h"
 #include "core/loading/fields.h"
 #include "core/loading/hjsonloader.h"
 #include "core/loading/loadcities.h"
@@ -51,7 +52,7 @@ using core::Universe;
 using loading::HjsonLoader;
 
 void LoadResource(AssetManager& asset_manager, Universe& universe, const std::string& asset_name,
-                  void (*func)(Universe& universe, Hjson::Value& recipes)) {
+                  void (*func)(Universe& universe, const Hjson::Value& recipes)) {
     for (const auto& it : asset_manager) {
         if (!it.second->HasAsset(asset_name)) {
             continue;
@@ -103,6 +104,8 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource<loading::ProvinceLoader>(asset_manager, conquer_space.GetUniverse(), "provinces");
     LoadResource<loading::CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
     LoadResource<loading::SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
+
+    LoadResource(asset_manager, conquer_space.m_universe, "economy_config", loading::LoadEconomyConfig);
 
     LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", loading::LoadFields);

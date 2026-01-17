@@ -25,7 +25,7 @@
 
 namespace cqsp::core::loading {
 //TODO(AGM) move to loading namespace
-void LoadTechnologies(Universe& universe, Hjson::Value& value) {
+void LoadTechnologies(Universe& universe, const Hjson::Value& value) {
     // Load the technologies
     Hjson::Value base;
     base["actions"] = Hjson::Type::Vector;

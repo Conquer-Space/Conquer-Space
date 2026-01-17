@@ -42,8 +42,17 @@ struct EconomyConfig {
     } market_config;
 
     struct {
+        /**
+         * Multiplier for how much we should increase or decrease production based off profit
+         */
         double profit_multiplier = 0.001;
+        /**
+         * The maximum percentage change per economic tick we should modify our economy.
+         */
         double max_factory_delta = 0.01;
+        /**
+         * The percentage of a factory that has to be in use
+         */
         double factory_min_utilization = 0.05;
     } production_config;
 };

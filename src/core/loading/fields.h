@@ -21,6 +21,6 @@
 #include "core/universe.h"
 
 namespace cqsp::core::loading {
-void LoadFields(Universe& universe, Hjson::Value& hjson);
+void LoadFields(Universe& universe, const Hjson::Value& hjson);
 Hjson::Value WriteFields(Universe& universe);
 }  // namespace cqsp::core::loading
