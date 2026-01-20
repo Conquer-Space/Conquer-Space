@@ -19,7 +19,7 @@
 #include "core/components/stardate.h"
 
 namespace cqsp::core::systems {
-const int ECONOMIC_TICK = components::StarDate::HOUR;
+const int ECONOMIC_TICK = components::StarDate::DAY;
 /**
  * A struct for all the configs that we want to configure for the economy
  */
