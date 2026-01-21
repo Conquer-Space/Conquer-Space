@@ -37,9 +37,9 @@ std::string StarDate::ToString() const {
 }
 
 std::string StarDate::ToString(double offset) const {
-    int day = this->date / 24;
+    int day = this->date / DAY;
 
-    double diff = std::floor(this->date / 24.f) - std::floor((this->date + offset) / 24.f);
+    double diff = std::floor(this->date / DAY) - std::floor((this->date + offset) / DAY);
     if (diff > 0) {
         day--;
     } else if (diff < 0) {
@@ -51,23 +51,30 @@ std::string StarDate::ToString(double offset) const {
 }
 
 int StarDate::GetYear() const {
-    auto date = GetDateObject(start_date, (int)ToDay());
+    auto date = GetDateObject(start_date, static_cast<int>(ToDay()));
     return (int)date.year();
 }
 
 int StarDate::GetMonth() const {
-    auto date = GetDateObject(start_date, (int)ToDay());
+    auto date = GetDateObject(start_date, static_cast<int>(ToDay()));
     return (unsigned int)date.month();
 }
 
 int StarDate::GetDay() const {
-    auto date = GetDateObject(start_date, (int)ToDay());
+    auto date = GetDateObject(start_date, static_cast<int>(ToDay()));
     return (unsigned int)date.day();
 }
 
 /**
  * @param offset The hour offset
  */
-int StarDate::GetHour(double offset) const { return (int)((double)date / 60 + offset) % 24; }
-int StarDate::GetMinute() const { return date % 60; }
+int StarDate::GetHour(double offset) const {
+    /* ticks->seconds->hours->mod by 24->add timezone->then mod 24 to normalize */
+    return static_cast<int>(std::fmod(static_cast<double>(((date * TIME_INCREMENT) / 3600) % 24) + offset, 24));
+}
+
+int StarDate::GetMinute() const {
+    /* ticks->seconds->minutes then mod by 60 */
+    return ((date * TIME_INCREMENT) / 60) % 60;
+}
 }  // namespace cqsp::core::components

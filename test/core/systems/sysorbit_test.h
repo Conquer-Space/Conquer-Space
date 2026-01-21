@@ -19,8 +19,8 @@
 #include <gtest/gtest.h>
 
 #include <filesystem>
-#include <numbers>
 #include <memory>
+#include <numbers>
 
 #include <glm/gtx/vector_angle.hpp>
 
@@ -32,11 +32,11 @@
 #include "core/loading/hjsonloader.h"
 #include "core/loading/planetloader.h"
 #include "core/simulation.h"
+#include "core/systems/movement/sysorbit.h"
 #include "core/util/paths.h"
 #include "engine/asset/assetloader.h"
 #include "engine/asset/packageindex.h"
 #include "engine/asset/vfs/nativevfs.h"
-#include "core/systems/movement/sysorbit.h"
 
 class ManeuverTestSimulation : public cqsp::core::systems::simulation::Simulation {
  public:
@@ -95,7 +95,7 @@ struct SysOrbitTest : public ::testing::Test {
     }
 
     void TickSeconds(double seconds) {
-        for (int i = 0; i < std::ceil(seconds / 60.); i++) {
+        for (int i = 0; i < universe.date.ToTicks(seconds); i++) {
             simulation.tick();
         }
     }

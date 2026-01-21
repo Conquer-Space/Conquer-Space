@@ -46,12 +46,13 @@ namespace cqsp::core::components {
 class StarDate {
  public:
     // How many seconds a tick is
-    static const int TIME_INCREMENT = 60;
+    // 10 minutes
+    static const int TIME_INCREMENT = 60 * 10;
 
-    static const int MINUTE = 1;
-    static const int HOUR = 60 * MINUTE;
-    static const int DAY = 24 * HOUR;
-    static const int WEEK = DAY * 7;
+    static constexpr float MINUTE = 0.1f;
+    static constexpr int HOUR = static_cast<int>(60 * MINUTE);
+    static constexpr int DAY = 24 * HOUR;
+    static constexpr int WEEK = DAY * 7;
 
     static const int YEAR = DAY * 365;
 
@@ -59,8 +60,8 @@ class StarDate {
 
     uint64_t GetDate() const { return date; }
 
-    double ToSecond() const { return (double)date * TIME_INCREMENT; }
-    double ToDay() const { return date / (float)DAY; }
+    double ToSecond() const { return static_cast<double>(date) * TIME_INCREMENT; }
+    double ToDay() const { return date / static_cast<double>(DAY); }
 
     std::string ToString() const;
     std::string ToString(double offset) const;
@@ -70,6 +71,7 @@ class StarDate {
     int GetDay() const;
     int GetHour(double offset = 0.0) const;
     int GetMinute() const;
+    int ToTicks(double seconds) { return static_cast<int>(seconds / TIME_INCREMENT); }
 
     void SetDate(unsigned int _date) { date = _date; }
 
