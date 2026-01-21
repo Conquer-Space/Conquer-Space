@@ -77,10 +77,10 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages, doubl
     prod.wages = wages;
     const auto& recipe_comp = recipe.get<components::Recipe>();
     switch (recipe_comp.type) {
-        case components::mine:
+        case components::ProductionType::mine:
             factory.emplace<components::Mine>();
             break;
-        case components::service:
+        case components::ProductionType::service:
             factory.emplace<components::Service>();
             break;
         default:

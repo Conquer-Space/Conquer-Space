@@ -31,7 +31,7 @@ TEST(FactoryConstuctTest, ConstructTest) {
     city.emplace<cqsp::core::components::IndustrialZone>();
     auto& recipe_comp = recipe.emplace<cqsp::core::components::Recipe>();
     recipe_comp.workers = 10;
-    recipe_comp.type = cqsp::core::components::factory;
+    recipe_comp.type = cqsp::core::components::ProductionType::factory;
     cqsp::core::Node factory = cqsp::core::actions::CreateFactory(city, recipe, 10);
     // Ensure that it has everything
     ASSERT_TRUE(factory.any_of<cqsp::core::components::Employer>());
