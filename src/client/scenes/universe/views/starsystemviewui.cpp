@@ -36,7 +36,7 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     // FIXME(EhWhoamI)
     // auto &debug_info =
     // universe.ctx().emplace<ctx::StarSystemViewDebug>();
-    ImGui::Begin("Debug ui window");
+    ImGui::Begin("Debug ui window", NULL, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::TextFmt("Cam Pos: {} {} {}", camera.cam_pos.x, camera.cam_pos.y, camera.cam_pos.z);
     ImGui::TextFmt("Cam Coordinate: {} {}", controller.target_surface_coordinate.longitude(),
                    controller.target_surface_coordinate.latitude());
@@ -64,6 +64,7 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     auto intersection = controller.GetMouseSurfaceIntersection();
     ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());
 
+    ImGui::TextFmt("Tick Fraction: {}", universe.tick_fraction);
     if (ImGui::Button("Debug Spawn City")) {
         // Add a city founding entity
         entt::entity ent = universe.create();

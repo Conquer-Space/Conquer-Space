@@ -46,17 +46,17 @@ namespace cqsp::core::components {
 class StarDate {
  public:
     // How many seconds a tick is
-    // 5 minutes
-    static const int TIME_INCREMENT = 60 * 5;
+    // 10 minutes
+    static const int TIME_INCREMENT = 60 * 10;
 
-    static constexpr float MINUTE = 0.2f;
+    static constexpr float MINUTE = 0.1f;
     static constexpr int HOUR = static_cast<int>(60 * MINUTE);
     static constexpr int DAY = 24 * HOUR;
     static constexpr int WEEK = DAY * 7;
 
     static const int YEAR = DAY * 365;
 
-    void IncrementDate() { date += 5; }
+    void IncrementDate() { date++; }
 
     uint64_t GetDate() const { return date; }
 

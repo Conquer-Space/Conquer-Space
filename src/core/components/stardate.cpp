@@ -69,7 +69,12 @@ int StarDate::GetDay() const {
  * @param offset The hour offset
  */
 int StarDate::GetHour(double offset) const {
-    return static_cast<int>(static_cast<double>(date) / TIME_INCREMENT + offset) % 24;
+    /* ticks->seconds->hours->mod by 24->add timezone->then mod 24 to normalize */
+    return static_cast<int>(std::fmod(static_cast<double>(((date * TIME_INCREMENT) / 3600) % 24) + offset, 24));
 }
-int StarDate::GetMinute() const { return date % 60; }
+
+int StarDate::GetMinute() const {
+    /* ticks->seconds->minutes then mod by 60 */
+    return ((date * TIME_INCREMENT) / 60) % 60;
+}
 }  // namespace cqsp::core::components
