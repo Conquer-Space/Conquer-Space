@@ -44,6 +44,9 @@ void GenerateFrameBuffer(unsigned int& framebuffer) {
 FramebufferRenderer::~FramebufferRenderer() { FreeBuffer(); }
 
 void FramebufferRenderer::InitTexture(int width, int height) {
+    if (width <= 0 || height <= 0) {
+        return;
+    }
     this->width = width;
     this->height = height;
     GenerateFrameBuffer(framebuffer);
@@ -100,8 +103,12 @@ void FramebufferRenderer::RenderBuffer() {
 void FramebufferRenderer::Free() { FreeBuffer(); }
 
 void FramebufferRenderer::FreeBuffer() {
-    glDeleteFramebuffers(1, &framebuffer);
-    glDeleteBuffers(1, &colorbuffer);
+    if (framebuffer != 0) glDeleteFramebuffers(1, &framebuffer);
+    if (colorbuffer != 0) glDeleteTextures(1, &colorbuffer);
+    if (rbo != 0) glDeleteRenderbuffers(1, &rbo);
+    framebuffer = 0;
+    colorbuffer = 0;
+    rbo = 0;
 }
 
 void FramebufferRenderer::NewFrame(const Window& window) {
@@ -121,6 +128,10 @@ void FramebufferRenderer::NewFrame(const Window& window) {
 AAFrameBufferRenderer::~AAFrameBufferRenderer() { FreeBuffer(); }
 
 void AAFrameBufferRenderer::InitTexture(int width, int height) {
+    if (width <= 0 || height <= 0) {
+        return;
+    }
+
     this->width = width;
     this->height = height;
     GenerateFrameBuffer(framebuffer);
@@ -134,7 +145,6 @@ void AAFrameBufferRenderer::InitTexture(int width, int height) {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, mscat, 0);
 
     // create a (also multisampled) renderbuffer object for depth and stencil attachments
-    unsigned int rbo;
     glGenRenderbuffers(1, &rbo);
     glBindRenderbuffer(GL_RENDERBUFFER, rbo);
     glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, width, height);
@@ -178,10 +188,16 @@ void AAFrameBufferRenderer::EndDraw() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
 void AAFrameBufferRenderer::Free() { FreeBuffer(); }
 
 void AAFrameBufferRenderer::FreeBuffer() {
-    glDeleteFramebuffers(1, &framebuffer);
-    glDeleteFramebuffers(1, &intermediateFBO);
-    glDeleteBuffers(1, &screenTexture);
-    glDeleteFramebuffers(1, &mscat);
+    if (framebuffer != 0) glDeleteFramebuffers(1, &framebuffer);
+    if (intermediateFBO != 0) glDeleteFramebuffers(1, &intermediateFBO);
+    if (screenTexture != 0) glDeleteTextures(1, &screenTexture);
+    if (mscat != 0) glDeleteTextures(1, &mscat);
+    if (rbo != 0) glDeleteRenderbuffers(1, &rbo);
+    framebuffer = 0;
+    intermediateFBO = 0;
+    screenTexture = 0;
+    mscat = 0;
+    rbo = 0;
 }
 
 void AAFrameBufferRenderer::RenderBuffer() {

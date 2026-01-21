@@ -48,7 +48,7 @@ class IFramebuffer {
 
 class FramebufferRenderer : public IFramebuffer {
  public:
-    FramebufferRenderer() : IFramebuffer(), framebuffer(0), colorbuffer(0) {}
+    FramebufferRenderer() : IFramebuffer(), width(0), height(0), framebuffer(0), colorbuffer(0), rbo(0) {}
     ~FramebufferRenderer();
 
     void InitTexture(int width, int height) override;
@@ -76,7 +76,7 @@ class FramebufferRenderer : public IFramebuffer {
 class AAFrameBufferRenderer : public IFramebuffer {
  public:
     AAFrameBufferRenderer()
-        : IFramebuffer(), width(0), height(0), framebuffer(0), intermediateFBO(0), screenTexture(0), mscat(0) {}
+        : IFramebuffer(), width(0), height(0), framebuffer(0), intermediateFBO(0), screenTexture(0), mscat(0), rbo(0) {}
     ~AAFrameBufferRenderer();
 
     void InitTexture(int width, int height) override;
@@ -100,6 +100,7 @@ class AAFrameBufferRenderer : public IFramebuffer {
     unsigned int intermediateFBO;
     unsigned int screenTexture;
     unsigned int mscat;
+    unsigned int rbo;
     asset::ShaderProgram_t buffer_shader;
     Mesh_t mesh_output;
 };
