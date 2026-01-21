@@ -210,8 +210,8 @@ void SysProvinceInformation::DemographicsTab() {
 
         ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.spending)));
         ImGui::TextFmt("Spending per capita: {}", NumberToHumanString(pop_segement.spending / pop_segement.population));
-        ImGui::TextFmt("Income: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.income)));
-        ImGui::TextFmt("Income per capita: {}", NumberToHumanString(pop_segement.income / pop_segement.population));
+        ImGui::TextFmt("Income: {} (per capita: {})", NumberToHumanString(static_cast<uint64_t>(pop_segement.income)),
+                       NumberToHumanString(pop_segement.income / pop_segement.population));
 
         ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segement.labor_force));
         ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segement.employed_amount));
@@ -230,7 +230,8 @@ void SysProvinceInformation::DemographicsTab() {
         if (ImGui::CollapsingHeader("Resource Consumption")) {
             if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {
                 auto& res_consumption = GetUniverse().get<components::ResourceConsumption>(seg_entity);
-                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption);
+                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption,
+                                GetUniverse().get<components::Market>(current_province));
             }
         }
         // Display the data

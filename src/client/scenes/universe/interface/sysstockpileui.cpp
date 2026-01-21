@@ -54,4 +54,43 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
     return true;
 }
 
+bool DrawLedgerTable(const std::string &name, const Universe &universe, const ResourceMap &ledger,
+                     const core::components::Market &market) {
+    if (ledger.empty()) {
+        ImGui::Text("Empty ledger");
+        return false;
+    }
+    if (ImGui::BeginTable(name.c_str(), 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Amount");
+        ImGui::TableHeadersRow();
+        for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
+            if (iterator->second == 0) {
+                continue;
+            }
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(universe, iterator->first));
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextFmt("Good Price: {}", market.price[iterator->first]);
+                ImGui::TextFmt("Combined Price: {}",
+                               NumberToHumanString(market.price[iterator->first] * iterator->second));
+                ImGui::EndTooltip();
+            }
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(iterator->second)));
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextFmt("Good Price: {}", market.price[iterator->first]);
+                ImGui::TextFmt("Combined Price: {}",
+                               NumberToHumanString(market.price[iterator->first] * iterator->second));
+                ImGui::EndTooltip();
+            }
+        }
+        ImGui::EndTable();
+    }
+    return true;
+}
+
 }  // namespace cqsp::client::systems
