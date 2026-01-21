@@ -155,8 +155,7 @@ TEST_P(PlaneMatchTests, MatchPlaneTest) {
                 glm::to_string(cqsp::core::components::types::OrbitVelocityToVec3(ship2_orbit)));
 }
 
-class CircularizeTests : public SysOrbitTest,
-                         public testing::WithParamInterface<cqsp::core::components::types::Orbit> {
+class CircularizeTests : public SysOrbitTest, public testing::WithParamInterface<cqsp::core::components::types::Orbit> {
  protected:
     void ExpectNoPlaneChange(entt::entity ship) {
         cqsp::core::components::types::Orbit source_orbit = GetParam();
@@ -201,6 +200,7 @@ TEST_P(CircularizeTests, ChangeApoapsis) {
 
     double initial_apoapsis = source_orbit.GetApoapsis();
     TickSeconds(circularize.second + 1.);
+    Tick(1); /* One extra tick to get where we are right after our maneuver */
 
     // Now check the new periapsis is the same as the new apoapsis
     EXPECT_NEAR(initial_apoapsis, ship_orbit.GetPeriapsis(), 1.);
@@ -233,6 +233,7 @@ TEST_P(CircularizeTests, ChangePeriapsis) {
 
     double initial_periapsis = source_orbit.GetPeriapsis();
     TickSeconds(circularize.second + 1.);
+    Tick(1); /* One extra tick to get where we are right after our maneuver */
 
     // Now check the new periapsis is the same as the new apoapsis
     EXPECT_NEAR(initial_periapsis, ship_orbit.GetPeriapsis(), 1.);
@@ -415,6 +416,7 @@ TEST_F(SysOrbitTest, ManeuverTest) {
 
     // Now go ahead in time
     TickSeconds(maneuver.second);
+    Tick(1); /* One extra tick to get where we are right after our maneuver */
     // Now check our orbit
     // Now get our true anomaly at time
     const double new_anomaly = cqsp::core::components::types::GetTrueAnomaly(ship_orbit, maneuver.second);

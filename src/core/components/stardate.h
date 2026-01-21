@@ -71,6 +71,7 @@ class StarDate {
     int GetDay() const;
     int GetHour(double offset = 0.0) const;
     int GetMinute() const;
+    int ToTicks(double seconds) { return static_cast<int>(seconds / TIME_INCREMENT); }
 
     void SetDate(unsigned int _date) { date = _date; }
 
