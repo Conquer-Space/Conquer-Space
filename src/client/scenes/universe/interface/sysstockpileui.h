@@ -26,4 +26,6 @@ namespace cqsp::client::systems {
 bool DrawLedgerTable(const std::string& name, const core::Universe&, const core::components::ResourceMap& ledger);
 bool DrawLedgerTable(const std::string& name, const core::Universe&, const core::components::ResourceMap& ledger,
                      const core::components::Market& market);
+bool DrawLedgerPiePlot(const std::string& name, const core::Universe&, const core::components::ResourceMap& ledger,
+                       const core::components::Market& market, bool prices = false);
 }  // namespace cqsp::client::systems

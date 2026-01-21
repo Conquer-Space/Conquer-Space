@@ -93,4 +93,34 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
     return true;
 }
 
+bool DrawLedgerPiePlot(const std::string &name, const core::Universe &universe,
+                       const core::components::ResourceMap &ledger, const core::components::Market &market,
+                       bool price) {
+    if (ImPlot::BeginPlot("##Pie1", ImVec2(ImGui::GetTextLineHeight() * 16, ImGui::GetTextLineHeight() * 16),
+                          ImPlotFlags_Equal | ImPlotFlags_NoMouseText)) {
+        ImPlot::SetupAxes(nullptr, nullptr, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
+        ImPlot::SetupAxesLimits(0, 1, 0, 1);
+        // If it's by price or by something else
+        std::vector<const char *> labels;
+        std::vector<std::string> label_strings;
+        std::vector<int> values;
+        for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
+            label_strings.push_back(core::util::GetName(universe, iterator->first));
+            if (price) {
+                values.push_back(iterator->second * market.price[iterator->first]);
+            } else {
+                values.push_back(iterator->second);
+            }
+        }
+
+        for (const std::string &label : label_strings) {
+            labels.push_back(label.c_str());
+        }
+        ImPlot::PlotPieChart(labels.data(), values.data(), label_strings.size(), 0.5, 0.5, 0.4, "%.2f", 90,
+                             ImPlotPieChartFlags_Normalize);
+        ImPlot::EndPlot();
+    }
+    return false;
+}
+
 }  // namespace cqsp::client::systems

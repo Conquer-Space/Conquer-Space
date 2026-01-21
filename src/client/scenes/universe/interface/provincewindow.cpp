@@ -229,9 +229,15 @@ void SysProvinceInformation::DemographicsTab() {
 
         if (ImGui::CollapsingHeader("Resource Consumption")) {
             if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {
+                const auto& market = GetUniverse().get<components::Market>(current_province);
                 auto& res_consumption = GetUniverse().get<components::ResourceConsumption>(seg_entity);
-                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption,
-                                GetUniverse().get<components::Market>(current_province));
+                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption, market);
+
+                if (ImGui::SmallButton("Toggle Price/Count")) {
+                    segment_prices = !segment_prices;
+                }
+                DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(), res_consumption, market,
+                                  segment_prices);
             }
         }
         // Display the data
