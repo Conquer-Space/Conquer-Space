@@ -42,7 +42,9 @@ inline std::string NumberToHumanString(const T l) {
     // Round this to two decimal points
     const int precision = 100;
     d = round(d * precision) / precision;
-
+    if (exponent >= sizeof(numbers) / sizeof(numbers[0])) {
+        return fmt::format("{}", l);
+    }
     return fmt::format("{} {}", d, numbers[exponent - 1]);
 }
 }  // namespace cqsp::util

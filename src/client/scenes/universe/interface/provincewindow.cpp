@@ -112,7 +112,11 @@ void SysProvinceInformation::ProvinceView() {
         auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
         population += segment.population;
     }
-    ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
+    if (city_list.country == entt::null) {
+        ImGui::TextFmt("Not part of any country");
+    } else {
+        ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
+    }
     ImGui::TextFmt("Population: {}", NumberToHumanString(population));
     ImGui::Separator();
     ProvinceIndustryTabs();

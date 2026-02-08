@@ -37,8 +37,12 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     Node planet_node(universe, universe.planets[planet_identifier]);
     const auto& identifier = node.get<components::Identifier>().identifier;
+    entt::entity country_entity = entt::null;
 
-    Node province_node(universe, universe.countries[country_identifier]);
+    if (universe.countries.find(country_identifier) != universe.countries.end()) {
+        country_entity = universe.countries[country_identifier];
+    }
+    Node province_node(universe, country_entity);
     node.emplace<components::Province>(province_node);
     auto& color = node.emplace<components::ProvinceColor>(values["color"][0].to_int64(), values["color"][1].to_int64(),
                                                           values["color"][2].to_int64());
@@ -49,7 +53,9 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     // Add province to country
     // check if it is assigned to a country
-    province_node.get_or_emplace<components::CountryCityList>().province_list.push_back(node);
+    if (province_node.valid()) {
+        province_node.get_or_emplace<components::CountryCityList>().province_list.push_back(node);
+    }
     universe.province_colors[planet_node][static_cast<int>(color)] = node;
     universe.colors_province[planet_node][node] = static_cast<int>(color);
 
@@ -118,20 +124,6 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
         ParseIndustry(industry_hjson, node, identifier);
     }
 
-    //SPDLOG_INFO("Load Country");
-    if (!values["country"].empty()) {
-        if (universe.countries.find(values["country"]) != universe.countries.end()) {
-            Node province_node(universe, universe.countries[values["country"]]);
-            node.emplace<components::Governed>(province_node);
-            // Add self to country?
-            province_node.get_or_emplace<components::CountryCityList>().city_list.push_back(node);
-
-        } else {
-            // SPDLOG_INFO("Province {} has country {}, but it's undefined", identifier, values["country"].to_string());
-        }
-    } else {
-        // SPDLOG_WARN("Province {} has no country", identifier);
-    }
     //SPDLOG_INFO("Load Provinces");
     if (!values["province"].empty()) {
         if (universe.provinces[values["province"]] != universe.provinces.end()) {
