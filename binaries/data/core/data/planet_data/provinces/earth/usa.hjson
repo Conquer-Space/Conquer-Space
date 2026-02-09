@@ -1,6 +1,7 @@
 [
     {
         identifier: alabama
+        name: Alabama
         color:
         [
             115
@@ -12,6 +13,7 @@
     }
     {
         identifier: alaska
+        name: Alaska
         color:
         [
             92
