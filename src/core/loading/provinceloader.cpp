@@ -190,18 +190,51 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
     for (int i = 0; i < industry_hjson.size(); i++) {
         const Hjson::Value& ind_val = industry_hjson[i];
         auto recipe = ind_val["recipe"].to_string();
-        auto productivity = ind_val["productivity"].to_double();
+        auto size = ind_val["size"].to_double();
         if (universe.recipes.find(recipe) == universe.recipes.end()) {
             SPDLOG_INFO("Recipe {} not found in city {}", recipe, identifier);
             continue;
         }
-        double wage = 10;
-        if (!ind_val["wage"].empty()) {
-            wage = ind_val["wage"].to_double();
-        }
+
+        // We should also store our state too
         Node rec_ent(universe, universe.recipes[recipe]);
 
-        actions::CreateFactory(node, rec_ent, productivity);
+        Node factory = actions::CreateFactory(node, rec_ent, size);
+        auto& cost = factory.get_or_emplace<components::CostBreakdown>();
+
+        if (!ind_val["revenue"].empty()) {
+            cost.revenue = ind_val["revenue"].to_double();
+        }
+
+        if (!ind_val["material_costs"].empty()) {
+            cost.material_costs = ind_val["material_costs"].to_double();
+        }
+
+        if (!ind_val["profit"].empty()) {
+            cost.profit = ind_val["profit"].to_double();
+        }
+
+        auto& size_comp = factory.get_or_emplace<components::IndustrySize>();
+
+        if (!ind_val["wages"].empty()) {
+            size_comp.wages = ind_val["wages"].to_double();
+        }
+
+        if (!ind_val["utilization"].empty()) {
+            size_comp.utilization = ind_val["utilization"].to_double();
+        }
+
+        if (!ind_val["workers"].empty()) {
+            size_comp.workers = ind_val["workers"].to_double();
+        }
+
+        if (!ind_val["continuous_losses"].empty()) {
+            size_comp.continuous_losses = ind_val["continuous_losses"].to_double();
+        }
+
+        if (!ind_val["continuous_gains"].empty()) {
+            size_comp.continuous_gains = ind_val["continuous_gains"].to_double();
+        }
     }
 }
 }  // namespace cqsp::core::loading

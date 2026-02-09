@@ -39,11 +39,11 @@
         industry: [
             {
                 recipe: iron_mining
-                productivity: 60
+                size: 60
             }
             {
                 recipe: coal_mining
-                productivity: 10
+                size: 10
             }
         ]
         tags: [
@@ -80,15 +80,15 @@
         industry: [
             {
                 recipe: furniture_manufacturing
-                productivity: 300
+                size: 300
             }
             {
                 recipe: gasoline_production
-                productivity: 2000
+                size: 2000
             }
             {
                 recipe: oil_drilling
-                productivity: 2000
+                size: 2000
             }
         ]
         tag: [
@@ -207,37 +207,37 @@
         industry: [
             {
                 recipe: farming
-                productivity: 200
+                size: 200
                 wage: 200
             }
             {
                 recipe: meat_production
-                productivity: 600
+                size: 600
                 wage: 40
             }
             {
                 recipe: fresh_food_production
-                productivity: 250
+                size: 250
                 wage: 40
             }
             {
                 recipe: groceries_manufacturing
-                productivity: 200
+                size: 200
                 wage: 40
             }
             {
                 recipe: tractor_production
-                productivity: 20
+                size: 20
                 wage: 40
             }
             {
                 recipe: steel_manufacturing
-                productivity: 250
+                size: 250
                 wage: 40
             }
             {
                 recipe: machinery_production
-                productivity: 40
+                size: 40
                 wage: 40
             }
         ]
@@ -749,7 +749,7 @@
         industry: [
             {
                 recipe: logging
-                productivity: 200
+                size: 200
             }
         ]
     }

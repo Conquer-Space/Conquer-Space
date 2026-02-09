@@ -16,6 +16,9 @@ def main():
     good_name = input("Input good name:")
 
     while good_name:
+        if good_name not in good_list:
+            continue
+
         good_idx = good_list.index(good_name)
         plt.figure()
         for i in range(10):
