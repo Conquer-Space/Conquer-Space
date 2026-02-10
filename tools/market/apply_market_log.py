@@ -19,4 +19,4 @@ for root, subdirs, files in os.walk("binaries/data/core/data/planet_data/provinc
         print(country_contents)
         # Write back to file
         f = open(os.path.join(root, filename), "w")
-        hjson.dumps(country_contents, indent=4)
+        f.write(hjson.dumps(country_contents, indent=4))
