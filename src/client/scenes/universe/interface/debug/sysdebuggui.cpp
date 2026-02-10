@@ -77,7 +77,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
             fs::create_directory(output_dir_name);
         }
         core::systems::history::SaveUniverseMarketState(universe, output_dir_name + "/market_log.hjson");
-        input.push_back("Wrote market state!");
+        input.emplace_back("Wrote market state!");
     };
 
     auto lua = [](sysdebuggui_parameters) { script_interface.RunScript(args); };

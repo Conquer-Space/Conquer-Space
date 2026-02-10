@@ -113,6 +113,7 @@ bool DrawLedgerPiePlot(const std::string &name, const core::Universe &universe,
             }
         }
 
+        labels.reserve(label_strings.size());
         for (const std::string &label : label_strings) {
             labels.push_back(label.c_str());
         }
