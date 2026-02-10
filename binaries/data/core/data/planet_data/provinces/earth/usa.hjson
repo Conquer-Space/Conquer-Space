@@ -1,6 +1,7 @@
 [
     {
         identifier: alabama
+        name: Alabama
         color:
         [
             115
@@ -12,6 +13,7 @@
     }
     {
         identifier: alaska
+        name: Alaska
         color:
         [
             92
@@ -31,22 +33,41 @@
         ]
         country: usa
         planet: earth
-        population: [
+        population:
+        [
             {
                 size: 3251876
             }
         ]
-        industry: [
+        industry:
+        [
             {
                 recipe: iron_mining
-                productivity: 60
+                size: 60
+                utilization: 2
+                workers: 0
+                wages: 847.6688330158316
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 2e+05.0
+                material_costs: 12000
+                profit: 9989.545066675346
             }
             {
                 recipe: coal_mining
-                productivity: 10
+                size: 12
+                utilization: 1
+                workers: 0
+                wages: 472.01372444612014
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 60000
+                material_costs: 6000
+                profit: 4438.5589331573865
             }
         ]
-        tags: [
+        tags:
+        [
             log_market
         ]
     }
@@ -72,26 +93,53 @@
         ]
         country: usa
         planet: earth
-        population: [
+        population:
+        [
             {
                 size: 3694820
             }
         ]
-        industry: [
+        industry:
+        [
             {
                 recipe: furniture_manufacturing
-                productivity: 300
+                size: 300
+                utilization: 1
+                workers: 0
+                wages: 94.10672537709547
+                continuous_losses: 0
+                continuous_gains: 111
+                revenue: 240000
+                material_costs: 75000
+                profit: 16781.907531074627
             }
             {
                 recipe: gasoline_production
-                productivity: 2000
+                size: 2371
+                utilization: 72.33671251311226
+                workers: 0
+                wages: 2479.6523407231
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 28934685.005244903
+                material_costs: 7233671.251311226
+                profit: 2870533.8784824535
             }
             {
                 recipe: oil_drilling
-                productivity: 2000
+                size: 2000
+                utilization: 75.29058259980495
+                workers: 0
+                wages: 8396.982955720408
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 7529058.259980495
+                material_costs: 451743.4955988297
+                profit: 452095.21231826395
             }
         ]
-        tag: [
+        tag:
+        [
             log_market
         ]
     }
@@ -197,51 +245,103 @@
         ]
         country: usa
         planet: earth
-        population: [
+        population:
+        [
             {
                 size: 2896016
                 sol: 10
                 balance: 10000000
             }
         ]
-        industry: [
+        industry:
+        [
             {
                 recipe: farming
-                productivity: 200
-                wage: 200
+                size: 235
+                utilization: 29.980725037489417
+                workers: 0
+                wages: 196.1314518882915
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 899421.7511246825
+                material_costs: 194874.71274368122
+                profit: 87321.35928854789
             }
             {
                 recipe: meat_production
-                productivity: 600
-                wage: 40
+                size: 676
+                utilization: 123.99683458335892
+                workers: 0
+                wages: 89.85007793492824
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 3347914.5337506905
+                material_costs: 223194.30225004605
+                profit: 200279.89487459976
             }
             {
                 recipe: fresh_food_production
-                productivity: 250
-                wage: 40
+                size: 250
+                utilization: 20.172733050192793
+                workers: 0
+                wages: 81.49666932873309
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 605181.9915057837
+                material_costs: 131122.76482625317
+                profit: 42534.36258388887
             }
             {
                 recipe: groceries_manufacturing
-                productivity: 200
-                wage: 40
+                size: 234
+                utilization: 17.75187163898673
+                workers: 0
+                wages: 169.42572239567346
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 7100748.655594693
+                material_costs: 1686427.8057037396
+                profit: 677516.5031527141
             }
             {
                 recipe: tractor_production
-                productivity: 20
-                wage: 40
+                size: 20
+                utilization: 1
+                workers: 0
+                wages: 89.85007793492824
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 325000
+                material_costs: 14000
+                profit: 27523.004115301417
             }
             {
                 recipe: steel_manufacturing
-                productivity: 250
-                wage: 40
+                size: 250
+                utilization: 10.942841528854869
+                workers: 0
+                wages: 41.161355953815885
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 919198.688423809
+                material_costs: 120371.25681740357
+                profit: 89452.62309834245
             }
             {
                 recipe: machinery_production
-                productivity: 40
-                wage: 40
+                size: 47
+                utilization: 1.9747082498995803
+                workers: 0
+                wages: 81.49666932873309
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 592412.474969874
+                material_costs: 27645.915498594124
+                profit: 57857.27624656004
             }
         ]
-        tags: [
+        tags:
+        [
             log_market
         ]
     }
@@ -454,15 +554,16 @@
         ]
         country: usa
         planet: earth
-        population: [
+        population:
+        [
             {
                 size: 8000000
                 labor_force: 4000000
             }
         ]
-                // Default transport costs
         transport: 0.05
-        infrastructure: {
+        infrastructure:
+        {
             highway: 0.02
         }
     }
@@ -741,22 +842,31 @@
         ]
         country: usa
         planet: earth
-        population: [
+        population:
+        [
             {
                 size: 563374
             }
         ]
-        industry: [
+        industry:
+        [
             {
                 recipe: logging
-                productivity: 200
+                size: 200
+                utilization: 1
+                workers: 0
+                wages: 21.77417401910982
+                continuous_losses: 0
+                continuous_gains: 121
+                revenue: 16000
+                material_costs: 6000
+                profit: 854.8469119738747
             }
         ]
     }
     {
         identifier: west_virginia
         name: West Virginia
-        // take me home to where I belong~~~
         color:
         [
             242

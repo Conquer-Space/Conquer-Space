@@ -80,9 +80,10 @@ void SysPlanetaryTrade::DoSystem() {
                 }
                 // Remove local production so that we don't confound this with our local production
                 double change = (market.price[good] / p_market.price[good]);
-                double export_amount = std::max(
-                    (market.supply[good] / p_market.supply[good] * p_market.demand[good]) - market.consumption[good],
-                    0.);
+                double export_amount =
+                    std::max((market.production[good] / p_market.supply[good] * p_market.demand[good]) -
+                                 market.consumption[good],
+                             0.);
                 export_amount *= change;
                 market.trade[good] -= export_amount;
             }
@@ -95,9 +96,10 @@ void SysPlanetaryTrade::DoSystem() {
                 // Remove local consumption so that we don't confound this with local production
                 // We should account with price because if it's above, we should weight it more...
                 double change = (market.price[good] / p_market.price[good]);
-                double import_amount = std::max(
-                    (market.demand[good] / p_market.demand[good] * p_market.supply[good]) - market.production[good],
-                    0.);
+                double import_amount =
+                    std::max((market.consumption[good] / p_market.demand[good] * p_market.supply[good]) -
+                                 market.production[good],
+                             0.);
                 import_amount *= change;
                 market.trade[good] += import_amount;
             }

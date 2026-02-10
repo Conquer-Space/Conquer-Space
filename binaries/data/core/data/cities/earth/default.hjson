@@ -219,11 +219,11 @@
             {
                 type: Farms
                 recipe: farming
-                productivity: 3
+                size: 3
             }
             {
                 recipe: transport_cap
-                productivity: 1
+                size: 1
             }
         ]
     }
@@ -247,12 +247,12 @@
             {
                 type: Mining
                 recipe: fmetal_mine
-                productivity: 1
+                size: 1
             }
             {
                 type: Mining
                 recipe: nmetal_mine
-                productivity: 0.2
+                size: 0.2
             }
         ]
     }
@@ -292,12 +292,12 @@
             {
                 type: Farms
                 recipe: farming
-                productivity: 3
+                size: 3
             }
             {
                 type: Clothes Making
                 recipe: garments_man
-                productivity: 1
+                size: 1
             }
         ]
     }

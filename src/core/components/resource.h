@@ -93,54 +93,6 @@ struct RecipeCost {
     ResourceMap scaling;
 };
 
-// Factory size
-struct IndustrySize {
-    // The size of the factory.
-    // the maximum output of the factory is
-    double size;
-    // The utilization of the factory.
-    double utilization;
-    double diff;
-    double diff_delta;
-
-    int workers;
-    bool shortage = false;
-    double wages = 25;
-    int continuous_losses = 0;
-    int continuous_gains = 0;
-};
-
-struct CostBreakdown {
-    double revenue;
-    // How much it paid in materials to produce goods
-    double material_costs;
-    // How much cash it took to maintain the factory
-    double maintenance;
-    // How much it paid to people
-    double wages;
-    double profit;
-    // How much it paid in transport fees
-    double transport;
-
-    double amount_sold = 0;
-
-    void Reset() {
-        revenue = 0;
-        material_costs = 0;
-        maintenance = 0;
-        wages = 0;
-        profit = 0;
-        amount_sold = 0;
-        transport = 0;
-    }
-};
-
-// TODO(AGM): Remove
-struct FactoryTimer {
-    float interval;
-    float time_left;
-};
-
 struct ResourceConsumption : public ResourceMap {};
 struct ResourceProduction : public ResourceMap {};
 

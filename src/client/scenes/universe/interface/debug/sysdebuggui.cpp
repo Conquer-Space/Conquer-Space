@@ -14,12 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "sysdebuggui.h"
+#include "client/scenes/universe/interface/debug/sysdebuggui.h"
+
+#include <filesystem>
 
 #include "GLFW/glfw3.h"
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
 #include "core/components/name.h"
+#include "core/systems/history/sysmarketdumper.h"
 #include "core/util/nameutil.h"
 #include "core/util/profiler.h"
 #include "glad/glad.h"
@@ -67,6 +70,16 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
         }
     };
 
+    auto log_market = [](sysdebuggui_parameters) {
+        namespace fs = std::filesystem;
+        std::string output_dir_name = "output";
+        if (!fs::exists(output_dir_name)) {
+            fs::create_directory(output_dir_name);
+        }
+        core::systems::history::SaveUniverseMarketState(universe, output_dir_name + "/market_log.hjson");
+        input.emplace_back("Wrote market state!");
+    };
+
     auto lua = [](sysdebuggui_parameters) { script_interface.RunScript(args); };
 
     commands = {{"help", {"Shows this help menu", help_command}},
@@ -74,7 +87,8 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
                 {"clear", {"Clears screen", screen_clear}},
                 {"entitycount", {"Gets number of entities", entitycount}},
                 {"name", {"Gets name and identifier of entity", entity_name}},
-                {"lua", {"Executes lua script", lua}}};
+                {"lua", {"Executes lua script", lua}},
+                {"log_market", {"Logs market into a csv file", log_market}}};
 }
 
 void SysDebugMenu::Init() {}

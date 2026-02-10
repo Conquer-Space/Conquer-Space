@@ -82,11 +82,11 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "raw") {
-            recipe_component.type = components::mine;
+            recipe_component.type = components::ProductionType::mine;
         } else if (values["tags"][i] == "service") {
-            recipe_component.type = components::service;
+            recipe_component.type = components::ProductionType::service;
         } else if (values["tags"][i] == "factory") {
-            recipe_component.type = components::factory;
+            recipe_component.type = components::ProductionType::factory;
         }
     }
 

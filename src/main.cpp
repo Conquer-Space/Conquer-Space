@@ -16,8 +16,6 @@
  */
 
 #include <fstream>
-#include <iostream>
-#include <memory>
 
 #include "client/conquerspace.h"
 #include "client/headless/headlessapplication.h"

@@ -104,6 +104,15 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         // We should still minimize
         size.utilization = std::max(1., size.utilization);
     }
+
+    if (size.continuous_gains > 5) {
+        employer.population_fufilled *= 1.05;
+        // Also scale the scale with this
+        double workers_count = std::floor(employer.population_fufilled / recipe.workers);
+        size.utilization = std::min(workers_count, size.utilization);
+        // We should still minimize
+        size.utilization = std::max(1., size.utilization);
+    }
     if (costs.profit < 0) {
         size.continuous_losses++;
     } else {

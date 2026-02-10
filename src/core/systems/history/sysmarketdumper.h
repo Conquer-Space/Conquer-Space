@@ -16,16 +16,8 @@
  */
 #pragma once
 
-#include <string>
-
-#include "core/components/resource.h"
 #include "core/universe.h"
-#include "entt/entt.hpp"
 
-namespace cqsp::client::systems {
-bool DrawLedgerTable(const std::string& name, const core::Universe&, const core::components::ResourceMap& ledger);
-bool DrawLedgerTable(const std::string& name, const core::Universe&, const core::components::ResourceMap& ledger,
-                     const core::components::Market& market);
-bool DrawLedgerPiePlot(const std::string& name, const core::Universe&, const core::components::ResourceMap& ledger,
-                       const core::components::Market& market, bool prices = false);
-}  // namespace cqsp::client::systems
+namespace cqsp::core::systems::history {
+void SaveUniverseMarketState(Universe& universe, const std::string& output_file_name);
+}  // namespace cqsp::core::systems::history

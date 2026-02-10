@@ -61,6 +61,8 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity selected_recipe = entt::null;
     int construction_amount = 1;
 
+    bool segment_prices = true;
+
     enum class ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };
 
