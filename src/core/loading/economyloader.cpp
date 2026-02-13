@@ -34,6 +34,8 @@ static const char* default_config_string = R"(
         profit_multiplier: 0.001
         max_factory_delta: 0.01
         factory_min_utilization: 0.05
+        construction_limit: 90
+        underutilization_limit: 30
     }
 }
 )";
@@ -50,5 +52,7 @@ void LoadEconomyConfig(Universe& universe, const Hjson::Value& hjson) {
     SET_ECONOMY_CONFIG(production_config, prod_config, profit_multiplier);
     SET_ECONOMY_CONFIG(production_config, prod_config, max_factory_delta);
     SET_ECONOMY_CONFIG(production_config, prod_config, factory_min_utilization);
+    SET_ECONOMY_CONFIG(production_config, prod_config, construction_limit);
+    SET_ECONOMY_CONFIG(production_config, prod_config, underutilization_limit);
 }
 }  // namespace cqsp::core::loading

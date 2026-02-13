@@ -85,9 +85,28 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     } else if (pl_ratio < -0.1) {
         size.wages *= 0.95;
     }
+    double utilization_ratio = size.utilization / size.size;
+    // Now we should compute if we are constructing or not and if we aren't then we should reduce if the ratio is below
+    // a certain ratio
+    double factor = (0.4 - utilization_ratio);
+    if (factor < 0) {
+        factor = 0;
+        size.underutilization = 0;
+    }
+    // Normalize
+    factor /= 0.4;
+    size.underutilization += factor;
 
-    if (pl_ratio > 0.25 && size.continuous_gains > 10 && size.utilization >= size.size &&
+    if (size.underutilization > production_config.underutilization_limit &&
         !industry_node.all_of<components::Construction>()) {
+        // Then we should shrink the size of the factory by a certain factor since we have been not using the factory
+        size.size *= 0.9;
+        // Reset our underutilization so that we don't immediately kill our production
+        size.underutilization = 0;
+    }
+
+    if (pl_ratio > 0.25 && size.continuous_gains > production_config.construction_limit &&
+        size.utilization >= size.size && !industry_node.all_of<components::Construction>()) {
         // what's the ratio we should expand the factory at lol
         // Now we should expand it...
         // pl_ratio should be maybe
