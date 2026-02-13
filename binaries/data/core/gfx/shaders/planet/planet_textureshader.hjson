@@ -2,7 +2,7 @@
     // Main planet rendering shader
     // This shader uses a log buffer, and also computes the sea level automatically
     // This also renders the provinces on the planet, according to the color.
-    vert: object_log.vert
+    vert: ../object_log.vert
     frag: planet_texture.frag
     uniforms: {
         terrain_tex: 0

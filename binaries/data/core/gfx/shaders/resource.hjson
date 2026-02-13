@@ -1,88 +1,4 @@
 {
-    shader.texturedpane.frag: {
-        path: textured_pane.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    shader.pane.vert: {
-        path: pane.vert
-        type: shader
-        hints: {
-            type: vert
-        }
-    }
-    objectvert: {
-        path: object.vert
-        type: shader
-        hints: {
-            type: vert
-        }
-    }
-    planetfrag: {
-        path: planet_pbr.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    planet_texture_frag: {
-        path: planet_texure.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    skyboxfrag: {
-        path: textured_sphere.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    fontvertexshader: {
-        path: font_shader.vert
-        type: shader
-        hints: {
-            type: vert
-        }
-    }
-    fontfragshader: {
-        path: font_shader.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    coloredcirclefrag: {
-        path: color_shader.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    spherefrag: {
-        path: pbr_directional.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
-    framebuffervert: {
-        path: framebuffer.vert
-        type: shader
-        hints: {
-            type: vert
-        }
-    }
-    framebufferfrag: {
-        path: framebuffer.frag
-        type: shader
-        hints: {
-            type: frag
-        }
-    }
     orbitshader: {
         path: orbit_shader.hjson
         type: shader_def
@@ -117,12 +33,12 @@
         hints: {}
     }
     planetshader: {
-        path: planetshader.hjson
+        path: planet/planetshader.hjson
         type: shader_def
         hints: {}
     }
     planet_textureshader: {
-        path: planet_textureshader.hjson
+        path: planet/planet_textureshader.hjson
         type: shader_def
         hints: {}
     }
