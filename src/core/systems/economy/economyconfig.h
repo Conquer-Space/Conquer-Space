@@ -54,6 +54,16 @@ struct EconomyConfig {
          * The percentage of a factory that has to be in use
          */
         double factory_min_utilization = 0.05;
+
+        /**
+         * How long the factory will need continous gains to start constructing a new factory of itself.
+         */
+        int construction_limit = 90;
+
+        /**
+         * What factor our factory is underutilized by before we start reducing production
+         */
+        double underutilization_limit = 30;
     } production_config;
 };
 }  // namespace cqsp::core::systems
