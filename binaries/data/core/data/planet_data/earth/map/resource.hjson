@@ -16,11 +16,6 @@
         type: hjson
         hints: {}
     }
-    province_map_texture: {
-        path: countryprovinces.png
-        type: texture
-        hints: {}
-    }
     province_map: {
         path: countryprovinces.png
         type: binary

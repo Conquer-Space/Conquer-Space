@@ -16,6 +16,9 @@
  */
 #pragma once
 
+#include <map>
+#include <vector>
+
 #include <entt/entt.hpp>
 #include <glm/glm.hpp>
 
@@ -45,8 +48,22 @@ struct PlanetTexture {
     asset::Texture* terrain = nullptr;
     asset::Texture* normal = nullptr;
     asset::Texture* roughness = nullptr;
-    asset::Texture* province_texture = nullptr;
+    asset::Texture* province_index_texture = nullptr;
+    asset::Texture* province_color_map = nullptr;
     std::vector<entt::entity> province_map;
+    // Indices for the color on the map
+    std::vector<uint16_t> province_indices;
+    std::vector<float> province_colors;
+    std::map<entt::entity, uint16_t> province_index_map;
+
+    int width = 0;
+    int height = 0;
+    bool has_provinces = false;
+
+    ~PlanetTexture() {
+        delete province_color_map;
+        delete province_index_texture;
+    }
 };
 
 struct OrbitMesh {

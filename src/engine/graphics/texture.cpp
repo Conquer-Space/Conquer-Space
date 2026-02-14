@@ -113,4 +113,13 @@ Texture::~Texture() {
         glDeleteTextures(1, &id);
     }
 }
+
+TBOTexture::TBOTexture() : buffer_id(-1) {}
+
+TBOTexture::~TBOTexture() {
+    // Delete buffer
+    if (buffer_id != -1) {
+        glDeleteBuffers(1, &buffer_id);
+    }
+}
 }  // namespace cqsp::asset

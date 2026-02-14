@@ -16,33 +16,17 @@
  */
 #include "engine/asset/assetmanager.h"
 
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-#include <glad/glad.h>
-#include <spdlog/spdlog.h>
-#include <stb_image.h>
+#include <engine/graphics/shader.h>
+#include <engine/graphics/texture.h>
+#include <hjson.h>
 
-#include <algorithm>
-#include <chrono>
 #include <filesystem>
-#include <iostream>
 #include <memory>
-#include <regex>
 #include <string>
 #include <utility>
-#include <vector>
-
-#include <assimp/Importer.hpp>
-#include <tracy/Tracy.hpp>
 
 #include "core/util/paths.h"
-#include "engine/asset/assetprototypedefs.h"
-#include "engine/asset/modelloader.h"
-#include "engine/asset/package.h"
-#include "engine/asset/vfs/nativevfs.h"
-#include "engine/audio/alaudioasset.h"
 #include "engine/enginelogger.h"
-#include "engine/graphics/model.h"
 
 // Definition for prototypes
 namespace cqsp::asset {

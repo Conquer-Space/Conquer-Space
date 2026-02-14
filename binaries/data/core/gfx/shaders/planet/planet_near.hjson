@@ -1,0 +1,7 @@
+{
+    vert: ../object.vert
+    frag: ../color_shader.frag
+    uniforms: {
+        color: [1, 0, 0, 1]
+    }
+}

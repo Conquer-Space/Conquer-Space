@@ -22,6 +22,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "core/actions/cityactions.h"
 #include "core/components/bodies.h"
@@ -41,8 +42,9 @@ using components::Name;
 using components::Settlements;
 using types::SurfaceCoordinate;
 
-StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c)
-    : universe(_u), app(_a), camera(_c) {}
+StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
+                                           SysStarSystemRenderer& _r)
+    : universe(_u), app(_a), camera(_c), renderer(_r) {}
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
@@ -178,15 +180,11 @@ void StarSystemController::CityDetection() {
         return;
     }
     auto& planet_texture = universe.get<PlanetTexture>(on_planet);
-    if (planet_texture.province_texture == nullptr) {
-        return;
-    }
 
-    int _province_height = planet_texture.province_texture->height;
-    int _province_width = planet_texture.province_texture->width;
+    int _province_height = planet_texture.height;
+    int _province_width = planet_texture.width;
 
-    // Get the texture
-    // Look for the vector
+    // Get the coordinate of the mouse on the planet
     int x = tex_x = ((-(s.latitude() * 2 - 180))) / 360 * _province_height;
     int y = tex_y = fmod(s.longitude() + 180, 360) / 360. * _province_width;
     int pos = (x * _province_width + y);
@@ -195,13 +193,7 @@ void StarSystemController::CityDetection() {
     }
 
     ZoneNamed(LookforProvince, true);
-    {
-        hovering_province = planet_texture.province_map[pos];
-        int color = universe.colors_province[on_planet][hovering_province];
-        auto province_color = components::ProvinceColor::fromInt(color);
-        hovering_province_color =
-            (glm::vec3((float)province_color.r, (float)province_color.g, (float)province_color.b) / 255.f);
-    }
+    { hovering_province = planet_texture.province_map[pos]; }
 }
 
 SurfaceCoordinate StarSystemController::GetMouseSurfaceIntersection() {
@@ -264,18 +256,23 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
             SeePlanet(ent);
         } else {
             // Check if the planet has stuff and then don't select if there's no countries on the planet
-            SelectCountry();
+            SelectProvince();
         }
     } else {
         SeePlanet(ent);
     }
 }
 
-void StarSystemController::SelectCountry() {
-    // Country selection
-    // Then select planet and tell the state
-    selected_province_color = hovering_province_color;
+/**
+ * Selects a province.
+ */
+void StarSystemController::SelectProvince() {
+    // Unset previous province color
+    if (universe.valid(selected_province)) {
+        renderer.UpdatePlanetProvinceColors(on_planet, selected_province, glm::vec4(0.f, 0.f, 0.f, 0.f));
+    }
     selected_province = hovering_province;
+
     // Set the selected province
     if (!universe.valid(selected_province)) {
         return;
@@ -287,9 +284,10 @@ void StarSystemController::SelectCountry() {
         return;
     }
     auto& tex = universe.get<PlanetTexture>(focused_planet);
-    if (tex.province_texture != nullptr) {
+    if (tex.has_provinces) {
         universe.emplace_or_replace<ctx::SelectedProvince>(selected_province);
     }
+    renderer.UpdatePlanetProvinceColors(on_planet, selected_province, selected_province_color);
 }
 
 core::components::types::SurfaceCoordinate StarSystemController::GetCameraOverCoordinate() {
@@ -496,8 +494,6 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
 }
 
 bool StarSystemController::ShouldDrawCityPrototype() { return is_founding_city && is_rendering_founding_city; }
-
-const glm::vec3& StarSystemController::SelectedProvinceColor() { return selected_province_color; }
 
 void StarSystemController::SeeEntity() {
     // See the object

@@ -1,0 +1,20 @@
+{
+    // Main planet rendering shader
+    // This shader uses a log buffer, and also computes the sea level automatically
+    // This also renders the provinces on the planet, according to the color.
+    vert: ../object_log.vert
+    frag: planet_texture.frag
+    uniforms: {
+        terrain_tex: 0
+        normal_tex: 1
+        roughness_map: 2
+        country_map: 3
+        country_palette: 4
+        C: 1
+        far: 1e13
+        offset: 1.0
+        // Is rendering country?
+        country: false
+        is_roughness: false
+    }
+}

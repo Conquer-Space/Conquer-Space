@@ -166,16 +166,15 @@ bool GLWindow::InitWindow(int width, int height) {
         ENGINE_LOG_CRITICAL("Cannot initialize GLFW");
         return false;
     }
-    if (GLAD_GL_VERSION_4_3 != 0) {
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    } else {
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    }
+    // TODO(EhWhoAmI): Check if mac and downgrade to GLFW 4.1 because I don't think Mac
+    // supports it
+    // Require GLFW 4.6
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions().GetOptions()["samples"].to_int64());
+
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, (int)true);
     glfwWindowHint(GLFW_DOUBLEBUFFER, (int)true);
     glfwWindowHint(GLFW_DECORATED,
@@ -215,7 +214,7 @@ bool GLWindow::InitWindow(int width, int height) {
     if ((flags & GL_CONTEXT_FLAG_DEBUG_BIT) != 0) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);  // makes sure errors are displayed synchronously
-        if (GLAD_GL_VERSION_4_3 != 0) {
+        if (GLAD_GL_VERSION_4_3 != 0 || GLAD_GL_VERSION_4_6 != 0) {
             glDebugMessageCallback(glDebugOutput, nullptr);
             glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
         }

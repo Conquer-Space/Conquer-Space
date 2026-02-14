@@ -16,21 +16,15 @@
  */
 #include "client/scenes/universe/views/starsystemrenderer.h"
 
-#include <algorithm>
 #include <cmath>
-#include <cstddef>
-#include <limits>
+#include <map>
 #include <memory>
-#include <numbers>
 #include <string>
 #include <tuple>
 #include <vector>
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
-#include "client/scenes/universe/interface/systooltips.h"
-#include "core/actions/cityactions.h"
-#include "core/components/area.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
 #include "core/components/model.h"
@@ -38,15 +32,11 @@
 #include "core/components/orbit.h"
 #include "core/components/organizations.h"
 #include "core/components/player.h"
-#include "core/components/resource.h"
 #include "core/components/ships.h"
 #include "core/components/surface.h"
-#include "core/components/units.h"
 #include "core/util/nameutil.h"
-#include "core/util/profiler.h"
 #include "engine/glfwdebug.h"
 #include "engine/graphics/primitives/cube.h"
-#include "engine/graphics/primitives/line.h"
 #include "engine/graphics/primitives/pane.h"
 #include "engine/graphics/primitives/polygon.h"
 #include "engine/graphics/primitives/uvsphere.h"
@@ -54,7 +44,6 @@
 #include "glad/glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
-#include "glm/gtx/string_cast.hpp"
 #include "stb_image.h"  // NOLINT: STB is rather annoying
 #include "tracy/Tracy.hpp"
 
@@ -83,7 +72,7 @@ using types::SurfaceCoordinate;
 SysStarSystemRenderer::SysStarSystemRenderer(core::Universe& _u, engine::Application& _a)
     : universe(_u),
       app(_a),
-      controller(universe, app, camera),
+      controller(universe, app, camera, *this),
       user_interface(universe, *this, controller, camera),
       orbit_geometry(universe),
       sun_color(glm::vec3(10, 10, 10)) {}
@@ -93,7 +82,7 @@ void SysStarSystemRenderer::Initialize() {
     InitializeFramebuffers();
 
     LoadProvinceMap();
-
+    SetupDummyTextures();
     // Zoom into the player's capital city
     entt::entity player = universe.view<components::Player>().front();
     entt::entity player_capital = universe.get<components::Country>(player).capital_city;
@@ -345,8 +334,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     position *= glm::mat4(controller.GetBodyRotation(body.axial, body.rotation, body.rotation_offset));
 
     // Rotate
-    float scale = body.radius;  // types::toAU(body.radius)
-                                // * view_scale;
+    float scale = body.radius;
     position = glm::scale(position, glm::vec3(scale));
 
     auto shader = textured_planet.shaderProgram.get();
@@ -367,7 +355,6 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     shader->setVec3("viewPos", camera.cam_pos);
 
     // If a country is clicked on...
-    shader->setVec4("country_color", glm::vec4(controller.SelectedProvinceColor(), 1));
     shader->setBool("country", have_province);
     shader->setBool("is_roughness", have_roughness);
 
@@ -382,23 +369,31 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     }
     auto& terrain_data = universe.get<PlanetTexture>(entity);
     textured_planet.textures.clear();
-    textured_planet.textures.push_back(terrain_data.terrain);
-    if (terrain_data.normal != nullptr) {
+    textured_planet.textures.push_back(terrain_data.terrain);  // 0
+    if (terrain_data.normal != nullptr) {                      // 1
         have_normal = true;
         textured_planet.textures.push_back(terrain_data.normal);
     } else {
         textured_planet.textures.push_back(terrain_data.terrain);
     }
-    if (terrain_data.roughness != nullptr) {
+    if (terrain_data.roughness != nullptr) {  // 2
         have_roughness = true;
         textured_planet.textures.push_back(terrain_data.roughness);
     } else {
         textured_planet.textures.push_back(terrain_data.terrain);
     }
     // Add province data if they have it
-    have_province = (terrain_data.province_texture != nullptr);
-    if (terrain_data.province_texture != nullptr) {
-        textured_planet.textures.push_back(terrain_data.province_texture);
+    have_province = (terrain_data.province_index_texture != nullptr);
+    if (terrain_data.province_index_texture != nullptr) {  // 3
+        textured_planet.textures.push_back(terrain_data.province_index_texture);
+    } else {
+        textured_planet.textures.push_back(dummy_index_texture);
+    }
+
+    if (terrain_data.province_color_map != nullptr) {  // 4
+        textured_planet.textures.push_back(terrain_data.province_color_map);
+    } else {
+        textured_planet.textures.push_back(dummy_color_map);
     }
 }
 
@@ -541,8 +536,6 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
             continue;
         }
         auto& province_map = universe.get<components::ProvincedPlanet>(body);
-        // Add province data if they have it
-        data.province_texture = app.GetAssetManager().GetAsset<Texture>(province_map.province_texture);
 
         asset::BinaryAsset* bin_asset = app.GetAssetManager().GetAsset<asset::BinaryAsset>(province_map.province_map);
         if (bin_asset == nullptr) {
@@ -555,26 +548,134 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         stbi_set_flip_vertically_on_load(0);
         int province_width;
         int province_height;
-        auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
+        auto image_binary =
+            stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
-        data.province_map.reserve(static_cast<long>(province_height * province_width));
-        // the province map will be the same dimensions as the province texture, so it should be fine?
-        for (int x = 0; x < province_width; x++) {
-            for (int y = 0; y < province_height; y++) {
-                // Then get from the maps
-                int pos = (x * province_height + y) * comp;
-                std::tuple<int, int, int, int> t = std::make_tuple(d[pos], d[pos + 1], d[pos + 2], d[pos + 3]);
-                int i = components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
-                if (universe.province_colors[body].find(i) != universe.province_colors[body].end()) {
-                    data.province_map.push_back(universe.province_colors[body][i]);
-                } else {
-                    data.province_map.push_back(entt::null);
+        data.province_map.reserve(static_cast<size_t>(province_height) * static_cast<size_t>(province_width));
+        data.province_indices.reserve(static_cast<size_t>(province_height) * static_cast<size_t>(province_width));
+        // Counter to assign to the array of colors
+        uint16_t current_province_idx = 1;
+        // We expect the province map will be the same dimensions as the province texture, so it should be fine?
+        for (int idx = 0; idx < province_width * province_height; idx++) {
+            // Position on the map
+            int pos = idx * comp;
+            std::tuple<int, int, int, int> t =
+                std::make_tuple(image_binary[pos], image_binary[pos + 1], image_binary[pos + 2], image_binary[pos + 3]);
+            int i = components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
+            if (universe.province_colors[body].find(i) != universe.province_colors[body].end()) {
+                entt::entity province_id = universe.province_colors[body][i];
+                data.province_map.push_back(province_id);
+                if (!data.province_index_map.contains(province_id)) {
+                    data.province_index_map[province_id] = current_province_idx;
+                    current_province_idx++;
                 }
+                data.province_indices.push_back(data.province_index_map[province_id]);
+            } else {
+                // Most likely ocean
+                // Maybe next time we should have ocean provinces
+                data.province_map.push_back(entt::null);
+                data.province_indices.push_back(0);
             }
         }
-        stbi_image_free(d);
+        stbi_image_free(image_binary);
+
+        assert(data.province_indices.size() ==
+               static_cast<size_t>(province_width) * static_cast<size_t>(province_height));
+        GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
+
+        data.has_provinces = true;
+        data.width = province_width;
+        data.height = province_height;
     }
+}
+
+void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec4 color) {
+    // We should update the texture
+    auto& data = universe.get<PlanetTexture>(body);
+    if (!data.province_index_map.contains(province)) {
+        return;
+    }
+    uint16_t province_idx = data.province_index_map[province];
+    size_t stride = 4;
+    data.province_colors[static_cast<size_t>(province_idx) * stride] = color.r;
+    data.province_colors[static_cast<size_t>(province_idx) * stride + 1] = color.g;
+    data.province_colors[static_cast<size_t>(province_idx) * stride + 2] = color.b;
+    data.province_colors[static_cast<size_t>(province_idx) * stride + 3] = color.a;
+
+    // Now we generate our province index map as an isampler2D
+    // Now update the buffer
+    unsigned int buf_id = dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id;
+    glBindBuffer(GL_TEXTURE_BUFFER, buf_id);
+    void* ptr = glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
+    float* colors = static_cast<float*>(ptr);
+
+    colors[static_cast<ptrdiff_t>(province_idx) * stride] = color.r;
+    colors[static_cast<ptrdiff_t>(province_idx) * stride + 1] = color.g;
+    colors[static_cast<ptrdiff_t>(province_idx) * stride + 2] = color.b;
+    colors[static_cast<ptrdiff_t>(province_idx) * stride + 3] = color.a;
+    glUnmapBuffer(GL_TEXTURE_BUFFER);
+}
+
+void SysStarSystemRenderer::MassUpdatePlanetProvinceColors(entt::entity entity) {
+    // We reload the vector
+    auto& data = universe.get<PlanetTexture>(entity);
+    unsigned int buf_id = dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id;
+    glBindBuffer(GL_TEXTURE_BUFFER, buf_id);
+    glBufferSubData(GL_TEXTURE_BUFFER, 0,
+                    sizeof(decltype(data.province_colors)::value_type) * data.province_colors.size(),
+                    static_cast<void*>(data.province_colors.data()));
+}
+
+/**
+ * Generates the OpenGL textures for the province map and the colors we are to assign to the province map
+ */
+void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
+                                                      uint16_t province_count) {
+    assert(universe.all_of<PlanetTexture>(entity));
+    auto& data = universe.get<PlanetTexture>(entity);
+
+    // Generate int texture for assigning color indices
+    unsigned int texid;
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, province_width, province_height, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT,
+                 data.province_indices.data());
+    data.province_index_texture = new Texture();
+    data.province_index_texture->id = texid;
+    data.province_index_texture->width = province_width;
+    data.province_index_texture->height = province_height;
+    data.province_index_texture->texture_type = GL_TEXTURE_2D;
+
+    // Now let's generate our indices for the color for the province
+    const size_t color_count = static_cast<size_t>(province_count) * 4;
+    data.province_colors.reserve(color_count);
+    // Now let's just assign random colors...
+    for (size_t i = 0; i < color_count; i++) {
+        data.province_colors.push_back(0.f);
+    }
+
+    // Generate TBO
+    GLuint tbo_buffer;
+    glGenBuffers(1, &tbo_buffer);
+    glBindBuffer(GL_TEXTURE_BUFFER, tbo_buffer);
+    glBufferData(GL_TEXTURE_BUFFER, sizeof(decltype(data.province_colors)::value_type) * data.province_colors.size(),
+                 static_cast<const void*>(data.province_colors.data()), GL_STATIC_DRAW);
+
+    GLuint tbo_texture;
+    glGenTextures(1, &tbo_texture);
+    glBindTexture(GL_TEXTURE_BUFFER, tbo_texture);
+
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, tbo_buffer);
+    // Now let's save this texture
+    data.province_color_map = new asset::TBOTexture();
+    data.province_color_map->id = tbo_texture;
+    dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id = tbo_buffer;
+    data.province_color_map->texture_type = GL_TEXTURE_BUFFER;
 }
 
 ShaderProgram_t SysStarSystemRenderer::ConstructShader(const std::string& key) {
@@ -582,7 +683,7 @@ ShaderProgram_t SysStarSystemRenderer::ConstructShader(const std::string& key) {
 }
 
 void SysStarSystemRenderer::InitializeFramebuffers() {
-    buffer_shader = ConstructShader("core:framebuffer");
+    buffer_shader = ConstructShader("core:shader.framebuffer");
 
     ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *app.GetWindow());
     physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *app.GetWindow());
@@ -597,15 +698,14 @@ void SysStarSystemRenderer::InitializeMeshes() {
     engine::Mesh_t sphere_mesh = engine::primitive::ConstructSphereMesh(sphere_resolution, sphere_resolution);
 
     // Initialize shaders
-    planet_shader = ConstructShader("core:planetshader");
-    circle_shader = ConstructShader("core:2dcolorshader");
-    textured_planet_shader = ConstructShader("core:planet_textureshader");
-    near_shader = ConstructShader("core:neartexturedobject");
-    orbit_shader = ConstructShader("core:orbitshader");
-    vis_shader = ConstructShader("core:vertex_vis");
-    model_shader = ConstructShader("core:model_pbr_log_shader");
-    sun_shader = ConstructShader("core:sunshader");
-    skybox_shader = ConstructShader("core:skybox");
+    circle_shader = ConstructShader("core:shader.2dcolorshader");
+    textured_planet_shader = ConstructShader("core:shader.planet_textureshader");
+    near_shader = ConstructShader("core:shader.neartexturedobject");
+    orbit_shader = ConstructShader("core:shader.orbitshader");
+    vis_shader = ConstructShader("core:shader.vertex_vis");
+    model_shader = ConstructShader("core:shader.model_pbr_log_shader");
+    sun_shader = ConstructShader("core:shader.sunshader");
+    skybox_shader = ConstructShader("core:shader.skybox");
 
     // Initialize sky box
     Texture* sky_texture = app.GetAssetManager().GetAsset<Texture>("core:skycubemap");
@@ -622,9 +722,6 @@ void SysStarSystemRenderer::InitializeMeshes() {
     city.shaderProgram = circle_shader;
 
     // Planet spheres
-    planet.mesh = sphere_mesh;
-    planet.shaderProgram = planet_shader;
-
     textured_planet.mesh = sphere_mesh;
     textured_planet.shaderProgram = textured_planet_shader;
 
@@ -687,6 +784,28 @@ float SysStarSystemRenderer::Lerp(float a, float b, float t) {
         return b;
     }
     return std::lerp(a, b, t);
+}
+
+void SysStarSystemRenderer::SetupDummyTextures() {
+    // Initialize dummy textures
+    dummy_index_texture = new asset::Texture();
+    dummy_index_texture->width = 1;
+    dummy_index_texture->height = 1;
+    dummy_index_texture->texture_type = GL_TEXTURE_2D;
+    glGenTextures(1, &dummy_index_texture->id);
+    glBindTexture(GL_TEXTURE_2D, dummy_index_texture->id);
+    uint32_t zero = 0;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, 1, 1, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, &zero);
+
+    dummy_color_map = new asset::TBOTexture();
+    dummy_color_map->texture_type = GL_TEXTURE_BUFFER;
+    glGenBuffers(1, &dummy_color_map->buffer_id);
+    glBindBuffer(GL_TEXTURE_BUFFER, dummy_color_map->buffer_id);
+    glm::vec3 dark(0, 0, 0);
+    glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec3), &dark, GL_STATIC_DRAW);
+    glGenTextures(1, &dummy_color_map->id);
+    glBindTexture(GL_TEXTURE_BUFFER, dummy_color_map->id);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, dummy_color_map->buffer_id);
 }
 
 void SysStarSystemRenderer::CheckResourceDistRender() {
@@ -781,5 +900,8 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     orbit.orbit_mesh->Draw();
 }
 
-SysStarSystemRenderer::~SysStarSystemRenderer() = default;
+SysStarSystemRenderer::~SysStarSystemRenderer() {
+    delete dummy_index_texture;
+    delete dummy_color_map;
+}
 }  // namespace cqsp::client::systems

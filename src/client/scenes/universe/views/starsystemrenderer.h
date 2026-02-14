@@ -71,7 +71,6 @@ class SysStarSystemRenderer {
     StarSystemViewUI user_interface;
     SysOrbitGeometry orbit_geometry;
 
-    engine::Renderable planet;
     engine::Renderable textured_planet;
     engine::Renderable sky;
     engine::Renderable planet_circle;
@@ -84,7 +83,6 @@ class SysStarSystemRenderer {
     asset::ShaderProgram_t near_shader;
     asset::ShaderProgram_t vis_shader;
     asset::ShaderProgram_t circle_shader;
-    asset::ShaderProgram_t planet_shader;
     asset::ShaderProgram_t textured_planet_shader;
     asset::ShaderProgram_t sun_shader;
     asset::ShaderProgram_t skybox_shader;
@@ -171,6 +169,16 @@ class SysStarSystemRenderer {
 
     bool have_province = false;
 
+    asset::Texture *dummy_index_texture = nullptr;
+    asset::TBOTexture *dummy_color_map = nullptr;
+
+    void SetupDummyTextures();
+
+    void UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec4 color);
+    void MassUpdatePlanetProvinceColors(entt::entity entity);
+    void GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
+                                   uint16_t province_count);
     friend StarSystemViewUI;
+    friend StarSystemController;
 };
 }  // namespace cqsp::client::systems

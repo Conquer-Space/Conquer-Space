@@ -27,9 +27,10 @@
 
 namespace cqsp::client::systems {
 class StarSystemViewUI;
+class SysStarSystemRenderer;
 class StarSystemController {
  public:
-    StarSystemController(core::Universe &, engine::Application &, StarSystemCamera &);
+    StarSystemController(core::Universe &, engine::Application &, StarSystemCamera &, SysStarSystemRenderer &);
     void Update(float delta_time);
 
     // Gets the intersection in 3d point between the mouse and any planet
@@ -44,8 +45,6 @@ class StarSystemController {
     glm::quat GetBodyRotation(double axial, double rotation, double day_offset);
 
     bool ShouldDrawCityPrototype();
-
-    const glm::vec3 &SelectedProvinceColor();
 
     glm::vec3 CalculateCenteredObject(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
@@ -89,12 +88,13 @@ class StarSystemController {
     glm::vec3 GetMouseInScreenSpace(int mouse_x, int mouse_y);
     std::optional<glm::vec3> CheckIntersection(const glm::vec3 &object_pos, const glm::vec3 &ray_wor, float radius);
 
-    void SelectCountry();
+    void SelectProvince();
 
     core::Universe &universe;
     engine::Application &app;
 
     StarSystemCamera &camera;
+    SysStarSystemRenderer &renderer;
 
     entt::entity terrain_displaying = entt::null;
     entt::entity selected_city = entt::null;
@@ -120,9 +120,6 @@ class StarSystemController {
     entt::entity hovering_province;
     entt::entity selected_province;
 
-    glm::vec3 hovering_province_color;
-    glm::vec3 selected_province_color;
-
     glm::vec3 mouse_on_object;
 
     bool is_rendering_founding_city;
@@ -132,12 +129,14 @@ class StarSystemController {
     const float PAN_SPEED = 4.0f;
     const float SCROLL_SENSITIVITY = 3.f / 33.f;
 
-    friend StarSystemViewUI;
-
     bool focus_on_city = false;
     bool planet_frame_scroll = false;
     core::components::types::SurfaceCoordinate target_surface_coordinate;
 
     core::components::types::SurfaceCoordinate GetCameraOverCoordinate();
+
+    friend StarSystemViewUI;
+
+    const glm::vec4 selected_province_color = glm::vec4(1.f, 0.f, 0.f, 0.35f);
 };
 }  // namespace cqsp::client::systems

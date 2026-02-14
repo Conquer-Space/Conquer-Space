@@ -484,7 +484,7 @@ bool Application::Screenshot(const char* path) {
         // Why is put_time so annoyingly confusing??
         std::stringstream ss;
         ss << std::put_time(std::localtime(&time_pt), "%F_%H.%M.%S.png");
-        screenshot_name = (screenshot_folder / screenshot_name).string();
+        screenshot_name = (screenshot_folder / ss.str()).string();
     } else {
         screenshot_name = path;
     }

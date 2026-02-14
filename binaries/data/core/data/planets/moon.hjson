@@ -17,7 +17,6 @@
         texture:
         {
             terrain: moonmap
-            province_texture: moon_province_map_texture
             province_map: moon_province_map
             province_definitions: moon_province_defs
         }

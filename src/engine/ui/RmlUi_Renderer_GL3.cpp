@@ -500,6 +500,37 @@ struct FramebufferData {
 
 enum class FramebufferAttachment { None, Depth, DepthStencil };
 
+std::vector<std::string> GetFirstNMessages(GLuint numMsgs) {
+    GLint maxMsgLen = 0;
+    glGetIntegerv(GL_MAX_DEBUG_MESSAGE_LENGTH, &maxMsgLen);
+
+    std::vector<GLchar> msgData(numMsgs * maxMsgLen);
+    std::vector<GLenum> sources(numMsgs);
+    std::vector<GLenum> types(numMsgs);
+    std::vector<GLenum> severities(numMsgs);
+    std::vector<GLuint> ids(numMsgs);
+    std::vector<GLsizei> lengths(numMsgs);
+
+    GLuint numFound = glGetDebugMessageLog(numMsgs, numMsgs * maxMsgLen, &sources[0], &types[0], &ids[0],
+                                           &severities[0], &lengths[0], &msgData[0]);
+
+    sources.resize(numFound);
+    types.resize(numFound);
+    severities.resize(numFound);
+    ids.resize(numFound);
+    lengths.resize(numFound);
+
+    std::vector<std::string> messages;
+    messages.reserve(numFound);
+
+    std::vector<GLchar>::iterator currPos = msgData.begin();
+    for (size_t msg = 0; msg < lengths.size(); ++msg) {
+        messages.push_back(std::string(currPos, currPos + lengths[msg] - 1));
+        currPos = currPos + lengths[msg];
+    }
+    return messages;
+}
+
 static void CheckGLError(const char* operation_name) {
 #ifdef RMLUI_DEBUG
     GLenum error_code = glGetError();
@@ -519,8 +550,15 @@ static void CheckGLError(const char* operation_name) {
                 break;
             }
         }
-        Rml::Log::Message(Rml::Log::LT_ERROR, "OpenGL error during %s. Error code 0x%x (%s).", operation_name,
-                          error_code, error_str);
+        std::vector<std::string> messages = GetFirstNMessages(1);
+
+        if (messages.size() == 1) {
+            Rml::Log::Message(Rml::Log::LT_ERROR, "OpenGL error during %s. Error code 0x%x (%s). %s", operation_name,
+                              error_code, error_str, messages.front().c_str());
+        } else {
+            Rml::Log::Message(Rml::Log::LT_ERROR, "OpenGL error during %s. Error code 0x%x (%s).", operation_name,
+                              error_code, error_str);
+        }
     }
 #endif
     (void)operation_name;

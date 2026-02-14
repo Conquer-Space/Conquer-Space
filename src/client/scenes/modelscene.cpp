@@ -28,7 +28,7 @@ void ModelScene::Init() {
     model = GetApp().GetAssetManager().GetAsset<asset::Model>("core:iss");
     // Load shader
     mesh = engine::primitive::MakeCube();
-    shader = GetApp().GetAssetManager().GetAsset<asset::ShaderDefinition>("core:model_shader")->MakeShader();
+    shader = GetApp().GetAssetManager().GetAsset<asset::ShaderDefinition>("core:shader.model_shader")->MakeShader();
 }
 
 void ModelScene::Update(float deltaTime) {}

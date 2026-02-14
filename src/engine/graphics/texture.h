@@ -34,12 +34,21 @@ class Texture : public Asset {
     int width;
     int height;
     unsigned int id;
+    // OpenGL texture type
     int texture_type;
 
     Texture();
     ~Texture();
 
     AssetType GetAssetType() override { return AssetType::TEXTURE; }
+};
+
+class TBOTexture : public Texture {
+ public:
+    unsigned int buffer_id;
+
+    TBOTexture();
+    ~TBOTexture();
 };
 
 unsigned int CreateTexture(unsigned char* data, int width, int height, int components,
