@@ -383,23 +383,37 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     }
     auto& terrain_data = universe.get<PlanetTexture>(entity);
     textured_planet.textures.clear();
-    textured_planet.textures.push_back(terrain_data.terrain);
-    if (terrain_data.normal != nullptr) {
+    textured_planet.textures.push_back(terrain_data.terrain);  // 0
+    if (terrain_data.normal != nullptr) {                      // 1
         have_normal = true;
         textured_planet.textures.push_back(terrain_data.normal);
     } else {
         textured_planet.textures.push_back(terrain_data.terrain);
     }
-    if (terrain_data.roughness != nullptr) {
+    if (terrain_data.roughness != nullptr) {  // 2
         have_roughness = true;
         textured_planet.textures.push_back(terrain_data.roughness);
     } else {
         textured_planet.textures.push_back(terrain_data.terrain);
     }
     // Add province data if they have it
-    have_province = (terrain_data.province_texture != nullptr);
+    have_province = (terrain_data.province_texture != nullptr);  // 3
     if (terrain_data.province_texture != nullptr) {
         textured_planet.textures.push_back(terrain_data.province_texture);
+    } else {
+        textured_planet.textures.push_back(terrain_data.terrain);
+    }
+
+    if (terrain_data.province_index_texture != nullptr) {  // 4
+        textured_planet.textures.push_back(terrain_data.province_index_texture);
+    } else {
+        textured_planet.textures.push_back(terrain_data.terrain);
+    }
+
+    if (terrain_data.province_color_map != nullptr) {  // 5
+        textured_planet.textures.push_back(terrain_data.province_color_map);
+    } else {
+        textured_planet.textures.push_back(terrain_data.terrain);
     }
 }
 
@@ -562,7 +576,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         data.province_map.reserve(static_cast<size_t>(province_height * province_width));
         data.province_indices.reserve(static_cast<size_t>(province_height * province_width));
         // Counter to assign to the array of colors
-        int current_province_idx = 0;
+        uint16_t current_province_idx = 0;
         // We expect the province map will be the same dimensions as the province texture, so it should be fine?
         for (int x = 0; x < province_width; x++) {
             for (int y = 0; y < province_height; y++) {
@@ -584,6 +598,47 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
             }
         }
         stbi_image_free(d);
+
+        // Now we should generate our province index map as an isampler2D
+        unsigned int texid;
+        glGenTextures(1, &texid);
+        glBindTexture(GL_TEXTURE_2D, texid);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, province_width, province_height, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT,
+                     data.province_indices.data());
+        data.province_index_texture = new Texture();
+        data.province_index_texture->id = texid;
+        data.province_index_texture->width = province_width;
+        data.province_index_texture->height = province_height;
+        data.province_index_texture->texture_type = GL_TEXTURE_2D;
+
+        // Now let's generate our index
+        data.province_colors.reserve(current_province_idx * 3);
+        // Now let's just assign random colors...
+        for (size_t i = 0; i < current_province_idx * 3; i++) {
+            data.province_colors.push_back(static_cast<float>(rand() % 255) / 255.f);
+        }
+
+        // Generate TBO
+        GLuint tbo_buffer;
+        glGenBuffers(1, &tbo_buffer);
+        glBindBuffer(GL_TEXTURE_BUFFER, tbo_buffer);
+        glBufferData(GL_TEXTURE_BUFFER, sizeof(float) * current_province_idx * 3,
+                     static_cast<const void*>(data.province_colors.data()), GL_STATIC_DRAW);
+
+        GLuint tbo_texture;
+        glGenTextures(1, &tbo_texture);
+        glBindTexture(GL_TEXTURE_BUFFER, tbo_texture);
+
+        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, tbo_buffer);
+        // Now let's save this texture
+        data.province_color_map = new asset::TBOTexture();
+        data.province_color_map->id = tbo_texture;
+        data.province_color_map->id = tbo_buffer;
+        data.province_color_map->texture_type = GL_TEXTURE_BUFFER;
     }
 }
 

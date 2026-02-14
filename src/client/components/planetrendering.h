@@ -49,11 +49,18 @@ struct PlanetTexture {
     asset::Texture* normal = nullptr;
     asset::Texture* roughness = nullptr;
     asset::Texture* province_texture = nullptr;
+    asset::Texture* province_index_texture = nullptr;
+    asset::Texture* province_color_map = nullptr;
     std::vector<entt::entity> province_map;
     // Indices for the color on the map
-    std::vector<uint32_t> province_indices;
+    std::vector<uint16_t> province_indices;
     std::vector<float> province_colors;
-    std::map<entt::entity, uint32_t> province_index_map;
+    std::map<entt::entity, uint16_t> province_index_map;
+
+    ~PlanetTexture() {
+        delete province_color_map;
+        delete province_index_texture;
+    }
 };
 
 struct OrbitMesh {

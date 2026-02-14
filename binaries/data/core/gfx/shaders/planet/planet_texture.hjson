@@ -9,6 +9,8 @@
         normal_tex: 1
         roughness_map: 2
         country_tex: 3
+        country_map: 4
+        country_palette: 5
         C: 1
         far: 1e13
         offset: 1.0
