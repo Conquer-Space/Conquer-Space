@@ -176,6 +176,7 @@ class SysStarSystemRenderer {
 
     void UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec4 color);
     void MassUpdatePlanetProvinceColors(entt::entity entity);
+    void ResetPlanetProvinceColors(entt::entity entity);
     void GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
                                    uint16_t province_count);
     friend StarSystemViewUI;

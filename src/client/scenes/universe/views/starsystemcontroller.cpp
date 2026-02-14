@@ -28,6 +28,8 @@
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
 #include "core/components/name.h"
+#include "core/components/organizations.h"
+#include "core/components/player.h"
 #include "core/components/surface.h"
 
 namespace cqsp::client::systems {
@@ -44,7 +46,7 @@ using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
                                            SysStarSystemRenderer& _r)
-    : universe(_u), app(_a), camera(_c), renderer(_r) {}
+    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {}
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
@@ -286,6 +288,28 @@ void StarSystemController::SelectProvince() {
     auto& tex = universe.get<PlanetTexture>(focused_planet);
     if (tex.has_provinces) {
         universe.emplace_or_replace<ctx::SelectedProvince>(selected_province);
+    }
+
+    // Check if it's the current player's country, and if it is, then we select the province
+    // if it's not we select the country
+    // check the owner
+    entt::entity player = universe.view<components::Player>().front();
+    auto& province = universe.get<components::Province>(selected_province);
+    if (province.country != player && universe.valid(province.country) &&
+        universe.all_of<components::CountryCityList>(province.country)) {
+        // Full country selection
+        if (selected_country != entt::null) {
+            // Then we should probably reset our country
+            renderer.ResetPlanetProvinceColors(on_planet);
+        }
+        selected_country = province.country;
+        auto& country_list = universe.get<components::CountryCityList>(province.country);
+        for (entt::entity province : country_list.province_list) {
+            renderer.UpdatePlanetProvinceColors(on_planet, province, selected_province_color);
+        }
+    } else {
+        renderer.ResetPlanetProvinceColors(on_planet);
+        province.country = entt::null;
     }
     renderer.UpdatePlanetProvinceColors(on_planet, selected_province, selected_province_color);
 }
