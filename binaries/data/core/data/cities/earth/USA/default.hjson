@@ -53,7 +53,7 @@
         province: florida_usa
     }
     {
-        name: Maimi
+        name: Miami
         identifier: miami
         timezone: EDT
         planet: earth

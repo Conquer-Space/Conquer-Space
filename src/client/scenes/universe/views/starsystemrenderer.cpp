@@ -604,46 +604,90 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
 
         assert(data.province_indices.size() == province_width * province_height);
         // Now we should generate our province index map as an isampler2D
-        unsigned int texid;
-        glGenTextures(1, &texid);
-        glBindTexture(GL_TEXTURE_2D, texid);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, province_width, province_height, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT,
-                     data.province_indices.data());
-        data.province_index_texture = new Texture();
-        data.province_index_texture->id = texid;
-        data.province_index_texture->width = province_width;
-        data.province_index_texture->height = province_height;
-        data.province_index_texture->texture_type = GL_TEXTURE_2D;
-
-        // Now let's generate our index
-        data.province_colors.reserve(current_province_idx * 3);
-        // Now let's just assign random colors...
-        for (size_t i = 0; i < current_province_idx * 3; i++) {
-            data.province_colors.push_back(static_cast<float>(rand() % 255) / 255.f);
-        }
-
-        // Generate TBO
-        GLuint tbo_buffer;
-        glGenBuffers(1, &tbo_buffer);
-        glBindBuffer(GL_TEXTURE_BUFFER, tbo_buffer);
-        glBufferData(GL_TEXTURE_BUFFER, sizeof(float) * current_province_idx * 3,
-                     static_cast<const void*>(data.province_colors.data()), GL_STATIC_DRAW);
-
-        GLuint tbo_texture;
-        glGenTextures(1, &tbo_texture);
-        glBindTexture(GL_TEXTURE_BUFFER, tbo_texture);
-
-        glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, tbo_buffer);
-        // Now let's save this texture
-        data.province_color_map = new asset::TBOTexture();
-        data.province_color_map->id = tbo_texture;
-        dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id = tbo_buffer;
-        data.province_color_map->texture_type = GL_TEXTURE_BUFFER;
+        GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
     }
+}
+
+void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity entity, glm::vec3 color) {
+    // We should update the texture
+    auto& data = universe.get<PlanetTexture>(entity);
+    uint16_t province_idx = data.province_index_map[entity];
+    data.province_colors[province_idx * 3] = color.r;
+    data.province_colors[province_idx * 3 + 1] = color.g;
+    data.province_colors[province_idx * 3 + 2] = color.b;
+
+    // Now update the buffer
+    unsigned int buf_id = dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id;
+    glBindBuffer(GL_TEXTURE_BUFFER, buf_id);
+    void* ptr = glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
+    float* colors = static_cast<float*>(ptr);
+
+    colors[province_idx * 3] = color.r;
+    colors[province_idx * 3 + 1] = color.g;
+    colors[province_idx * 3 + 2] = color.b;
+
+    glUnmapBuffer(GL_TEXTURE_BUFFER);
+}
+
+void SysStarSystemRenderer::MassUpdatePlanetProvinceColors(entt::entity entity) {
+    // We reload the vector
+    auto& data = universe.get<PlanetTexture>(entity);
+    unsigned int buf_id = dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id;
+    glBindBuffer(GL_TEXTURE_BUFFER, buf_id);
+    glBufferSubData(GL_TEXTURE_BUFFER, 0,
+                    sizeof(decltype(data.province_colors)::value_type) * data.province_colors.size(),
+                    static_cast<void*>(data.province_colors.data()));
+}
+
+/**
+ * Generates the OpenGL textures for the province map and the colors we are to assign to the province map
+ */
+void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
+                                                      uint16_t province_count) {
+    assert(universe.all_of<PlanetTexture>(entity));
+    auto& data = universe.get<PlanetTexture>(entity);
+
+    // Generate int texture for assigning color indices
+    unsigned int texid;
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, province_width, province_height, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT,
+                 data.province_indices.data());
+    data.province_index_texture = new Texture();
+    data.province_index_texture->id = texid;
+    data.province_index_texture->width = province_width;
+    data.province_index_texture->height = province_height;
+    data.province_index_texture->texture_type = GL_TEXTURE_2D;
+
+    // Now let's generate our indices for the color for the province
+    const size_t color_count = province_count * 3;
+    data.province_colors.reserve(color_count);
+    // Now let's just assign random colors...
+    for (size_t i = 0; i < color_count; i++) {
+        data.province_colors.push_back(static_cast<float>(rand() % 255) / 255.f);
+    }
+
+    // Generate TBO
+    GLuint tbo_buffer;
+    glGenBuffers(1, &tbo_buffer);
+    glBindBuffer(GL_TEXTURE_BUFFER, tbo_buffer);
+    glBufferData(GL_TEXTURE_BUFFER, sizeof(decltype(data.province_colors)::value_type) * data.province_colors.size(),
+                 static_cast<const void*>(data.province_colors.data()), GL_STATIC_DRAW);
+
+    GLuint tbo_texture;
+    glGenTextures(1, &tbo_texture);
+    glBindTexture(GL_TEXTURE_BUFFER, tbo_texture);
+
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, tbo_buffer);
+    // Now let's save this texture
+    data.province_color_map = new asset::TBOTexture();
+    data.province_color_map->id = tbo_texture;
+    dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id = tbo_buffer;
+    data.province_color_map->texture_type = GL_TEXTURE_BUFFER;
 }
 
 ShaderProgram_t SysStarSystemRenderer::ConstructShader(const std::string& key) {

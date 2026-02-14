@@ -174,6 +174,10 @@ class SysStarSystemRenderer {
 
     void SetupDummyTextures();
 
+    void UpdatePlanetProvinceColors(entt::entity entity, glm::vec3 color);
+    void MassUpdatePlanetProvinceColors(entt::entity entity);
+    void GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
+                                   uint16_t province_count);
     friend StarSystemViewUI;
 };
 }  // namespace cqsp::client::systems
