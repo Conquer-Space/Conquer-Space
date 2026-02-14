@@ -561,7 +561,8 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         stbi_set_flip_vertically_on_load(0);
         int province_width;
         int province_height;
-        auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
+        auto image_binary =
+            stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
         data.province_map.reserve(static_cast<size_t>(province_height * province_width));
@@ -569,29 +570,28 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         // Counter to assign to the array of colors
         uint16_t current_province_idx = 1;
         // We expect the province map will be the same dimensions as the province texture, so it should be fine?
-        for (int x = 0; x < province_width; x++) {
-            for (int y = 0; y < province_height; y++) {
-                // Position on the map
-                int pos = (x * province_height + y) * comp;
-                std::tuple<int, int, int, int> t = std::make_tuple(d[pos], d[pos + 1], d[pos + 2], d[pos + 3]);
-                int i = components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
-                if (universe.province_colors[body].find(i) != universe.province_colors[body].end()) {
-                    entt::entity province_id = universe.province_colors[body][i];
-                    data.province_map.push_back(province_id);
-                    if (!data.province_index_map.contains(province_id)) {
-                        data.province_index_map[province_id] = current_province_idx;
-                        current_province_idx++;
-                    }
-                    data.province_indices.push_back(data.province_index_map[province_id]);
-                } else {
-                    // Most likely ocean
-                    // Maybe next time we should have ocean provinces
-                    data.province_map.push_back(entt::null);
-                    data.province_indices.push_back(0);
+        for (int idx = 0; idx < province_width * province_height; idx++) {
+            // Position on the map
+            int pos = idx * comp;
+            std::tuple<int, int, int, int> t =
+                std::make_tuple(image_binary[pos], image_binary[pos + 1], image_binary[pos + 2], image_binary[pos + 3]);
+            int i = components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
+            if (universe.province_colors[body].find(i) != universe.province_colors[body].end()) {
+                entt::entity province_id = universe.province_colors[body][i];
+                data.province_map.push_back(province_id);
+                if (!data.province_index_map.contains(province_id)) {
+                    data.province_index_map[province_id] = current_province_idx;
+                    current_province_idx++;
                 }
+                data.province_indices.push_back(data.province_index_map[province_id]);
+            } else {
+                // Most likely ocean
+                // Maybe next time we should have ocean provinces
+                data.province_map.push_back(entt::null);
+                data.province_indices.push_back(0);
             }
         }
-        stbi_image_free(d);
+        stbi_image_free(image_binary);
 
         assert(data.province_indices.size() == province_width * province_height);
         GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
