@@ -16,22 +16,15 @@
  */
 #include "client/scenes/universe/views/starsystemrenderer.h"
 
-#include <algorithm>
 #include <cmath>
-#include <cstddef>
-#include <limits>
 #include <map>
 #include <memory>
-#include <numbers>
 #include <string>
 #include <tuple>
 #include <vector>
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
-#include "client/scenes/universe/interface/systooltips.h"
-#include "core/actions/cityactions.h"
-#include "core/components/area.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
 #include "core/components/model.h"
@@ -39,15 +32,11 @@
 #include "core/components/orbit.h"
 #include "core/components/organizations.h"
 #include "core/components/player.h"
-#include "core/components/resource.h"
 #include "core/components/ships.h"
 #include "core/components/surface.h"
-#include "core/components/units.h"
 #include "core/util/nameutil.h"
-#include "core/util/profiler.h"
 #include "engine/glfwdebug.h"
 #include "engine/graphics/primitives/cube.h"
-#include "engine/graphics/primitives/line.h"
 #include "engine/graphics/primitives/pane.h"
 #include "engine/graphics/primitives/polygon.h"
 #include "engine/graphics/primitives/uvsphere.h"
@@ -55,8 +44,6 @@
 #include "glad/glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
-#include "glm/gtx/string_cast.hpp"
-#include "starsystemrenderer.h"
 #include "stb_image.h"  // NOLINT: STB is rather annoying
 #include "tracy/Tracy.hpp"
 
@@ -602,13 +589,18 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
     }
 }
 
-void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec3 color) {
+void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec4 color) {
     // We should update the texture
     auto& data = universe.get<PlanetTexture>(body);
+    if (!data.province_index_map.contains(province)) {
+        return;
+    }
     uint16_t province_idx = data.province_index_map[province];
-    data.province_colors[province_idx * 3] = color.r;
-    data.province_colors[province_idx * 3 + 1] = color.g;
-    data.province_colors[province_idx * 3 + 2] = color.b;
+    int stride = 4;
+    data.province_colors[province_idx * stride] = color.r;
+    data.province_colors[province_idx * stride + 1] = color.g;
+    data.province_colors[province_idx * stride + 2] = color.b;
+    data.province_colors[province_idx * stride + 3] = color.a;
 
     // Now we generate our province index map as an isampler2D
     // Now update the buffer
@@ -617,10 +609,10 @@ void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::
     void* ptr = glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
     float* colors = static_cast<float*>(ptr);
 
-    colors[province_idx * 3] = color.r;
-    colors[province_idx * 3 + 1] = color.g;
-    colors[province_idx * 3 + 2] = color.b;
-
+    colors[province_idx * stride] = color.r;
+    colors[province_idx * stride + 1] = color.g;
+    colors[province_idx * stride + 2] = color.b;
+    colors[province_idx * stride + 3] = color.a;
     glUnmapBuffer(GL_TEXTURE_BUFFER);
 }
 
@@ -659,11 +651,11 @@ void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int p
     data.province_index_texture->texture_type = GL_TEXTURE_2D;
 
     // Now let's generate our indices for the color for the province
-    const size_t color_count = province_count * 3;
+    const size_t color_count = province_count * 4;
     data.province_colors.reserve(color_count);
     // Now let's just assign random colors...
     for (size_t i = 0; i < color_count; i++) {
-        data.province_colors.push_back(static_cast<float>(rand() % 255) / 255.f);
+        data.province_colors.push_back(0.f);
     }
 
     // Generate TBO
@@ -677,7 +669,7 @@ void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int p
     glGenTextures(1, &tbo_texture);
     glBindTexture(GL_TEXTURE_BUFFER, tbo_texture);
 
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, tbo_buffer);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, tbo_buffer);
     // Now let's save this texture
     data.province_color_map = new asset::TBOTexture();
     data.province_color_map->id = tbo_texture;

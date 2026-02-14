@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <array>
+
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "client/scenes/universe/views/starsystemcontroller.h"
 #include "core/universe.h"
@@ -35,5 +37,7 @@ class StarSystemViewUI {
     StarSystemCamera& camera;
     core::Universe& universe;
     SysStarSystemRenderer& renderer;
+
+    std::array<float, 4> province_color;
 };
 };  // namespace cqsp::client::systems

@@ -161,8 +161,9 @@ void main() {
     FragColor = vec4(color, 1.0);
     if (country) {
         // Then check if the color is the country color
-        vec3 texel_value = texelFetch(country_palette, int(texture(country_map, TexCoords).r)).rgb;
-        vec4 color = vec4(texel_value, 1.0);
-        FragColor = mix(color, FragColor, 0.65); // ah well let's fix that later lol
+        vec4 texel_value = texelFetch(country_palette, int(texture(country_map, TexCoords).r)).rgba;
+        vec4 color = vec4(texel_value.rgb, 1.0);
+        // Our alpha value is how much we should mix with the final frag color
+        FragColor = mix(FragColor, color, texel_value.a);
     }
 }

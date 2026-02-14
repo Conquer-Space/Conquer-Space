@@ -30,7 +30,9 @@ using core::util::GetName;
 
 StarSystemViewUI::StarSystemViewUI(core::Universe& universe, SysStarSystemRenderer& renderer,
                                    StarSystemController& controller, StarSystemCamera& camera)
-    : universe(universe), renderer(renderer), controller(controller), camera(camera) {}
+    : universe(universe), renderer(renderer), controller(controller), camera(camera) {
+    province_color.fill(0);
+}
 
 void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     // FIXME(EhWhoamI)
@@ -68,6 +70,36 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
         universe.emplace<CityFounding>(ent);
     }
 
+    if (!universe.valid(controller.m_viewing_entity)) {
+        ImGui::BeginDisabled();
+    }
+
+    bool open_popup = ImGui::ColorButton(
+        "###province_color_button", ImVec4(province_color[0], province_color[1], province_color[2], province_color[3]));
+    ImGui::SameLine();
+    open_popup |= ImGui::Button("Province color");
+    // Sets the color of the current province
+    if (!universe.valid(controller.m_viewing_entity)) {
+        // Then set the color of the province
+        open_popup = false;
+        ImGui::EndDisabled();
+    }
+
+    if (open_popup) {
+        ImGui::OpenPopup("province_color_picker");
+    }
+
+    bool to_set_color = false;
+    if (ImGui::BeginPopup("province_color_picker")) {
+        to_set_color = ImGui::ColorPicker4("###Province Color Picker", province_color.data(),
+                                           ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview);
+        ImGui::EndPopup();
+    }
+    if (to_set_color) {
+        renderer.UpdatePlanetProvinceColors(
+            controller.m_viewing_entity, controller.selected_province,
+            glm::vec4(province_color[0], province_color[1], province_color[2], province_color[3]));
+    }
     ImGui::End();
 }
 
