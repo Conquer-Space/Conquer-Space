@@ -576,7 +576,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         data.province_map.reserve(static_cast<size_t>(province_height * province_width));
         data.province_indices.reserve(static_cast<size_t>(province_height * province_width));
         // Counter to assign to the array of colors
-        uint16_t current_province_idx = 0;
+        uint16_t current_province_idx = 1;
         // We expect the province map will be the same dimensions as the province texture, so it should be fine?
         for (int x = 0; x < province_width; x++) {
             for (int y = 0; y < province_height; y++) {
@@ -593,12 +593,16 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
                     }
                     data.province_indices.push_back(data.province_index_map[province_id]);
                 } else {
+                    // Most likely ocean
+                    // Maybe next time we should have ocean provinces
                     data.province_map.push_back(entt::null);
+                    data.province_indices.push_back(0);
                 }
             }
         }
         stbi_image_free(d);
 
+        assert(data.province_indices.size() == province_width * province_height);
         // Now we should generate our province index map as an isampler2D
         unsigned int texid;
         glGenTextures(1, &texid);

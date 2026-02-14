@@ -4,7 +4,7 @@
         type: model
         hints: {
             scale: [1, 1, 1]
-            shader: model_log_shader
+            shader: shader.model_log_shader
         }
     }
     hst: {
@@ -12,7 +12,7 @@
         type: model
         hints: {
             scale: [1, 1, 1]
-            shader: model_log_shader
+            shader: shader.model_log_shader
         }
     }
     galileo: {
@@ -20,7 +20,7 @@
         type: model
         hints: {
             scale: [0.1, 0.1, 0.1]
-            shader: model_pbr_log_shader
+            shader: shader.model_pbr_log_shader
             textures: {
                 "diffuse": 0
             }
