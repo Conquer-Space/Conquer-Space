@@ -22,6 +22,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "core/actions/cityactions.h"
 #include "core/components/bodies.h"
@@ -41,8 +42,9 @@ using components::Name;
 using components::Settlements;
 using types::SurfaceCoordinate;
 
-StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c)
-    : universe(_u), app(_a), camera(_c) {}
+StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
+                                           SysStarSystemRenderer& _r)
+    : universe(_u), app(_a), camera(_c), renderer(_r) {}
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
@@ -191,10 +193,7 @@ void StarSystemController::CityDetection() {
     }
 
     ZoneNamed(LookforProvince, true);
-    {
-        hovering_province = planet_texture.province_map[pos];
-        int color = universe.colors_province[on_planet][hovering_province];
-    }
+    { hovering_province = planet_texture.province_map[pos]; }
 }
 
 SurfaceCoordinate StarSystemController::GetMouseSurfaceIntersection() {
@@ -257,17 +256,23 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
             SeePlanet(ent);
         } else {
             // Check if the planet has stuff and then don't select if there's no countries on the planet
-            SelectCountry();
+            SelectProvince();
         }
     } else {
         SeePlanet(ent);
     }
 }
 
-void StarSystemController::SelectCountry() {
-    // Country selection
-    // Then select planet and tell the state
+/**
+ * Selects a province.
+ */
+void StarSystemController::SelectProvince() {
+    // Unset previous province color
+    if (universe.valid(selected_province)) {
+        renderer.UpdatePlanetProvinceColors(on_planet, selected_province, glm::vec4(0.f, 0.f, 0.f, 0.f));
+    }
     selected_province = hovering_province;
+
     // Set the selected province
     if (!universe.valid(selected_province)) {
         return;
@@ -282,6 +287,7 @@ void StarSystemController::SelectCountry() {
     if (tex.has_provinces) {
         universe.emplace_or_replace<ctx::SelectedProvince>(selected_province);
     }
+    renderer.UpdatePlanetProvinceColors(on_planet, selected_province, selected_province_color);
 }
 
 core::components::types::SurfaceCoordinate StarSystemController::GetCameraOverCoordinate() {

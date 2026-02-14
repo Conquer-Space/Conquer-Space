@@ -179,5 +179,6 @@ class SysStarSystemRenderer {
     void GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
                                    uint16_t province_count);
     friend StarSystemViewUI;
+    friend StarSystemController;
 };
 }  // namespace cqsp::client::systems

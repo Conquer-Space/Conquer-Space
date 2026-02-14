@@ -72,7 +72,7 @@ using types::SurfaceCoordinate;
 SysStarSystemRenderer::SysStarSystemRenderer(core::Universe& _u, engine::Application& _a)
     : universe(_u),
       app(_a),
-      controller(universe, app, camera),
+      controller(universe, app, camera, *this),
       user_interface(universe, *this, controller, camera),
       orbit_geometry(universe),
       sun_color(glm::vec3(10, 10, 10)) {}
