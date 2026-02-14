@@ -23,7 +23,6 @@
             terrain: earthmap
             normal: earthnormal
             roughness: earthroughness
-            province_texture: province_map_texture
             province_map: province_map
             province_definitions: province_defs
             adjacencies: province_adj_map

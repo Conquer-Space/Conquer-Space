@@ -397,20 +397,14 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
         textured_planet.textures.push_back(terrain_data.terrain);
     }
     // Add province data if they have it
-    have_province = (terrain_data.province_texture != nullptr);  // 3
-    if (terrain_data.province_texture != nullptr) {
-        textured_planet.textures.push_back(terrain_data.province_texture);
-    } else {
-        textured_planet.textures.push_back(terrain_data.terrain);
-    }
-
-    if (terrain_data.province_index_texture != nullptr) {  // 4
+    have_province = (terrain_data.province_index_texture != nullptr);
+    if (terrain_data.province_index_texture != nullptr) {  // 3
         textured_planet.textures.push_back(terrain_data.province_index_texture);
     } else {
         textured_planet.textures.push_back(dummy_index_texture);
     }
 
-    if (terrain_data.province_color_map != nullptr) {  // 5
+    if (terrain_data.province_color_map != nullptr) {  // 4
         textured_planet.textures.push_back(terrain_data.province_color_map);
     } else {
         textured_planet.textures.push_back(dummy_color_map);
@@ -556,8 +550,6 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
             continue;
         }
         auto& province_map = universe.get<components::ProvincedPlanet>(body);
-        // Add province data if they have it
-        data.province_texture = app.GetAssetManager().GetAsset<Texture>(province_map.province_texture);
 
         asset::BinaryAsset* bin_asset = app.GetAssetManager().GetAsset<asset::BinaryAsset>(province_map.province_map);
         if (bin_asset == nullptr) {
@@ -603,19 +595,23 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         stbi_image_free(d);
 
         assert(data.province_indices.size() == province_width * province_height);
-        // Now we should generate our province index map as an isampler2D
         GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
+
+        data.has_provinces = true;
+        data.width = province_width;
+        data.height = province_height;
     }
 }
 
-void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity entity, glm::vec3 color) {
+void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec3 color) {
     // We should update the texture
-    auto& data = universe.get<PlanetTexture>(entity);
-    uint16_t province_idx = data.province_index_map[entity];
+    auto& data = universe.get<PlanetTexture>(body);
+    uint16_t province_idx = data.province_index_map[province];
     data.province_colors[province_idx * 3] = color.r;
     data.province_colors[province_idx * 3 + 1] = color.g;
     data.province_colors[province_idx * 3 + 2] = color.b;
 
+    // Now we generate our province index map as an isampler2D
     // Now update the buffer
     unsigned int buf_id = dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id;
     glBindBuffer(GL_TEXTURE_BUFFER, buf_id);

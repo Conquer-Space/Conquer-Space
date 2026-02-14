@@ -30,7 +30,6 @@ uniform bool is_roughness;
 uniform sampler2D terrain_tex;
 uniform sampler2D normal_tex;
 uniform sampler2D roughness_map;
-uniform sampler2D country_tex;
 uniform usampler2D country_map;
 uniform samplerBuffer country_palette;
 

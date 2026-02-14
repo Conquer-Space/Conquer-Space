@@ -178,12 +178,9 @@ void StarSystemController::CityDetection() {
         return;
     }
     auto& planet_texture = universe.get<PlanetTexture>(on_planet);
-    if (planet_texture.province_texture == nullptr) {
-        return;
-    }
 
-    int _province_height = planet_texture.province_texture->height;
-    int _province_width = planet_texture.province_texture->width;
+    int _province_height = planet_texture.height;
+    int _province_width = planet_texture.width;
 
     // Get the texture
     // Look for the vector
@@ -287,7 +284,7 @@ void StarSystemController::SelectCountry() {
         return;
     }
     auto& tex = universe.get<PlanetTexture>(focused_planet);
-    if (tex.province_texture != nullptr) {
+    if (tex.has_provinces) {
         universe.emplace_or_replace<ctx::SelectedProvince>(selected_province);
     }
 }

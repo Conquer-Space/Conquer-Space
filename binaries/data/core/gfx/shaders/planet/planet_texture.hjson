@@ -8,9 +8,8 @@
         terrain_tex: 0
         normal_tex: 1
         roughness_map: 2
-        country_tex: 3
-        country_map: 4
-        country_palette: 5
+        country_map: 3
+        country_palette: 4
         C: 1
         far: 1e13
         offset: 1.0
