@@ -20,6 +20,7 @@
 #include <cmath>
 #include <cstddef>
 #include <limits>
+#include <map>
 #include <memory>
 #include <numbers>
 #include <string>
@@ -558,16 +559,25 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         auto d = stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
-        data.province_map.reserve(static_cast<long>(province_height * province_width));
-        // the province map will be the same dimensions as the province texture, so it should be fine?
+        data.province_map.reserve(static_cast<size_t>(province_height * province_width));
+        data.province_indices.reserve(static_cast<size_t>(province_height * province_width));
+        // Counter to assign to the array of colors
+        int current_province_idx = 0;
+        // We expect the province map will be the same dimensions as the province texture, so it should be fine?
         for (int x = 0; x < province_width; x++) {
             for (int y = 0; y < province_height; y++) {
-                // Then get from the maps
+                // Position on the map
                 int pos = (x * province_height + y) * comp;
                 std::tuple<int, int, int, int> t = std::make_tuple(d[pos], d[pos + 1], d[pos + 2], d[pos + 3]);
                 int i = components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
                 if (universe.province_colors[body].find(i) != universe.province_colors[body].end()) {
-                    data.province_map.push_back(universe.province_colors[body][i]);
+                    entt::entity province_id = universe.province_colors[body][i];
+                    data.province_map.push_back(province_id);
+                    if (!data.province_index_map.contains(province_id)) {
+                        data.province_index_map[province_id] = current_province_idx;
+                        current_province_idx++;
+                    }
+                    data.province_indices.push_back(data.province_index_map[province_id]);
                 } else {
                     data.province_map.push_back(entt::null);
                 }

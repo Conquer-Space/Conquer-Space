@@ -31,6 +31,8 @@ uniform sampler2D terrain_tex;
 uniform sampler2D normal_tex;
 uniform sampler2D roughness_map;
 uniform sampler2D country_tex;
+uniform isampler2D country_map;
+uniform samplerBuffer countryPalette;
 
 uniform bool country;
 uniform vec4 country_color;
@@ -160,15 +162,8 @@ void main() {
     FragColor = vec4(color, 1.0);
     if (country) {
         // Then check if the color is the country color
-
-        vec4 color1 = texture(country_tex, TexCoords);
-        if(color1.r == country_color.r){
-        if(color1.b == country_color.b){
-        if(color1.g == country_color.g){
-            FragColor = mix(vec4(1.0, 0, 0.0, 1.0), FragColor, 0.65);
-            return;
-        }
-        }
-        }
+        texelFetch(countryPalette, texture(country_map, TexCoords).r);
+        vec4 color = texture(country_tex, TexCoords);
+        FragColor = mix(color, FragColor, 0.65); // ah well let's fix that later lol
     }
 }
