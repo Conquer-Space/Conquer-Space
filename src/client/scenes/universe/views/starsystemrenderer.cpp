@@ -552,8 +552,8 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
             stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
 
         // Set country map
-        data.province_map.reserve(static_cast<size_t>(province_height * province_width));
-        data.province_indices.reserve(static_cast<size_t>(province_height * province_width));
+        data.province_map.reserve(static_cast<size_t>(province_height) * static_cast<size_t>(province_width));
+        data.province_indices.reserve(static_cast<size_t>(province_height) * static_cast<size_t>(province_width));
         // Counter to assign to the array of colors
         uint16_t current_province_idx = 1;
         // We expect the province map will be the same dimensions as the province texture, so it should be fine?
@@ -580,7 +580,8 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         }
         stbi_image_free(image_binary);
 
-        assert(data.province_indices.size() == province_width * province_height);
+        assert(data.province_indices.size() ==
+               static_cast<size_t>(province_width) * static_cast<size_t>(province_height));
         GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
 
         data.has_provinces = true;
@@ -596,11 +597,11 @@ void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::
         return;
     }
     uint16_t province_idx = data.province_index_map[province];
-    int stride = 4;
-    data.province_colors[province_idx * stride] = color.r;
-    data.province_colors[province_idx * stride + 1] = color.g;
-    data.province_colors[province_idx * stride + 2] = color.b;
-    data.province_colors[province_idx * stride + 3] = color.a;
+    size_t stride = 4;
+    data.province_colors[static_cast<size_t>(province_idx) * stride] = color.r;
+    data.province_colors[static_cast<size_t>(province_idx) * stride + 1] = color.g;
+    data.province_colors[static_cast<size_t>(province_idx) * stride + 2] = color.b;
+    data.province_colors[static_cast<size_t>(province_idx) * stride + 3] = color.a;
 
     // Now we generate our province index map as an isampler2D
     // Now update the buffer
@@ -609,10 +610,10 @@ void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::
     void* ptr = glMapBuffer(GL_TEXTURE_BUFFER, GL_WRITE_ONLY);
     float* colors = static_cast<float*>(ptr);
 
-    colors[province_idx * stride] = color.r;
-    colors[province_idx * stride + 1] = color.g;
-    colors[province_idx * stride + 2] = color.b;
-    colors[province_idx * stride + 3] = color.a;
+    colors[static_cast<ptrdiff_t>(province_idx) * stride] = color.r;
+    colors[static_cast<ptrdiff_t>(province_idx) * stride + 1] = color.g;
+    colors[static_cast<ptrdiff_t>(province_idx) * stride + 2] = color.b;
+    colors[static_cast<ptrdiff_t>(province_idx) * stride + 3] = color.a;
     glUnmapBuffer(GL_TEXTURE_BUFFER);
 }
 
@@ -651,7 +652,7 @@ void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int p
     data.province_index_texture->texture_type = GL_TEXTURE_2D;
 
     // Now let's generate our indices for the color for the province
-    const size_t color_count = province_count * 4;
+    const size_t color_count = static_cast<size_t>(province_count) * 4;
     data.province_colors.reserve(color_count);
     // Now let's just assign random colors...
     for (size_t i = 0; i < color_count; i++) {
