@@ -56,6 +56,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtx/string_cast.hpp"
+#include "starsystemrenderer.h"
 #include "stb_image.h"  // NOLINT: STB is rather annoying
 #include "tracy/Tracy.hpp"
 
@@ -94,7 +95,7 @@ void SysStarSystemRenderer::Initialize() {
     InitializeFramebuffers();
 
     LoadProvinceMap();
-
+    SetupDummyTextures();
     // Zoom into the player's capital city
     entt::entity player = universe.view<components::Player>().front();
     entt::entity player_capital = universe.get<components::Country>(player).capital_city;
@@ -406,13 +407,13 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     if (terrain_data.province_index_texture != nullptr) {  // 4
         textured_planet.textures.push_back(terrain_data.province_index_texture);
     } else {
-        textured_planet.textures.push_back(terrain_data.terrain);
+        textured_planet.textures.push_back(dummy_index_texture);
     }
 
     if (terrain_data.province_color_map != nullptr) {  // 5
         textured_planet.textures.push_back(terrain_data.province_color_map);
     } else {
-        textured_planet.textures.push_back(terrain_data.terrain);
+        textured_planet.textures.push_back(dummy_color_map);
     }
 }
 
@@ -636,7 +637,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         // Now let's save this texture
         data.province_color_map = new asset::TBOTexture();
         data.province_color_map->id = tbo_texture;
-        data.province_color_map->id = tbo_buffer;
+        dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id = tbo_buffer;
         data.province_color_map->texture_type = GL_TEXTURE_BUFFER;
     }
 }
@@ -749,6 +750,28 @@ float SysStarSystemRenderer::Lerp(float a, float b, float t) {
     return std::lerp(a, b, t);
 }
 
+void SysStarSystemRenderer::SetupDummyTextures() {
+    // Initialize dummy textures
+    dummy_index_texture = new asset::Texture();
+    dummy_index_texture->width = 1;
+    dummy_index_texture->height = 1;
+    dummy_index_texture->texture_type = GL_TEXTURE_2D;
+    glGenTextures(1, &dummy_index_texture->id);
+    glBindTexture(GL_TEXTURE_2D, dummy_index_texture->id);
+    uint32_t zero = 0;
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32UI, 1, 1, 0, GL_RED_INTEGER, GL_UNSIGNED_INT, &zero);
+
+    dummy_color_map = new asset::TBOTexture();
+    dummy_color_map->texture_type = GL_TEXTURE_BUFFER;
+    glGenBuffers(1, &dummy_color_map->buffer_id);
+    glBindBuffer(GL_TEXTURE_BUFFER, dummy_color_map->buffer_id);
+    glm::vec3 dark(0, 0, 0);
+    glBufferData(GL_TEXTURE_BUFFER, sizeof(glm::vec3), &dark, GL_STATIC_DRAW);
+    glGenTextures(1, &dummy_color_map->id);
+    glBindTexture(GL_TEXTURE_BUFFER, dummy_color_map->id);
+    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, dummy_color_map->buffer_id);
+}
+
 void SysStarSystemRenderer::CheckResourceDistRender() {
 #if FALSE
     // Then check if it's the same rendered object
@@ -841,5 +864,8 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     orbit.orbit_mesh->Draw();
 }
 
-SysStarSystemRenderer::~SysStarSystemRenderer() = default;
+SysStarSystemRenderer::~SysStarSystemRenderer() {
+    delete dummy_index_texture;
+    delete dummy_color_map;
+}
 }  // namespace cqsp::client::systems

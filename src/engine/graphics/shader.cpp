@@ -437,9 +437,20 @@ void ShaderDefinition::SetShaderUniform(ShaderProgram_t& shader, std::pair<const
         case GL_SAMPLER_1D:
         case GL_SAMPLER_2D:
         case GL_SAMPLER_3D:
+        case GL_TEXTURE_2D:
+        case GL_TEXTURE_1D:
+        case GL_INT_SAMPLER_1D:
+        case GL_INT_SAMPLER_2D:
+        case GL_INT_SAMPLER_3D:
+        case GL_UNSIGNED_INT_SAMPLER_1D:
+        case GL_UNSIGNED_INT_SAMPLER_2D:
+        case GL_UNSIGNED_INT_SAMPLER_3D:
+        case GL_INT_SAMPLER_BUFFER:
+        case GL_SAMPLER_BUFFER:
         case GL_SAMPLER_CUBE:
         case GL_SAMPLER_1D_SHADOW:
         case GL_SAMPLER_2D_SHADOW:
+        case GL_TEXTURE_BUFFER:
         case GL_INT:
             // Type has to be int
             if (value.second.type() != Hjson::Type::Int64) {

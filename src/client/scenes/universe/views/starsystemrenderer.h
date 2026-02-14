@@ -169,6 +169,11 @@ class SysStarSystemRenderer {
 
     bool have_province = false;
 
+    asset::Texture *dummy_index_texture = nullptr;
+    asset::TBOTexture *dummy_color_map = nullptr;
+
+    void SetupDummyTextures();
+
     friend StarSystemViewUI;
 };
 }  // namespace cqsp::client::systems

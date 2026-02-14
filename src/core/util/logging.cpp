@@ -92,7 +92,7 @@ std::shared_ptr<spdlog::logger> make_logger(const std::string& name, bool error)
         }
     }
     dup_filter->set_sinks(sinks);
-    logger = std::make_shared<spdlog::logger>(name, dup_filter);
+    logger = std::make_shared<spdlog::logger>(name, sinks.begin(), sinks.end());
 
     // Default pattern
     logger->set_pattern(DEFAULT_PATTERN);
