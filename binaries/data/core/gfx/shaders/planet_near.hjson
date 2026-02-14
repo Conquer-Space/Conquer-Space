@@ -1,8 +1,0 @@
-{
-    vert: object.vert
-    frag: color_shader.frag
-    //planet_near.frag
-    uniforms: {
-        color: [1, 0, 0, 1]
-    }
-}

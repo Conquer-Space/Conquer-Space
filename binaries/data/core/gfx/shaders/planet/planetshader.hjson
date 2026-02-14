@@ -1,8 +1,0 @@
-{
-    vert: ../object.vert
-    frag: planet_pbr.frag
-    uniforms: {
-        albedomap: 0
-        heightmap: 1
-    }
-}

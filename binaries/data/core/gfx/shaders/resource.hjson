@@ -1,73 +1,77 @@
 {
-    orbitshader: {
+    fontvertexshader: {
+        path: font/font_shader.vert
+        type: shader
+        hints: {
+            type: vert
+        }
+    }
+    fontfragshader: {
+        path: font/font_shader.frag
+        type: shader
+        hints: {
+            type: frag
+        }
+    }
+    shader.orbitshader: {
         path: orbit_shader.hjson
         type: shader_def
         hints: {
         }
     }
-    2dtexturedshader: {
+    shader.2dtexturedshader: {
         path: 2dtexturedshader.hjson
         type: shader_def
         hints: {
         }
     }
-    2dcolorshader: {
+    shader.2dcolorshader: {
         path: 2dcolorshader.hjson
         type: shader_def
         hints: {
         }
     }
-    vertex_vis: {
+    shader.vertex_vis: {
         path: vertex_vis.hjson
         type: shader_def
         hints: {}
     }
-    skybox: {
+    shader.skybox: {
         path: skybox/skybox.hjson
         type: shader_def
         hints: {}
     }
-    framebuffer: {
-        path: framebuffer.hjson
+    shader.framebuffer: {
+        path: framebuffer/framebuffer.hjson
         type: shader_def
         hints: {}
     }
-    planetshader: {
-        path: planet/planetshader.hjson
+    shader.planet_textureshader: {
+        path: planet/planet_texture.hjson
         type: shader_def
         hints: {}
     }
-    planet_textureshader: {
-        path: planet/planet_textureshader.hjson
-        type: shader_def
-        hints: {}
-    }
-    sunshader: {
+    shader.sunshader: {
         path: sunshader.hjson
         type: shader_def
         hints: {}
     }
-    texturedobject: {
-        path: texturedobject.hjson
+    shader.neartexturedobject: {
+        path: planet/planet_near.hjson
         type: shader_def
         hints: {}
     }
-    neartexturedobject: {
-        path: planet_near.hjson
-        type: shader_def
-        hints: {}
-    }
-    model_shader: {
+    shader.model_shader: {
         path: modelshader.hjson
         type: shader_def
         hints: {}
     }
-    model_log_shader: {
+    shader.model_log_shader: {
         path: model_log/model_log.hjson
         type: shader_def
         hints: {}
     }
-    model_pbr_log_shader: {
+    shader.model_pbr_log_shader: {
         path: model_pbr_log/model_pbr_log.hjson
         type: shader_def
         hints: {}

@@ -582,7 +582,7 @@ ShaderProgram_t SysStarSystemRenderer::ConstructShader(const std::string& key) {
 }
 
 void SysStarSystemRenderer::InitializeFramebuffers() {
-    buffer_shader = ConstructShader("core:framebuffer");
+    buffer_shader = ConstructShader("core:shader.framebuffer");
 
     ship_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *app.GetWindow());
     physical_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *app.GetWindow());
@@ -597,15 +597,14 @@ void SysStarSystemRenderer::InitializeMeshes() {
     engine::Mesh_t sphere_mesh = engine::primitive::ConstructSphereMesh(sphere_resolution, sphere_resolution);
 
     // Initialize shaders
-    planet_shader = ConstructShader("core:planetshader");
-    circle_shader = ConstructShader("core:2dcolorshader");
-    textured_planet_shader = ConstructShader("core:planet_textureshader");
-    near_shader = ConstructShader("core:neartexturedobject");
-    orbit_shader = ConstructShader("core:orbitshader");
-    vis_shader = ConstructShader("core:vertex_vis");
-    model_shader = ConstructShader("core:model_pbr_log_shader");
-    sun_shader = ConstructShader("core:sunshader");
-    skybox_shader = ConstructShader("core:skybox");
+    circle_shader = ConstructShader("core:shader.2dcolorshader");
+    textured_planet_shader = ConstructShader("core:shader.planet_textureshader");
+    near_shader = ConstructShader("core:shader.neartexturedobject");
+    orbit_shader = ConstructShader("core:shader.orbitshader");
+    vis_shader = ConstructShader("core:shader.vertex_vis");
+    model_shader = ConstructShader("core:shader.model_pbr_log_shader");
+    sun_shader = ConstructShader("core:shader.sunshader");
+    skybox_shader = ConstructShader("core:shader.skybox");
 
     // Initialize sky box
     Texture* sky_texture = app.GetAssetManager().GetAsset<Texture>("core:skycubemap");
@@ -622,9 +621,6 @@ void SysStarSystemRenderer::InitializeMeshes() {
     city.shaderProgram = circle_shader;
 
     // Planet spheres
-    planet.mesh = sphere_mesh;
-    planet.shaderProgram = planet_shader;
-
     textured_planet.mesh = sphere_mesh;
     textured_planet.shaderProgram = textured_planet_shader;
 
