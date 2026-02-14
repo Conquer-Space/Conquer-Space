@@ -33,8 +33,8 @@ uniform sampler2D roughness_map;
 uniform usampler2D country_map;
 uniform samplerBuffer country_palette;
 
+// If we are drawing provinces or not
 uniform bool country;
-uniform vec4 country_color;
 
 const float PI = 3.14159265359;
 vec3 getNormalFromMap() {

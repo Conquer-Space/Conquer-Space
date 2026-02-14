@@ -368,7 +368,6 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     shader->setVec3("viewPos", camera.cam_pos);
 
     // If a country is clicked on...
-    shader->setVec4("country_color", glm::vec4(controller.SelectedProvinceColor(), 1));
     shader->setBool("country", have_province);
     shader->setBool("is_roughness", have_roughness);
 

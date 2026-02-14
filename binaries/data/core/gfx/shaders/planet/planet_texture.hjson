@@ -16,7 +16,5 @@
         // Is rendering country?
         country: false
         is_roughness: false
-        // the color of the province to render
-        country_color: [0, 0, 0, 0]
     }
 }

@@ -182,8 +182,7 @@ void StarSystemController::CityDetection() {
     int _province_height = planet_texture.height;
     int _province_width = planet_texture.width;
 
-    // Get the texture
-    // Look for the vector
+    // Get the coordinate of the mouse on the planet
     int x = tex_x = ((-(s.latitude() * 2 - 180))) / 360 * _province_height;
     int y = tex_y = fmod(s.longitude() + 180, 360) / 360. * _province_width;
     int pos = (x * _province_width + y);
@@ -195,9 +194,6 @@ void StarSystemController::CityDetection() {
     {
         hovering_province = planet_texture.province_map[pos];
         int color = universe.colors_province[on_planet][hovering_province];
-        auto province_color = components::ProvinceColor::fromInt(color);
-        hovering_province_color =
-            (glm::vec3((float)province_color.r, (float)province_color.g, (float)province_color.b) / 255.f);
     }
 }
 
@@ -271,7 +267,6 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
 void StarSystemController::SelectCountry() {
     // Country selection
     // Then select planet and tell the state
-    selected_province_color = hovering_province_color;
     selected_province = hovering_province;
     // Set the selected province
     if (!universe.valid(selected_province)) {
@@ -493,8 +488,6 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
 }
 
 bool StarSystemController::ShouldDrawCityPrototype() { return is_founding_city && is_rendering_founding_city; }
-
-const glm::vec3& StarSystemController::SelectedProvinceColor() { return selected_province_color; }
 
 void StarSystemController::SeeEntity() {
     // See the object

@@ -45,8 +45,6 @@ class StarSystemController {
 
     bool ShouldDrawCityPrototype();
 
-    const glm::vec3 &SelectedProvinceColor();
-
     glm::vec3 CalculateCenteredObject(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
 
@@ -119,9 +117,6 @@ class StarSystemController {
 
     entt::entity hovering_province;
     entt::entity selected_province;
-
-    glm::vec3 hovering_province_color;
-    glm::vec3 selected_province_color;
 
     glm::vec3 mouse_on_object;
 
