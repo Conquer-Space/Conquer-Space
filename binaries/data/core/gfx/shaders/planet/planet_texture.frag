@@ -38,7 +38,7 @@ uniform vec4 country_color;
 const float PI = 3.14159265359;
 vec3 getNormalFromMap() {
     vec3 tangentNormal = texture(normal_tex, TexCoords).xyz * 2.0 - 1.0;
-    // tangentNormal *= 5;
+
     // If no normal_tex is given just use the regular image
     tangentNormal = have_normal? tangentNormal : vec3(0., 0., 1.);
     //vec3 tangentNormal = vec4(bumpFromDepth(uv, WorldPos.xy, .1).rgb * .5 + .5, 1.).xyz * 2.0 - 1.0;
@@ -96,10 +96,8 @@ void main() {
     gl_FragDepth = (log(C * frag_pos.z + offset) / log(C * far + offset));
     vec3 albedo = texture(terrain_tex, TexCoords).rgb;
 
-    float roughness = 1;
-    if (is_roughness) {
-        roughness = clamp(texture(roughness_map, TexCoords).r, 0.1, 1);
-    }
+    float roughness = is_roughness ? clamp(texture(roughness_map, TexCoords).r, 0.1, 1) : 1;
+
     vec3 N = getNormalFromMap();
     float metallic = 0.99;
 
