@@ -346,8 +346,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     position *= glm::mat4(controller.GetBodyRotation(body.axial, body.rotation, body.rotation_offset));
 
     // Rotate
-    float scale = body.radius;  // types::toAU(body.radius)
-                                // * view_scale;
+    float scale = body.radius;
     position = glm::scale(position, glm::vec3(scale));
 
     auto shader = textured_planet.shaderProgram.get();
