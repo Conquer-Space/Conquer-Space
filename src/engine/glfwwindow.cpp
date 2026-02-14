@@ -166,16 +166,11 @@ bool GLWindow::InitWindow(int width, int height) {
         ENGINE_LOG_CRITICAL("Cannot initialize GLFW");
         return false;
     }
-    if (!GLAD_GL_VERSION_4_6) {
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-    } else if (!GLAD_GL_VERSION_4_3) {
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    } else {
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    }
+    // TODO(EhWhoAmI): Check if mac and downgrade to GLFW 4.1 because I don't think Mac
+    // supports it
+    // Require GLFW 4.6
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_SAMPLES, app->GetClientOptions().GetOptions()["samples"].to_int64());
