@@ -41,6 +41,8 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     if (universe.countries.find(country_identifier) != universe.countries.end()) {
         country_entity = universe.countries[country_identifier];
+    } else {
+        SPDLOG_WARN("Unable to find country {} for province {}", country_identifier, identifier);
     }
     Node province_node(universe, country_entity);
     node.emplace<components::Province>(province_node);
