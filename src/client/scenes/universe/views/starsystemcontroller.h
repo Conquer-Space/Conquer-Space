@@ -119,6 +119,7 @@ class StarSystemController {
 
     entt::entity hovering_province;
     entt::entity selected_province;
+    entt::entity selected_country;
 
     glm::vec3 mouse_on_object;
 

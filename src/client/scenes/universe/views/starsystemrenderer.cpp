@@ -44,6 +44,7 @@
 #include "glad/glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
+#include "starsystemrenderer.h"
 #include "stb_image.h"  // NOLINT: STB is rather annoying
 #include "tracy/Tracy.hpp"
 
@@ -625,6 +626,16 @@ void SysStarSystemRenderer::MassUpdatePlanetProvinceColors(entt::entity entity) 
     glBufferSubData(GL_TEXTURE_BUFFER, 0,
                     sizeof(decltype(data.province_colors)::value_type) * data.province_colors.size(),
                     static_cast<void*>(data.province_colors.data()));
+}
+
+void SysStarSystemRenderer::ResetPlanetProvinceColors(entt::entity entity) {
+    assert(universe.all_of<PlanetTexture>(entity));
+    auto& data = universe.get<PlanetTexture>(entity);
+    for (size_t i = 0; i < data.province_colors.size(); i++) {
+        data.province_colors[i] = 0.f;
+    }
+    // In theory not optimal but surely we don't call this every frame
+    MassUpdatePlanetProvinceColors(entity);
 }
 
 /**
