@@ -539,7 +539,7 @@ void Application::LoggerInit() {
 
 void Application::LogInfo() {
 #ifndef NDEBUG
-    ENGINE_LOG_INFO("Conquer Space Debug {} {}", CQSP_VERSION_STRING, GIT_INFO);
+    ENGINE_LOG_INFO("Conquer Space Debug {}", CQSP_VERSION_STRING);
 #else
     ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
 #endif

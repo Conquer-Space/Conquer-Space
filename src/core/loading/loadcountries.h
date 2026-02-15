@@ -28,5 +28,6 @@ class CountryLoader : public HjsonLoader {
 
  private:
     Hjson::Value default_val;
+    uint32_t StringHash(const std::string& string);
 };
 }  // namespace cqsp::core::loading

@@ -323,6 +323,7 @@
     name: United Mexican States
     common: Mexico
     identifier: mexico
+    color: [0, 99, 65]
   }
   {
     name: Republic of Mauritius
@@ -493,6 +494,7 @@
     name: Republic of India
     common: India
     identifier: india
+    color: [255, 153, 51]
   }
   {
     name: Iceland
@@ -638,6 +640,7 @@
     name: People's Republic of China
     common: China
     identifier: china
+    color: [222, 41, 16]
   }
   {
     name: Republic of Chile
@@ -653,6 +656,7 @@
     name: Canada
     common: Canada
     identifier: canada
+    color: [216, 6, 33]
   }
   {
     name: Republic of Cameroon
@@ -688,6 +692,7 @@
     name: Federative Republic of Brazil
     common: Brazil
     identifier: brazil
+    color: [0, 156, 59]
   }
   {
     name: Republic of Botswana

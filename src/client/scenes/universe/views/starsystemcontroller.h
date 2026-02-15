@@ -20,6 +20,7 @@
 
 #include <glm/glm.hpp>
 
+#include "client/components/clientctx.h"
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "core/components/coordinates.h"
 #include "core/universe.h"
@@ -78,6 +79,8 @@ class StarSystemController {
     void FoundCity();
     bool IsFoundingCity();
 
+    void UpdateMapMode();
+
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
     void CalculateViewChange(double deltaX, double deltaY);
@@ -87,6 +90,8 @@ class StarSystemController {
     glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
     glm::vec3 GetMouseInScreenSpace(int mouse_x, int mouse_y);
     std::optional<glm::vec3> CheckIntersection(const glm::vec3 &object_pos, const glm::vec3 &ray_wor, float radius);
+
+    void SetCountryProvincesColor(entt::entity country);
 
     void SelectProvince();
 
@@ -139,5 +144,8 @@ class StarSystemController {
     friend StarSystemViewUI;
 
     const glm::vec4 selected_province_color = glm::vec4(1.f, 0.f, 0.f, 0.35f);
+    const entt::entity map_mode;
+
+    ctx::MapMode last_map_mode = ctx::MapMode::NoMapMode;
 };
 }  // namespace cqsp::client::systems

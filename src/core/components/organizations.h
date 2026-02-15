@@ -32,6 +32,7 @@ struct Organization {};
 
 struct Country {
     entt::entity capital_city = entt::null;
+    std::array<float, 3> color;
 };
 
 struct CountryCityList {
