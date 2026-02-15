@@ -23,8 +23,9 @@
 namespace cqsp::core::loading {
 bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Just make the country
-    node.emplace<components::Country>();
-    universe.countries[node.get<components::Identifier>().identifier] = node;
+    auto& country = node.emplace<components::Country>();
+    const std::string& identifier = node.get<components::Identifier>().identifier;
+    universe.countries[identifier] = node;
 
     // Add the list of liabilities the country has?
 
@@ -32,6 +33,31 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
         auto& wallet = node.emplace<components::Wallet>();
         wallet = values["wallet"];
     }
+
+    if (!values["color"].empty() && values["color"].type() == Hjson::Type::Vector && values["color"].size() == 3) {
+        country.color[0] = std::clamp(static_cast<float>(values["color"][0].to_double()) / 255.f, 0.f, 1.f);
+        country.color[1] = std::clamp(static_cast<float>(values["color"][1].to_double()) / 255.f, 0.f, 1.f);
+        country.color[2] = std::clamp(static_cast<float>(values["color"][2].to_double()) / 255.f, 0.f, 1.f);
+    } else {
+        // Compute string hash on identifier
+        uint32_t value = StringHash(identifier);
+        country.color[0] = static_cast<float>(value & 0xFF) / 255.f;
+        country.color[1] = static_cast<float>((value >> 8) & 0xFF) / 255.f;
+        country.color[2] = static_cast<float>((value >> 16) & 0xFF) / 255.f;
+    }
+
     return true;
+}
+
+uint32_t CountryLoader::StringHash(const std::string& string) {
+    const int p = 31;
+    const int m = 0xffffff;
+    long long hash_value = 0;
+    long long p_pow = 1;
+    for (char c : string) {
+        hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
+        p_pow = (p_pow * p) % m;
+    }
+    return static_cast<uint32_t>(hash_value);
 }
 }  // namespace cqsp::core::loading

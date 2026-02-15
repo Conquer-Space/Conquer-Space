@@ -5,5 +5,10 @@
     common: USA
     adjective: american
     wallet: 100000000
+    color: [
+      66
+      94
+      193
+    ]
   }
 ]
