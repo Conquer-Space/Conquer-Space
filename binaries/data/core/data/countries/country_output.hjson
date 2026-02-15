@@ -100,14 +100,194 @@
     identifier: syria
   }
   {
+    name: Czech Republic
+    common: Czechia
+    identifier: czechia
+  }
+  {
+    name: Republic of El Salvador
+    common: El Salvador
+    identifier: el_salvador
+  }
+  {
+    name: Burkina Faso
+    common: Burkina Faso
+    identifier: burkina_faso
+  }
+  {
     name: Swiss Confederation
     common: Switzerland
     identifier: switzerland
   }
   {
+    name: Commonwealth of the Bahamas
+    common: The Bahamas
+    identifier: bahamas
+  }
+  {
+    name: Antigua and Barbuda
+    common: Antigua and Barbuda
+    identifier: antigua_and_barb_
+  }
+  {
+    name: Democratic Republic of Timor-Leste
+    common: Timor-Leste
+    identifier: timor-leste
+  }
+  {
+    name: United Arab Emirates
+    common: United Arab Emirates
+    identifier: united_arab_emirates
+  }
+  {
+    name: Republic of Trinidad and Tobago
+    common: Trinidad and Tobago
+    identifier: trinidad_and_tobago
+  }
+  {
+    name: Republic of the Marshall Islands
+    common: Marshall Islands
+    identifier: marshall_is_
+  }
+  {
+    name: Turkish Republic of Northern Cyprus
+    common: Northern Cyprus
+    identifier: n__cyprus
+  }
+  {
+    name: Federation of Saint Kitts and Nevis
+    common: Saint Kitts and Nevis
+    identifier: st__kitts_and_nevis
+  }
+  {
+    name: Saint Vincent and the Grenadines
+    common: Saint Vincent
+    identifier: st__vin__and_gren_
+  }
+  {
+    name: Democratic Republic of Sao Tome and Principe
+    common: Sao Tome and Principe
+    identifier: sao_tome_and_principe
+  }
+  {
+    name: Bosnia and Herzegovina
+    common: Bosnia
+    identifier: bosnia_and_herz_
+  }
+  {
+    name: Republic of Cabo Verde
+    common: Cabo Verde
+    identifier: cabo_verde
+  }
+  {
+    name: Georgia
+    common: Georgia
+    identifier: georgia
+  }
+  {
+    name: Republic of North Macedonia
+    common: North Macedonia
+    identifier: macedonia
+  }
+  {
+    name: Federated States of Micronesia
+    common: Micronesia
+    identifier: micronesia
+  }
+  {
+    name: Saint Lucia
+    common: Saint Lucia
+    identifier: saint_lucia
+  }
+  {
+    name: Republic of San Marino
+    common: San Marino
+    identifier: san_marino
+  }
+  {
+    name: Solomon Islands
+    common: the Solomons
+    identifier: solomon_is_
+  }
+  {
+    name: Democratic Socialist Republic of Sri Lanka
+    common: Sri Lanka
+    identifier: sri_lanka
+  }
+  {
+    name: Republic of Equatorial Guinea
+    common: Equatorial Guinea
+    identifier: eq__guinea
+  }
+  {
+    name: Democratic Republic of the Congo
+    common: DR Congo
+    identifier: dem__rep__congo
+  }
+  {
+    name: Republic of the Congo
+    common: Congo
+    identifier: congo
+  }
+  {
     name: Kingdom of Sweden
     common: Sweden
     identifier: sweden
+  }
+  {
+    name: Dominican Republic
+    common: Dominico
+    identifier: dominican_rep_
+  }
+  {
+    name: Republic of Guinea-Bissau
+    common: Guinea-Bissau
+    identifier: guinea-bissau
+  }
+  {
+    name: Republic of the Gambia
+    common: The Gambia
+    identifier: gambia
+  }
+  {
+    name: Central African Republic
+    common: Central African Republic
+    identifier: central_african_rep_
+  }
+  {
+    name: New Zealand
+    common: New Zealand
+    identifier: new_zealand
+  }
+  {
+    name: Republic of South Sudan
+    common: South Sudan
+    identifier: s__sudan
+  }
+  {
+    name: Republic of Sierra Leone
+    common: Sierra Leone
+    identifier: sierra_leone
+  }
+  {
+    name: Republic of Cote d'Ivoire
+    common: Ivory Coast
+    identifier: cote_d'ivoire
+  }
+  {
+    name: Independent State of Papua New Guinea
+    common:Papua New Guinea
+    identifier: papua_new_guinea
+  }
+  {
+    name: Republic of Costa Rica
+    common: Costa Rica
+    identifier: costa_rica
+  }
+  {
+    name: Republic of South Africa
+    common: South Africa
+    identifier: south_africa
   }
   {
     name: Kingdom of Eswatini
@@ -238,6 +418,7 @@
     name: Islamic Republic of Pakistan
     common: Pakistan
     identifier: pakistan
+    color: [17, 87, 64]
   }
   {
     name: Sultanate of Oman
@@ -429,11 +610,13 @@
     name: Republic of Korea
     common: South Korea
     identifier: south_korea
+    color: [15, 100, 205]
   }
   {
     name: Democratic People's Republic of Korea
     common: North Korea
     identifier: north_korea
+    color: [237, 28, 39]
   }
   {
     name: Republic of Kiribati
@@ -459,6 +642,7 @@
     name: Japan
     common: Japan
     identifier: japan
+    color: [188, 0, 45]
   }
   {
     name: Jamaica
@@ -484,6 +668,7 @@
     name: Islamic Republic of Iran
     common: Iran
     identifier: iran
+    color: [218, 0, 0]
   }
   {
     name: Republic of Indonesia
@@ -560,6 +745,7 @@
     name: French Republic
     common: France
     identifier: france
+    color: [0, 0, 145]
   }
   {
     name: Republic of Finland
@@ -738,6 +924,7 @@
     name: People's Republic of Bangladesh
     common: Bangladesh
     identifier: bangladesh
+    color: [0, 106, 78]
   }
   {
     name: Kingdom of Bahrain
