@@ -125,6 +125,76 @@
     identifier: bahamas
   }
   {
+    name: Antigua and Barbuda
+    common: Antigua and Barbuda
+    identifier: antigua_and_barb_
+  }
+  {
+    name: Democratic Republic of Timor-Leste
+    common: Timor-Leste
+    identifier: timor-leste
+  }
+  {
+    name: United Arab Emirates
+    common: United Arab Emirates
+    identifier: united_arab_emirates
+  }
+  {
+    name: Republic of Trinidad and Tobago
+    common: Trinidad and Tobago
+    identifier: trinidad_and_tobago
+  }
+  {
+    name: Republic of the Marshall Islands
+    common: Marshall Islands
+    identifier: marshall_is_
+  }
+  {
+    name: Turkish Republic of Northern Cyprus
+    common: Northern Cyprus
+    identifier: n__cyprus
+  }
+  {
+    name: Federation of Saint Kitts and Nevis
+    common: Saint Kitts and Nevis
+    identifier: st__kitts_and_nevis
+  }
+  {
+    name: Saint Vincent and the Grenadines
+    common: Saint Vincent
+    identifier: st__vin__and_gren_
+  }
+  {
+    name: Democratic Republic of Sao Tome and Principe
+    common: Sao Tome and Principe
+    identifier: sao_tome_and_principe
+  }
+  {
+    name: Bosnia and Herzegovina
+    common: Bosnia
+    identifier: bosnia_and_herz_
+  }
+  {
+    name: Republic of Cabo Verde
+    common: Cabo Verde
+    identifier: cabo_verde
+  }
+  {
+    name: Georgia
+    common: Georgia
+    identifier: georgia
+  }
+  {
+    name: Republic of North Macedonia
+    common: North Macedonia
+    identifier: macedonia
+  }
+  {
+    name: Federated States of Micronesia
+    common: Micronesia
+    identifier: micronesia
+  }
+  {
     name: Saint Lucia
     common: Saint Lucia
     identifier: saint_lucia
@@ -348,6 +418,7 @@
     name: Islamic Republic of Pakistan
     common: Pakistan
     identifier: pakistan
+    color: [17, 87, 64]
   }
   {
     name: Sultanate of Oman
@@ -539,11 +610,13 @@
     name: Republic of Korea
     common: South Korea
     identifier: south_korea
+    color: [15, 100, 205]
   }
   {
     name: Democratic People's Republic of Korea
     common: North Korea
     identifier: north_korea
+    color: [237, 28, 39]
   }
   {
     name: Republic of Kiribati
@@ -569,6 +642,7 @@
     name: Japan
     common: Japan
     identifier: japan
+    color: [188, 0, 45]
   }
   {
     name: Jamaica
@@ -594,6 +668,7 @@
     name: Islamic Republic of Iran
     common: Iran
     identifier: iran
+    color: [218, 0, 0]
   }
   {
     name: Republic of Indonesia
@@ -670,6 +745,7 @@
     name: French Republic
     common: France
     identifier: france
+    color: [0, 0, 145]
   }
   {
     name: Republic of Finland
@@ -848,6 +924,7 @@
     name: People's Republic of Bangladesh
     common: Bangladesh
     identifier: bangladesh
+    color: [0, 106, 78]
   }
   {
     name: Kingdom of Bahrain
