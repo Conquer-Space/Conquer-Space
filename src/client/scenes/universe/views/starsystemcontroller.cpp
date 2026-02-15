@@ -270,8 +270,9 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
  */
 void StarSystemController::SelectProvince() {
     // Unset previous province color
+    entt::entity province_to_reset = entt::null;
     if (universe.valid(selected_province)) {
-        renderer.UpdatePlanetProvinceColors(on_planet, selected_province, glm::vec4(0.f, 0.f, 0.f, 0.f));
+        province_to_reset = selected_province;
     }
     selected_province = hovering_province;
 
@@ -295,6 +296,12 @@ void StarSystemController::SelectProvince() {
     // check the owner
     entt::entity player = universe.view<components::Player>().front();
     auto& province = universe.get<components::Province>(selected_province);
+
+    if (province_to_reset != entt::null && universe.valid(selected_province)) {
+        // Reset our province color
+        renderer.UpdatePlanetProvinceColors(on_planet, province_to_reset, glm::vec4(0.f, 0.f, 0.f, 0.f));
+    }
+
     if (province.country != player && universe.valid(province.country) &&
         universe.all_of<components::CountryCityList>(province.country)) {
         // Full country selection
@@ -308,9 +315,11 @@ void StarSystemController::SelectProvince() {
             renderer.UpdatePlanetProvinceColors(on_planet, province, selected_province_color);
         }
     } else {
+        // If we are selecting a certain province, we should deselect it or something
         renderer.ResetPlanetProvinceColors(on_planet);
         province.country = entt::null;
     }
+
     renderer.UpdatePlanetProvinceColors(on_planet, selected_province, selected_province_color);
 }
 
