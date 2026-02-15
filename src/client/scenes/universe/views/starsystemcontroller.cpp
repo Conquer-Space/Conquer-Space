@@ -338,14 +338,19 @@ void StarSystemController::SelectProvince() {
     if (province.country != player && universe.valid(province.country) &&
         universe.all_of<components::CountryCityList>(province.country)) {
         // Full country selection
+        universe.get<ctx::MapMode>(map_mode) = ctx::MapMode::NoMapMode;
+        // Hack to stop triggering a map mode change so we don't wipe our current selection
+        last_map_mode = ctx::MapMode::NoMapMode;
         if (selected_country != entt::null) {
             renderer.ResetPlanetProvinceColors(on_planet);
         }
         selected_country = province.country;
         auto& country_list = universe.get<components::CountryCityList>(province.country);
+        auto& country_comp = universe.get<components::Country>(province.country);
+        glm::vec4 color = glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], 0.65);
         for (entt::entity province : country_list.province_list) {
             // TODO(EhWhoAmI): Check if the province is on the selected planet
-            renderer.UpdatePlanetProvinceColors(on_planet, province, selected_province_color);
+            renderer.UpdatePlanetProvinceColors(on_planet, province, color);
         }
     } else {
         // If we are selecting a certain province, we should deselect it or something
