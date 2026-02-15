@@ -16,9 +16,14 @@
  */
 #pragma once
 
-namespace cqsp::core::components {
-// https://forum.kerbalspaceprogram.com/index.php?/topic/84752-how-do-i-calculate-payload-mass-to-orbit/
-struct LaunchVehicle {
-    double delta_v;
+#include "client/systems/sysgui.h"
+
+namespace cqsp::client::systems {
+class LaunchVehicleWindow : public SysUserInterface {
+ public:
+    explicit LaunchVehicleWindow(engine::Application& app) : SysUserInterface(app) {}
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
 };
-}  // namespace cqsp::core::components
+}  // namespace cqsp::client::systems
