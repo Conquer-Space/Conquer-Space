@@ -688,6 +688,7 @@
     name: Federative Republic of Brazil
     common: Brazil
     identifier: brazil
+    color: [0, 156, 59]
   }
   {
     name: Republic of Botswana

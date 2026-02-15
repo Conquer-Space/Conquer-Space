@@ -20,6 +20,7 @@
 
 #include <glm/glm.hpp>
 
+#include "client/components/clientctx.h"
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "core/components/coordinates.h"
 #include "core/universe.h"
@@ -77,6 +78,8 @@ class StarSystemController {
     void SetCameraToSolarSystemReferenceFrame();
     void FoundCity();
     bool IsFoundingCity();
+
+    void UpdateMapMode();
 
     glm::vec3 CalculateMouseRay(const glm::vec3 &ray_nds);
     entt::entity GetMouseOnObject(int mouse_x, int mouse_y);
@@ -139,5 +142,8 @@ class StarSystemController {
     friend StarSystemViewUI;
 
     const glm::vec4 selected_province_color = glm::vec4(1.f, 0.f, 0.f, 0.35f);
+    const entt::entity map_mode;
+
+    ctx::MapMode last_map_mode = ctx::MapMode::NoMapMode;
 };
 }  // namespace cqsp::client::systems

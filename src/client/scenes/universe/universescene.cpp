@@ -23,6 +23,7 @@
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
+#include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
@@ -79,19 +80,15 @@ void UniverseScene::Init() {
 
     SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
 
-    //AddUISystem<cqsps::SysTurnSaveWindow>();
     AddUISystem<systems::SysStarSystemTree>();
     AddUISystem<systems::SysPauseMenu>();
     AddUISystem<systems::SysDebugMenu>();
 
     AddUISystem<systems::SpaceshipWindow>();
-    //AddUISystem<cqsps::SysFieldViewer>();
-    //AddUISystem<cqsps::SysTechnologyProjectViewer>();
-    //AddUISystem<cqsps::SysTechnologyViewer>();
     AddUISystem<systems::SysProvinceInformation>();
     AddUISystem<systems::SysOrbitFilter>();
     AddUISystem<systems::ImGuiInterface>();
-    //AddUISystem<systems::SysPlanetMarketInformation>();
+    AddUISystem<systems::MapModeWindow>();
 
     AddUISystem<systems::gui::SysEvent>();
     simulation->Init();

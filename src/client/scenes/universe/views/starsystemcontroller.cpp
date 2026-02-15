@@ -31,6 +31,7 @@
 #include "core/components/organizations.h"
 #include "core/components/player.h"
 #include "core/components/surface.h"
+#include "starsystemcontroller.h"
 
 namespace cqsp::client::systems {
 namespace components = core::components;
@@ -46,7 +47,9 @@ using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
                                            SysStarSystemRenderer& _r)
-    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {}
+    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null), map_mode(universe.create()) {
+    universe.emplace<ctx::MapMode>(map_mode, ctx::MapMode::NoMapMode);
+}
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
@@ -89,6 +92,8 @@ void StarSystemController::Update(float delta_time) {
 
     // Calculate camera
     CenterCameraOnPoint();
+
+    UpdateMapMode();
 }
 
 void StarSystemController::MoveCamera(double delta_time) {
@@ -170,6 +175,34 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
 }
 
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }
+
+void StarSystemController::UpdateMapMode() {
+    auto current_map_mode = universe.get<ctx::MapMode>(map_mode);
+
+    if (last_map_mode == current_map_mode) {
+        return;
+    }
+    switch (current_map_mode) {
+        case ctx::MapMode::NoMapMode:
+            renderer.ResetPlanetProvinceColors(on_planet);
+            break;
+        case ctx::MapMode::CountryMapMode: {
+            // Now set country colors
+            for (entt::entity country : universe.view<components::Country, components::CountryCityList>()) {
+                auto& country_comp = universe.get<components::Country>(country);
+                auto& country_list = universe.get<components::CountryCityList>(country);
+                glm::vec4 color = glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], 0.65);
+                for (entt::entity province : country_list.province_list) {
+                    renderer.UpdatePlanetProvinceColors(on_planet, province, color);
+                }
+            }
+        } break;
+        case ctx::MapMode::ProvinceMapMode:
+        default:
+            break;
+    }
+    last_map_mode = current_map_mode;
+}
 
 void StarSystemController::CityDetection() {
     ZoneScoped;
@@ -306,12 +339,12 @@ void StarSystemController::SelectProvince() {
         universe.all_of<components::CountryCityList>(province.country)) {
         // Full country selection
         if (selected_country != entt::null) {
-            // Then we should probably reset our country
             renderer.ResetPlanetProvinceColors(on_planet);
         }
         selected_country = province.country;
         auto& country_list = universe.get<components::CountryCityList>(province.country);
         for (entt::entity province : country_list.province_list) {
+            // TODO(EhWhoAmI): Check if the province is on the selected planet
             renderer.UpdatePlanetProvinceColors(on_planet, province, selected_province_color);
         }
     } else {

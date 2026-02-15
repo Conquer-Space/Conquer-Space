@@ -42,4 +42,6 @@ struct GameLoad {
 };
 
 struct VisibleOrbit {};
+
+enum class MapMode { NoMapMode, CountryMapMode, ProvinceMapMode };
 }  // namespace cqsp::client::ctx
