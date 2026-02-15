@@ -27,21 +27,37 @@ void MapModeWindow::DoUI(int delta_time) {
     ImGui::SetNextWindowPos(ImVec2(ImGui::GetIO().DisplaySize.x, ImGui::GetIO().DisplaySize.y), 0, ImVec2(1.0f, 1.0f));
     ImGui::SetNextWindowSize(ImVec2(0, 0));
     if (!ImGui::Begin("Map Mode", 0, ImGuiWindowFlags_NoTitleBar)) return;
-    if (ImGui::Button("No Map Mode")) {
-        SetMapMode(ctx::MapMode::NoMapMode);
-    }
-    if (ImGui::Button("Country Map Mode")) {
-        SetMapMode(ctx::MapMode::CountryMapMode);
-    }
-    if (ImGui::Button("Province Map Mode")) {
-        SetMapMode(ctx::MapMode::ProvinceMapMode);
-    }
+
+    MapModeButton("No Map Mode", ctx::MapMode::NoMapMode);
+    MapModeButton("Country Map Mode", ctx::MapMode::CountryMapMode);
+    MapModeButton("Province Map Mode", ctx::MapMode::ProvinceMapMode);
+
     ImGui::End();
 }
 
 void MapModeWindow::SetMapMode(ctx::MapMode map_mode) {
     entt::entity current_map_mode = GetUniverse().view<ctx::MapMode>().front();
     GetUniverse().get<ctx::MapMode>(current_map_mode) = map_mode;
+}
+
+inline ctx::MapMode MapModeWindow::GetMapMode() {
+    entt::entity current_map_mode = GetUniverse().view<ctx::MapMode>().front();
+    return GetUniverse().get<ctx::MapMode>(current_map_mode);
+}
+
+void MapModeWindow::MapModeButton(const char* string, ctx::MapMode map_mode) {
+    ctx::MapMode current_mode = GetMapMode();
+    if (current_mode == map_mode) {
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.f, 0.8431372549, 0.f, 1.f));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(181.f / 255.f, 148.f / 255.f, 16.f / 255.f, 1.f));
+    }
+    if (ImGui::Button(string)) {
+        SetMapMode(map_mode);
+    }
+    if (current_mode == map_mode) {
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+    }
 }
 
 void MapModeWindow::DoUpdate(int delta_time) {}

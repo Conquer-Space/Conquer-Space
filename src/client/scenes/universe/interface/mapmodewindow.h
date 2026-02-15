@@ -47,5 +47,8 @@ class MapModeWindow : public SysUserInterface {
 
  private:
     inline void SetMapMode(ctx::MapMode map_mode);
+    inline ctx::MapMode GetMapMode();
+
+    void MapModeButton(const char* string, ctx::MapMode map_mode);
 };
 }  // namespace cqsp::client::systems

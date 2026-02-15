@@ -91,6 +91,8 @@ class StarSystemController {
     glm::vec3 GetMouseInScreenSpace(int mouse_x, int mouse_y);
     std::optional<glm::vec3> CheckIntersection(const glm::vec3 &object_pos, const glm::vec3 &ray_wor, float radius);
 
+    void SetCountryProvincesColor(entt::entity country);
+
     void SelectProvince();
 
     core::Universe &universe;
