@@ -334,7 +334,7 @@ void StarSystemController::SelectProvince() {
     // if it's not we select the country
     // check the owner
     entt::entity player = universe.view<components::Player>().front();
-    auto& province = universe.get<components::Province>(selected_province);
+    const auto& province = universe.get<components::Province>(selected_province);
 
     if (province_to_reset != entt::null && universe.valid(selected_province)) {
         // Reset our province color
@@ -355,7 +355,7 @@ void StarSystemController::SelectProvince() {
     } else {
         // If we are selecting a certain province, we should deselect it or something
         renderer.ResetPlanetProvinceColors(on_planet);
-        province.country = entt::null;
+        selected_country = entt::null;
     }
 
     renderer.UpdatePlanetProvinceColors(on_planet, selected_province, selected_province_color);

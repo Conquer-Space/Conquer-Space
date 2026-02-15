@@ -25,5 +25,20 @@ class LaunchVehicleWindow : public SysUserInterface {
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
+
+ private:
+    void CreateLaunchVehicleWindow();
+    void LaunchVehicleWindowRight();
+
+    bool is_creating_launch_vehicle = false;
+    std::array<char, 255> search_text;
+    entt::entity selected_launch_vehicle = entt::null;
+
+    struct LaunchVehicleDesign {
+        float reliability = 0.0f;
+        float fairing_size = 0.0f;
+        float mass_to_orbit = 0.0f;
+        std::array<char, 255> vehicle_name;
+    } design;
 };
 }  // namespace cqsp::client::systems

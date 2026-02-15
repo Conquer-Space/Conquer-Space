@@ -23,6 +23,7 @@
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
+#include "client/scenes/universe/interface/launchvehiclewindow.h"
 #include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
@@ -89,6 +90,7 @@ void UniverseScene::Init() {
     AddUISystem<systems::SysOrbitFilter>();
     AddUISystem<systems::ImGuiInterface>();
     AddUISystem<systems::MapModeWindow>();
+    AddUISystem<systems::LaunchVehicleWindow>();
 
     AddUISystem<systems::gui::SysEvent>();
     simulation->Init();
