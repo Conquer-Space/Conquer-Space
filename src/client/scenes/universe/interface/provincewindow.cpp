@@ -35,6 +35,7 @@
 #include "core/components/orbit.h"
 #include "core/components/organizations.h"
 #include "core/components/population.h"
+#include "core/components/projects.h"
 #include "core/components/resource.h"
 #include "core/components/ships.h"
 #include "core/components/spaceport.h"
@@ -334,6 +335,10 @@ void SysProvinceInformation::SpacePortTab() {
             SpacePortOrdersTab(space_port_city);
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Projects")) {
+            SpacePortProjectsTab(space_port_city);
+            ImGui::EndTabItem();
+        }
         if (ImGui::BeginTabItem("Resources")) {
             SpacePortResourceTab(space_port_city);
             ImGui::EndTabItem();
@@ -557,6 +562,33 @@ void SysProvinceInformation::DockedTab(const entt::entity city) {
             systems::gui::EntityTooltip(GetUniverse(), docked);
         }
     }
+}
+
+void SysProvinceInformation::SpacePortProjectsTab(const entt::entity city) {
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+    if (!ImGui::BeginTable("space_port_project_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        return;
+    }
+    ImGui::TableSetupColumn("Name");
+    // TODO(EhWhoAmI): Add estimated end date but we don't have a
+    // good way to look in the future for now
+    ImGui::TableSetupColumn("Progress");
+    ImGui::TableSetupColumn("Last Cost");
+    ImGui::TableSetupColumn("Total Cost");
+    ImGui::TableHeadersRow();
+    for (entt::entity project : space_port.projects) {
+        const auto& project_comp = GetUniverse().get<components::Project>(project);
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), project));
+        ImGui::TableSetColumnIndex(1);
+        ImGui::ProgressBar(static_cast<float>(project_comp.progress) / static_cast<float>(project_comp.max_progress));
+        ImGui::TableSetColumnIndex(2);
+        ImGui::TextFmt("{}", NumberToHumanString(project_comp.project_last_cost));
+        ImGui::TableSetColumnIndex(3);
+        ImGui::TextFmt("{}", NumberToHumanString(project_comp.project_total_cost));
+    }
+    ImGui::EndTable();
 }
 
 void SysProvinceInformation::SpacePortOrdersTab(const entt::entity city) {

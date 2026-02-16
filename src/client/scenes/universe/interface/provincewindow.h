@@ -39,6 +39,7 @@ class SysProvinceInformation : public SysUserInterface {
     void SpacePortResourceTab(const entt::entity city);
     void LaunchTab(const entt::entity city);
     void DockedTab(const entt::entity city);
+    void SpacePortProjectsTab(const entt::entity city);
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
