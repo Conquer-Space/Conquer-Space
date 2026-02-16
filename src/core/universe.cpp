@@ -20,6 +20,7 @@
 #include <ranges>
 #include <utility>
 
+#include "core/components/player.h"
 #include "core/util/random/stdrandom.h"
 #include "core/util/uuid.h"
 
@@ -38,6 +39,8 @@ std::set<Node> Universe::Convert(const std::set<entt::entity>& entities) const {
     }
     return nodes;
 }
+
+entt::entity Universe::GetPlayer() const { return view<components::Player>().front(); }
 
 Node::Node(const Universe& universe, const entt::entity entity) : entt::handle((entt::registry&)(universe), entity) {}
 Node::Node(const entt::handle handle, const entt::entity entity) : entt::handle(*handle.registry(), entity) {}

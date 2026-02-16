@@ -39,6 +39,9 @@ class SysProvinceInformation : public SysUserInterface {
     void SpacePortResourceTab(const entt::entity city);
     void LaunchTab(const entt::entity city);
     void DockedTab(const entt::entity city);
+    void SpacePortProjectsTab(const entt::entity city);
+    void RocketManufacturingTab(const entt::entity city);
+    void RocketManufacturingRightPanel(const entt::entity city);
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
@@ -62,6 +65,8 @@ class SysProvinceInformation : public SysUserInterface {
     int construction_amount = 1;
 
     bool segment_prices = true;
+    entt::entity selected_launch_vehicle;
+    std::array<char, 255> launch_vehicle_search_text;
 
     enum class ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };

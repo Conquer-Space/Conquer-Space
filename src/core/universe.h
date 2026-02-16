@@ -173,6 +173,8 @@ class Universe : public entt::registry {
 
     systems::EconomyConfig economy_config;
 
+    entt::entity GetPlayer() const;
+
  private:
     bool to_tick = false;
 };

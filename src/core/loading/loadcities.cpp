@@ -58,6 +58,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     std::string identifier = node.get<components::Identifier>().identifier;
 
+    auto& city_component = node.emplace<components::City>(entt::null);
+
     // Get the connected markets
     if (!values["connections"].empty() && values["connections"].type() == Hjson::Type::Vector) {
         // Get connected cities and then see if they're done
@@ -84,7 +86,6 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             node.emplace<components::Governed>(country_node);
             // Add self to country?
             country_node.get_or_emplace<components::CountryCityList>().city_list.push_back(node);
-
         } else {
             SPDLOG_INFO("City {} has country {}, but it's undefined", identifier, values["country"].to_string());
         }
@@ -97,6 +98,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             Node province_node(universe, universe.provinces[values["province"]]);
             // Now add self to province
             province_node.get<components::Province>().cities.push_back(node);
+            city_component.province = province_node;
         } else {
             SPDLOG_WARN("City {} has province {}, but it's undefined", identifier, values["province"].to_string());
         }

@@ -16,9 +16,22 @@
  */
 #pragma once
 
+#include <vector>
+
+#include <entt/entity/entity.hpp>
+
 namespace cqsp::core::components {
 // https://forum.kerbalspaceprogram.com/index.php?/topic/84752-how-do-i-calculate-payload-mass-to-orbit/
+// TODO(EhWhoAmI): In the future we should also support reusable planes and other types of launch vehicles as well
 struct LaunchVehicle {
     double delta_v;
+    double reliability;
+    double fairing_size;  // Maybe specific dimensions in the future
+    double mass_to_orbit;
+    uint64_t manufacture_time;
+};
+
+struct SpaceCapability {
+    std::vector<entt::entity> launch_vehicle_list;
 };
 }  // namespace cqsp::core::components

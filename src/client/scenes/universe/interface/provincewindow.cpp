@@ -30,11 +30,13 @@
 #include "core/actions/shiplaunchaction.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
+#include "core/components/launchvehicle.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
 #include "core/components/orbit.h"
 #include "core/components/organizations.h"
 #include "core/components/population.h"
+#include "core/components/projects.h"
 #include "core/components/resource.h"
 #include "core/components/ships.h"
 #include "core/components/spaceport.h"
@@ -42,6 +44,7 @@
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
+#include "provincewindow.h"
 
 namespace cqsp::client::systems {
 
@@ -57,7 +60,7 @@ using core::util::GetName;
 
 using util::NumberToHumanString;
 
-void SysProvinceInformation::Init() {}
+void SysProvinceInformation::Init() { launch_vehicle_search_text.fill(0); }
 
 void SysProvinceInformation::DoUI(int delta_time) {
     const entt::entity selected_province = GetUniverse().view<ctx::SelectedProvince>().front();
@@ -334,6 +337,14 @@ void SysProvinceInformation::SpacePortTab() {
             SpacePortOrdersTab(space_port_city);
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Projects")) {
+            SpacePortProjectsTab(space_port_city);
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Manufacturing")) {
+            RocketManufacturingTab(space_port_city);
+            ImGui::EndTabItem();
+        }
         if (ImGui::BeginTabItem("Resources")) {
             SpacePortResourceTab(space_port_city);
             ImGui::EndTabItem();
@@ -521,6 +532,11 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
     ImGui::SliderAngle("Launch Azimuth", &azimuth, 0, 360);
     ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
     ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+    int num_launch_vehicles = space_port.stored_launch_vehicles.size();
+    if (num_launch_vehicles == 0) {
+        ImGui::BeginDisabled();
+    }
     if (ImGui::Button("Launch!")) {
         // Get reference body
         entt::entity reference_body = city_coord.planet;
@@ -535,6 +551,10 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
         entt::entity ship = core::actions::LaunchShip(GetUniverse(), orb);
         // Also compute the value
         GetUniverse().emplace<ctx::VisibleOrbit>(ship);
+        space_port.stored_launch_vehicles.pop_back();
+    }
+    if (num_launch_vehicles == 0) {
+        ImGui::EndDisabled();
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {
@@ -543,6 +563,7 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
     }
     ImGui::TextFmt("Launch Inclination: {}",
                    types::toDegree(types::GetLaunchInclination(city_coord.r_latitude(), (azimuth))));
+    ImGui::TextFmt("Launch Vehicles: {}", space_port.stored_launch_vehicles.size());
 }
 
 void SysProvinceInformation::DockedTab(const entt::entity city) {
@@ -556,6 +577,98 @@ void SysProvinceInformation::DockedTab(const entt::entity city) {
         if (ImGui::IsItemHovered()) {
             systems::gui::EntityTooltip(GetUniverse(), docked);
         }
+    }
+}
+
+void SysProvinceInformation::SpacePortProjectsTab(const entt::entity city) {
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+    if (!ImGui::BeginTable("space_port_project_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        return;
+    }
+    ImGui::TableSetupColumn("Name");
+    // TODO(EhWhoAmI): Add estimated end date but we don't have a
+    // good way to look in the future for now
+    ImGui::TableSetupColumn("Progress");
+    ImGui::TableSetupColumn("Last Cost");
+    ImGui::TableSetupColumn("Total Cost");
+    ImGui::TableHeadersRow();
+    for (entt::entity project : space_port.projects) {
+        const auto& project_comp = GetUniverse().get<components::Project>(project);
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), project));
+        ImGui::TableSetColumnIndex(1);
+        ImGui::ProgressBar(static_cast<float>(project_comp.progress) / static_cast<float>(project_comp.max_progress));
+        ImGui::TableSetColumnIndex(2);
+        ImGui::TextFmt("{}", NumberToHumanString(project_comp.project_last_cost));
+        ImGui::TableSetColumnIndex(3);
+        ImGui::TextFmt("{}", NumberToHumanString(project_comp.project_total_cost));
+    }
+    ImGui::EndTable();
+}
+
+void SysProvinceInformation::RocketManufacturingTab(const entt::entity city) {
+    // Select which launch vehicle to manufacture and stuff
+    entt::entity player = GetUniverse().GetPlayer();
+    core::components::SpaceCapability& capability = GetUniverse().get<core::components::SpaceCapability>(player);
+    ImGui::TextFmt("Launch Vehicles: {}", capability.launch_vehicle_list.size());
+    ImGui::BeginChild("launch_vehicle_viewer_left", ImVec2(300, 700));
+    ImGui::InputText("##launch_vehicle_viewer_search_text", launch_vehicle_search_text.data(),
+                     launch_vehicle_search_text.size());
+    std::string search_string(launch_vehicle_search_text.data());
+    std::transform(search_string.begin(), search_string.end(), search_string.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    ImGui::BeginChild("launch_vehicle_viewer_scroll");
+    for (entt::entity launch_vehicle : capability.launch_vehicle_list) {
+        bool is_selected = launch_vehicle == selected_launch_vehicle;
+        std::string name = core::util::GetName(GetUniverse(), launch_vehicle);
+        std::string name_lower = name;
+        std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        if (!search_string.empty()) {
+            // Then we can check if the text contains it
+            if (name_lower.find(search_string) == std::string::npos) {
+                continue;
+            }
+        }
+        // Now check if the string is in stuff
+        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
+            selected_launch_vehicle = launch_vehicle;
+        }
+    }
+    ImGui::EndChild();
+    ImGui::EndChild();
+    ImGui::SameLine();
+    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
+    RocketManufacturingRightPanel(city);
+    ImGui::EndChild();
+}
+
+void SysProvinceInformation::RocketManufacturingRightPanel(const entt::entity city) {
+    if (!GetUniverse().valid(selected_launch_vehicle)) {
+        return;
+    }
+    std::string name = core::util::GetName(GetUniverse(), selected_launch_vehicle);
+    auto& launch_vehicle = GetUniverse().get<core::components::LaunchVehicle>(selected_launch_vehicle);
+    ImGui::TextFmt("{}", name);
+    ImGui::Separator();
+    ImGui::TextFmt("Reliability: {}%", launch_vehicle.reliability * 100);
+    ImGui::TextFmt("Mass to Orbit: {} tons", launch_vehicle.mass_to_orbit);
+    ImGui::TextFmt("Faring Size: {} m3", launch_vehicle.fairing_size);
+    ImGui::TextFmt("Manufacture Time: {}", launch_vehicle.manufacture_time);
+    ImGui::Separator();
+    if (ImGui::Button("Make rocket!")) {
+        // Then we queue something on the city queue
+        auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+        entt::entity result = GetUniverse().create();
+        auto& project = GetUniverse().emplace<components::Project>(result);
+        project.progress = 0;
+        project.max_progress = launch_vehicle.manufacture_time;
+        project.type = components::ProjectType::Manufacturing;
+        project.result = selected_launch_vehicle;
+        GetUniverse().emplace<components::ResourceMap>(result);
+        space_port.projects.push_back(result);
     }
 }
 

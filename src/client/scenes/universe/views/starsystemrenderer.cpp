@@ -621,6 +621,9 @@ void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::
 void SysStarSystemRenderer::MassUpdatePlanetProvinceColors(entt::entity entity) {
     // We reload the vector
     auto& data = universe.get<PlanetTexture>(entity);
+    if (!data.has_provinces) {
+        return;
+    }
     unsigned int buf_id = dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id;
     glBindBuffer(GL_TEXTURE_BUFFER, buf_id);
     glBufferSubData(GL_TEXTURE_BUFFER, 0,
@@ -631,6 +634,9 @@ void SysStarSystemRenderer::MassUpdatePlanetProvinceColors(entt::entity entity) 
 void SysStarSystemRenderer::ResetPlanetProvinceColors(entt::entity entity) {
     assert(universe.all_of<PlanetTexture>(entity));
     auto& data = universe.get<PlanetTexture>(entity);
+    if (!data.has_provinces) {
+        return;
+    }
     for (size_t i = 0; i < data.province_colors.size(); i++) {
         data.province_colors[i] = 0.f;
     }

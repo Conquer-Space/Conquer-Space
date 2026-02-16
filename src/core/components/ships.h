@@ -23,7 +23,17 @@
 #include "core/components/units.h"
 
 namespace cqsp::core::components::ships {
-struct Ship {};
+struct Ship {
+    std::vector<entt::entity> components;
+};
+
+struct Propulsion {};
+
+struct SensorSuite {};
+
+struct CommunicationsSuite {};
+
+struct PowerSuite {};
 
 struct Crash {};
 

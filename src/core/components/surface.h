@@ -30,6 +30,10 @@ struct Settlements {
     std::vector<entt::entity> provinces;
 };
 
+struct City {
+    entt::entity province;
+};
+
 struct ProvincedPlanet {
     // Identifier for the mouse to identify which province the person has clicked on
     std::string province_map;

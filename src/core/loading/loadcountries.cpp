@@ -16,9 +16,11 @@
  */
 #include "core/loading/loadcountries.h"
 
+#include "core/components/launchvehicle.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
 #include "core/components/organizations.h"
+#include "core/util/logging.h"
 
 namespace cqsp::core::loading {
 bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
@@ -28,7 +30,6 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
     universe.countries[identifier] = node;
 
     // Add the list of liabilities the country has?
-
     if (!values["wallet"].empty()) {
         auto& wallet = node.emplace<components::Wallet>();
         wallet = values["wallet"];
@@ -44,6 +45,17 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
         country.color[0] = static_cast<float>(value & 0xFF) / 255.f;
         country.color[1] = static_cast<float>((value >> 8) & 0xFF) / 255.f;
         country.color[2] = static_cast<float>((value >> 16) & 0xFF) / 255.f;
+    }
+
+    if (!values["tags"].empty() && values["tags"].type() == Hjson::Type::Vector) {
+        auto& tags = values["tags"];
+        for (size_t i = 0; i < tags.size(); i++) {
+            const std::string& tag = tags[i].to_string();
+            if (tag == "space_program") {
+                node.emplace<components::SpaceCapability>();
+                continue;
+            }
+        }
     }
 
     return true;

@@ -21,6 +21,8 @@
 #include <ranges>
 #include <utility>
 
+#include "resourceledger.h"
+
 #define ITERATE_GOODS(name)                       \
     GoodEntity name = static_cast<GoodEntity>(0); \
     static_cast<size_t>(name) < ledger.size();    \
@@ -777,6 +779,14 @@ double ResourceLedger::Max() const {
         }
     }
     return val;
+}
+
+double ResourceLedger::GetSum() {
+    double sum = 0;
+    for (ITERATE_GOODS(i)) {
+        sum += (*this)[i];
+    }
+    return sum;
 }
 
 double ResourceLedger::MultiplyAndGetSum(const ResourceMap &other) const {
