@@ -16,6 +16,7 @@
  */
 #include "core/systems/economy/syslaunchvehicleproduction.h"
 
+#include "core/components/projects.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 
@@ -31,11 +32,21 @@ void SysLaunchVehicleProduction::DoSystem() {
         if (!GetUniverse().valid(province)) {
             continue;
         }
-        // Otherwise we process the province as normal
-        // Compile the list of projects that we need and then add that demand to the universe
-        // and also output the value into whatever queue that we have
+        // We add the different projects together and process
+        for (entt::entity project : space_port_comp.projects) {
+            // Then we process the project...
+            auto& project_comp = GetUniverse().get<components::Project>(project);
+            project_comp.progress += Interval();
+            if (project_comp.progress >= project_comp.max_progress) {
+                // Progress is done, we should delete it somehow
+                continue;
+            }
+            // Otherwise we consume resources
+            components::ResourceLedger& ledger = GetUniverse().get<components::ResourceLedger>(project);
+            auto& market = GetUniverse().get<components::Market>(province);
+            market.consumption += ledger;
+            project_comp.project_last_cost = ledger.MultiplyAndGetSum(market.price);
+        }
     }
 }
-
-int SysLaunchVehicleProduction::Interval() { return ECONOMIC_TICK; }
 }  // namespace cqsp::core::systems

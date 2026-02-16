@@ -60,6 +60,6 @@ struct SpacePort {
     ResourceMap output_resources_rate;
     ResourceMap resource_stockpile;
 
-    std::vector<double> projects;
+    std::vector<entt::entity> projects;
 };
 }  // namespace cqsp::core::components::infrastructure
