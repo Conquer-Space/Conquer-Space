@@ -16,8 +16,6 @@
  */
 #include "client/scenes/universe/interface/maintooltip.h"
 
-#include "maintooltip.h"
-
 namespace cqsp::client::systems::rmlui {
 ToolTipWindow::~ToolTipWindow() { document->Close(); }
 
