@@ -17,8 +17,11 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 
 namespace cqsp::core::components {
+enum class ProjectType { Design, Manufacturing, Integration };
+
 struct Project {
     // Current progress
     uint64_t progress;
@@ -29,5 +32,8 @@ struct Project {
     // Also somehow
     double project_total_cost = 0;
     double project_last_cost = 0;
+
+    ProjectType type;
+    entt::entity result;
 };
 }  // namespace cqsp::core::components

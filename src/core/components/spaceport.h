@@ -61,5 +61,6 @@ struct SpacePort {
     ResourceMap resource_stockpile;
 
     std::vector<entt::entity> projects;
+    std::vector<entt::entity> stored_launch_vehicles;
 };
 }  // namespace cqsp::core::components::infrastructure

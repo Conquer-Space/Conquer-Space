@@ -39,6 +39,8 @@ class LaunchVehicleWindow : public SysUserInterface {
         float fairing_size = 0.0f;
         float mass_to_orbit = 0.0f;
         std::array<char, 255> vehicle_name;
+        // An unreasonable amount of time to manufacture a rocket
+        uint64_t manufacture_time = core::components::StarDate::DAY * 90;
     } design;
 };
 }  // namespace cqsp::client::systems

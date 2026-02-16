@@ -69,7 +69,7 @@ void LaunchVehicleWindow::DoUI(int delta_time) {
     ImGui::EndChild();
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
+    ImGui::BeginChild("launch_vehicle_viewer_right", ImVec2(400, 700));
     LaunchVehicleWindowRight();
     ImGui::EndChild();
     ImGui::End();
@@ -99,6 +99,7 @@ void LaunchVehicleWindow::CreateLaunchVehicleWindow() {
         launch_vehicle.fairing_size = static_cast<double>(design.fairing_size / 100.f);
         launch_vehicle.reliability = static_cast<double>(design.reliability);
         launch_vehicle.mass_to_orbit = static_cast<double>(design.mass_to_orbit);
+        launch_vehicle.manufacture_time = design.manufacture_time;
         GetUniverse().emplace<core::components::Name>(new_launch_vehicle, std::string(design.vehicle_name.data()));
         capability.launch_vehicle_list.push_back(new_launch_vehicle);
         is_creating_launch_vehicle = false;

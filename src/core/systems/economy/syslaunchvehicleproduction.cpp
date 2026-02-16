@@ -42,10 +42,10 @@ void SysLaunchVehicleProduction::DoSystem() {
                 continue;
             }
             // Otherwise we consume resources
-            components::ResourceLedger& ledger = GetUniverse().get<components::ResourceLedger>(project);
+            components::ResourceMap& ledger = GetUniverse().get<components::ResourceMap>(project);
             auto& market = GetUniverse().get<components::Market>(province);
             market.consumption += ledger;
-            project_comp.project_last_cost = ledger.MultiplyAndGetSum(market.price);
+            project_comp.project_last_cost = (ledger * market.price).GetSum();
         }
     }
 }

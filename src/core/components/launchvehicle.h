@@ -28,6 +28,7 @@ struct LaunchVehicle {
     double reliability;
     double fairing_size;  // Maybe specific dimensions in the future
     double mass_to_orbit;
+    uint64_t manufacture_time;
 };
 
 struct SpaceCapability {
