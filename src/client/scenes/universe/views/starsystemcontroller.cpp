@@ -234,7 +234,11 @@ void StarSystemController::CityDetection() {
     }
 
     ZoneNamed(LookforProvince, true);
-    { hovering_province = planet_texture.province_map[pos]; }
+    {
+        if (pos < planet_texture.province_map.size()) {
+            hovering_province = planet_texture.province_map[pos];
+        }
+    }
 }
 
 SurfaceCoordinate StarSystemController::GetMouseSurfaceIntersection() {
