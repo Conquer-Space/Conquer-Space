@@ -23,10 +23,11 @@ void ToolTipWindow::Update(double delta_time) {
     // We should move the position into somewhere we can see
     document->SetProperty("top", fmt::format("{} px", GetApp().GetMouseY() + 5));
     document->SetProperty("left", fmt::format("{} px", GetApp().GetMouseX() + 5));
-}
-
-void ToolTipWindow::OpenDocument() {
-    document = GetApp().LoadDocument(file_name);
+    document->PullToFront();
+    // Also set the text too
+    // Check if the mouse is hovering over anything as well
     document->Show();
 }
+
+void ToolTipWindow::OpenDocument() { document = GetApp().LoadDocument(file_name); }
 }  // namespace cqsp::client::systems::rmlui
