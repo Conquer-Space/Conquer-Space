@@ -532,6 +532,11 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
     ImGui::SliderAngle("Launch Azimuth", &azimuth, 0, 360);
     ImGui::SliderAngle("Argument of perapsis", &arg_of_perapsis, 0, 360);
     ImGui::SliderAngle("Longitude of the ascending node", &LAN, 0, 360);
+    auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+    int num_launch_vehicles = space_port.stored_launch_vehicles.size();
+    if (num_launch_vehicles == 0) {
+        ImGui::BeginDisabled();
+    }
     if (ImGui::Button("Launch!")) {
         // Get reference body
         entt::entity reference_body = city_coord.planet;
@@ -546,6 +551,10 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
         entt::entity ship = core::actions::LaunchShip(GetUniverse(), orb);
         // Also compute the value
         GetUniverse().emplace<ctx::VisibleOrbit>(ship);
+        space_port.stored_launch_vehicles.pop_back();
+    }
+    if (num_launch_vehicles == 0) {
+        ImGui::EndDisabled();
     }
     double periapsis = semi_major_axis * (1 - eccentricity);
     if (GetUniverse().get<components::bodies::Body>(city_coord.planet).radius > periapsis) {
@@ -554,6 +563,7 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
     }
     ImGui::TextFmt("Launch Inclination: {}",
                    types::toDegree(types::GetLaunchInclination(city_coord.r_latitude(), (azimuth))));
+    ImGui::TextFmt("Launch Vehicles: {}", space_port.stored_launch_vehicles.size());
 }
 
 void SysProvinceInformation::DockedTab(const entt::entity city) {

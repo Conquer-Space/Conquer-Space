@@ -33,12 +33,14 @@ void SysLaunchVehicleProduction::DoSystem() {
             continue;
         }
         // We add the different projects together and process
+        std::vector<entt::entity> completed_projects;
         for (entt::entity project : space_port_comp.projects) {
             // Then we process the project...
             auto& project_comp = GetUniverse().get<components::Project>(project);
             project_comp.progress += Interval();
             if (project_comp.progress >= project_comp.max_progress) {
                 // Progress is done, we should delete it somehow
+                completed_projects.push_back(project);
                 continue;
             }
             // Otherwise we consume resources
@@ -46,6 +48,17 @@ void SysLaunchVehicleProduction::DoSystem() {
             auto& market = GetUniverse().get<components::Market>(province);
             market.consumption += ledger;
             project_comp.project_last_cost = (ledger * market.price).GetSum();
+        }
+
+        for (entt::entity completed_project : completed_projects) {
+            // Let's also finish the project
+            auto& project_comp = GetUniverse().get<components::Project>(completed_project);
+            space_port_comp.stored_launch_vehicles.push_back(project_comp.result);
+
+            space_port_comp.projects.erase(
+                std::remove(space_port_comp.projects.begin(), space_port_comp.projects.end(), completed_project),
+                space_port_comp.projects.end());
+            GetUniverse().destroy(completed_project);
         }
     }
 }
