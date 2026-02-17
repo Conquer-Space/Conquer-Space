@@ -212,12 +212,15 @@ void StarSystemController::UpdateMapMode() {
 
 void StarSystemController::CityDetection() {
     ZoneScoped;
+    auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
     if (on_planet == entt::null || !universe.valid(on_planet)) {
+        hovering_text = std::monostate();
         return;
     }
     SurfaceCoordinate s = GetMouseSurfaceIntersection();
 
     if (!universe.any_of<PlanetTexture>(on_planet)) {
+        hovering_text = std::monostate();
         return;
     }
     auto& planet_texture = universe.get<PlanetTexture>(on_planet);
@@ -235,9 +238,9 @@ void StarSystemController::CityDetection() {
 
     ZoneNamed(LookforProvince, true);
     {
+        auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
         if (pos < planet_texture.province_map.size()) {
             hovering_province = planet_texture.province_map[pos];
-            auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
             hovering_text = hovering_province;
             // Now we're hovering on something
             if (universe.any_of<components::Province>(hovering_province)) {
@@ -246,7 +249,10 @@ void StarSystemController::CityDetection() {
                     hovering_text = province.country;
                 }
             }
+        } else {
+            hovering_text = std::monostate();
         }
+        // Then we should also check if we're not selecting anything, and if we're not then hovering text should be null
     }
 }
 

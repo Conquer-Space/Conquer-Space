@@ -18,6 +18,7 @@
 
 #include <string>
 
+#include "client/components/clientctx.h"
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems::rmlui {
@@ -31,5 +32,7 @@ class ToolTipWindow : public SysRmlUiInterface {
  private:
     std::string file_name = "../data/core/gui/mainscene/tooltipwindow.rml";
     Rml::ElementDocument* document;
+    client::ctx::HoveringItem last_hovering_item;
+    double last_tooltip_change = 0;
 };
 }  // namespace cqsp::client::systems::rmlui

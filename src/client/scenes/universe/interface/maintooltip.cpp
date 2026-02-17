@@ -37,19 +37,32 @@ void ToolTipWindow::Update(double delta_time) {
     document->SetProperty("top", fmt::format("{} px", GetApp().GetMouseY() + 5));
     document->SetProperty("left", fmt::format("{} px", GetApp().GetMouseX() + 5));
     // In the future we should probably have a more efficient way of updating this rml
-    //document->SetInnerRML(hovering_text.hovering_text);
-    std::visit(overloaded {[](std::monostate) {},
+    // Now let's check the value
+    if (last_hovering_item != hovering_text) {
+        last_tooltip_change = GetApp().GetTime();
+    }
+
+    // Then if it's low enough then we hide
+    if (GetApp().GetTime() - last_tooltip_change < 0.1) {
+        document->Hide();
+    } else {
+        document->Show();
+    }
+
+    std::visit(overloaded {[&](std::monostate) { document->Hide(); },
                            [&](entt::entity entity) {
                                if (GetUniverse().valid(entity)) {
                                    // Then we set it
                                    document->SetInnerRML(core::util::GetName(GetUniverse(), entity));
+                               } else {
+                                   // We show nothing
+                                   document->Hide();
                                }
                            },
                            [&](std::string string) { document->SetInnerRML(string); }},
                hovering_text);
-    // Also set the text too
-    // Check if the mouse is hovering over anything as well
-    document->Show();
+
+    last_hovering_item = hovering_text;
 }
 
 void ToolTipWindow::OpenDocument() { document = GetApp().LoadDocument(file_name); }
