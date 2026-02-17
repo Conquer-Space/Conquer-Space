@@ -30,9 +30,9 @@
 #include "core/components/name.h"
 #include "core/components/organizations.h"
 #include "core/components/player.h"
+#include "core/components/ships.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
-#include "starsystemcontroller.h"
 
 namespace cqsp::client::systems {
 namespace components = core::components;
@@ -261,7 +261,7 @@ void StarSystemController::CenterCameraOnCity() {
 void StarSystemController::FocusOnEntity(entt::entity ent) {
     // if the focused planet is the current planet, then check if it's close
     // enough. If it is see the countries on the planet
-    if (ent == focused_planet) {
+    if (ent == focused_planet && universe.all_of<Body>(focused_planet)) {
         auto& body = universe.get<Body>(focused_planet);
         // If the distance is further than that we should then focus on that planet
         if (glm::distance(camera.cam_pos, CalculateCenteredObject(focused_planet)) > body.radius * 10) {
@@ -506,10 +506,54 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
     glm::vec3 ray_wor = CalculateMouseRay(GetMouseInScreenSpace(mouse_x, mouse_y));
     for (entt::entity body_id : universe.view<Body>()) {
         glm::vec3 object_pos = CalculateCenteredObject(body_id);
+        // This is so inefficient lol
+        glm::vec3 billboard_pos = renderer.GetBillboardPosition(object_pos);
+        // billboard_pos = renderer.TranslateToNormalized(billboard_pos);
+        // Then parse the position compared to the others
+        // Convert this to mouse relative pos
+        billboard_pos = glm::vec3(billboard_pos.x, app.GetWindowHeight() - billboard_pos.y, 0);
+        if (glm::distance(billboard_pos, glm::vec3(mouse_x, mouse_y, 0)) < 10) {
+            // Then we're hovering over the body?
+            mouse_on_object_position = object_pos + 1.f;
+            universe.emplace_or_replace<MouseOverEntity>(body_id);
+            return body_id;
+        }
+        // Then we should get
+        // What's the angular resolution that we need...
         // Check if the sphere is rendered or not
         // Normalize 3d device coordinates
         auto& body = universe.get<Body>(body_id);
         auto intersection = CheckIntersection(object_pos, ray_wor, static_cast<float>(body.radius));
+
+        // TODO(EhWhoAmI): Get the closer value
+        if (intersection) {
+            mouse_on_object_position = *intersection;
+            universe.emplace_or_replace<MouseOverEntity>(body_id);
+            return body_id;
+        }
+    }
+
+    // Now scan satellites?
+
+    for (entt::entity body_id : universe.view<components::ships::Ship, ctx::VisibleOrbit>()) {
+        glm::vec3 object_pos = CalculateCenteredObject(body_id);
+        // This is so inefficient lol
+        glm::vec3 billboard_pos = renderer.GetBillboardPosition(object_pos);
+        // billboard_pos = renderer.TranslateToNormalized(billboard_pos);
+        // Then parse the position compared to the others
+        // Convert this to mouse relative pos
+        billboard_pos = glm::vec3(billboard_pos.x, app.GetWindowHeight() - billboard_pos.y, 0);
+        if (glm::distance(billboard_pos, glm::vec3(mouse_x, mouse_y, 0)) < 10) {
+            // Then we're hovering over the body?
+            mouse_on_object_position = object_pos + 1.f;
+            universe.emplace_or_replace<MouseOverEntity>(body_id);
+            return body_id;
+        }
+        // Then we should get
+        // What's the angular resolution that we need...
+        // Check if the sphere is rendered or not
+        // Normalize 3d device coordinates
+        auto intersection = CheckIntersection(object_pos, ray_wor, 1);
 
         // TODO(EhWhoAmI): Get the closer value
         if (intersection) {
@@ -687,10 +731,12 @@ void StarSystemController::HandleHoverTooltip() {
     }
 
     // Get distance from hovering item, and if it's far away enough then we should do something
-    if (glm::distance(camera.cam_pos, mouse_on_object_position) > 6371 * 10) {
+    if (glm::distance(camera.cam_pos, mouse_on_object_position) > 6371 * 10 ||
+        (universe.valid(hovering_planet) && universe.any_of<components::ships::Ship>(hovering_planet))) {
         // Then we should hover as planet
         hovering_item = hovering_planet;
     }
+
     if ((std::holds_alternative<entt::entity>(hovering_text) &&
          std::get<entt::entity>(hovering_text) != hovering_item) ||
         (!std::holds_alternative<entt::entity>(hovering_text))) {

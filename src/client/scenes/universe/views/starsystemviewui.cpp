@@ -36,6 +36,7 @@ StarSystemViewUI::StarSystemViewUI(core::Universe& universe, SysStarSystemRender
 
 void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     ImGui::Begin("Debug ui window", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::TextFmt("Mouse Pos: {} {}", controller.app.GetMouseX(), controller.app.GetMouseY());
     ImGui::TextFmt("Cam Pos: {} {} {}", camera.cam_pos.x, camera.cam_pos.y, camera.cam_pos.z);
     ImGui::TextFmt("Cam Coordinate: {} {}", controller.target_surface_coordinate.longitude(),
                    controller.target_surface_coordinate.latitude());
