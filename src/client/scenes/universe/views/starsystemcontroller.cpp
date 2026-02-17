@@ -195,14 +195,12 @@ void StarSystemController::UpdateMapMode() {
         } break;
         case ctx::MapMode::ProvinceMapMode: {
             auto& planet_province_colors = universe.colors_province[focused_planet];
-            for (auto [province, color] : planet_province_colors) {
-                int r = (color & 0xFF0000) >> 16;
-                int g = (color & 0x00FF00) >> 8;
-                int b = (color & 0x0000FF);
+            for (auto [province, color_int] : planet_province_colors) {
+                auto color = components::ProvinceColor::fromInt(color_int);
                 renderer.UpdatePlanetProvinceColors(
                     focused_planet, province,
-                    glm::vec4(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.,
-                              static_cast<float>(b) / 255.f, 0.65f));
+                    glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
+                              static_cast<float>(color.b) / 255.f, 0.65f));
             }
         } break;
         default:
@@ -265,9 +263,8 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
     // enough. If it is see the countries on the planet
     if (ent == focused_planet) {
         auto& body = universe.get<Body>(focused_planet);
-
-        if (camera.scroll > body.radius * 10) {
-            // Planet selection
+        // If the distance is further than that we should then focus on that planet
+        if (glm::distance(camera.cam_pos, CalculateCenteredObject(focused_planet)) > body.radius * 10) {
             SeePlanet(ent);
         } else {
             // Check if the planet has stuff and then don't select if there's no countries on the planet
@@ -343,6 +340,8 @@ void StarSystemController::SeePlanet(entt::entity ent) {
     universe.clear<FocusedPlanet>();
     universe.emplace<FocusedPlanet>(ent);
     focused_planet = ent;
+    // Reset map
+    last_map_mode = ctx::MapMode::InvalidMapMode;
 }
 
 void StarSystemController::FoundCity() {
@@ -579,14 +578,13 @@ void StarSystemController::ResetProvinceColor(entt::entity province) {
         case ctx::MapMode::ProvinceMapMode: {
             const auto& province_comp = universe.get<components::Province>(province);
             auto& planet_province_colors = universe.colors_province[focused_planet];
-            int color = planet_province_colors[province];
+            int color_int = planet_province_colors[province];
 
-            int r = (color & 0xFF0000) >> 16;
-            int g = (color & 0x00FF00) >> 8;
-            int b = (color & 0x0000FF);
-            renderer.UpdatePlanetProvinceColors(focused_planet, province,
-                                                glm::vec4(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.,
-                                                          static_cast<float>(b) / 255.f, 0.65f));
+            auto color = components::ProvinceColor::fromInt(color_int);
+            renderer.UpdatePlanetProvinceColors(
+                focused_planet, province,
+                glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
+                          static_cast<float>(color.b) / 255.f, 0.65f));
         }
     }
 }
@@ -595,6 +593,9 @@ void StarSystemController::SelectForeignProvince(entt::entity province) {
     const auto& province_comp = universe.get<components::Province>(province);
     universe.ctx().at<ctx::MapMode>() = ctx::MapMode::CountryMapMode;
     UpdateMapMode();  //  This feels like a hack, we should not do this
+    if (!universe.valid(province_comp.country)) {
+        return;
+    }
     SetCountryProvincesColor(province_comp.country);
 }
 
@@ -604,18 +605,20 @@ void StarSystemController::SelectDomesticProvince(entt::entity province) {
     // So it's kind of a hybrid mode
     // We should probably have a specific way to specify this hybrid mode but I don't really want to do that right now
     const auto& province_comp = universe.get<components::Province>(province);
+    if (!universe.valid(province_comp.country)) {
+        return;
+    }
     auto& country_comp = universe.get<components::Country>(province_comp.country);
     auto& country_list = universe.get<components::CountryCityList>(province_comp.country);
     auto& planet_province_colors = universe.colors_province[hovering_planet];
     for (entt::entity province : country_list.province_list) {
         // TODO(EhWhoAmI): Check if the province is on the selected planet
-        int color = planet_province_colors[province];
-        int r = (color & 0xFF0000) >> 16;
-        int g = (color & 0x00FF00) >> 8;
-        int b = (color & 0x0000FF);
-        renderer.UpdatePlanetProvinceColors(hovering_planet, province,
-                                            glm::vec4(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.,
-                                                      static_cast<float>(b) / 255.f, 0.65f));
+        int color_int = planet_province_colors[province];
+        auto color = components::ProvinceColor::fromInt(color_int);
+        renderer.UpdatePlanetProvinceColors(
+            hovering_planet, province,
+            glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
+                      static_cast<float>(color.b) / 255.f, 0.65f));
     }
 }
 
@@ -675,6 +678,9 @@ void StarSystemController::HandleHoverTooltip() {
         auto& province = universe.get<components::Province>(hovering_province);
         if (province.country != universe.GetPlayer()) {
             hovering_item = province.country;
+        }
+        if (province.country == entt::null) {
+            hovering_item = hovering_province;
         }
     } else {
         hovering_item = entt::null;

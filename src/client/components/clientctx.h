@@ -65,5 +65,13 @@ struct GameLoad {
 
 struct VisibleOrbit {};
 
-enum class MapMode { NoMapMode, CountryMapMode, ProvinceMapMode };
+enum class MapMode {
+    NoMapMode,
+    CountryMapMode,
+    ProvinceMapMode,
+    /*
+    * This map mode is not intended to be actually used, this is just to force a reset of a map mode
+    */
+    InvalidMapMode
+};
 }  // namespace cqsp::client::ctx
