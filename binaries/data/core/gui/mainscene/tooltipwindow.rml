@@ -3,18 +3,18 @@
         <title></title>
         <style>
         body {
-            width: 180px;
+            width: auto;
             background-color: #0085a7;
-            height: 80px;
+            height: auto;
             font-family: Roboto;
             position: absolute;
             font-size: 16px;
             top: 50px;
 		    left: 50px;
+            margin: 5px 5px 5px 5px;
         }
         </style>
     </head>
     <body>
-        <p id="thingy">Province Name</p>
     </body>
 </rml>

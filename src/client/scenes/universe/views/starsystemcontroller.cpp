@@ -31,7 +31,7 @@
 #include "core/components/organizations.h"
 #include "core/components/player.h"
 #include "core/components/surface.h"
-#include "starsystemcontroller.h"
+#include "core/util/nameutil.h"
 
 namespace cqsp::client::systems {
 namespace components = core::components;
@@ -237,6 +237,15 @@ void StarSystemController::CityDetection() {
     {
         if (pos < planet_texture.province_map.size()) {
             hovering_province = planet_texture.province_map[pos];
+            auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
+            hovering_text = hovering_province;
+            // Now we're hovering on something
+            if (universe.any_of<components::Province>(hovering_province)) {
+                auto& province = universe.get<components::Province>(hovering_province);
+                if (province.country != universe.GetPlayer()) {
+                    hovering_text = province.country;
+                }
+            }
         }
     }
 }

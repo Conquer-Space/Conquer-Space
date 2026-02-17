@@ -24,8 +24,8 @@
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
 #include "client/scenes/universe/interface/launchvehiclewindow.h"
-#include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/maintooltip.h"
+#include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
@@ -77,6 +77,7 @@ void UniverseScene::Init() {
     system_renderer->Initialize();
 
     GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
+    GetUniverse().ctx().emplace<client::ctx::HoveringItem>();
 
     system_renderer->SeeStarSystem();
 

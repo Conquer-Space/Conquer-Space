@@ -18,6 +18,9 @@
 
 #include <array>
 #include <string>
+#include <variant>
+
+#include <entt/entity/entity.hpp>
 
 namespace cqsp::client::ctx {
 
@@ -31,6 +34,10 @@ struct PauseOptions {
     bool to_tick = false;
     int tick_speed = 3;
     bool tick_once = false;
+};
+
+struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
+    using variant::variant;
 };
 
 struct SelectedCountry {};
