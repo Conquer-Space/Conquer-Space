@@ -35,9 +35,6 @@ StarSystemViewUI::StarSystemViewUI(core::Universe& universe, SysStarSystemRender
 }
 
 void StarSystemViewUI::RenderInformationWindow(double delta_time) {
-    // FIXME(EhWhoamI)
-    // auto &debug_info =
-    // universe.ctx().emplace<ctx::StarSystemViewDebug>();
     ImGui::Begin("Debug ui window", NULL, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::TextFmt("Cam Pos: {} {} {}", camera.cam_pos.x, camera.cam_pos.y, camera.cam_pos.z);
     ImGui::TextFmt("Cam Coordinate: {} {}", controller.target_surface_coordinate.longitude(),
@@ -58,7 +55,8 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
 
     ImGui::TextFmt("Hovering province {}", GetName(universe, controller.hovering_province));
     ImGui::TextFmt("Selected province {}", GetName(universe, controller.selected_province));
-    ImGui::TextFmt("Focused planets: {}", universe.view<FocusedPlanet>().size());
+    ImGui::TextFmt("Focused planets: {}", GetName(universe, universe.view<FocusedPlanet>().front()));
+    ImGui::TextFmt("Hovered planet: {}", GetName(universe, controller.mouse_hover_planet));
     ImGui::TextFmt("Generated {} orbits last frame", renderer.orbit_geometry.GetOrbitsGenerated());
     auto intersection = controller.GetMouseSurfaceIntersection();
     ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());

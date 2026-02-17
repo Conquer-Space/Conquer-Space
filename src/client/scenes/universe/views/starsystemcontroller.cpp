@@ -47,21 +47,24 @@ using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
                                            SysStarSystemRenderer& _r)
-    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null), map_mode(universe.create()) {
-    universe.emplace<ctx::MapMode>(map_mode, ctx::MapMode::NoMapMode);
+    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {
+    universe.ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::NoMapMode);
 }
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
     universe.clear<systems::MouseOverEntity>();
+    focused_planet = universe.view<systems::FocusedPlanet>().front();
+
     GetMouseOnObject(app.GetMouseX(), app.GetMouseY());
 
     double deltaX = previous_mouseX - app.GetMouseX();
     double deltaY = previous_mouseY - app.GetMouseY();
 
     is_founding_city = IsFoundingCity();
-
+    // Check our focus on the planet and if we are focusing then we should
     CityDetection();
+    // Now we should also check for hovering
 
     // Discern between clicking on UI and game
     if (!ImGui::GetIO().WantCaptureMouse && !app.GetRmlUiContext()->IsMouseInteracting()) {
@@ -88,7 +91,7 @@ void StarSystemController::Update(float delta_time) {
         MoveCamera(delta_time);
     }
 
-    mouse_on_object = GetMouseIntersectionOnObject(app.GetMouseX(), app.GetMouseY());
+    mouse_on_object_position = GetMouseIntersectionOnObject(app.GetMouseX(), app.GetMouseY());
 
     // Calculate camera
     CenterCameraOnPoint();
@@ -177,14 +180,14 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }
 
 void StarSystemController::UpdateMapMode() {
-    auto current_map_mode = universe.get<ctx::MapMode>(map_mode);
+    auto current_map_mode = universe.ctx().at<ctx::MapMode>();
 
     if (last_map_mode == current_map_mode) {
         return;
     }
     switch (current_map_mode) {
         case ctx::MapMode::NoMapMode:
-            renderer.ResetPlanetProvinceColors(on_planet);
+            renderer.ResetPlanetProvinceColors(focused_planet);
             break;
         case ctx::MapMode::CountryMapMode: {
             // Now set country colors
@@ -193,13 +196,13 @@ void StarSystemController::UpdateMapMode() {
             }
         } break;
         case ctx::MapMode::ProvinceMapMode: {
-            auto& planet_province_colors = universe.colors_province[on_planet];
+            auto& planet_province_colors = universe.colors_province[focused_planet];
             for (auto [province, color] : planet_province_colors) {
                 int r = (color & 0xFF0000) >> 16;
                 int g = (color & 0x00FF00) >> 8;
                 int b = (color & 0x0000FF);
                 renderer.UpdatePlanetProvinceColors(
-                    on_planet, province,
+                    focused_planet, province,
                     glm::vec4(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.,
                               static_cast<float>(b) / 255.f, 0.65f));
             }
@@ -213,17 +216,17 @@ void StarSystemController::UpdateMapMode() {
 void StarSystemController::CityDetection() {
     ZoneScoped;
     auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
-    if (on_planet == entt::null || !universe.valid(on_planet)) {
+    if (mouse_hover_planet == entt::null || !universe.valid(mouse_hover_planet)) {
         hovering_text = std::monostate();
         return;
     }
     SurfaceCoordinate s = GetMouseSurfaceIntersection();
 
-    if (!universe.any_of<PlanetTexture>(on_planet)) {
+    if (!universe.any_of<PlanetTexture>(mouse_hover_planet)) {
         hovering_text = std::monostate();
         return;
     }
-    auto& planet_texture = universe.get<PlanetTexture>(on_planet);
+    auto& planet_texture = universe.get<PlanetTexture>(mouse_hover_planet);
 
     int _province_height = planet_texture.height;
     int _province_width = planet_texture.width;
@@ -243,7 +246,7 @@ void StarSystemController::CityDetection() {
             hovering_province = planet_texture.province_map[pos];
             hovering_text = hovering_province;
             // Now we're hovering on something
-            if (universe.any_of<components::Province>(hovering_province)) {
+            if (universe.valid(hovering_province) && universe.any_of<components::Province>(hovering_province)) {
                 auto& province = universe.get<components::Province>(hovering_province);
                 if (province.country != universe.GetPlayer()) {
                     hovering_text = province.country;
@@ -257,17 +260,17 @@ void StarSystemController::CityDetection() {
 }
 
 SurfaceCoordinate StarSystemController::GetMouseSurfaceIntersection() {
-    if (on_planet == entt::null || !universe.valid(on_planet)) {
+    if (mouse_hover_planet == entt::null || !universe.valid(mouse_hover_planet)) {
         return SurfaceCoordinate(0, 0);
     }
-    if (!universe.any_of<Body>(on_planet)) {
+    if (!universe.any_of<Body>(mouse_hover_planet)) {
         return SurfaceCoordinate(0, 0);
     }
 
-    glm::vec3 p = GetMouseOnObjectPosition() - CalculateCenteredObject(on_planet);
+    glm::vec3 p = GetMouseOnObjectPosition() - CalculateCenteredObject(mouse_hover_planet);
     p = glm::normalize(p);
 
-    Body& planet_comp = universe.get<Body>(on_planet);
+    Body& planet_comp = universe.get<Body>(mouse_hover_planet);
     glm::quat quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation, planet_comp.rotation_offset);
     // Rotate the vector based on the axial tilt and rotation.
     p = glm::inverse(quat) * p;
@@ -324,7 +327,7 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
 }
 
 /**
- * Selects a province.
+ * Selects a province. Triggers when mouse clicks on a province/focus on entity is activated.
  */
 void StarSystemController::SelectProvince() {
     // Unset previous province color
@@ -340,11 +343,10 @@ void StarSystemController::SelectProvince() {
     }
     universe.clear<ctx::SelectedProvince>();
     // Get selected planet, then
-    entt::entity focused_planet = universe.view<FocusedPlanet>().front();
-    if (!universe.any_of<PlanetTexture>(focused_planet)) {
+    if (!universe.any_of<PlanetTexture>(mouse_hover_planet)) {
         return;
     }
-    auto& tex = universe.get<PlanetTexture>(focused_planet);
+    auto& tex = universe.get<PlanetTexture>(mouse_hover_planet);
     if (tex.has_provinces) {
         universe.emplace_or_replace<ctx::SelectedProvince>(selected_province);
     }
@@ -356,28 +358,19 @@ void StarSystemController::SelectProvince() {
     const auto& province = universe.get<components::Province>(selected_province);
 
     if (province_to_reset != entt::null && universe.valid(selected_province)) {
-        // Reset our province color
-        renderer.UpdatePlanetProvinceColors(on_planet, province_to_reset, glm::vec4(0.f, 0.f, 0.f, 0.f));
+        ResetProvinceColor(province_to_reset);
     }
 
+    selected_country = province.country;
     if (province.country != player && universe.valid(province.country) &&
         universe.all_of<components::CountryCityList>(province.country)) {
-        // Full country selection
-        universe.get<ctx::MapMode>(map_mode) = ctx::MapMode::NoMapMode;
-        // Hack to stop triggering a map mode change so we don't wipe our current selection
-        last_map_mode = ctx::MapMode::NoMapMode;
-        if (selected_country != entt::null) {
-            renderer.ResetPlanetProvinceColors(on_planet);
-        }
-        selected_country = province.country;
-        SetCountryProvincesColor(province.country);
+        SelectForeignProvince(selected_province);
     } else {
-        // If we are selecting a certain province, we should deselect it or something
-        renderer.ResetPlanetProvinceColors(on_planet);
-        selected_country = entt::null;
+        // We're selecting a province that we currently own
+        SelectDomesticProvince(selected_province);
     }
 
-    renderer.UpdatePlanetProvinceColors(on_planet, selected_province, selected_province_color);
+    renderer.UpdatePlanetProvinceColors(mouse_hover_planet, selected_province, selected_province_color);
 }
 
 core::components::types::SurfaceCoordinate StarSystemController::GetCameraOverCoordinate() {
@@ -397,12 +390,13 @@ core::components::types::SurfaceCoordinate StarSystemController::GetCameraOverCo
 void StarSystemController::SeePlanet(entt::entity ent) {
     universe.clear<FocusedPlanet>();
     universe.emplace<FocusedPlanet>(ent);
+    focused_planet = ent;
 }
 
 void StarSystemController::FoundCity() {
     auto s = GetMouseSurfaceIntersection();
     SPDLOG_INFO("Founding city at {} {}", s.latitude(), s.longitude());
-    core::Node planetnode(universe, on_planet);
+    core::Node planetnode(universe, mouse_hover_planet);
     entt::entity settlement = core::actions::CreateCity(planetnode, s);
     // Set the name of the city
     Name& name = universe.emplace<Name>(settlement);
@@ -508,7 +502,7 @@ void StarSystemController::SetCountryProvincesColor(entt::entity country) {
     glm::vec4 color = glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], 0.65);
     for (entt::entity province : country_list.province_list) {
         // TODO(EhWhoAmI): Check if the province is on the selected planet
-        renderer.UpdatePlanetProvinceColors(on_planet, province, color);
+        renderer.UpdatePlanetProvinceColors(mouse_hover_planet, province, color);
     }
 }
 
@@ -526,11 +520,12 @@ glm::vec3 StarSystemController::GetMouseIntersectionOnObject(int mouse_x, int mo
         if (intersection) {
             glm::vec3 closest_hit = *intersection;
             is_rendering_founding_city = true;
-            on_planet = ent_id;
+            mouse_hover_planet = ent_id;
             return closest_hit;
         }
     }
     is_rendering_founding_city = false;
+    mouse_hover_planet = entt::null;
     return glm::vec3(0, 0, 0);
 }
 
@@ -635,4 +630,58 @@ void StarSystemController::FocusPlanetView() {
     }
 }
 
+void StarSystemController::ResetProvinceColor(entt::entity province) {
+    switch (universe.ctx().at<ctx::MapMode>()) {
+        case ctx::MapMode::NoMapMode:
+            renderer.UpdatePlanetProvinceColors(universe.view<systems::FocusedPlanet>().front(), province,
+                                                glm::vec4(0.f, 0.f, 0.f, 0.f));
+            break;
+        case ctx::MapMode::CountryMapMode: {
+            const auto& province_comp = universe.get<components::Province>(province);
+            auto& country_comp = universe.get<components::Country>(province_comp.country);
+            glm::vec4 color = glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], 0.65);
+            renderer.UpdatePlanetProvinceColors(focused_planet, province, color);
+        } break;
+        case ctx::MapMode::ProvinceMapMode: {
+            const auto& province_comp = universe.get<components::Province>(province);
+            auto& planet_province_colors = universe.colors_province[focused_planet];
+            int color = planet_province_colors[province];
+
+            int r = (color & 0xFF0000) >> 16;
+            int g = (color & 0x00FF00) >> 8;
+            int b = (color & 0x0000FF);
+            renderer.UpdatePlanetProvinceColors(focused_planet, province,
+                                                glm::vec4(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.,
+                                                          static_cast<float>(b) / 255.f, 0.65f));
+        }
+    }
+}
+
+void StarSystemController::SelectForeignProvince(entt::entity province) {
+    const auto& province_comp = universe.get<components::Province>(province);
+    universe.ctx().at<ctx::MapMode>() = ctx::MapMode::CountryMapMode;
+    UpdateMapMode();  //  This feels like a hack, we should not do this
+    SetCountryProvincesColor(province_comp.country);
+}
+
+void StarSystemController::SelectDomesticProvince(entt::entity province) {
+    // We should remain at whatever mode we were at last time
+    // But if we're at country mode, we should then show province view for each province in the country
+    // So it's kind of a hybrid mode
+    // We should probably have a specific way to specify this hybrid mode but I don't really want to do that right now
+    const auto& province_comp = universe.get<components::Province>(province);
+    auto& country_comp = universe.get<components::Country>(province_comp.country);
+    auto& country_list = universe.get<components::CountryCityList>(province_comp.country);
+    auto& planet_province_colors = universe.colors_province[mouse_hover_planet];
+    for (entt::entity province : country_list.province_list) {
+        // TODO(EhWhoAmI): Check if the province is on the selected planet
+        int color = planet_province_colors[province];
+        int r = (color & 0xFF0000) >> 16;
+        int g = (color & 0x00FF00) >> 8;
+        int b = (color & 0x0000FF);
+        renderer.UpdatePlanetProvinceColors(mouse_hover_planet, province,
+                                            glm::vec4(static_cast<float>(r) / 255.f, static_cast<float>(g) / 255.,
+                                                      static_cast<float>(b) / 255.f, 0.65f));
+    }
+}
 }  // namespace cqsp::client::systems

@@ -35,7 +35,7 @@ class StarSystemController {
     void Update(float delta_time);
 
     // Gets the intersection in 3d point between the mouse and any planet
-    glm::vec3 GetMouseOnObjectPosition() { return mouse_on_object; }
+    glm::vec3 GetMouseOnObjectPosition() { return mouse_on_object_position; }
 
     /// <summary>
     /// Gets the quaternion to calculate the planet's rotation from the axial rotation
@@ -95,6 +95,10 @@ class StarSystemController {
 
     void SelectProvince();
 
+    void ResetProvinceColor(entt::entity province);
+    void SelectForeignProvince(entt::entity province);
+    void SelectDomesticProvince(entt::entity province);
+
     core::Universe &universe;
     engine::Application &app;
 
@@ -107,7 +111,10 @@ class StarSystemController {
     double previous_mouseX;
     double previous_mouseY;
 
-    entt::entity on_planet = entt::null;
+    /**
+    * The planet the mouse is currently hovering on.
+    */
+    entt::entity mouse_hover_planet = entt::null;
 
     /// <summary>
     /// Debugging mouse position
@@ -126,7 +133,10 @@ class StarSystemController {
     entt::entity selected_province;
     entt::entity selected_country;
 
-    glm::vec3 mouse_on_object;
+    /**
+    * Screen space mouse to planet/sphere intersection point.
+    */
+    glm::vec3 mouse_on_object_position;
 
     bool is_rendering_founding_city;
     bool is_founding_city;
@@ -145,8 +155,9 @@ class StarSystemController {
     friend StarSystemViewUI;
 
     const glm::vec4 selected_province_color = glm::vec4(1.f, 0.f, 0.f, 0.35f);
-    const entt::entity map_mode;
 
     ctx::MapMode last_map_mode = ctx::MapMode::NoMapMode;
+
+    entt::entity focused_planet = entt::null;
 };
 }  // namespace cqsp::client::systems

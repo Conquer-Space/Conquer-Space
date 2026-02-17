@@ -17,7 +17,6 @@
 #include "client/scenes/universe/interface/mapmodewindow.h"
 
 #include "client/components/clientctx.h"
-#include "mapmodewindow.h"
 
 namespace cqsp::client::systems {
 void MapModeWindow::Init() {}
@@ -35,15 +34,9 @@ void MapModeWindow::DoUI(int delta_time) {
     ImGui::End();
 }
 
-void MapModeWindow::SetMapMode(ctx::MapMode map_mode) {
-    entt::entity current_map_mode = GetUniverse().view<ctx::MapMode>().front();
-    GetUniverse().get<ctx::MapMode>(current_map_mode) = map_mode;
-}
+void MapModeWindow::SetMapMode(ctx::MapMode map_mode) { GetUniverse().ctx().at<ctx::MapMode>() = map_mode; }
 
-inline ctx::MapMode MapModeWindow::GetMapMode() {
-    entt::entity current_map_mode = GetUniverse().view<ctx::MapMode>().front();
-    return GetUniverse().get<ctx::MapMode>(current_map_mode);
-}
+inline ctx::MapMode MapModeWindow::GetMapMode() { return GetUniverse().ctx().at<ctx::MapMode>(); }
 
 void MapModeWindow::MapModeButton(const char* string, ctx::MapMode map_mode) {
     ctx::MapMode current_mode = GetMapMode();
