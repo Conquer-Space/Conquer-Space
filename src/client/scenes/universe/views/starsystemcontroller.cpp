@@ -33,6 +33,7 @@
 #include "core/components/ships.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
+#include "starsystemcontroller.h"
 
 namespace cqsp::client::systems {
 namespace components = core::components;
@@ -49,7 +50,7 @@ using types::SurfaceCoordinate;
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
                                            SysStarSystemRenderer& _r)
     : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {
-    universe.ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::ProvinceMapMode);
+    universe.ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::CountryMapMode);
 }
 
 void StarSystemController::Update(float delta_time) {
@@ -181,6 +182,9 @@ void StarSystemController::UpdateMapMode() {
     auto current_map_mode = universe.ctx().at<ctx::MapMode>();
 
     if (last_map_mode == current_map_mode) {
+        return;
+    }
+    if (!universe.all_of<PlanetTexture>(focused_planet)) {
         return;
     }
     switch (current_map_mode) {
@@ -506,26 +510,8 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
     glm::vec3 ray_wor = CalculateMouseRay(GetMouseInScreenSpace(mouse_x, mouse_y));
     for (entt::entity body_id : universe.view<Body>()) {
         glm::vec3 object_pos = CalculateCenteredObject(body_id);
-        // This is so inefficient lol
-        glm::vec3 billboard_pos = renderer.GetBillboardPosition(object_pos);
-        // billboard_pos = renderer.TranslateToNormalized(billboard_pos);
-        // Then parse the position compared to the others
-        // Convert this to mouse relative pos
-        billboard_pos = glm::vec3(billboard_pos.x, app.GetWindowHeight() - billboard_pos.y, 0);
-        if (glm::distance(billboard_pos, glm::vec3(mouse_x, mouse_y, 0)) < 10) {
-            // Then we're hovering over the body?
-            mouse_on_object_position = object_pos + 1.f;
-            universe.emplace_or_replace<MouseOverEntity>(body_id);
-            return body_id;
-        }
-        // Then we should get
-        // What's the angular resolution that we need...
-        // Check if the sphere is rendered or not
-        // Normalize 3d device coordinates
         auto& body = universe.get<Body>(body_id);
-        auto intersection = CheckIntersection(object_pos, ray_wor, static_cast<float>(body.radius));
-
-        // TODO(EhWhoAmI): Get the closer value
+        auto intersection = IsMouseOverEntity(body_id, ray_wor, body.radius);
         if (intersection) {
             mouse_on_object_position = *intersection;
             universe.emplace_or_replace<MouseOverEntity>(body_id);
@@ -536,26 +522,7 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
     // Now scan satellites?
 
     for (entt::entity body_id : universe.view<components::ships::Ship, ctx::VisibleOrbit>()) {
-        glm::vec3 object_pos = CalculateCenteredObject(body_id);
-        // This is so inefficient lol
-        glm::vec3 billboard_pos = renderer.GetBillboardPosition(object_pos);
-        // billboard_pos = renderer.TranslateToNormalized(billboard_pos);
-        // Then parse the position compared to the others
-        // Convert this to mouse relative pos
-        billboard_pos = glm::vec3(billboard_pos.x, app.GetWindowHeight() - billboard_pos.y, 0);
-        if (glm::distance(billboard_pos, glm::vec3(mouse_x, mouse_y, 0)) < 10) {
-            // Then we're hovering over the body?
-            mouse_on_object_position = object_pos + 1.f;
-            universe.emplace_or_replace<MouseOverEntity>(body_id);
-            return body_id;
-        }
-        // Then we should get
-        // What's the angular resolution that we need...
-        // Check if the sphere is rendered or not
-        // Normalize 3d device coordinates
-        auto intersection = CheckIntersection(object_pos, ray_wor, 1);
-
-        // TODO(EhWhoAmI): Get the closer value
+        auto intersection = IsMouseOverEntity(body_id, ray_wor, 0.01);
         if (intersection) {
             mouse_on_object_position = *intersection;
             universe.emplace_or_replace<MouseOverEntity>(body_id);
@@ -630,6 +597,9 @@ void StarSystemController::ResetProvinceColor(entt::entity province) {
                 glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
                           static_cast<float>(color.b) / 255.f, 0.65f));
         }
+        default:
+        case ctx::MapMode::InvalidMapMode:
+            break;
     }
 }
 
@@ -746,5 +716,30 @@ void StarSystemController::HandleHoverTooltip() {
             hovering_text = hovering_item;
         }
     }
+}
+
+bool StarSystemController::MouseOverObjectBillboard(glm::vec3 object_pos) {
+    glm::vec3 billboard_pos = renderer.GetBillboardPosition(object_pos);
+
+    // Convert to mouse space
+    billboard_pos = glm::vec3(billboard_pos.x, app.GetWindowHeight() - billboard_pos.y, 0);
+    return glm::distance(billboard_pos, glm::vec3(app.GetMouseX(), app.GetMouseY(), 0)) < 10;
+}
+
+std::optional<glm::vec3> StarSystemController::IsMouseOverEntity(entt::entity entity, glm::vec3 ray_wor,
+                                                                 double radius) {
+    glm::vec3 object_pos = CalculateCenteredObject(entity);
+    // This is so inefficient lol
+    if (MouseOverObjectBillboard(object_pos)) {
+        // Then we're hovering over the body?
+        return std::optional<glm::vec3>(object_pos + 1.f);
+    }
+    // Then we should get
+    // What's the angular resolution that we need...
+    // Check if the sphere is rendered or not
+    // Normalize 3d device coordinates
+    auto intersection = CheckIntersection(object_pos, ray_wor, static_cast<float>(radius));
+
+    return (intersection);
 }
 }  // namespace cqsp::client::systems

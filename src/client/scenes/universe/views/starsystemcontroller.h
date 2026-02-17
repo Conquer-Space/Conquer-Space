@@ -98,6 +98,8 @@ class StarSystemController {
     void SelectDomesticProvince(entt::entity province);
 
     void HandleHoverTooltip();
+    bool MouseOverObjectBillboard(glm::vec3 object_pos);
+    std::optional<glm::vec3> IsMouseOverEntity(entt::entity entity, glm::vec3 ray_wor, double radius);
 
     void CheckHoveringEntity();
     entt::entity SurfaceCoordinateToProvince(core::components::types::SurfaceCoordinate coordinate,
