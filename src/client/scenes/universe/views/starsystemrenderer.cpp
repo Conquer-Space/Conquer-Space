@@ -583,6 +583,8 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
 
         assert(data.province_indices.size() ==
                static_cast<size_t>(province_width) * static_cast<size_t>(province_height));
+        // Check that our province map and indices are the right size.
+        assert(data.province_map.size() == data.province_indices.size());
         GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
 
         data.has_provinces = true;

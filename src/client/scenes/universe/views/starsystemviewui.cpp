@@ -56,7 +56,10 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     ImGui::TextFmt("Hovering province {}", GetName(universe, controller.hovering_province));
     ImGui::TextFmt("Selected province {}", GetName(universe, controller.selected_province));
     ImGui::TextFmt("Focused planets: {}", GetName(universe, universe.view<FocusedPlanet>().front()));
-    ImGui::TextFmt("Hovered planet: {}", GetName(universe, controller.mouse_hover_planet));
+    ImGui::TextFmt("Hovered planet: {}", GetName(universe, controller.hovering_planet));
+    ImGui::TextFmt("Hovered position: {} {} {} ({})", controller.mouse_on_object_position.x,
+                   controller.mouse_on_object_position.y, controller.mouse_on_object_position.z,
+                   glm::length(controller.mouse_on_object_position));
     ImGui::TextFmt("Generated {} orbits last frame", renderer.orbit_geometry.GetOrbitsGenerated());
     auto intersection = controller.GetMouseSurfaceIntersection();
     ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());

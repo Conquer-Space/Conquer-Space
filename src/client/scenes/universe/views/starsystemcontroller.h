@@ -71,7 +71,6 @@ class StarSystemController {
     void FocusCityView();
 
     void CalculateCityPositions();
-    void CityDetection();
 
     void CenterCameraOnPoint();
     void SetCameraToPlanetReferenceFrame();
@@ -87,7 +86,6 @@ class StarSystemController {
 
     core::components::types::SurfaceCoordinate GetMouseSurfaceIntersection();
 
-    glm::vec3 GetMouseIntersectionOnObject(int mouse_x, int mouse_y);
     glm::vec3 GetMouseInScreenSpace(int mouse_x, int mouse_y);
     std::optional<glm::vec3> CheckIntersection(const glm::vec3 &object_pos, const glm::vec3 &ray_wor, float radius);
 
@@ -98,6 +96,12 @@ class StarSystemController {
     void ResetProvinceColor(entt::entity province);
     void SelectForeignProvince(entt::entity province);
     void SelectDomesticProvince(entt::entity province);
+
+    void HandleHoverTooltip();
+
+    void CheckHoveringEntity();
+    entt::entity SurfaceCoordinateToProvince(core::components::types::SurfaceCoordinate coordinate,
+                                             entt::entity planet);
 
     core::Universe &universe;
     engine::Application &app;
@@ -110,11 +114,6 @@ class StarSystemController {
 
     double previous_mouseX;
     double previous_mouseY;
-
-    /**
-    * The planet the mouse is currently hovering on.
-    */
-    entt::entity mouse_hover_planet = entt::null;
 
     /// <summary>
     /// Debugging mouse position
@@ -130,6 +129,12 @@ class StarSystemController {
     int tex_b;
 
     entt::entity hovering_province;
+
+    /**
+    * The planet the mouse is currently hovering on.
+    */
+    entt::entity hovering_planet = entt::null;
+    entt::entity hovering_country = entt::null;
     entt::entity selected_province;
     entt::entity selected_country;
 
