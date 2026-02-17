@@ -50,12 +50,15 @@ struct PlanetTexture {
     asset::Texture* roughness = nullptr;
     asset::Texture* province_index_texture = nullptr;
     asset::Texture* province_color_map = nullptr;
+    // province_map.size() == province_indices.size()
     std::vector<entt::entity> province_map;
     // Indices for the color on the map
     std::vector<uint16_t> province_indices;
     std::vector<float> province_colors;
     std::map<entt::entity, uint16_t> province_index_map;
 
+    // Width and height of the province indices vector and the
+    // province map
     int width = 0;
     int height = 0;
     bool has_provinces = false;

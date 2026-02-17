@@ -24,6 +24,7 @@
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
 #include "client/scenes/universe/interface/launchvehiclewindow.h"
+#include "client/scenes/universe/interface/maintooltip.h"
 #include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
@@ -76,6 +77,8 @@ void UniverseScene::Init() {
     system_renderer->Initialize();
 
     GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
+    GetUniverse().ctx().emplace<client::ctx::HoveringItem>();
+    GetUniverse().ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::NoMapMode);
 
     system_renderer->SeeStarSystem();
 
@@ -97,6 +100,7 @@ void UniverseScene::Init() {
     simulation->tick();  // Why do we tick the simulation once here? Idk
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
+    AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
 }
 
 void UniverseScene::Update(float deltaTime) {

@@ -18,6 +18,9 @@
 
 #include <array>
 #include <string>
+#include <variant>
+
+#include <entt/entity/entity.hpp>
 
 namespace cqsp::client::ctx {
 
@@ -33,6 +36,25 @@ struct PauseOptions {
     bool tick_once = false;
 };
 
+struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
+    using variant::variant;
+
+    template <typename T>
+    HoveringItem& operator=(T&& value) {
+        std::variant<std::monostate, entt::entity, std::string>::operator=(std::forward<T>(value));
+
+        last_set = true;
+        return *this;
+    }
+
+    void Reset() { last_set = false; }
+
+    bool Set() const { return last_set; }
+
+ private:
+    bool last_set = false;
+};
+
 struct SelectedCountry {};
 
 struct SelectedProvince {};
@@ -43,5 +65,13 @@ struct GameLoad {
 
 struct VisibleOrbit {};
 
-enum class MapMode { NoMapMode, CountryMapMode, ProvinceMapMode };
+enum class MapMode {
+    NoMapMode,
+    CountryMapMode,
+    ProvinceMapMode,
+    /*
+    * This map mode is not intended to be actually used, this is just to force a reset of a map mode
+    */
+    InvalidMapMode
+};
 }  // namespace cqsp::client::ctx

@@ -522,6 +522,17 @@
         planet: earth
     }
     {
+        identifier: hawaii
+        color:
+        [
+            162
+            58
+            32
+        ]
+        country: usa
+        planet: earth
+    }
+    {
         identifier: new_jersey
         color:
         [
