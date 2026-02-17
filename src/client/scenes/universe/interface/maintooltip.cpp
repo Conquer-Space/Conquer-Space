@@ -62,8 +62,6 @@ void ToolTipWindow::Update(double delta_time) {
 
     if (GetApp().GetTime() - last_tooltip_change < 0.1) {
         to_present = false;
-    } else {
-        to_present = to_present && true;
     }
     if (to_present && !document->IsVisible()) {
         document->Show();
