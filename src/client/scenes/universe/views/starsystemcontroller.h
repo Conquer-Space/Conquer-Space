@@ -50,6 +50,12 @@ class StarSystemController {
     glm::vec3 CalculateCenteredObject(const entt::entity &);
     glm::vec3 CalculateCenteredObject(const glm::vec3 &);
 
+    glm::vec3 CalculateFuturePosition(const entt::entity entity);
+    /**
+     * Calculates interpolated position with respect with the camera center.
+     */
+    glm::vec3 CalculateFutureCenteredPosition(const entt::entity entity);
+
     glm::vec3 CalculateObjectPos(const entt::entity &ent);
 
     void PreRender();
