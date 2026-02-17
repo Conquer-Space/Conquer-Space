@@ -59,7 +59,7 @@ void ToolTipWindow::Update(double delta_time) {
                                    document->Hide();
                                }
                            },
-                           [&](std::string string) { document->SetInnerRML(string); }},
+                           [&](const std::string& string) { document->SetInnerRML(string); }},
                hovering_text);
 
     last_hovering_item = hovering_text;
