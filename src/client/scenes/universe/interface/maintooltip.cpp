@@ -38,31 +38,39 @@ void ToolTipWindow::Update(double delta_time) {
     document->SetProperty("left", fmt::format("{} px", GetApp().GetMouseX() + 5));
     // In the future we should probably have a more efficient way of updating this rml
     // Now let's check the value
-    if (last_hovering_item != hovering_text) {
+
+    // Then if it's low enough then we hide
+    bool to_present = true;
+    if (hovering_text.Set()) {
         last_tooltip_change = GetApp().GetTime();
     }
 
-    // Then if it's low enough then we hide
-    if (GetApp().GetTime() - last_tooltip_change < 0.1) {
-        document->Hide();
-    } else {
-        document->Show();
+    if (hovering_text.Set()) {
+        std::visit(overloaded {[&](std::monostate) { to_present = false; },
+                               [&](entt::entity entity) {
+                                   if (GetUniverse().valid(entity)) {
+                                       // Then we set it
+                                       document->SetInnerRML(core::util::GetName(GetUniverse(), entity));
+                                   } else {
+                                       // We show nothing
+                                       to_present = false;
+                                   }
+                               },
+                               [&](const std::string& string) { document->SetInnerRML(string); }},
+                   hovering_text);
     }
 
-    std::visit(overloaded {[&](std::monostate) { document->Hide(); },
-                           [&](entt::entity entity) {
-                               if (GetUniverse().valid(entity)) {
-                                   // Then we set it
-                                   document->SetInnerRML(core::util::GetName(GetUniverse(), entity));
-                               } else {
-                                   // We show nothing
-                                   document->Hide();
-                               }
-                           },
-                           [&](const std::string& string) { document->SetInnerRML(string); }},
-               hovering_text);
-
-    last_hovering_item = hovering_text;
+    if (GetApp().GetTime() - last_tooltip_change < 0.1) {
+        to_present = false;
+    } else {
+        to_present = to_present & true;
+    }
+    if (to_present && !document->IsVisible()) {
+        document->Show();
+    } else if (!to_present && document->IsVisible()) {
+        document->Hide();
+    }
+    hovering_text.Reset();
 }
 
 void ToolTipWindow::OpenDocument() { document = GetApp().LoadDocument(file_name); }

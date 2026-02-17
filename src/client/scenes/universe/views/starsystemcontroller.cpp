@@ -668,21 +668,31 @@ entt::entity StarSystemController::SurfaceCoordinateToProvince(SurfaceCoordinate
 
 void StarSystemController::HandleHoverTooltip() {
     auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
+    entt::entity hovering_item = entt::null;
     // Now we just do the province/country for now
-    hovering_text = hovering_province;
+    hovering_item = hovering_province;
     if (universe.valid(hovering_province) && universe.any_of<components::Province>(hovering_province)) {
         auto& province = universe.get<components::Province>(hovering_province);
         if (province.country != universe.GetPlayer()) {
-            hovering_text = province.country;
+            hovering_item = province.country;
         }
     } else {
-        hovering_text = std::monostate();
+        hovering_item = entt::null;
     }
 
     // Get distance from hovering item, and if it's far away enough then we should do something
     if (glm::distance(camera.cam_pos, mouse_on_object_position) > 6371 * 10) {
         // Then we should hover as planet
-        hovering_text = hovering_planet;
+        hovering_item = hovering_planet;
+    }
+    if ((std::holds_alternative<entt::entity>(hovering_text) &&
+         std::get<entt::entity>(hovering_text) != hovering_item) ||
+        (!std::holds_alternative<entt::entity>(hovering_text))) {
+        if (hovering_item == entt::null) {
+            hovering_text = std::monostate();
+        } else {
+            hovering_text = hovering_item;
+        }
     }
 }
 }  // namespace cqsp::client::systems

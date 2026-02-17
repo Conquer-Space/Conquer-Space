@@ -38,6 +38,21 @@ struct PauseOptions {
 
 struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
     using variant::variant;
+
+    template <typename T>
+    HoveringItem& operator=(T&& value) {
+        std::variant<std::monostate, entt::entity, std::string>::operator=(std::forward<T>(value));
+
+        last_set = true;
+        return *this;
+    }
+
+    void Reset() { last_set = false; }
+
+    bool Set() const { return last_set; }
+
+ private:
+    bool last_set = false;
 };
 
 struct SelectedCountry {};
