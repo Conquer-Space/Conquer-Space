@@ -367,6 +367,9 @@ void StarSystemController::FoundCity() {
 }
 
 void StarSystemController::PreRender() {
+    if (m_viewing_entity != entt::null) {
+        camera.view_center = CalculateFuturePosition(m_viewing_entity);
+    }
     FocusPlanetView();
     FocusCityView();
     // We should focus on the point
@@ -758,7 +761,7 @@ glm::vec3 StarSystemController::CalculateFuturePosition(const entt::entity entit
     if (universe.all_of<types::FuturePosition, types::Kinematics>(entity)) {
         auto& kinematics = universe.get<types::Kinematics>(entity);
         auto& future_comp = universe.get<types::FuturePosition>(entity);
-        const glm::vec3 future_pos = future_comp.position + kinematics.center;
+        const glm::vec3 future_pos = future_comp.position + future_comp.center;
         object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
     }
     return object_pos;
@@ -770,8 +773,8 @@ glm::vec3 StarSystemController::CalculateFutureCenteredPosition(const entt::enti
     if (universe.all_of<types::FuturePosition, types::Kinematics>(entity)) {
         auto& kinematics = universe.get<types::Kinematics>(entity);
         auto& future_comp = universe.get<types::FuturePosition>(entity);
-        const glm::vec3 future_pos = future_comp.position + kinematics.center;
-        const glm::vec3 pos = CalculateCenteredObject(future_pos);
+        const glm::vec3 pos = future_comp.position + future_comp.center;
+        const glm::vec3 future_pos = CalculateCenteredObject(pos);
         object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
     }
     return object_pos;
