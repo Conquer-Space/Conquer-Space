@@ -233,7 +233,7 @@ void SysStarSystemRenderer::DrawModels() {
         transform = glm::translate(transform, object_pos);
         transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-        transform = glm::scale(transform, model->scale * 1000.f);
+        transform = glm::scale(transform, model->scale);
         model->shader->UseProgram();
         model->shader->SetMVP(transform, camera.camera_matrix, camera.projection);
         model->Draw();

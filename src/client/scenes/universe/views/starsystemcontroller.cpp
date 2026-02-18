@@ -768,15 +768,14 @@ glm::vec3 StarSystemController::CalculateFuturePosition(const entt::entity entit
 }
 
 glm::vec3 StarSystemController::CalculateFutureCenteredPosition(const entt::entity entity) {
-    glm::vec3 object_pos = CalculateCenteredObject(entity);
+    glm::vec3 object_pos = CalculateObjectPos(entity);
     // Interpolate so that it looks nice
     if (universe.all_of<types::FuturePosition, types::Kinematics>(entity)) {
         auto& kinematics = universe.get<types::Kinematics>(entity);
         auto& future_comp = universe.get<types::FuturePosition>(entity);
-        const glm::vec3 pos = future_comp.position + future_comp.center;
-        const glm::vec3 future_pos = CalculateCenteredObject(pos);
+        const glm::vec3 future_pos = future_comp.position + future_comp.center;
         object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
     }
-    return object_pos;
+    return object_pos - camera.view_center;
 }
 }  // namespace cqsp::client::systems
