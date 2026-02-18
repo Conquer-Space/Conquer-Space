@@ -56,6 +56,12 @@ class StarSystemController {
 
     entt::entity m_viewing_entity = entt::null;
 
+    glm::vec3 CalculateFuturePosition(const entt::entity entity);
+    /**
+     * Calculates interpolated position with respect with the camera center.
+     */
+    glm::vec3 CalculateFutureCenteredPosition(const entt::entity entity);
+
  private:
     void SeeEntity();
     void CenterCameraOnCity();

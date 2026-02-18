@@ -742,4 +742,30 @@ std::optional<glm::vec3> StarSystemController::IsMouseOverEntity(entt::entity en
 
     return (intersection);
 }
+
+glm::vec3 StarSystemController::CalculateFuturePosition(const entt::entity entity) {
+    glm::vec3 object_pos = CalculateObjectPos(entity);
+    // Interpolate so that it looks nice
+    if (universe.all_of<types::FuturePosition, types::Kinematics>(entity)) {
+        auto& kinematics = universe.get<types::Kinematics>(entity);
+        auto& future_comp = universe.get<types::FuturePosition>(entity);
+        const glm::vec3 future_pos = future_comp.position + kinematics.center;
+        object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
+    }
+    return object_pos;
+}
+
+glm::vec3 StarSystemController::CalculateFutureCenteredPosition(const entt::entity entity) {
+    glm::vec3 object_pos = CalculateCenteredObject(entity);
+    // Interpolate so that it looks nice
+    if (universe.all_of<types::FuturePosition, types::Kinematics>(entity)) {
+        auto& kinematics = universe.get<types::Kinematics>(entity);
+        auto& future_comp = universe.get<types::FuturePosition>(entity);
+        const glm::vec3 pos = future_comp.position + kinematics.center;
+        const glm::vec3 future_pos = CalculateCenteredObject(future_comp.position + kinematics.center);
+        object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
+    }
+    return object_pos;
+}
+
 }  // namespace cqsp::client::systems

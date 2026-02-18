@@ -125,8 +125,6 @@ class SysStarSystemRenderer {
 
     void DrawOrbit(const entt::entity &entity);
 
-    glm::vec3 CalculateFutureObjectPos(const entt::entity &);
-
     glm::vec3 TranslateToNormalized(const glm::vec3 &);
 
     /// <summary>
