@@ -224,7 +224,7 @@ SurfaceCoordinate StarSystemController::GetMouseSurfaceIntersection() {
         return SurfaceCoordinate(0, 0);
     }
 
-    glm::vec3 p = GetMouseOnObjectPosition() - CalculateCenteredObject(hovering_planet);
+    glm::vec3 p = GetMouseOnObjectPosition() - CalculateFutureCenteredPosition(hovering_planet);
     p = glm::normalize(p);
 
     Body& planet_comp = universe.get<Body>(hovering_planet);
@@ -268,7 +268,7 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
     if (ent == focused_planet && universe.all_of<Body>(focused_planet)) {
         auto& body = universe.get<Body>(focused_planet);
         // If the distance is further than that we should then focus on that planet
-        if (glm::distance(camera.cam_pos, CalculateCenteredObject(focused_planet)) > body.radius * 10) {
+        if (glm::distance(camera.cam_pos, CalculateFutureCenteredPosition(focused_planet)) > body.radius * 10) {
             SeePlanet(ent);
         } else {
             // Check if the planet has stuff and then don't select if there's no countries on the planet
@@ -367,6 +367,9 @@ void StarSystemController::FoundCity() {
 }
 
 void StarSystemController::PreRender() {
+    if (m_viewing_entity != entt::null) {
+        camera.view_center = CalculateFuturePosition(m_viewing_entity);
+    }
     FocusPlanetView();
     FocusCityView();
     // We should focus on the point
@@ -509,7 +512,6 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
     // Maybe increase size based off distance on the planet and stuff
     glm::vec3 ray_wor = CalculateMouseRay(GetMouseInScreenSpace(mouse_x, mouse_y));
     for (entt::entity body_id : universe.view<Body>()) {
-        glm::vec3 object_pos = CalculateCenteredObject(body_id);
         auto& body = universe.get<Body>(body_id);
         auto intersection = IsMouseOverEntity(body_id, ray_wor, body.radius);
         if (intersection) {
@@ -547,12 +549,21 @@ void StarSystemController::SeeEntity() {
     CalculateCityPositions();
 }
 
+/**
+ * Calculates object position with reference to camera
+ */
 glm::vec3 StarSystemController::CalculateCenteredObject(const entt::entity& ent) {
     return CalculateCenteredObject(CalculateObjectPos(ent));
 }
 
+/**
+ * Calculates object position with reference to camera
+ */
 glm::vec3 StarSystemController::CalculateCenteredObject(const glm::vec3& vec) { return vec - camera.view_center; }
 
+/**
+ * Calculates object position with reference to world space
+ */
 glm::vec3 StarSystemController::CalculateObjectPos(const entt::entity& ent) {
     // Get the position
     if (!universe.all_of<types::Kinematics>(ent)) {
@@ -728,7 +739,7 @@ bool StarSystemController::MouseOverObjectBillboard(glm::vec3 object_pos) {
 
 std::optional<glm::vec3> StarSystemController::IsMouseOverEntity(entt::entity entity, glm::vec3 ray_wor,
                                                                  double radius) {
-    glm::vec3 object_pos = CalculateCenteredObject(entity);
+    glm::vec3 object_pos = CalculateFutureCenteredPosition(entity);
     // This is so inefficient lol
     if (MouseOverObjectBillboard(object_pos)) {
         // Then we're hovering over the body?
@@ -741,5 +752,27 @@ std::optional<glm::vec3> StarSystemController::IsMouseOverEntity(entt::entity en
     auto intersection = CheckIntersection(object_pos, ray_wor, static_cast<float>(radius));
 
     return (intersection);
+}
+
+glm::vec3 StarSystemController::CalculateFuturePosition(const entt::entity entity) {
+    glm::vec3 object_pos = CalculateObjectPos(entity);
+    // Interpolate so that it looks nice
+    if (universe.all_of<types::FuturePosition, types::Kinematics>(entity)) {
+        auto& future_comp = universe.get<types::FuturePosition>(entity);
+        const glm::vec3 future_pos = future_comp.position + future_comp.center;
+        object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
+    }
+    return object_pos;
+}
+
+glm::vec3 StarSystemController::CalculateFutureCenteredPosition(const entt::entity entity) {
+    glm::vec3 object_pos = CalculateObjectPos(entity);
+    // Interpolate so that it looks nice
+    if (universe.all_of<types::FuturePosition, types::Kinematics>(entity)) {
+        auto& future_comp = universe.get<types::FuturePosition>(entity);
+        const glm::vec3 future_pos = future_comp.position + future_comp.center;
+        object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
+    }
+    return object_pos - camera.view_center;
 }
 }  // namespace cqsp::client::systems
