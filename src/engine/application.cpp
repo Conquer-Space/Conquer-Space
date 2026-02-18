@@ -408,7 +408,7 @@ void Application::CloseDocument(const std::string& path) {
 }
 
 Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
-    std::filesystem::path doc_path = std::filesystem::canonical(std::filesystem::path(GetCqspDataPath()) / path);
+    std::filesystem::path doc_path = std::filesystem::relative(std::filesystem::path(GetCqspDataPath()) / path);
     std::string path_name = doc_path.string();
     std::replace(path_name.begin(), path_name.end(), '\\', '/');
     if (loaded_documents.find(path_name) == loaded_documents.end()) {

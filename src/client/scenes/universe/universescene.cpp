@@ -16,6 +16,8 @@
  */
 #include "client/scenes/universe/universescene.h"
 
+#include <RmlUi/Core/Factory.h>
+
 #include <cmath>
 #include <string>
 
@@ -113,6 +115,8 @@ void UniverseScene::Update(float deltaTime) {
         }
     }
 
+    CheckUiReload();
+
     int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
     double tick_length = static_cast<float>(tick_speed) / 1000.f;
     if (tick_speed < 0) {
@@ -180,6 +184,15 @@ void UniverseScene::DoScreenshot() {
     if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F1) && GetApp().ButtonIsHeld(engine::KeyInput::KEY_F10)) ||
         (GetApp().ButtonIsHeld(engine::KeyInput::KEY_F1) && GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
         GetApp().Screenshot();
+    }
+}
+
+void UniverseScene::CheckUiReload() {
+    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
+        Rml::Factory::ClearStyleSheetCache();
+        for (auto& ui : documents) {
+            ui->ReloadWindow();
+        }
     }
 }
 

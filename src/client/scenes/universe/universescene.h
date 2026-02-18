@@ -73,6 +73,9 @@ class UniverseScene : public ClientScene {
     /// </summary>
     void DoScreenshot();
 
+    void CheckUiReload();
+    void ManageTick();
+
     engine::Renderable sphere;
     engine::Renderable sky;
     engine::Renderable planetDisp;

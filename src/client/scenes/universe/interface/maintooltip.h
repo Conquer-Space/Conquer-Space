@@ -28,6 +28,7 @@ class ToolTipWindow : public SysRmlUiInterface {
     ~ToolTipWindow();
     void Update(double delta_time) override;
     void OpenDocument() override;
+    void ReloadWindow() override;
 
  private:
     std::string file_name = "../data/core/gui/mainscene/tooltipwindow.rml";

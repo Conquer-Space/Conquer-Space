@@ -31,6 +31,9 @@ struct overloaded : Ts... {
 template <class... Ts>
 overloaded(Ts...) -> overloaded<Ts...>;
 }  // namespace
+
+void ToolTipWindow::ReloadWindow() { document = GetApp().ReloadDocument(file_name); }
+
 void ToolTipWindow::Update(double delta_time) {
     // We should move the position into somewhere we can see
     auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();

@@ -46,6 +46,7 @@ class SysRmlUiInterface {
     virtual ~SysRmlUiInterface() {}
     virtual void Update(double delta_time) = 0;
     virtual void OpenDocument() = 0;
+    virtual void ReloadWindow() {}
 
  protected:
     engine::Application &GetApp() { return m_app; }
