@@ -123,7 +123,7 @@ void UniverseScene::Update(float deltaTime) {
         last_tick = GetApp().GetTime();
     }
 
-    if (pause_opt.to_tick) {
+    if (pause_opt.to_tick && !game_halted) {
         GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
         if (!interp) GetUniverse().tick_fraction = 0;
     }

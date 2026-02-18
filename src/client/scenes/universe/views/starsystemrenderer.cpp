@@ -197,18 +197,9 @@ void SysStarSystemRenderer::DrawShips() {
     ship_overlay.shaderProgram->UseProgram();
     for (entt::entity ship : universe.view<ships::Ship, ctx::VisibleOrbit>()) {
         // if it's not visible, then don't render
-        glm::vec3 object_pos = controller.CalculateCenteredObject(ship);
+        glm::vec3 object_pos = controller.CalculateFutureCenteredPosition(ship);
         ship_overlay.shaderProgram->setVec4("color", 1, 0, 0, 1);
-        // Interpolate so that it looks nice
-        if (universe.all_of<types::FuturePosition, types::Kinematics>(ship)) {
-            auto& kinematics = universe.get<types::Kinematics>(ship);
-            auto& future_comp = universe.get<types::FuturePosition>(ship);
-            const auto& pos = future_comp.position + kinematics.center;
-            glm::vec3 future_pos = controller.CalculateCenteredObject(pos);
-            DrawShipIcon(glm::mix(object_pos, future_pos, universe.tick_fraction));
-        } else {
-            DrawShipIcon(object_pos);
-        }
+        DrawShipIcon(object_pos);
     }
     renderer.EndDraw(ship_icon_layer);
 }
@@ -237,18 +228,14 @@ void SysStarSystemRenderer::DrawModels() {
             continue;
         }
         auto model_name = universe.get<components::WorldModel>(body_entity);
-        glm::vec3 object_pos = controller.CalculateCenteredObject(body_entity);
+        glm::vec3 object_pos = controller.CalculateFutureCenteredPosition(ship);
         if (glm::distance(camera.cam_pos, object_pos) > 1000) {
             continue;
         }
         auto model = app.GetAssetManager().GetAsset<asset::Model>(model_name.name);
         glm::mat4 transform = glm::mat4(1.f);
-        auto& kinematics = universe.get<types::Kinematics>(ship);
-        auto& future_comp = universe.get<types::FuturePosition>(ship);
-        const auto& pos = future_comp.position + kinematics.center;
-        glm::vec3 future_pos = controller.CalculateCenteredObject(pos);
         transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-        transform = glm::translate(transform, glm::mix(object_pos, future_pos, universe.tick_fraction));
+        transform = glm::translate(transform, object_pos);
 
         transform = glm::scale(transform, model->scale);
         model->shader->UseProgram();
@@ -747,15 +734,6 @@ void SysStarSystemRenderer::InitializeMeshes() {
     // Initialize sun
     sun.mesh = sphere_mesh;
     sun.shaderProgram = sun_shader;
-}
-
-glm::vec3 SysStarSystemRenderer::CalculateFutureObjectPos(const entt::entity& ent) {
-    if (!universe.all_of<types::FuturePosition>(ent)) {
-        return glm::vec3(0, 0, 0);
-    }
-    auto& kin = universe.get<types::FuturePosition>(ent);
-    const auto& pos = kin.position + kin.center;
-    return pos;
 }
 
 glm::vec3 SysStarSystemRenderer::TranslateToNormalized(const glm::vec3& pos) {
