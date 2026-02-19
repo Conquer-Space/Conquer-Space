@@ -701,15 +701,12 @@ void StarSystemController::HandleHoverTooltip() {
     if (universe.valid(hovering_province) && universe.any_of<components::Province>(hovering_province)) {
         auto& province = universe.get<components::Province>(hovering_province);
         if (province.country != universe.GetPlayer()) {
-            SPDLOG_INFO("Set country");
             hovering_item = province.country;
         }
         if (province.country == entt::null) {
-            SPDLOG_INFO("Set province");
             hovering_item = hovering_province;
         }
     } else {
-        SPDLOG_INFO("Set nothing");
         hovering_item = entt::null;
     }
 
@@ -717,20 +714,17 @@ void StarSystemController::HandleHoverTooltip() {
     if (glm::distance(camera.cam_pos, mouse_on_object_position) > 6371 * 10 ||
         (universe.valid(hovering_planet) && universe.any_of<components::ships::Ship>(hovering_planet))) {
         // Then we should hover as planet
-        SPDLOG_INFO("Set body");
         hovering_item = hovering_planet;
     }
 
-    if ((std::holds_alternative<entt::entity>(hovering_text) &&
-         std::get<entt::entity>(hovering_text) != hovering_item) ||
-        (!std::holds_alternative<entt::entity>(hovering_text))) {
+    if ((std::holds_alternative<entt::entity>(hovering_text.world_space) &&
+         std::get<entt::entity>(hovering_text.world_space) != hovering_item) ||
+        (!std::holds_alternative<entt::entity>(hovering_text.world_space))) {
         if (hovering_item == entt::null) {
-            hovering_text = std::monostate();
+            hovering_text.world_space = std::monostate();
         } else {
-            hovering_text = hovering_item;
+            hovering_text.world_space = hovering_item;
         }
-    } else {
-        SPDLOG_INFO("Not resetting it");
     }
 }
 

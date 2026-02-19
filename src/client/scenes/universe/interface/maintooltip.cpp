@@ -55,6 +55,7 @@ void ToolTipWindow::Update(double delta_time) {
 
     // Then if it's low enough then we hide
     bool to_present = true;
+    // Then if worldspace is null we take from ui space?
     if (last_hover != hovering_text) {
         std::visit(overloaded {[&](std::monostate) {
                                    to_present = false;

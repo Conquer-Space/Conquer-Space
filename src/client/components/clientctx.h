@@ -59,28 +59,29 @@ struct HoveringItem {
     SelectedItem world_space;
     SelectedItem ui_space;
 };
-struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
-    using variant::variant;
 
-    template <typename T>
-    HoveringItem& operator=(T&& value) {
-        std::variant<std::monostate, entt::entity, std::string>::operator=(std::forward<T>(value));
-        last_set = true;
-        return *this;
-    }
-    bool operator==(const HoveringItem& other) const {
-        return static_cast<const variant&>(*this) == static_cast<const variant&>(other);
-    }
+// struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
+//     using variant::variant;
 
-    bool operator!=(const HoveringItem& other) const { return !(*this == other); }
+//     template <typename T>
+//     HoveringItem& operator=(T&& value) {
+//         std::variant<std::monostate, entt::entity, std::string>::operator=(std::forward<T>(value));
+//         last_set = true;
+//         return *this;
+//     }
+//     bool operator==(const HoveringItem& other) const {
+//         return static_cast<const variant&>(*this) == static_cast<const variant&>(other);
+//     }
 
-    void Reset() { last_set = false; }
+//     bool operator!=(const HoveringItem& other) const { return !(*this == other); }
 
-    bool Set() const { return last_set; }
+//     void Reset() { last_set = false; }
 
- private:
-    bool last_set = false;
-};
+//     bool Set() const { return last_set; }
+
+//  private:
+//     bool last_set = false;
+// };
 
 struct SelectedCountry {};
 
