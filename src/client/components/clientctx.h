@@ -54,6 +54,11 @@ template <class... Ts>
 overloaded(Ts...) -> overloaded<Ts...>;
 }  // namespace
 
+typedef std::variant<std::monostate, entt::entity, std::string> SelectedItem;
+struct HoveringItem {
+    SelectedItem world_space;
+    SelectedItem ui_space;
+};
 struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
     using variant::variant;
 
