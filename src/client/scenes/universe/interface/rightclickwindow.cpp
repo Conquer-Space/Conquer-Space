@@ -14,32 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
-
-#include <string>
+#include "client/scenes/universe/interface/rightclickwindow.h"
 
 #include "client/components/clientctx.h"
-#include "client/systems/sysgui.h"
+#include "core/util/nameutil.h"
 
 namespace cqsp::client::systems::rmlui {
-class ToolTipWindow : public SysRmlUiInterface {
- public:
-    explicit ToolTipWindow(engine::Application& _app) : SysRmlUiInterface(_app) {}
-    ~ToolTipWindow();
-    void Update(double delta_time) override;
-    void OpenDocument() override;
-    void ReloadWindow() override;
-    void SetupContent();
+RightClickWindow::~RightClickWindow() { document->Close(); }
 
- private:
-    std::string file_name = "../data/core/gui/mainscene/tooltipwindow.rml";
-    Rml::ElementDocument* document = nullptr;
-    double last_tooltip_change = 0;
-    double itemX;
-    double itemY;
-    Rml::Element* tooltip_content = nullptr;
-    Rml::Element* right_click_content = nullptr;
+void RightClickWindow::ReloadWindow() {
+    document = GetApp().ReloadDocument(file_name);
+    SetupContent();
+}
 
-    bool to_right_click = false;
-};
+void RightClickWindow::SetupContent() {}
+
+void RightClickWindow::Update(double delta_time) {}
+
+void RightClickWindow::OpenDocument() {
+    document = GetApp().LoadDocument(file_name);
+    SetupContent();
+}
 }  // namespace cqsp::client::systems::rmlui

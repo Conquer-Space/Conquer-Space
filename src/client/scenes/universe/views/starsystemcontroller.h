@@ -135,8 +135,8 @@ class StarSystemController {
     /**
     * The planet the mouse is currently hovering on.
     */
-    entt::entity hovering_planet = entt::null;
-    entt::entity hovering_country = entt::null;
+    entt::entity hovering_planet;
+    entt::entity hovering_country;
     entt::entity selected_province;
     entt::entity selected_country;
 

@@ -36,6 +36,12 @@ struct PauseOptions {
     bool tick_once = false;
 };
 
+struct HoveringState {
+    entt::entity hovering_planet;
+    entt::entity hovering_country;
+    entt::entity hovering_province;
+};
+
 struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
     using variant::variant;
 

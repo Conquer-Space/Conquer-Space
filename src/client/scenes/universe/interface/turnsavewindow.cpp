@@ -26,8 +26,12 @@ TurnSaveWindow::~TurnSaveWindow() {
 
 void TurnSaveWindow::ReloadWindow() {
     document = GetApp().ReloadDocument(file_name);
+    SetupDocument();
+}
 
+void TurnSaveWindow::SetupDocument() {
     document->AddEventListener(Rml::EventId::Click, &listener);
+    document->Show();
 
     time_element = document->GetElementById("time");
     speed_element = document->GetElementById("speed");
@@ -64,16 +68,7 @@ void TurnSaveWindow::Update(double delta_time) {
 void TurnSaveWindow::OpenDocument() {
     // Idk what
     document = GetApp().LoadDocument(file_name);
-    document->Show();
-
-    document->AddEventListener(Rml::EventId::Click, &listener);
-
-    time_element = document->GetElementById("time");
-    speed_element = document->GetElementById("speed");
-    pause_element = document->GetElementById("pause_button");
-
-    auto& pause_opt = GetUniverse().ctx().at<ctx::PauseOptions>();
-    speed_element->SetInnerRML(fmt::format("Speed: {}", pause_opt.tick_speed));
+    SetupDocument();
 }
 
 void TurnSaveWindow::EventListener::ProcessEvent(Rml::Event& event) {

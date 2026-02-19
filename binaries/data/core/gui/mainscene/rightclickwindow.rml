@@ -7,6 +7,9 @@
                 padding: 4px;
                 border: 2px #20005c;
             }
+            #right_click_content {
+                display: none;
+            }
             .button {
                 background-color: aqua;
                 border-radius: 5px;
@@ -14,7 +17,12 @@
         </style>
     </head>
     <body>
-        <div id="tooltip_content">
+        <div id="right_click_content">
+            <h2>More potential content</h2>
+            <br></br>
+            <div class="button">
+                Some arbritrary button tbh
+            </div>
         </div>
     </body>
 </rml>

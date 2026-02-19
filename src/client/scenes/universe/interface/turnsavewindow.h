@@ -28,6 +28,7 @@ class TurnSaveWindow : public SysRmlUiInterface {
     void Update(double delta_time) override;
     void OpenDocument() override;
     void ReloadWindow() override;
+    void SetupDocument();
 
  private:
     std::string file_name = "../data/core/gui/mainscene/turnsavewindow.rml";

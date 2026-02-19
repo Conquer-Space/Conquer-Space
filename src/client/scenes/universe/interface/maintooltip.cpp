@@ -32,13 +32,21 @@ template <class... Ts>
 overloaded(Ts...) -> overloaded<Ts...>;
 }  // namespace
 
-void ToolTipWindow::ReloadWindow() { document = GetApp().ReloadDocument(file_name); }
+void ToolTipWindow::ReloadWindow() {
+    document = GetApp().ReloadDocument(file_name);
+    SetupContent();
+}
+
+void ToolTipWindow::SetupContent() { tooltip_content = document->GetElementById("tooltip_content"); }
 
 void ToolTipWindow::Update(double delta_time) {
     // We should move the position into somewhere we can see
     auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();
-    document->SetProperty("top", fmt::format("{} px", GetApp().GetMouseY() + 5));
-    document->SetProperty("left", fmt::format("{} px", GetApp().GetMouseX() + 5));
+    // check for right click on the screen
+    itemX = GetApp().GetMouseX();
+    itemY = GetApp().GetMouseY();
+    document->SetProperty("top", fmt::format("{} px", itemY + 5));
+    document->SetProperty("left", fmt::format("{} px", itemX + 5));
     // In the future we should probably have a more efficient way of updating this rml
     // Now let's check the value
 
@@ -53,13 +61,13 @@ void ToolTipWindow::Update(double delta_time) {
                                [&](entt::entity entity) {
                                    if (GetUniverse().valid(entity)) {
                                        // Then we set it
-                                       document->SetInnerRML(core::util::GetName(GetUniverse(), entity));
+                                       tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
                                    } else {
                                        // We show nothing
                                        to_present = false;
                                    }
                                },
-                               [&](const std::string& string) { document->SetInnerRML(string); }},
+                               [&](const std::string& string) { tooltip_content->SetInnerRML(string); }},
                    hovering_text);
     }
 
@@ -74,5 +82,8 @@ void ToolTipWindow::Update(double delta_time) {
     hovering_text.Reset();
 }
 
-void ToolTipWindow::OpenDocument() { document = GetApp().LoadDocument(file_name); }
+void ToolTipWindow::OpenDocument() {
+    document = GetApp().LoadDocument(file_name);
+    SetupContent();
+}
 }  // namespace cqsp::client::systems::rmlui

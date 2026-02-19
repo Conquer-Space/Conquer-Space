@@ -22,22 +22,20 @@
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems::rmlui {
-class ToolTipWindow : public SysRmlUiInterface {
+class RightClickWindow : public SysRmlUiInterface {
  public:
-    explicit ToolTipWindow(engine::Application& _app) : SysRmlUiInterface(_app) {}
-    ~ToolTipWindow();
+    explicit RightClickWindow(engine::Application& _app) : SysRmlUiInterface(_app) {}
+    ~RightClickWindow();
     void Update(double delta_time) override;
     void OpenDocument() override;
     void ReloadWindow() override;
     void SetupContent();
 
  private:
-    std::string file_name = "../data/core/gui/mainscene/tooltipwindow.rml";
+    std::string file_name = "../data/core/gui/mainscene/rightclickwindow.rml";
     Rml::ElementDocument* document = nullptr;
-    double last_tooltip_change = 0;
     double itemX;
     double itemY;
-    Rml::Element* tooltip_content = nullptr;
     Rml::Element* right_click_content = nullptr;
 
     bool to_right_click = false;
