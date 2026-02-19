@@ -33,7 +33,6 @@ class ToolTipWindow : public SysRmlUiInterface {
 
  private:
     std::string file_name = "../data/core/gui/mainscene/tooltipwindow.rml";
-    Rml::ElementDocument* document = nullptr;
     double last_tooltip_change = 0;
     double itemX;
     double itemY;

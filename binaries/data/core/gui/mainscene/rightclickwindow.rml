@@ -6,19 +6,24 @@
             body {
                 padding: 4px;
                 border: 2px #20005c;
+                width: auto;
+                height: auto;
             }
-            #right_click_content {
-                display: none;
-            }
+
             .button {
                 background-color: aqua;
                 border-radius: 5px;
+                padding: 4px;
+            }
+
+            .button:hover {
+                color: yellow;
             }
         </style>
     </head>
     <body>
         <div id="right_click_content">
-            <h2>More potential content</h2>
+            <h2 id="header">More potential content</h2>
             <br></br>
             <div class="button">
                 Some arbritrary button tbh

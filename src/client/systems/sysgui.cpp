@@ -14,29 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
-
-#include <string>
-
-#include "client/components/clientctx.h"
 #include "client/systems/sysgui.h"
 
-namespace cqsp::client::systems::rmlui {
-class RightClickWindow : public SysRmlUiInterface {
- public:
-    explicit RightClickWindow(engine::Application& _app) : SysRmlUiInterface(_app) {}
-    ~RightClickWindow();
-    void Update(double delta_time) override;
-    void OpenDocument() override;
-    void ReloadWindow() override;
-    void SetupContent();
+#include "sysgui.h"
 
- private:
-    std::string file_name = "../data/core/gui/mainscene/rightclickwindow.rml";
-    double itemX;
-    double itemY;
-    Rml::Element* right_click_content = nullptr;
-
-    bool to_right_click = false;
+namespace cqsp::client::systems {
+bool SysRmlUiInterface::MouseOverDocument() {
+    return (GetApp().GetRmlUiContext()->GetHoverElement() != nullptr &&
+            GetApp().GetRmlUiContext()->GetHoverElement()->GetOwnerDocument() == document);
 };
-}  // namespace cqsp::client::systems::rmlui
+}  // namespace cqsp::client::systems

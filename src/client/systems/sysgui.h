@@ -55,5 +55,10 @@ class SysRmlUiInterface {
 
  private:
     engine::Application &m_app;
+
+ protected:
+    Rml::ElementDocument *document = nullptr;
+
+    bool MouseOverDocument();
 };
 }  // namespace cqsp::client::systems

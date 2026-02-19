@@ -29,7 +29,27 @@ void RightClickWindow::ReloadWindow() {
 
 void RightClickWindow::SetupContent() {}
 
-void RightClickWindow::Update(double delta_time) {}
+void RightClickWindow::Update(double delta_time) {
+    // Now let's display the value
+    bool mouse_over_this = MouseOverDocument();
+    if ((GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT) ||
+         GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) &&
+        !GetApp().MouseDragged() && !mouse_over_this) {
+        // Now let's turn it on
+        to_right_click = false;
+        document->Hide();
+    }
+
+    if (GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT) && !GetApp().MouseDragged()) {
+        // Now let's turn it on
+        to_right_click = true;
+        itemX = GetApp().GetMouseX();
+        itemY = GetApp().GetMouseY();
+        document->Show();
+        document->SetProperty("top", fmt::format("{} px", itemY + 5));
+        document->SetProperty("left", fmt::format("{} px", itemX + 5));
+    }
+}
 
 void RightClickWindow::OpenDocument() {
     document = GetApp().LoadDocument(file_name);

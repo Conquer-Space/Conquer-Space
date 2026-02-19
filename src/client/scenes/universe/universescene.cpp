@@ -30,6 +30,7 @@
 #include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
+#include "client/scenes/universe/interface/rightclickwindow.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
 #include "client/scenes/universe/interface/syspausemenu.h"
@@ -103,6 +104,7 @@ void UniverseScene::Init() {
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
+    AddRmlUiSystem<systems::rmlui::RightClickWindow>();
 }
 
 void UniverseScene::Update(float deltaTime) {

@@ -32,7 +32,6 @@ class TurnSaveWindow : public SysRmlUiInterface {
 
  private:
     std::string file_name = "../data/core/gui/mainscene/turnsavewindow.rml";
-    Rml::ElementDocument* document;
 
     class EventListener : public Rml::EventListener {
      public:
