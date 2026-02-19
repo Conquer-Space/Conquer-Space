@@ -683,7 +683,17 @@ entt::entity StarSystemController::SurfaceCoordinateToProvince(SurfaceCoordinate
     return entt::null;
 }
 
+/**
+* Handles all screenspace tooltips
+*/
 void StarSystemController::HandleHoverTooltip() {
+    {
+        Rml::Element* element = app.GetRmlUiContext()->GetHoverElement();
+        if (element != nullptr && element->GetTagName() != "#root") {
+            SPDLOG_INFO("Over window so we are denying");
+            return;
+        }
+    }
     auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
     entt::entity hovering_item = entt::null;
     // Now we just do the province/country for now
@@ -691,12 +701,15 @@ void StarSystemController::HandleHoverTooltip() {
     if (universe.valid(hovering_province) && universe.any_of<components::Province>(hovering_province)) {
         auto& province = universe.get<components::Province>(hovering_province);
         if (province.country != universe.GetPlayer()) {
+            SPDLOG_INFO("Set country");
             hovering_item = province.country;
         }
         if (province.country == entt::null) {
+            SPDLOG_INFO("Set province");
             hovering_item = hovering_province;
         }
     } else {
+        SPDLOG_INFO("Set nothing");
         hovering_item = entt::null;
     }
 
@@ -704,6 +717,7 @@ void StarSystemController::HandleHoverTooltip() {
     if (glm::distance(camera.cam_pos, mouse_on_object_position) > 6371 * 10 ||
         (universe.valid(hovering_planet) && universe.any_of<components::ships::Ship>(hovering_planet))) {
         // Then we should hover as planet
+        SPDLOG_INFO("Set body");
         hovering_item = hovering_planet;
     }
 

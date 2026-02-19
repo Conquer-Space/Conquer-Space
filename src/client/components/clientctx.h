@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <spdlog/spdlog.h>
+
 #include <array>
 #include <string>
 #include <variant>
@@ -42,13 +44,22 @@ struct HoveringState {
     entt::entity hovering_province;
 };
 
+namespace {
+template <class... Ts>
+struct overloaded : Ts... {
+    using Ts::operator()...;
+};
+// explicit deduction guide (not needed as of C++20)
+template <class... Ts>
+overloaded(Ts...) -> overloaded<Ts...>;
+}  // namespace
+
 struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
     using variant::variant;
 
     template <typename T>
     HoveringItem& operator=(T&& value) {
         std::variant<std::monostate, entt::entity, std::string>::operator=(std::forward<T>(value));
-
         last_set = true;
         return *this;
     }

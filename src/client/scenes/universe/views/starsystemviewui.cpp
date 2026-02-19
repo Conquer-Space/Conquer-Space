@@ -34,6 +34,16 @@ StarSystemViewUI::StarSystemViewUI(core::Universe& universe, SysStarSystemRender
     province_color.fill(0);
 }
 
+namespace {
+template <class... Ts>
+struct overloaded : Ts... {
+    using Ts::operator()...;
+};
+// explicit deduction guide (not needed as of C++20)
+template <class... Ts>
+overloaded(Ts...) -> overloaded<Ts...>;
+}  // namespace
+
 void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     ImGui::Begin("Debug ui window", NULL, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::TextFmt("Mouse Pos: {} {}", controller.app.GetMouseX(), controller.app.GetMouseY());
@@ -64,6 +74,12 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     ImGui::TextFmt("Generated {} orbits last frame", renderer.orbit_geometry.GetOrbitsGenerated());
     auto intersection = controller.GetMouseSurfaceIntersection();
     ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());
+    auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
+    std::visit(overloaded {[&](std::monostate) { ImGui::Text("No tooltip text"); },
+                           [&](entt::entity entity) { ImGui::TextFmt("Tooltip on {}", GetName(universe, entity)); },
+                           [&](const std::string& string) { ImGui::TextFmt("Tooltip on {}", string); }},
+               hovering_text);
+    ImGui::TextFmt("Just set {}", hovering_text.Set());
 
     ImGui::TextFmt("Tick Fraction: {}", universe.tick_fraction);
     if (ImGui::Button("Debug Spawn City")) {

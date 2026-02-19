@@ -37,10 +37,12 @@ class GLWindow : public Window {
     bool MouseButtonIsPressed(int btn) const { return m_mouse_keys_pressed[btn]; }
 
     bool MouseDragged() const { return !(m_mouse_x == m_mouse_x_on_pressed && m_mouse_y == m_mouse_y_on_pressed); }
+    bool MouseMoved() const { return m_mouse_moved; }
 
     void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action, int mods);
 
     void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos) {
+        m_mouse_moved = (m_mouse_x == xpos) && (m_mouse_y == ypos);
         m_mouse_x = xpos;
         m_mouse_y = ypos;
         RmlGLFW::ProcessCursorPosCallback(app->GetRmlUiContext(), _w, xpos, ypos, 0);
@@ -109,6 +111,7 @@ class GLWindow : public Window {
 
  private:
     bool window_size_changed;
+    bool m_mouse_moved;
     double m_mouse_x;
     double m_mouse_y;
 

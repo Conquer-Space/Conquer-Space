@@ -37,7 +37,10 @@ void ToolTipWindow::ReloadWindow() {
     SetupContent();
 }
 
-void ToolTipWindow::SetupContent() { tooltip_content = document->GetElementById("tooltip_content"); }
+void ToolTipWindow::SetupContent() {
+    tooltip_content = document->GetElementById("tooltip_content");
+    SPDLOG_INFO("ASDf {}", tooltip_content->GetOwnerDocument()->GetSourceURL());
+}
 
 void ToolTipWindow::Update(double delta_time) {
     // We should move the position into somewhere we can see
@@ -45,37 +48,41 @@ void ToolTipWindow::Update(double delta_time) {
     // check for right click on the screen
     itemX = GetApp().GetMouseX();
     itemY = GetApp().GetMouseY();
-    document->SetProperty("top", fmt::format("{} px", itemY + 5));
-    document->SetProperty("left", fmt::format("{} px", itemX + 5));
+    document->SetProperty("top", fmt::format("{} px", itemY + 10));
+    document->SetProperty("left", fmt::format("{} px", itemX + 10));
     // In the future we should probably have a more efficient way of updating this rml
     // Now let's check the value
 
     // Then if it's low enough then we hide
-    bool to_present = true;
-    if (hovering_text.Set()) {
-        last_tooltip_change = GetApp().GetTime();
-    }
+    bool to_present = document->IsVisible() || hovering_text.Set();
 
     if (hovering_text.Set()) {
+        last_tooltip_change = GetApp().GetTime();
         std::visit(overloaded {[&](std::monostate) { to_present = false; },
                                [&](entt::entity entity) {
                                    if (GetUniverse().valid(entity)) {
                                        // Then we set it
                                        tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
+                                       to_present = true;
                                    } else {
                                        // We show nothing
                                        to_present = false;
                                    }
                                },
-                               [&](const std::string& string) { tooltip_content->SetInnerRML(string); }},
+                               [&](const std::string& string) {
+                                   tooltip_content->SetInnerRML(string);
+                                   to_present = true;
+                               }},
                    hovering_text);
+        hovering_text.Reset();
     }
 
-    if (GetApp().GetTime() - last_tooltip_change < 0.1) {
-        to_present = false;
-    }
+    // if (GetApp().GetTime() - last_tooltip_change < 0.1) {
+    //     to_present = false;
+    // }
     if (to_present && !document->IsVisible()) {
         document->Show();
+        document->PullToFront();
     } else if (!to_present && document->IsVisible()) {
         document->Hide();
     }

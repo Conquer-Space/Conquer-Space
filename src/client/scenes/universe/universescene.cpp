@@ -57,6 +57,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/polar_coordinates.hpp"
 #include "tracy/Tracy.hpp"
+#include "universescene.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -109,8 +110,6 @@ void UniverseScene::Init() {
 
 void UniverseScene::Update(float deltaTime) {
     ZoneScoped;
-
-    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
     if (!ImGui::GetIO().WantCaptureKeyboard) {
         if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_SPACE)) {
             ToggleTick();
@@ -118,34 +117,7 @@ void UniverseScene::Update(float deltaTime) {
     }
 
     CheckUiReload();
-
-    int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
-    double tick_length = static_cast<float>(tick_speed) / 1000.f;
-    if (tick_speed < 0) {
-        tick_length = 1 / 1000.f;
-    }
-    if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
-        GetUniverse().EnableTick();
-        last_tick = GetApp().GetTime();
-    }
-
-    if (pause_opt.to_tick) {
-        GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
-        if (!interp) GetUniverse().tick_fraction = 0;
-    }
-
-    // Check for last tick
-    if (GetUniverse().ToTick() && !game_halted) {
-        // Game tick
-        if (ctx::tick_speeds[pause_opt.tick_speed] < 0) {
-            for (int i = 0; i < -ctx::tick_speeds[pause_opt.tick_speed]; i++) {
-                simulation->tick();
-            }
-        } else {
-            simulation->tick();
-        }
-        system_renderer->OnTick();
-    }
+    ManageTick();
 
     if (!game_halted) {
         system_renderer->Update(deltaTime);
@@ -166,8 +138,6 @@ void UniverseScene::Update(float deltaTime) {
         }
         ui->DoUpdate(deltaTime);
     }
-    auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();
-    hovering_text.Reset();
 }
 
 void UniverseScene::Ui(float deltaTime) {
@@ -197,6 +167,37 @@ void UniverseScene::CheckUiReload() {
         for (auto& ui : documents) {
             ui->ReloadWindow();
         }
+    }
+}
+
+void UniverseScene::ManageTick() {
+    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
+    double tick_length = static_cast<float>(tick_speed) / 1000.f;
+    if (tick_speed < 0) {
+        tick_length = 1 / 1000.f;
+    }
+    if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
+        GetUniverse().EnableTick();
+        last_tick = GetApp().GetTime();
+    }
+
+    if (pause_opt.to_tick) {
+        GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
+        if (!interp) GetUniverse().tick_fraction = 0;
+    }
+
+    // Check for last tick
+    if (GetUniverse().ToTick() && !game_halted) {
+        // Game tick
+        if (ctx::tick_speeds[pause_opt.tick_speed] < 0) {
+            for (int i = 0; i < -ctx::tick_speeds[pause_opt.tick_speed]; i++) {
+                simulation->tick();
+            }
+        } else {
+            simulation->tick();
+        }
+        system_renderer->OnTick();
     }
 }
 

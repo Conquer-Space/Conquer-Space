@@ -32,6 +32,13 @@ class RightClickWindow : public SysRmlUiInterface {
     void SetupContent();
 
  private:
+    class EventListener : public Rml::EventListener {
+     public:
+        explicit EventListener(core::Universe& universe) : universe(universe) {}
+        void ProcessEvent(Rml::Event& event);
+        core::Universe& universe;
+    } listener {GetUniverse()};
+
     std::string file_name = "../data/core/gui/mainscene/rightclickwindow.rml";
     double itemX;
     double itemY;

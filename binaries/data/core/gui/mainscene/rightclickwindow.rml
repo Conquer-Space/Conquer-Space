@@ -10,10 +10,25 @@
                 height: auto;
             }
 
+            body:hover {
+                background-color: red;
+            }
+
+            #right_click_content {
+                display: inline-block;
+            }
+
             .button {
-                background-color: aqua;
-                border-radius: 5px;
+                background-color: #20005c;
+                border-radius: 3px;
                 padding: 4px;
+                display: block;
+            }
+
+            #header {
+                display: inline-block;
+                margin: 0.2em 0;
+                margin-top: 0.05em;
             }
 
             .button:hover {
@@ -24,10 +39,9 @@
     <body>
         <div id="right_click_content">
             <h2 id="header">More potential content</h2>
-            <br></br>
-            <div class="button">
+            <a class="button">
                 Some arbritrary button tbh
-            </div>
+            </a>
         </div>
     </body>
 </rml>

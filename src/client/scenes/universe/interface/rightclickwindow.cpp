@@ -20,21 +20,32 @@
 #include "core/util/nameutil.h"
 
 namespace cqsp::client::systems::rmlui {
-RightClickWindow::~RightClickWindow() { document->Close(); }
+RightClickWindow::~RightClickWindow() {
+    document->RemoveEventListener(Rml::EventId::Mouseover, &listener);
+    document->Close();
+}
 
 void RightClickWindow::ReloadWindow() {
     document = GetApp().ReloadDocument(file_name);
     SetupContent();
 }
 
-void RightClickWindow::SetupContent() { header_element = document->GetElementById("header"); }
+void RightClickWindow::SetupContent() {
+    header_element = document->GetElementById("header");
+    document->AddEventListener(Rml::EventId::Mouseover, &listener);
+}
+
+void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {
+    auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
+    hovering_text = "Hovering over this";
+}
 
 void RightClickWindow::Update(double delta_time) {
     // Now let's display the value
     bool mouse_over_this = MouseOverDocument();
     if ((GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT) ||
          GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) &&
-        !GetApp().MouseDragged() && !mouse_over_this) {
+        !mouse_over_this) {
         // Now let's turn it on
         to_right_click = false;
         document->Hide();
@@ -52,6 +63,9 @@ void RightClickWindow::Update(double delta_time) {
         if (std::holds_alternative<entt::entity>(hovering_text)) {
             right_click_item = std::get<entt::entity>(hovering_text);
             header_element->SetInnerRML(core::util::GetName(GetUniverse(), right_click_item));
+        } else {
+            right_click_item = entt::null;
+            document->Hide();
         }
     }
 }

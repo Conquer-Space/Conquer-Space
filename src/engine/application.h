@@ -139,6 +139,7 @@ class Application {
     double GetTime();
 
     bool MouseDragged() { return m_window->MouseDragged(); }
+    bool MouseMoved() { return m_window->MouseMoved(); }
 
     void SetWindowDimensions(int width, int height);
     void SetFullScreen(bool screen);
@@ -199,6 +200,10 @@ class Application {
     void InitImgui();
     void ProcessRmlUiUserInput();
     void InitAudio();
+
+    void UpdateScene();
+    void ComputeFramerate();
+    void UpdateFonts();
 
     /*
      * Intializes glfw and imgui.
