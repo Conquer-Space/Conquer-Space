@@ -687,14 +687,16 @@ entt::entity StarSystemController::SurfaceCoordinateToProvince(SurfaceCoordinate
 * Handles all screenspace tooltips
 */
 void StarSystemController::HandleHoverTooltip() {
+    auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
+
     {
         Rml::Element* element = app.GetRmlUiContext()->GetHoverElement();
         if (element != nullptr && element->GetTagName() != "#root") {
             SPDLOG_INFO("Over window so we are denying");
+            hovering_text = std::monostate();
             return;
         }
     }
-    auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
     entt::entity hovering_item = entt::null;
     // Now we just do the province/country for now
     hovering_item = hovering_province;

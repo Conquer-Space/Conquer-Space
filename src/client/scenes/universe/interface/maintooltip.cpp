@@ -54,11 +54,13 @@ void ToolTipWindow::Update(double delta_time) {
     // Now let's check the value
 
     // Then if it's low enough then we hide
-    bool to_present = document->IsVisible() || hovering_text.Set();
-
-    if (hovering_text.Set()) {
+    bool to_present = document->IsVisible();
+    if (last_hover != hovering_text) {
         last_tooltip_change = GetApp().GetTime();
-        std::visit(overloaded {[&](std::monostate) { to_present = false; },
+        std::visit(overloaded {[&](std::monostate) {
+                                   to_present = false;
+                                   SPDLOG_INFO("We shouldn't be showing anything");
+                               },
                                [&](entt::entity entity) {
                                    if (GetUniverse().valid(entity)) {
                                        // Then we set it
@@ -74,18 +76,21 @@ void ToolTipWindow::Update(double delta_time) {
                                    to_present = true;
                                }},
                    hovering_text);
-        hovering_text.Reset();
     }
 
-    // if (GetApp().GetTime() - last_tooltip_change < 0.1) {
-    //     to_present = false;
-    // }
+    if (GetApp().GetTime() - last_tooltip_change < 0.1) {
+        to_present = false;
+    }
     if (to_present && !document->IsVisible()) {
         document->Show();
-        document->PullToFront();
     } else if (!to_present && document->IsVisible()) {
+        SPDLOG_INFO("Hiding");
         document->Hide();
     }
+    if (document->IsVisible()) {
+        document->PullToFront();
+    }
+    last_hover = hovering_text;
 }
 
 void ToolTipWindow::OpenDocument() {

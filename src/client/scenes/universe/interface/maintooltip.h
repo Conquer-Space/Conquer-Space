@@ -38,6 +38,7 @@ class ToolTipWindow : public SysRmlUiInterface {
     double itemY;
     Rml::Element* tooltip_content = nullptr;
     Rml::Element* right_click_content = nullptr;
+    ctx::HoveringItem last_hover;
 
     bool to_right_click = false;
 };

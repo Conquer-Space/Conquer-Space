@@ -63,7 +63,11 @@ struct HoveringItem : public std::variant<std::monostate, entt::entity, std::str
         last_set = true;
         return *this;
     }
+    bool operator==(const HoveringItem& other) const {
+        return static_cast<const variant&>(*this) == static_cast<const variant&>(other);
+    }
 
+    bool operator!=(const HoveringItem& other) const { return !(*this == other); }
     void Reset() { last_set = false; }
 
     bool Set() const { return last_set; }

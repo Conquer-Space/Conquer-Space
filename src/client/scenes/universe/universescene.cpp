@@ -104,8 +104,8 @@ void UniverseScene::Init() {
     simulation->tick();  // Why do we tick the simulation once here? Idk
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
-    AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
+    AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
 }
 
 void UniverseScene::Update(float deltaTime) {
