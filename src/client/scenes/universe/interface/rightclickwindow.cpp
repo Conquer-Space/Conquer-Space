@@ -27,7 +27,7 @@ void RightClickWindow::ReloadWindow() {
     SetupContent();
 }
 
-void RightClickWindow::SetupContent() {}
+void RightClickWindow::SetupContent() { header_element = document->GetElementById("header"); }
 
 void RightClickWindow::Update(double delta_time) {
     // Now let's display the value
@@ -48,6 +48,11 @@ void RightClickWindow::Update(double delta_time) {
         document->Show();
         document->SetProperty("top", fmt::format("{} px", itemY + 5));
         document->SetProperty("left", fmt::format("{} px", itemX + 5));
+        auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();
+        if (std::holds_alternative<entt::entity>(hovering_text)) {
+            right_click_item = std::get<entt::entity>(hovering_text);
+            header_element->SetInnerRML(core::util::GetName(GetUniverse(), right_click_item));
+        }
     }
 }
 

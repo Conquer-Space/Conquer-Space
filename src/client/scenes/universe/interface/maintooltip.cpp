@@ -79,7 +79,6 @@ void ToolTipWindow::Update(double delta_time) {
     } else if (!to_present && document->IsVisible()) {
         document->Hide();
     }
-    hovering_text.Reset();
 }
 
 void ToolTipWindow::OpenDocument() {

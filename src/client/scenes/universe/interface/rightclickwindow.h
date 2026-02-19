@@ -36,7 +36,8 @@ class RightClickWindow : public SysRmlUiInterface {
     double itemX;
     double itemY;
     Rml::Element* right_click_content = nullptr;
-
+    Rml::Element* header_element;
+    entt::entity right_click_item = entt::null;
     bool to_right_click = false;
 };
 }  // namespace cqsp::client::systems::rmlui

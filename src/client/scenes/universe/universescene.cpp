@@ -166,6 +166,8 @@ void UniverseScene::Update(float deltaTime) {
         }
         ui->DoUpdate(deltaTime);
     }
+    auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();
+    hovering_text.Reset();
 }
 
 void UniverseScene::Ui(float deltaTime) {
