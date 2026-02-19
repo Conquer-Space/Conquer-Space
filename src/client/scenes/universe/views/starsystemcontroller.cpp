@@ -692,8 +692,6 @@ void StarSystemController::HandleHoverTooltip() {
     {
         Rml::Element* element = app.GetRmlUiContext()->GetHoverElement();
         if (element != nullptr && element->GetTagName() != "#root") {
-            SPDLOG_INFO("Over window so we are denying");
-            hovering_text = std::monostate();
             return;
         }
     }
@@ -731,6 +729,8 @@ void StarSystemController::HandleHoverTooltip() {
         } else {
             hovering_text = hovering_item;
         }
+    } else {
+        SPDLOG_INFO("Not resetting it");
     }
 }
 

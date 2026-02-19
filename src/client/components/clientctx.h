@@ -68,6 +68,7 @@ struct HoveringItem : public std::variant<std::monostate, entt::entity, std::str
     }
 
     bool operator!=(const HoveringItem& other) const { return !(*this == other); }
+
     void Reset() { last_set = false; }
 
     bool Set() const { return last_set; }

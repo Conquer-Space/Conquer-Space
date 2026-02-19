@@ -54,14 +54,14 @@ void ToolTipWindow::Update(double delta_time) {
     // Now let's check the value
 
     // Then if it's low enough then we hide
-    bool to_present = document->IsVisible();
+    bool to_present = true;
     if (last_hover != hovering_text) {
-        last_tooltip_change = GetApp().GetTime();
         std::visit(overloaded {[&](std::monostate) {
                                    to_present = false;
-                                   SPDLOG_INFO("We shouldn't be showing anything");
+                                   SPDLOG_INFO("Showing monostate");
                                },
                                [&](entt::entity entity) {
+                                   SPDLOG_INFO("Setting {}", entity);
                                    if (GetUniverse().valid(entity)) {
                                        // Then we set it
                                        tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
@@ -72,13 +72,40 @@ void ToolTipWindow::Update(double delta_time) {
                                    }
                                },
                                [&](const std::string& string) {
+                                   SPDLOG_INFO("Setting {}", string);
+                                   tooltip_content->SetInnerRML(string);
+                                   to_present = true;
+                               }},
+                   last_hover);
+        last_tooltip_change = GetApp().GetTime();
+        std::visit(overloaded {[&](std::monostate) {
+                                   to_present = false;
+                                   SPDLOG_INFO("We shouldn't be showing anything");
+                               },
+                               [&](entt::entity entity) {
+                                   SPDLOG_INFO("Setting ent {}", entity);
+                                   if (GetUniverse().valid(entity)) {
+                                       // Then we set it
+                                       tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
+                                       to_present = true;
+                                   } else {
+                                       // We show nothing
+                                       to_present = false;
+                                   }
+                               },
+                               [&](const std::string& string) {
+                                   SPDLOG_INFO("Setting ent {}", string);
                                    tooltip_content->SetInnerRML(string);
                                    to_present = true;
                                }},
                    hovering_text);
     }
+    if (std::holds_alternative<std::monostate>(hovering_text)) {
+        to_present = false;
+    }
 
     if (GetApp().GetTime() - last_tooltip_change < 0.1) {
+        SPDLOG_INFO("We're not showing the tooltip...");
         to_present = false;
     }
     if (to_present && !document->IsVisible()) {
