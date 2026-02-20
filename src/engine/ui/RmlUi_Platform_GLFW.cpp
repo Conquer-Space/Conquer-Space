@@ -105,7 +105,7 @@ void SystemInterface_GLFW::SetClipboardText(const Rml::String& text_utf8) {
 }
 
 void SystemInterface_GLFW::GetClipboardText(Rml::String& text) {
-    if (window) {
+    if (window != nullptr) {
         const char* clipboard = glfwGetClipboardString(window);
 
         if (clipboard != nullptr) {
