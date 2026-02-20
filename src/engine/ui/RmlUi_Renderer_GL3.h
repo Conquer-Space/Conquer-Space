@@ -22,7 +22,7 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
     explicit operator bool() const { return static_cast<bool>(program_data); }
 
     // The viewport should be updated whenever the window size changes.
-    void SetViewport(int viewport_width, int viewport_height, int viewport_offset_x = 0, int viewport_offset_y = 0);
+    void SetViewport(int width, int height, int offset_x = 0, int offset_y = 0);
 
     // Sets up OpenGL states for taking rendering commands from RmlUi.
     void BeginFrame();
