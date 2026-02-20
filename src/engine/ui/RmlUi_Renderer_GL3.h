@@ -1,33 +1,4 @@
-/*
- * This source file is part of RmlUi, the HTML/CSS Interface Middleware
- *
- * For the latest information, see http://github.com/mikke89/RmlUi
- *
- * Copyright (c) 2008-2010 CodePoint Ltd, Shift Technology Ltd
- * Copyright (c) 2019-2023 The RmlUi Team, and contributors
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- */
-
-#ifndef RMLUI_BACKENDS_RENDERER_GL3_H
-#define RMLUI_BACKENDS_RENDERER_GL3_H
+#pragma once
 
 #include <RmlUi/Core/RenderInterface.h>
 #include <RmlUi/Core/Types.h>
@@ -51,7 +22,7 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
     explicit operator bool() const { return static_cast<bool>(program_data); }
 
     // The viewport should be updated whenever the window size changes.
-    void SetViewport(int viewport_width, int viewport_height);
+    void SetViewport(int viewport_width, int viewport_height, int viewport_offset_x = 0, int viewport_offset_y = 0);
 
     // Sets up OpenGL states for taking rendering commands from RmlUi.
     void BeginFrame();
@@ -105,6 +76,11 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
     // Can be passed to RenderGeometry() to leave the bound texture and used program unchanged.
     static constexpr Rml::TextureHandle TexturePostprocess = Rml::TextureHandle(-2);
 
+    // -- Utility functions for clients --
+
+    const Rml::Matrix4f& GetTransform() const;
+    void ResetProgram();
+
  private:
     void UseProgram(ProgramId program_id);
     int GetUniformLocation(UniformId uniform_id) const;
@@ -132,20 +108,22 @@ class RenderInterface_GL3 : public Rml::RenderInterface {
 
     int viewport_width = 0;
     int viewport_height = 0;
+    int viewport_offset_x = 0;
+    int viewport_offset_y = 0;
 
     Rml::CompiledGeometryHandle fullscreen_quad_geometry = {};
 
     Rml::UniquePtr<const Gfx::ProgramData> program_data;
 
     /*
-        Manages render targets, including the layer stack and postprocessing framebuffers.
+	    Manages render targets, including the layer stack and postprocessing framebuffers.
 
-        Layers can be pushed and popped, creating new framebuffers as needed. Typically, geometry is rendered to the top
-        layer. The layer framebuffers may have MSAA enabled.
+	    Layers can be pushed and popped, creating new framebuffers as needed. Typically, geometry is rendered to the top
+	    layer. The layer framebuffers may have MSAA enabled.
 
-        Postprocessing framebuffers are separate from the layers, and are commonly used to apply texture-wide effects
-        such as filters. They are used both as input and output during rendering, and do not use MSAA.
-    */
+	    Postprocessing framebuffers are separate from the layers, and are commonly used to apply texture-wide effects
+	    such as filters. They are used both as input and output during rendering, and do not use MSAA.
+	*/
     class RenderLayerStack {
      public:
         RenderLayerStack();
@@ -236,5 +214,3 @@ bool Initialize(Rml::String* out_message = nullptr);
 void Shutdown();
 
 }  // namespace RmlGL3
-
-#endif
