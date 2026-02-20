@@ -45,6 +45,12 @@ void ToolTipWindow::SetupContent() {
 void ToolTipWindow::Update(double delta_time) {
     // We should move the position into somewhere we can see
     auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();
+    client::ctx::SelectedItem selected_item =
+        GetApp().HoveringOnRmluiComponent() ? hovering_text.ui_space : hovering_text.world_space;
+
+    if (!GetApp().HoveringOnRmluiComponent()) {
+        hovering_text.ui_space = std::monostate();
+    }
     // check for right click on the screen
     itemX = GetApp().GetMouseX();
     itemY = GetApp().GetMouseY();
@@ -56,28 +62,7 @@ void ToolTipWindow::Update(double delta_time) {
     // Then if it's low enough then we hide
     bool to_present = true;
     // Then if worldspace is null we take from ui space?
-    if (last_hover != hovering_text) {
-        std::visit(overloaded {[&](std::monostate) {
-                                   to_present = false;
-                                   SPDLOG_INFO("Showing monostate");
-                               },
-                               [&](entt::entity entity) {
-                                   SPDLOG_INFO("Setting {}", entity);
-                                   if (GetUniverse().valid(entity)) {
-                                       // Then we set it
-                                       tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
-                                       to_present = true;
-                                   } else {
-                                       // We show nothing
-                                       to_present = false;
-                                   }
-                               },
-                               [&](const std::string& string) {
-                                   SPDLOG_INFO("Setting {}", string);
-                                   tooltip_content->SetInnerRML(string);
-                                   to_present = true;
-                               }},
-                   last_hover);
+    if (last_hover != selected_item) {
         last_tooltip_change = GetApp().GetTime();
         std::visit(overloaded {[&](std::monostate) {
                                    to_present = false;
@@ -99,9 +84,9 @@ void ToolTipWindow::Update(double delta_time) {
                                    tooltip_content->SetInnerRML(string);
                                    to_present = true;
                                }},
-                   hovering_text);
+                   selected_item);
     }
-    if (std::holds_alternative<std::monostate>(hovering_text)) {
+    if (std::holds_alternative<std::monostate>(selected_item)) {
         to_present = false;
     }
 
@@ -118,7 +103,7 @@ void ToolTipWindow::Update(double delta_time) {
     if (document->IsVisible()) {
         document->PullToFront();
     }
-    last_hover = hovering_text;
+    last_hover = selected_item;
 }
 
 void ToolTipWindow::OpenDocument() {

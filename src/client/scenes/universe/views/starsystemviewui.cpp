@@ -16,6 +16,8 @@
  */
 #include "client/scenes/universe/views/starsystemviewui.h"
 
+#include "client/components/clientctx.h"
+#include "client/components/rightclick.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/scenes/universe/views/starsystemview.h"
@@ -33,16 +35,6 @@ StarSystemViewUI::StarSystemViewUI(core::Universe& universe, SysStarSystemRender
     : universe(universe), renderer(renderer), controller(controller), camera(camera) {
     province_color.fill(0);
 }
-
-namespace {
-template <class... Ts>
-struct overloaded : Ts... {
-    using Ts::operator()...;
-};
-// explicit deduction guide (not needed as of C++20)
-template <class... Ts>
-overloaded(Ts...) -> overloaded<Ts...>;
-}  // namespace
 
 void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     ImGui::Begin("Debug ui window", NULL, ImGuiWindowFlags_AlwaysAutoResize);
@@ -75,11 +67,11 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
     auto intersection = controller.GetMouseSurfaceIntersection();
     ImGui::TextFmt("Intersection: {} {}", intersection.latitude(), intersection.longitude());
     auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
-    std::visit(overloaded {[&](std::monostate) { ImGui::Text("No tooltip text"); },
-                           [&](entt::entity entity) { ImGui::TextFmt("Tooltip on {}", GetName(universe, entity)); },
-                           [&](const std::string& string) { ImGui::TextFmt("Tooltip on {}", string); }},
-               hovering_text);
-    ImGui::TextFmt("Just set {}", hovering_text.Set());
+    std::visit(client::ctx::overloaded {
+                   [&](std::monostate) { ImGui::Text("No tooltip text"); },
+                   [&](entt::entity entity) { ImGui::TextFmt("Tooltip on {}", GetName(universe, entity)); },
+                   [&](const std::string& string) { ImGui::TextFmt("Tooltip on {}", string); }},
+               hovering_text.world_space);
 
     ImGui::TextFmt("Tick Fraction: {}", universe.tick_fraction);
     if (ImGui::Button("Debug Spawn City")) {
