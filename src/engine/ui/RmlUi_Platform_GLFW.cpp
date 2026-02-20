@@ -105,10 +105,15 @@ void SystemInterface_GLFW::SetClipboardText(const Rml::String& text_utf8) {
 }
 
 void SystemInterface_GLFW::GetClipboardText(Rml::String& text) {
-    if (window == nullptr) {
-        return;
+    if (window) {
+        const char* clipboard = glfwGetClipboardString(window);
+
+        if (clipboard != nullptr) {
+            text = Rml::String(clipboard);
+        } else {
+            text.clear();
+        }
     }
-    text = Rml::String(glfwGetClipboardString(window));
 }
 
 bool SystemInterface_GLFW::LogMessage(Rml::Log::Type type, const Rml::String& message) {
