@@ -549,7 +549,7 @@ void Application::LogInfo() {
 #ifndef NDEBUG
     ENGINE_LOG_INFO("Conquer Space Debug {}", CQSP_VERSION_STRING);
 #else
-    ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING);
+    ENGINE_LOG_INFO("Conquer Space {}", CQSP_VERSION_STRING);
 #endif
     ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
