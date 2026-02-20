@@ -213,7 +213,7 @@ bool ModelLoader::LoadMaterialTexture(aiMaterial* material, const aiTextureType 
     // Look for the relative path to the model
     // TODO(EhWhoAmI): Load it from our vfs
     auto tex_path = std::filesystem::path(asset_path) / path_str;
-    stbi_set_flip_vertically_on_load((int)true);
+    stbi_set_flip_vertically_on_load((int)false);
     mesh_proto.texture_data =
         stbi_load(tex_path.string().c_str(), &mesh_proto.width, &mesh_proto.height, &mesh_proto.channels, 0);
     if (mesh_proto.texture_data == NULL) {
