@@ -18,32 +18,33 @@
 
 #include <string>
 
+#include "client/components/clientctx.h"
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems::rmlui {
-class TurnSaveWindow : public SysRmlUiInterface {
+class RightClickWindow : public SysRmlUiInterface {
  public:
-    explicit TurnSaveWindow(engine::Application& _app) : SysRmlUiInterface(_app) {}
-    ~TurnSaveWindow();
+    explicit RightClickWindow(engine::Application& _app) : SysRmlUiInterface(_app) {}
+    ~RightClickWindow();
     void Update(double delta_time) override;
     void OpenDocument() override;
     void ReloadWindow() override;
-    void SetupDocument();
+    void SetupContent();
 
  private:
-    std::string file_name = "../data/core/gui/mainscene/turnsavewindow.rml";
-
     class EventListener : public Rml::EventListener {
      public:
-        explicit EventListener(core::Universe* universe) : universe(universe) {}
+        explicit EventListener(core::Universe& universe) : universe(universe) {}
         void ProcessEvent(Rml::Event& event);
-        core::Universe* universe;
-    } listener {&GetUniverse()};
+        core::Universe& universe;
+    } listener {GetUniverse()};
 
-    bool is_paused;
-
-    Rml::Element* time_element;
-    Rml::Element* pause_element;
-    Rml::Element* speed_element;
+    std::string file_name = "../data/core/gui/mainscene/rightclickwindow.rml";
+    double itemX;
+    double itemY;
+    Rml::Element* right_click_content = nullptr;
+    Rml::Element* header_element;
+    entt::entity right_click_item = entt::null;
+    bool to_right_click = false;
 };
 }  // namespace cqsp::client::systems::rmlui

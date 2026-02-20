@@ -40,6 +40,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <tracy/Tracy.hpp>
 
+#include "application.h"
 #include "core/util/logging.h"
 #include "core/util/paths.h"
 #include "core/util/profiler.h"
@@ -174,6 +175,32 @@ void Application::InitAudio() {
     m_audio_interface->SetChannelVolume(1, m_client_options.GetOptions()["audio"]["ui"]);
 }
 
+void Application::UpdateScene() {
+    // Switch scene
+    if (m_scene_manager.ToSwitchScene()) {
+        m_scene_manager.SwitchScene();
+    }
+
+    // Update
+    m_scene_manager.Update(deltaTime);
+}
+
+void Application::ComputeFramerate() {
+    // Calculate FPS
+    double currentFrame = GetTime();
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+    fps = 1 / deltaTime;
+}
+
+void Application::UpdateFonts() {
+    if (fontShader != nullptr && m_font != nullptr) {
+        // Set font projection
+        fontShader->UseProgram();
+        fontShader->setMat4("projection", two_dim_projection);
+    }
+}
+
 void Application::InitRmlUi() {
     // Begin by installing the custom interfaces.
     m_system_interface = std::make_unique<SystemInterface_GLFW>();
@@ -192,10 +219,8 @@ void Application::InitRmlUi() {
     }
 
     // Disable debugger ui for now
-#ifdef RML_DEBUGGER
     Rml::Debugger::Initialise(rml_context);
     Rml::Debugger::SetVisible(true);
-#endif
 
     // Load rmlui fonts
     // TODO(EhWhoAmI): Load this somewhere else
@@ -303,26 +328,10 @@ void Application::run() {
     m_audio_interface->StartWorker();
 
     while (ShouldExit()) {
-        // Calculate FPS
-        double currentFrame = GetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-        fps = 1 / deltaTime;
-
+        ComputeFramerate();
         CalculateProjections();
-        if (fontShader != nullptr && m_font != nullptr) {
-            // Set font projection
-            fontShader->UseProgram();
-            fontShader->setMat4("projection", two_dim_projection);
-        }
-
-        // Switch scene
-        if (m_scene_manager.ToSwitchScene()) {
-            m_scene_manager.SwitchScene();
-        }
-
-        // Update
-        m_scene_manager.Update(deltaTime);
+        UpdateFonts();
+        UpdateScene();
 
         // Init imgui
         ImGui_ImplOpenGL3_NewFrame();
@@ -341,7 +350,6 @@ void Application::run() {
         }
         //END_TIMED_BLOCK(ImGui_Render);
 
-        //ProcessRmlUiUserInput();
         rml_context->Update();
         m_audio_interface->OnFrame();
 
@@ -408,7 +416,7 @@ void Application::CloseDocument(const std::string& path) {
 }
 
 Rml::ElementDocument* Application::ReloadDocument(const std::string& path) {
-    std::filesystem::path doc_path = std::filesystem::canonical(std::filesystem::path(GetCqspDataPath()) / path);
+    std::filesystem::path doc_path = std::filesystem::relative(std::filesystem::path(GetCqspDataPath()) / path);
     std::string path_name = doc_path.string();
     std::replace(path_name.begin(), path_name.end(), '\\', '/');
     if (loaded_documents.find(path_name) == loaded_documents.end()) {
@@ -541,7 +549,7 @@ void Application::LogInfo() {
 #ifndef NDEBUG
     ENGINE_LOG_INFO("Conquer Space Debug {}", CQSP_VERSION_STRING);
 #else
-    ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
+    ENGINE_LOG_INFO("Conquer Space {}", CQSP_VERSION_STRING);
 #endif
     ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
@@ -572,4 +580,9 @@ Rml::EventListener* Application::CqspEventInstancer::InstanceEventListener(const
 Application::CqspEventListener::~CqspEventListener() = default;
 
 void Application::CqspEventListener::ProcessEvent(Rml::Event& event) {}
+
+bool Application::HoveringOnRmluiComponent() {
+    Rml::Element* element = GetRmlUiContext()->GetHoverElement();
+    return (element != nullptr && element->GetTagName() != "#root");
+}
 }  // namespace cqsp::engine

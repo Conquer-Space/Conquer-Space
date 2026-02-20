@@ -139,9 +139,12 @@ class Application {
     double GetTime();
 
     bool MouseDragged() { return m_window->MouseDragged(); }
+    bool MouseMoved() { return m_window->MouseMoved(); }
 
     void SetWindowDimensions(int width, int height);
     void SetFullScreen(bool screen);
+
+    bool HoveringOnRmluiComponent();
 
     glm::mat4 Get2DProj() { return two_dim_projection; }
     glm::mat4 Get3DProj() { return three_dim_projection; }
@@ -199,6 +202,10 @@ class Application {
     void InitImgui();
     void ProcessRmlUiUserInput();
     void InitAudio();
+
+    void UpdateScene();
+    void ComputeFramerate();
+    void UpdateFonts();
 
     /*
      * Intializes glfw and imgui.

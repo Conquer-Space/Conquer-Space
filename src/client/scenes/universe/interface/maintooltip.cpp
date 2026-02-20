@@ -31,45 +31,83 @@ struct overloaded : Ts... {
 template <class... Ts>
 overloaded(Ts...) -> overloaded<Ts...>;
 }  // namespace
+
+void ToolTipWindow::ReloadWindow() {
+    document = GetApp().ReloadDocument(file_name);
+    SetupContent();
+}
+
+void ToolTipWindow::SetupContent() {
+    tooltip_content = document->GetElementById("tooltip_content");
+    SPDLOG_INFO("ASDf {}", tooltip_content->GetOwnerDocument()->GetSourceURL());
+}
+
 void ToolTipWindow::Update(double delta_time) {
     // We should move the position into somewhere we can see
     auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();
-    document->SetProperty("top", fmt::format("{} px", GetApp().GetMouseY() + 5));
-    document->SetProperty("left", fmt::format("{} px", GetApp().GetMouseX() + 5));
+    client::ctx::SelectedItem selected_item =
+        GetApp().HoveringOnRmluiComponent() ? hovering_text.ui_space : hovering_text.world_space;
+
+    if (!GetApp().HoveringOnRmluiComponent()) {
+        hovering_text.ui_space = std::monostate();
+    }
+    // check for right click on the screen
+    itemX = GetApp().GetMouseX();
+    itemY = GetApp().GetMouseY();
+    document->SetProperty("top", fmt::format("{} px", itemY + 10));
+    document->SetProperty("left", fmt::format("{} px", itemX + 10));
     // In the future we should probably have a more efficient way of updating this rml
     // Now let's check the value
 
     // Then if it's low enough then we hide
     bool to_present = true;
-    if (hovering_text.Set()) {
+    // Then if worldspace is null we take from ui space?
+    if (last_hover != selected_item) {
         last_tooltip_change = GetApp().GetTime();
-    }
-
-    if (hovering_text.Set()) {
-        std::visit(overloaded {[&](std::monostate) { to_present = false; },
+        std::visit(overloaded {[&](std::monostate) {
+                                   to_present = false;
+                                   SPDLOG_INFO("We shouldn't be showing anything");
+                               },
                                [&](entt::entity entity) {
+                                   SPDLOG_INFO("Setting ent {}", entity);
                                    if (GetUniverse().valid(entity)) {
                                        // Then we set it
-                                       document->SetInnerRML(core::util::GetName(GetUniverse(), entity));
+                                       tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
+                                       to_present = true;
                                    } else {
                                        // We show nothing
                                        to_present = false;
                                    }
                                },
-                               [&](const std::string& string) { document->SetInnerRML(string); }},
-                   hovering_text);
+                               [&](const std::string& string) {
+                                   SPDLOG_INFO("Setting ent {}", string);
+                                   tooltip_content->SetInnerRML(string);
+                                   to_present = true;
+                               }},
+                   selected_item);
+    }
+    if (std::holds_alternative<std::monostate>(selected_item)) {
+        to_present = false;
     }
 
     if (GetApp().GetTime() - last_tooltip_change < 0.1) {
+        SPDLOG_INFO("We're not showing the tooltip...");
         to_present = false;
     }
     if (to_present && !document->IsVisible()) {
         document->Show();
     } else if (!to_present && document->IsVisible()) {
+        SPDLOG_INFO("Hiding");
         document->Hide();
     }
-    hovering_text.Reset();
+    if (document->IsVisible()) {
+        document->PullToFront();
+    }
+    last_hover = selected_item;
 }
 
-void ToolTipWindow::OpenDocument() { document = GetApp().LoadDocument(file_name); }
+void ToolTipWindow::OpenDocument() {
+    document = GetApp().LoadDocument(file_name);
+    SetupContent();
+}
 }  // namespace cqsp::client::systems::rmlui

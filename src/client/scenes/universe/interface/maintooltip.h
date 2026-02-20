@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "client/components/clientctx.h"
+#include "client/components/rightclick.h"
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems::rmlui {
@@ -28,10 +28,18 @@ class ToolTipWindow : public SysRmlUiInterface {
     ~ToolTipWindow();
     void Update(double delta_time) override;
     void OpenDocument() override;
+    void ReloadWindow() override;
+    void SetupContent();
 
  private:
     std::string file_name = "../data/core/gui/mainscene/tooltipwindow.rml";
-    Rml::ElementDocument* document;
     double last_tooltip_change = 0;
+    double itemX;
+    double itemY;
+    Rml::Element* tooltip_content = nullptr;
+    Rml::Element* right_click_content = nullptr;
+    ctx::SelectedItem last_hover;
+
+    bool to_right_click = false;
 };
 }  // namespace cqsp::client::systems::rmlui

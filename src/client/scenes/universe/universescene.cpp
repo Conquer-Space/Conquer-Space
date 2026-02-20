@@ -16,10 +16,13 @@
  */
 #include "client/scenes/universe/universescene.h"
 
+#include <RmlUi/Core/Factory.h>
+
 #include <cmath>
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/components/rightclick.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
@@ -28,6 +31,7 @@
 #include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
+#include "client/scenes/universe/interface/rightclickwindow.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
 #include "client/scenes/universe/interface/syspausemenu.h"
@@ -54,6 +58,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/polar_coordinates.hpp"
 #include "tracy/Tracy.hpp"
+#include "universescene.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -100,46 +105,20 @@ void UniverseScene::Init() {
     simulation->tick();  // Why do we tick the simulation once here? Idk
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
+    AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
 }
 
 void UniverseScene::Update(float deltaTime) {
     ZoneScoped;
-
-    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
     if (!ImGui::GetIO().WantCaptureKeyboard) {
         if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_SPACE)) {
             ToggleTick();
         }
     }
 
-    int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
-    double tick_length = static_cast<float>(tick_speed) / 1000.f;
-    if (tick_speed < 0) {
-        tick_length = 1 / 1000.f;
-    }
-    if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
-        GetUniverse().EnableTick();
-        last_tick = GetApp().GetTime();
-    }
-
-    if (pause_opt.to_tick && !game_halted) {
-        GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
-        if (!interp) GetUniverse().tick_fraction = 0;
-    }
-
-    // Check for last tick
-    if (GetUniverse().ToTick() && !game_halted) {
-        // Game tick
-        if (ctx::tick_speeds[pause_opt.tick_speed] < 0) {
-            for (int i = 0; i < -ctx::tick_speeds[pause_opt.tick_speed]; i++) {
-                simulation->tick();
-            }
-        } else {
-            simulation->tick();
-        }
-        system_renderer->OnTick();
-    }
+    CheckUiReload();
+    ManageTick();
 
     if (!game_halted) {
         system_renderer->Update(deltaTime);
@@ -180,6 +159,46 @@ void UniverseScene::DoScreenshot() {
     if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F1) && GetApp().ButtonIsHeld(engine::KeyInput::KEY_F10)) ||
         (GetApp().ButtonIsHeld(engine::KeyInput::KEY_F1) && GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
         GetApp().Screenshot();
+    }
+}
+
+void UniverseScene::CheckUiReload() {
+    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
+        Rml::Factory::ClearStyleSheetCache();
+        for (auto& ui : documents) {
+            ui->ReloadWindow();
+        }
+    }
+}
+
+void UniverseScene::ManageTick() {
+    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
+    double tick_length = static_cast<float>(tick_speed) / 1000.f;
+    if (tick_speed < 0) {
+        tick_length = 1 / 1000.f;
+    }
+    if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
+        GetUniverse().EnableTick();
+        last_tick = GetApp().GetTime();
+    }
+
+    if (pause_opt.to_tick) {
+        GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
+        if (!interp) GetUniverse().tick_fraction = 0;
+    }
+
+    // Check for last tick
+    if (GetUniverse().ToTick() && !game_halted) {
+        // Game tick
+        if (ctx::tick_speeds[pause_opt.tick_speed] < 0) {
+            for (int i = 0; i < -ctx::tick_speeds[pause_opt.tick_speed]; i++) {
+                simulation->tick();
+            }
+        } else {
+            simulation->tick();
+        }
+        system_renderer->OnTick();
     }
 }
 

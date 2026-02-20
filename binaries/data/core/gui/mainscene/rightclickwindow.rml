@@ -1,0 +1,47 @@
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+            body {
+                padding: 4px;
+                border: 2px #20005c;
+                width: auto;
+                height: auto;
+            }
+
+            body:hover {
+                background-color: red;
+            }
+
+            #right_click_content {
+                display: inline-block;
+            }
+
+            .button {
+                background-color: #20005c;
+                border-radius: 3px;
+                padding: 4px;
+                display: block;
+            }
+
+            #header {
+                display: inline-block;
+                margin: 0.2em 0;
+                margin-top: 0.05em;
+            }
+
+            .button:hover {
+                color: yellow;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="right_click_content">
+            <h2 id="header">More potential content</h2>
+            <a class="button">
+                Some arbritrary button tbh
+            </a>
+        </div>
+    </body>
+</rml>

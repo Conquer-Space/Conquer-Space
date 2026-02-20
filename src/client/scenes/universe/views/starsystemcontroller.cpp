@@ -22,6 +22,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
+#include "client/components/rightclick.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "core/actions/cityactions.h"
@@ -683,8 +684,15 @@ entt::entity StarSystemController::SurfaceCoordinateToProvince(SurfaceCoordinate
     return entt::null;
 }
 
+/**
+* Handles all screenspace tooltips
+*/
 void StarSystemController::HandleHoverTooltip() {
+    if (app.HoveringOnRmluiComponent()) {
+        return;
+    }
     auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
+
     entt::entity hovering_item = entt::null;
     // Now we just do the province/country for now
     hovering_item = hovering_province;
@@ -707,13 +715,13 @@ void StarSystemController::HandleHoverTooltip() {
         hovering_item = hovering_planet;
     }
 
-    if ((std::holds_alternative<entt::entity>(hovering_text) &&
-         std::get<entt::entity>(hovering_text) != hovering_item) ||
-        (!std::holds_alternative<entt::entity>(hovering_text))) {
+    if ((std::holds_alternative<entt::entity>(hovering_text.world_space) &&
+         std::get<entt::entity>(hovering_text.world_space) != hovering_item) ||
+        (!std::holds_alternative<entt::entity>(hovering_text.world_space))) {
         if (hovering_item == entt::null) {
-            hovering_text = std::monostate();
+            hovering_text.world_space = std::monostate();
         } else {
-            hovering_text = hovering_item;
+            hovering_text.world_space = hovering_item;
         }
     }
 }

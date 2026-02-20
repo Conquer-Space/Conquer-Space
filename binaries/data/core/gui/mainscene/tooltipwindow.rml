@@ -1,20 +1,20 @@
 <rml>
     <head>
         <title></title>
+        <link type="text/rcss" href="window.rcss"/>
         <style>
-        body {
-            width: auto;
-            background-color: #0085a7;
-            height: auto;
-            font-family: Roboto;
-            position: absolute;
-            font-size: 16px;
-            top: 50px;
-		    left: 50px;
-            margin: 5px 5px 5px 5px;
-        }
+            body {
+                padding: 4px;
+                border: 2px #20005c;
+            }
+            .button {
+                background-color: aqua;
+                border-radius: 5px;
+            }
         </style>
     </head>
     <body>
+        <div id="tooltip_content">
+        </div>
     </body>
 </rml>
