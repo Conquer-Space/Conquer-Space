@@ -549,7 +549,7 @@ void Application::LogInfo() {
 #ifndef NDEBUG
     ENGINE_LOG_INFO("Conquer Space Debug {}", CQSP_VERSION_STRING);
 #else
-    ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING, GIT_INFO);
+    ENGINE_LOG_INFO("Conquer Space {} {}", CQSP_VERSION_STRING);
 #endif
     ENGINE_LOG_INFO("Platform: {}", PLATFORM_NAME);
     ENGINE_LOG_INFO("Compiled {} {}", __DATE__, __TIME__);
@@ -580,4 +580,9 @@ Rml::EventListener* Application::CqspEventInstancer::InstanceEventListener(const
 Application::CqspEventListener::~CqspEventListener() = default;
 
 void Application::CqspEventListener::ProcessEvent(Rml::Event& event) {}
+
+bool Application::HoveringOnRmluiComponent() {
+    Rml::Element* element = GetRmlUiContext()->GetHoverElement();
+    return (element != nullptr && element->GetTagName() != "#root");
+}
 }  // namespace cqsp::engine

@@ -144,6 +144,8 @@ class Application {
     void SetWindowDimensions(int width, int height);
     void SetFullScreen(bool screen);
 
+    bool HoveringOnRmluiComponent();
+
     glm::mat4 Get2DProj() { return two_dim_projection; }
     glm::mat4 Get3DProj() { return three_dim_projection; }
     glm::mat4 GetRmlUiProj() { return rmlui_projection; }

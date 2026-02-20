@@ -22,6 +22,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
+#include "client/components/rightclick.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "core/actions/cityactions.h"
@@ -687,14 +688,11 @@ entt::entity StarSystemController::SurfaceCoordinateToProvince(SurfaceCoordinate
 * Handles all screenspace tooltips
 */
 void StarSystemController::HandleHoverTooltip() {
+    if (app.HoveringOnRmluiComponent()) {
+        return;
+    }
     auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
 
-    {
-        Rml::Element* element = app.GetRmlUiContext()->GetHoverElement();
-        if (element != nullptr && element->GetTagName() != "#root") {
-            return;
-        }
-    }
     entt::entity hovering_item = entt::null;
     // Now we just do the province/country for now
     hovering_item = hovering_province;

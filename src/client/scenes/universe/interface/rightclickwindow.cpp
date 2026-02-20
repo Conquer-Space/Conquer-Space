@@ -17,6 +17,7 @@
 #include "client/scenes/universe/interface/rightclickwindow.h"
 
 #include "client/components/clientctx.h"
+#include "client/components/rightclick.h"
 #include "core/util/nameutil.h"
 
 namespace cqsp::client::systems::rmlui {
@@ -37,11 +38,10 @@ void RightClickWindow::SetupContent() {
 
 void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {
     auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
-    hovering_text = "Hovering over this";
+    hovering_text.ui_space = "Hovering over this";
 }
 
 void RightClickWindow::Update(double delta_time) {
-    // Now let's display the value
     bool mouse_over_this = MouseOverDocument();
     if ((GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT) ||
          GetApp().MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) &&
@@ -60,8 +60,9 @@ void RightClickWindow::Update(double delta_time) {
         document->SetProperty("top", fmt::format("{} px", itemY + 5));
         document->SetProperty("left", fmt::format("{} px", itemX + 5));
         auto& hovering_text = GetUniverse().ctx().at<client::ctx::HoveringItem>();
-        if (std::holds_alternative<entt::entity>(hovering_text)) {
-            right_click_item = std::get<entt::entity>(hovering_text);
+        if (std::holds_alternative<entt::entity>(hovering_text.world_space)) {
+            // Later determine what the actual right click value should be?
+            right_click_item = std::get<entt::entity>(hovering_text.world_space);
             header_element->SetInnerRML(core::util::GetName(GetUniverse(), right_click_item));
         } else {
             right_click_item = entt::null;

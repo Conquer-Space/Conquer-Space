@@ -22,6 +22,7 @@
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/components/rightclick.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/imguiinterface.h"

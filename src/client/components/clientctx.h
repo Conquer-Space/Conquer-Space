@@ -25,7 +25,6 @@
 #include <entt/entity/entity.hpp>
 
 namespace cqsp::client::ctx {
-
 static const std::array tick_speeds {1000, 500, 333, 100, 50, 10, 1, -1, -2, -5, -10};
 
 struct StarSystemViewDebug {
@@ -37,51 +36,6 @@ struct PauseOptions {
     int tick_speed = 3;
     bool tick_once = false;
 };
-
-struct HoveringState {
-    entt::entity hovering_planet;
-    entt::entity hovering_country;
-    entt::entity hovering_province;
-};
-
-namespace {
-template <class... Ts>
-struct overloaded : Ts... {
-    using Ts::operator()...;
-};
-// explicit deduction guide (not needed as of C++20)
-template <class... Ts>
-overloaded(Ts...) -> overloaded<Ts...>;
-}  // namespace
-
-typedef std::variant<std::monostate, entt::entity, std::string> SelectedItem;
-struct HoveringItem {
-    SelectedItem world_space;
-    SelectedItem ui_space;
-};
-
-// struct HoveringItem : public std::variant<std::monostate, entt::entity, std::string> {
-//     using variant::variant;
-
-//     template <typename T>
-//     HoveringItem& operator=(T&& value) {
-//         std::variant<std::monostate, entt::entity, std::string>::operator=(std::forward<T>(value));
-//         last_set = true;
-//         return *this;
-//     }
-//     bool operator==(const HoveringItem& other) const {
-//         return static_cast<const variant&>(*this) == static_cast<const variant&>(other);
-//     }
-
-//     bool operator!=(const HoveringItem& other) const { return !(*this == other); }
-
-//     void Reset() { last_set = false; }
-
-//     bool Set() const { return last_set; }
-
-//  private:
-//     bool last_set = false;
-// };
 
 struct SelectedCountry {};
 
