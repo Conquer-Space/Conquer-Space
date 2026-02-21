@@ -596,9 +596,9 @@ std::unique_ptr<Asset> AssetLoader::LoadModel(VirtualMounter* mount, const std::
     auto model = std::make_unique<Model>();
     ModelLoader loader(scene, file_path.parent_path().string());
     // Set model scale?
-    loader.LoadModel();
-    ENGINE_LOG_INFO("Loading {} textures", loader.model_prototype->texture_map.size());
     loader.model_prototype->key = key;
+    loader.LoadModel();
+    ENGINE_LOG_INFO("Loading {} textures ({})", loader.model_prototype->texture_map.size(), key);
     loader.model_prototype->asset = model.get();
 
     if (hints["scale"].defined() && hints["scale"].type() == Hjson::Type::Vector && hints["scale"].size() == 3) {

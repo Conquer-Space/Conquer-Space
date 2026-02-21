@@ -78,7 +78,6 @@ class SysStarSystemRenderer {
     engine::Renderable city;
     engine::Renderable sun;
 
-    asset::ShaderProgram_t model_shader;
     asset::ShaderProgram_t orbit_shader;
     asset::ShaderProgram_t near_shader;
     asset::ShaderProgram_t vis_shader;

@@ -234,11 +234,15 @@ void SysStarSystemRenderer::DrawModels() {
         }
         auto model = app.GetAssetManager().GetAsset<asset::Model>(model_name.name);
         glm::mat4 transform = glm::mat4(1.f);
-        transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        transform = glm::rotate(transform, glm::radians((float)glfwGetTime() * 10.f), glm::vec3(1.0f, 0.0f, 0.0f));
         transform = glm::translate(transform, object_pos);
 
         transform = glm::scale(transform, model->scale);
         model->shader->UseProgram();
+        model->shader->setVec3("lightDir", glm::normalize(sun_position - object_pos));
+        model->shader->setVec3("lightPosition", sun_position);
+        model->shader->setVec3("lightColor", sun_color);
+        model->shader->setVec3("viewPos", camera.cam_pos);
         model->shader->SetMVP(transform, camera.camera_matrix, camera.projection);
         model->Draw();
     }
@@ -709,7 +713,6 @@ void SysStarSystemRenderer::InitializeMeshes() {
     near_shader = ConstructShader("core:shader.neartexturedobject");
     orbit_shader = ConstructShader("core:shader.orbitshader");
     vis_shader = ConstructShader("core:shader.vertex_vis");
-    model_shader = ConstructShader("core:shader.model_pbr_log_shader");
     sun_shader = ConstructShader("core:shader.sunshader");
     skybox_shader = ConstructShader("core:shader.skybox");
 

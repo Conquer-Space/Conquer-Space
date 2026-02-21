@@ -227,6 +227,7 @@ bool ModelLoader::LoadMaterialTexture(aiMaterial* material, const aiTextureType 
 }
 
 void ModelLoader::LoadModel() {
+    SPDLOG_INFO("Loading model {}", model_prototype->key);
     LoadNode(scene->mRootNode);
     LoadMaterials();
 }
@@ -365,8 +366,6 @@ void ModelLoader::LoadMaterial(int idx, aiMaterial* material) {
     ENGINE_LOG_INFO("Loading {} properties", material->mNumProperties);
 
     ENGINE_LOG_INFO("Shading model: {}", material->GetTextureCount(aiTextureType_METALNESS));
-
-    // Check if it's pbr and if it's pbr
 
     model_prototype->material_map[idx] = prototype;
 }
