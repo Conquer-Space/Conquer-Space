@@ -28,7 +28,7 @@ void MapModeWindow::DoUI(int delta_time) {
     if (!ImGui::Begin("Map Mode", 0, ImGuiWindowFlags_NoTitleBar)) return;
 
     MapModeButton("No Map Mode", ctx::MapMode::NoMapMode);
-    MapModeButton("Country Map Mode", ctx::MapMode::CountryMapMode);
+    MapModeButton("Country Map Mode", ctx::MapMode::CountryMapMode, ctx::MapMode::LocalSelectedMapMode);
     MapModeButton("Province Map Mode", ctx::MapMode::ProvinceMapMode);
 
     ImGui::End();
@@ -48,6 +48,21 @@ void MapModeWindow::MapModeButton(const char* string, ctx::MapMode map_mode) {
         SetMapMode(map_mode);
     }
     if (current_mode == map_mode) {
+        ImGui::PopStyleColor();
+        ImGui::PopStyleColor();
+    }
+}
+
+void MapModeWindow::MapModeButton(const char* string, ctx::MapMode map_mode, ctx::MapMode map_mode2) {
+    ctx::MapMode current_mode = GetMapMode();
+    if (current_mode == map_mode || current_mode == map_mode2) {
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(1.f, 0.8431372549, 0.f, 1.f));
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(181.f / 255.f, 148.f / 255.f, 16.f / 255.f, 1.f));
+    }
+    if (ImGui::Button(string)) {
+        SetMapMode(map_mode);
+    }
+    if (current_mode == map_mode || current_mode == map_mode2) {
         ImGui::PopStyleColor();
         ImGui::PopStyleColor();
     }
