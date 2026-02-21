@@ -569,10 +569,10 @@ void StarSystemController::HandleProvinceHoverColor() {
         universe.all_of<PlanetTexture>(hovering_planet)) {
         auto& data = universe.get<PlanetTexture>(hovering_planet);
         if (data.has_provinces) {
-            const int planet_index = data.province_index_map.at(hovering_province);
-            float r = data.province_colors[static_cast<size_t>(planet_index * 4)];
-            float g = data.province_colors[static_cast<size_t>(planet_index * 4 + 1)];
-            float b = data.province_colors[static_cast<size_t>(planet_index * 4 + 2)];
+            const size_t planet_index = static_cast<size_t>(data.province_index_map.at(hovering_province));
+            float r = data.province_colors[planet_index * 4];
+            float g = data.province_colors[planet_index * 4 + 1];
+            float b = data.province_colors[planet_index * 4 + 2];
             glm::vec3 hsl_color = toHSL(glm::vec3(r, g, b));
             hsl_color.z = std::clamp(hsl_color.z + 0.1f, 0.f, 1.f);
             const glm::vec3 rgb = toRGB(hsl_color);
