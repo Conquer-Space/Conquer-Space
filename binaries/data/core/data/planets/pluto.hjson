@@ -9,12 +9,12 @@
         axial: 122.53 deg
         orbit:
         {
-            eccentricity: 0.2446752685954255
-            semi_major_axis: 5873871430.620249 km
-            M0: 25.20639169742568 deg
-            inclination: 17.15134604252063 deg
-            LAN: 110.2869838988196 deg
-            arg_periapsis: 113.7633715512292 deg
+            eccentricity: 0.2488575225441436
+            semi_major_axis: 5892333361.630591 km
+            M0: 273.9534804532167 deg
+            inclination: 17.16737531177245 deg
+            LAN: 110.3627463601493 deg
+            arg_periapsis: 114.2937178928628 deg
         }
         tags: []
     }

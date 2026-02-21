@@ -7,12 +7,12 @@
         gm: 4904.86959
         orbit:
         {
-            eccentricity: 0.06476694128611303
-            semi_major_axis: 376586.6585063708 km
-            M0: 145.1550311169049 deg
-            inclination: 5.240010829674767 deg
-            LAN: 123.9837028145578 deg
-            arg_periapsis: 308.1359034620372 deg
+            eccentricity: 0.05298940093961622
+            semi_major_axis: 379750.3412619646 km
+            M0: 219.8346069893559 deg
+            inclination: 5.022704921345476 deg
+            LAN: 13.23683594105054 deg
+            arg_periapsis: 189.1483925319013 deg
         }
         texture:
         {

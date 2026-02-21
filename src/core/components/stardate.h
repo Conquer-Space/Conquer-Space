@@ -82,6 +82,6 @@ class StarDate {
     // This value is set to -1 since we will need to 0th tick to initialize everything properly
     uint64_t date = -1;
 
-    static const int start_date = 2000;
+    static const int start_date = 1950;
 };
 }  // namespace cqsp::core::components

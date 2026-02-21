@@ -27,15 +27,15 @@ def read_planet(planet, parent=10):
         "format": "json",
         "EPHEM_TYPE": "ELEMENTS",
         "COMMAND": planet,
-        "START_TIME": "2000-01-01",
-        "STOP_TIME": "2000-01-02",
+        "START_TIME": "1950-01-01",
+        "STOP_TIME": "1950-01-02",
         "STEP_SIZE": "2d",
         "OBJ_DATA": "NO",
         "CENTER": parent
     }
     api = requests.get("https://ssd.jpl.nasa.gov/api/horizons.api", payload)
     res = str(api.json()["result"])
-    # Look for $$OE ad look for the end at $$EOE
+    # Look for $$SOE ad look for the end at $$EOE
     """
     JDTDB    Julian Day Number, Barycentric Dynamical Time
         EC     Eccentricity, e
@@ -88,8 +88,10 @@ def update_planet_ephems(planet_list: dict, output_directory: str):
     # so check if the file exists
     # Ensure the directory exists
     if not os.path.exists(output_directory):
+        print("Not logging because output directory doesn't exist")
         return False
     if not os.path.isdir(output_directory):
+        print("Not logging because output directory is not a directory")
         return False
 
     for planet_name, orbit in planet_list.items():
