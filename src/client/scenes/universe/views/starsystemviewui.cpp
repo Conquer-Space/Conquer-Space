@@ -143,7 +143,10 @@ void StarSystemViewUI::RenderSelectedObjectInformation() {
 }
 
 void StarSystemViewUI::DoUI(float delta_time) {
-    RenderInformationWindow(delta_time);
-    RenderSelectedObjectInformation();
+    auto& debug_info = universe.ctx().at<ctx::StarSystemViewDebug>();
+    if (debug_info.to_show) {
+        RenderInformationWindow(delta_time);
+        RenderSelectedObjectInformation();
+    }
 }
 }  // namespace cqsp::client::systems

@@ -733,10 +733,14 @@ void StarSystemController::ResetProvinceColor(entt::entity province) {
                     glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
                               static_cast<float>(color.b) / 255.f, DEFAULT_PROVINCE_APLHA));
             } else {
-                auto& country_comp = universe.get<components::Country>(province_comp.country);
-                glm::vec4 color = glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2],
-                                            DEFAULT_PROVINCE_APLHA);
-                renderer.UpdatePlanetProvinceColors(focused_planet, province, color);
+                if (universe.valid(province_comp.country)) {
+                    auto& country_comp = universe.get<components::Country>(province_comp.country);
+                    glm::vec4 color = glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2],
+                                                DEFAULT_PROVINCE_APLHA);
+                    renderer.UpdatePlanetProvinceColors(focused_planet, province, color);
+                } else {
+                    renderer.UpdatePlanetProvinceColors(focused_planet, province, glm::vec4(0., 0., 0., 0.));
+                }
             }
             break;
         }

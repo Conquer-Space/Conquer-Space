@@ -61,12 +61,8 @@ void ToolTipWindow::Update(double delta_time) {
     // Then if worldspace is null we take from ui space?
     if (last_hover != selected_item) {
         last_tooltip_change = GetApp().GetTime();
-        std::visit(overloaded {[&](std::monostate) {
-                                   to_present = false;
-                                   SPDLOG_INFO("We shouldn't be showing anything");
-                               },
+        std::visit(overloaded {[&](std::monostate) { to_present = false; },
                                [&](entt::entity entity) {
-                                   SPDLOG_INFO("Setting ent {}", entity);
                                    if (GetUniverse().valid(entity)) {
                                        // Then we set it
                                        tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
