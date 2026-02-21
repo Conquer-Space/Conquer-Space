@@ -7,12 +7,12 @@
         gm: 5793939.9
         orbit:
         {
-            eccentricity: 0.04440321712269083
-            semi_major_axis: 2876687911.444109 km
-            M0: 145.8819294217686 deg
-            inclination: 0.7725679808057498 deg
-            LAN: 73.98948084754441 deg
-            arg_periapsis: 96.54392765701294 deg
+            eccentricity: 0.04620749686295936
+            semi_major_axis: 2866873922.272103 km
+            M0: 281.6981527102641 deg
+            inclination: 0.7732198895272148 deg
+            LAN: 73.98838522278594 deg
+            arg_periapsis: 98.0722928090408 deg
         }
         day_length: -0.71833 d
         axial: 28.32

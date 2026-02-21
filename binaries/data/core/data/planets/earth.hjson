@@ -8,12 +8,12 @@
         habitation: true
         orbit:
         {
-            eccentricity: 0.01670257989152663
-            semi_major_axis: 149597369.8038478 km
-            M0: 356.9521225619375 deg
-            inclination: 0.0001036081554173719 deg
-            LAN: 140.2241915047173 deg
-            arg_periapsis: 322.693500525724 deg
+            eccentricity: 0.01674946005075306
+            semi_major_axis: 149599044.3972877 km
+            M0: 357.9172145985277 deg
+            inclination: 0.006682517643736884 deg
+            LAN: 354.607068728268 deg
+            arg_periapsis: 108.1841233092876 deg
         }
         day_length: 0.99726968 d
         day_offset: 3 deg
