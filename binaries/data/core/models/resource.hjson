@@ -23,8 +23,8 @@
             shader: shader.model_pbr_log_shader
             textures: {
                 diffuse: 0
-                roughness: 1
-                metalness: 2
+                roughness: 2
+                metalness: 1
             }
         }
     }

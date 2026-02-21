@@ -234,7 +234,7 @@ void SysStarSystemRenderer::DrawModels() {
         }
         auto model = app.GetAssetManager().GetAsset<asset::Model>(model_name.name);
         glm::mat4 transform = glm::mat4(1.f);
-        transform = glm::rotate(transform, glm::radians((float)glfwGetTime() * 10.f), glm::vec3(1.0f, 0.0f, 0.0f));
+        transform = glm::rotate(transform, glm::radians(90.f), glm::vec3(1.0f, 0.0f, 0.0f));
         transform = glm::translate(transform, object_pos);
 
         transform = glm::scale(transform, model->scale);

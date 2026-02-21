@@ -8,8 +8,8 @@
         far: 1e13
         offset: 1.0
         diffuse: 0
-        roughness: 1
-        metalness: 2
+        roughness: 2
+        metalness: 1
         lightDir: [0, 1, 0]
         viewPos: [0, 1, 0]
         lightColor: [20, 20, 20]

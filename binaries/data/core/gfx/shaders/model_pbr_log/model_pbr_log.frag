@@ -5,11 +5,16 @@
 in vec2 TexCoords;
 in vec3 FragPos;
 in vec3 Normal;
+in vec4 frag_pos;
 
 out vec4 FragColor;
 
 // lights
 uniform vec3 lightDir;
+
+uniform float C;
+uniform float far;
+uniform float offset;
 
 uniform vec3 viewPos;
 uniform vec3 lightColor;
@@ -64,8 +69,8 @@ void main() {
 
     vec3 V = normalize(viewPos - FragPos);
 
-    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
-    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
+    // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
+    // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)
     vec3 F0 = vec3(0.04);
     F0 = mix(F0, albedo, metallicValue);
 
@@ -83,7 +88,7 @@ void main() {
     float G = GeometrySmith(N, V, L, roughnessValue);
     vec3 F = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
 
-    vec3 nominator    = NDF * G * F; 
+    vec3 nominator    = NDF * G * F;
     float denominator = 4 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001;
 
     vec3 specular = nominator / denominator; // prevent divide by zero for NdotV=0.0 or NdotL=0.0
@@ -94,7 +99,7 @@ void main() {
     // be above 1.0 (unless the surface emits light); to preserve this
     // relationship the diffuse component (kD) should equal 1.0 - kS.
     vec3 kD = vec3(1.0) - kS;
-    // multiply kD by the inverse metalness such that only non-metals 
+    // multiply kD by the inverse metalness such that only non-metals
     // have diffuse lighting, or a linear blend if partly metal (pure metals
     // have no diffuse light).
     kD *= 1.0 - metallicValue;
@@ -105,8 +110,7 @@ void main() {
     // add to outgoing radiance Lo
     Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
 
-    // ambient lighting (note that the next IBL tutorial will replace 
-    // this ambient lighting with environment lighting).
+    // ambient lighting
     vec3 ambient = vec3(0.001) * albedo;
 
     vec3 color = ambient + Lo;
@@ -117,4 +121,5 @@ void main() {
     color = pow(color, vec3(1.0/2.5));
 
     FragColor = vec4(color, 1.0);
+    gl_FragDepth = (log(C * frag_pos.z + offset) / log(C * far + offset));
 }
