@@ -54,6 +54,7 @@ class SysDebugMenu : public SysUserInterface {
     bool scroll_to_bottom = true;
     bool to_show_cqsp_metrics = false;
     bool to_show_asset_window = false;
+    bool to_show_rmlui_window = true;
 
     std::string command;
     std::string asset_search;

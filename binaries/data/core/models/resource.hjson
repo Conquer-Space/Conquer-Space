@@ -22,7 +22,9 @@
             scale: [0.1, 0.1, 0.1]
             shader: shader.model_pbr_log_shader
             textures: {
-                "diffuse": 0
+                diffuse: 0
+                roughness: 2
+                metalness: 1
             }
         }
     }

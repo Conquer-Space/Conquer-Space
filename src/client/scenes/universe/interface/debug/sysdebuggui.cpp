@@ -16,6 +16,8 @@
  */
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 
+#include <RmlUi/Debugger.h>
+
 #include <filesystem>
 
 #include "GLFW/glfw3.h"
@@ -89,6 +91,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
                 {"name", {"Gets name and identifier of entity", entity_name}},
                 {"lua", {"Executes lua script", lua}},
                 {"log_market", {"Logs market into a csv file", log_market}}};
+    to_show_rmlui_window = Rml::Debugger::IsVisible();
 }
 
 void SysDebugMenu::Init() {}
@@ -148,6 +151,12 @@ void SysDebugMenu::CreateMenuBar() {
                 ImGui::MenuItem("About ImGui", 0, &to_show_imgui_about);
                 ImGui::MenuItem("ImGui Debugger", 0, &to_show_metrics_window);
                 ImGui::MenuItem("ImPlot Debugger", 0, &to_show_implot_metrics);
+                ImGui::EndMenu();
+            }
+            if (ImGui::BeginMenu("RmlUi")) {
+                if (ImGui::MenuItem("RmlUi Debugger", 0, &to_show_rmlui_window)) {
+                    Rml::Debugger::SetVisible(to_show_rmlui_window);
+                }
                 ImGui::EndMenu();
             }
             ImGui::EndMenu();

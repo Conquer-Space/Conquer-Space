@@ -6,6 +6,7 @@ layout (location = 2) in vec2 aTexCoords;
 layout (location = 3) in vec3 aTangent;
 layout (location = 4) in vec4 aBiTangent;
 
+// Ngl idk why the name of this is the same as others but that really is besides the point tbh
 out vec4 frag_pos;
 
 out vec2 TexCoords;
