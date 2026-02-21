@@ -556,8 +556,12 @@ void StarSystemController::HandleProvinceHoverColor() {
         return;
     }
     // Then set our value and reset our previous province color
-    if (universe.valid(last_hovered_province)) {
+    if (universe.valid(last_hovered_province) && last_hovered_province != selected_province) {
         ResetProvinceColor(last_hovered_province);
+    }
+
+    if (last_hovered_province == selected_province) {
+        renderer.UpdatePlanetProvinceColors(hovering_planet, selected_province, selected_province_color);
     }
 
     // Now let's get the color
