@@ -218,9 +218,7 @@ void Application::InitRmlUi() {
         ENGINE_LOG_CRITICAL("Unable to load rml context!");
     }
 
-    // Disable debugger ui for now
     Rml::Debugger::Initialise(rml_context);
-    Rml::Debugger::SetVisible(true);
 
     // Load rmlui fonts
     // TODO(EhWhoAmI): Load this somewhere else
