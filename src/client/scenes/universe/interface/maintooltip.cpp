@@ -37,10 +37,7 @@ void ToolTipWindow::ReloadWindow() {
     SetupContent();
 }
 
-void ToolTipWindow::SetupContent() {
-    tooltip_content = document->GetElementById("tooltip_content");
-    SPDLOG_INFO("ASDf {}", tooltip_content->GetOwnerDocument()->GetSourceURL());
-}
+void ToolTipWindow::SetupContent() { tooltip_content = document->GetElementById("tooltip_content"); }
 
 void ToolTipWindow::Update(double delta_time) {
     // We should move the position into somewhere we can see
@@ -80,7 +77,6 @@ void ToolTipWindow::Update(double delta_time) {
                                    }
                                },
                                [&](const std::string& string) {
-                                   SPDLOG_INFO("Setting ent {}", string);
                                    tooltip_content->SetInnerRML(string);
                                    to_present = true;
                                }},
@@ -91,13 +87,11 @@ void ToolTipWindow::Update(double delta_time) {
     }
 
     if (GetApp().GetTime() - last_tooltip_change < 0.1) {
-        SPDLOG_INFO("We're not showing the tooltip...");
         to_present = false;
     }
     if (to_present && !document->IsVisible()) {
         document->Show();
     } else if (!to_present && document->IsVisible()) {
-        SPDLOG_INFO("Hiding");
         document->Hide();
     }
     if (document->IsVisible()) {

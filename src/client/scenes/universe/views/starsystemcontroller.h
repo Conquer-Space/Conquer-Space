@@ -96,6 +96,7 @@ class StarSystemController {
     std::optional<glm::vec3> CheckIntersection(const glm::vec3 &object_pos, const glm::vec3 &ray_wor, float radius);
 
     void SetCountryProvincesColor(entt::entity country);
+    void HandleProvinceHoverColor();
 
     void SelectProvince();
 
@@ -172,5 +173,6 @@ class StarSystemController {
     ctx::MapMode last_map_mode = ctx::MapMode::NoMapMode;
 
     entt::entity focused_planet = entt::null;
+    entt::entity last_hovered_province = entt::null;
 };
 }  // namespace cqsp::client::systems
