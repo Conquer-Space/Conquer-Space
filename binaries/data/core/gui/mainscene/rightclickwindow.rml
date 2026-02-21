@@ -4,44 +4,56 @@
         <link type="text/rcss" href="window.rcss"/>
         <style>
             body {
-                padding: 4px;
+                padding: 4px 4px 4px 4px;
                 border: 2px #20005c;
                 width: auto;
+                display: inline-block;
                 height: auto;
             }
 
             body:hover {
-                background-color: red;
+                background-color: rgb(22, 148, 85);
             }
 
             #right_click_content {
-                display: inline-block;
+                display: block;
             }
 
             .button {
                 background-color: #20005c;
                 border-radius: 3px;
                 padding: 4px;
+                margin: 1px;
                 display: block;
             }
 
             #header {
                 display: inline-block;
-                margin: 0.2em 0;
+                margin: 0; /* Remove the push */
+                padding-bottom: 5px;
                 margin-top: 0.05em;
             }
 
             .button:hover {
                 color: yellow;
             }
+
+            .button_area {
+                padding: 0px;
+                margin: 0px;
+            }
         </style>
     </head>
     <body>
         <div id="right_click_content">
             <h2 id="header">More potential content</h2>
-            <a class="button">
-                Some arbritrary button tbh
-            </a>
+            <div class="button_area" data-model="right_click_buttons">
+                <div data-attr-onclick="button.action" data-for="button : button_list">
+                <a data-attr-onclick="button.action" class="button">
+                    {{ button.name }}
+                </a>
+                </div>
+            </div>
         </div>
     </body>
 </rml>

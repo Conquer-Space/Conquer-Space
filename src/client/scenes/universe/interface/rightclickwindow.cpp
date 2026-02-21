@@ -16,13 +16,17 @@
  */
 #include "client/scenes/universe/interface/rightclickwindow.h"
 
+#include <RmlUi/Core/DataModelHandle.h>
+
 #include "client/components/clientctx.h"
 #include "client/components/rightclick.h"
+#include "core/components/bodies.h"
 #include "core/util/nameutil.h"
 
 namespace cqsp::client::systems::rmlui {
 RightClickWindow::~RightClickWindow() {
     document->RemoveEventListener(Rml::EventId::Mouseover, &listener);
+    document->RemoveEventListener(Rml::EventId::Click, &right_click_listener);
     document->Close();
 }
 
@@ -34,12 +38,33 @@ void RightClickWindow::ReloadWindow() {
 void RightClickWindow::SetupContent() {
     header_element = document->GetElementById("header");
     document->AddEventListener(Rml::EventId::Mouseover, &listener);
+    document->AddEventListener(Rml::EventId::Click, &right_click_listener);
 }
 
-void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {
-    auto& hovering_text = universe.ctx().at<client::ctx::HoveringItem>();
-    hovering_text.ui_space = "Hovering over this";
+void RightClickWindow::SetupDataModels() {
+    // Setup model
+    Rml::DataModelConstructor constructor = GetApp().GetRmlUiContext()->CreateDataModel("right_click_buttons");
+
+    if (auto invader_handle = constructor.RegisterStruct<RightClickMenuItem>()) {
+        invader_handle.RegisterMember("name", &RightClickMenuItem::name);
+        invader_handle.RegisterMember("action", &RightClickMenuItem::action);
+    }
+
+    constructor.RegisterArray<std::vector<RightClickMenuItem>>();
+    constructor.Bind("button_list", &buttons);
+    handle = constructor.GetModelHandle();
+    handle.DirtyAllVariables();
 }
+
+void RightClickWindow::DetermineButtons(entt::entity entity) {
+    buttons.clear();
+    if (GetUniverse().any_of<core::components::bodies::Body>(entity)) {
+        buttons.push_back({"Send to orbit", "somerandomaction"});
+    }
+    handle.DirtyAllVariables();
+}
+
+void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {}
 
 void RightClickWindow::Update(double delta_time) {
     bool mouse_over_this = MouseOverDocument();
@@ -64,6 +89,11 @@ void RightClickWindow::Update(double delta_time) {
             // Later determine what the actual right click value should be?
             right_click_item = std::get<entt::entity>(hovering_text.world_space);
             header_element->SetInnerRML(core::util::GetName(GetUniverse(), right_click_item));
+            // Then we should determine what kind of stuff we should show as wel and then do stuff
+            DetermineButtons(right_click_item);
+            if (buttons.empty()) {
+                document->Hide();
+            }
         } else {
             right_click_item = entt::null;
             document->Hide();
@@ -72,7 +102,23 @@ void RightClickWindow::Update(double delta_time) {
 }
 
 void RightClickWindow::OpenDocument() {
+    SetupDataModels();
     document = GetApp().LoadDocument(file_name);
     SetupContent();
+}
+
+void RightClickWindow::ClickEventListener::ProcessEvent(Rml::Event& event) {
+    // Check if we're gonna be clicking anything important...
+    // Then delete this
+    if (event.GetTargetElement() == nullptr) {
+        return;
+    }
+    const Rml::Variant* value = event.GetTargetElement()->GetAttribute("onclick");
+    if (value == nullptr && value->GetType() != Rml::Variant::STRING) {
+        return;
+    }
+    SPDLOG_INFO("{}", value->Get<std::string>());
+    window.document->Hide();
+    window.right_click_item = entt::null;
 }
 }  // namespace cqsp::client::systems::rmlui

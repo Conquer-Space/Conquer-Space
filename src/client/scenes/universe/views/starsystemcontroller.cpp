@@ -560,7 +560,7 @@ void StarSystemController::HandleProvinceHoverColor() {
         ResetProvinceColor(last_hovered_province);
     }
 
-    if (last_hovered_province == selected_province) {
+    if (last_hovered_province == selected_province && universe.valid(hovering_planet)) {
         renderer.UpdatePlanetProvinceColors(hovering_planet, selected_province, selected_province_color);
     }
 
