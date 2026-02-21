@@ -49,8 +49,12 @@ struct VisibleOrbit {};
 
 enum class MapMode {
     NoMapMode,
-    CountryMapMode,
+    /**
+     * Maybe this should be the default map mode
+     */
+    LocalSelectedMapMode,
     ProvinceMapMode,
+    CountryMapMode,
     /*
     * This map mode is not intended to be actually used, this is just to force a reset of a map mode
     */

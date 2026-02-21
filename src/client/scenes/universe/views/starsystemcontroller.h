@@ -96,6 +96,7 @@ class StarSystemController {
     std::optional<glm::vec3> CheckIntersection(const glm::vec3 &object_pos, const glm::vec3 &ray_wor, float radius);
 
     void SetCountryProvincesColor(entt::entity country);
+    void SetCountryProvincesToProvinceColor(entt::entity country);
     void HandleProvinceHoverColor();
 
     void SelectProvince();
@@ -161,6 +162,7 @@ class StarSystemController {
     const float CAMERA_MOVEMENT_SPEED = 30.f / 40.f;
     const float PAN_SPEED = 4.0f;
     const float SCROLL_SENSITIVITY = 3.f / 33.f;
+    const float DEFAULT_PROVINCE_APLHA = 0.65f;
 
     core::components::types::SurfaceCoordinate target_surface_coordinate;
 
