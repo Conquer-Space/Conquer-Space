@@ -40,4 +40,6 @@ Node CreateShip(Node& starsystem, Node& fleet, Node& orbit, const std::string& s
 [[nodiscard]] entt::entity LaunchShip(Universe& universe, const components::types::Orbit& orbit);
 
 Node CreateShip(Node& starsystem, Node& fleet, const components::types::Orbit& orbit, const std::string& shipName = "");
+
+bool HasSpacePort(const Node& province);
 }  // namespace cqsp::core::actions

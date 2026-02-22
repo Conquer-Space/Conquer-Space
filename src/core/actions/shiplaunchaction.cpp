@@ -27,6 +27,8 @@
 #include "core/components/orbit.h"
 #include "core/components/organizations.h"
 #include "core/components/ships.h"
+#include "core/components/spaceport.h"
+#include "core/components/surface.h"
 
 namespace cqsp::core::actions {
 
@@ -75,5 +77,15 @@ entt::entity LaunchShip(Universe& universe, const components::types::Orbit& orbi
     o.GM = body.GM;
     universe.get<bodies::OrbitalSystem>(orbit.reference_body).push_back(ship);
     return ship;
+}
+
+bool HasSpacePort(const Node& province) {
+    // Check if it has child cities and if they have spaceports
+    auto& province_comp = province.get<components::Province>();
+    bool has_spaceport = false;
+    for (auto& seg_entity : province_comp.cities) {
+        has_spaceport |= province.universe().any_of<components::infrastructure::SpacePort>(seg_entity);
+    }
+    return has_spaceport;
 }
 }  // namespace cqsp::core::actions

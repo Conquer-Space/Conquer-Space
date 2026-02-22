@@ -63,6 +63,7 @@ class SysProvinceInformation : public SysUserInterface {
     bool city_factory_info = false;
     entt::entity selected_recipe = entt::null;
     int construction_amount = 1;
+    bool show_space_port = false;
 
     bool segment_prices = true;
     entt::entity selected_launch_vehicle;

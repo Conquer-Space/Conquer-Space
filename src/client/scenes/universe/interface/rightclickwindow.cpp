@@ -20,7 +20,10 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/rightclick.h"
+#include "core/actions/shiplaunchaction.h"
 #include "core/components/bodies.h"
+#include "core/components/spaceport.h"
+#include "core/components/surface.h"
 #include "core/util/nameutil.h"
 
 namespace cqsp::client::systems::rmlui {
@@ -60,6 +63,11 @@ void RightClickWindow::DetermineButtons(entt::entity entity) {
     buttons.clear();
     if (GetUniverse().any_of<core::components::bodies::Body>(entity)) {
         buttons.push_back({"Send to orbit", "somerandomaction"});
+    }
+    if (GetUniverse().any_of<core::components::Province>(entity)) {
+        if (core::actions::HasSpacePort(GetUniverse()(entity))) {
+            buttons.push_back({"Open Space Port", "spaceport"});
+        }
     }
     handle.DirtyAllVariables();
 }
@@ -114,8 +122,15 @@ void RightClickWindow::ClickEventListener::ProcessEvent(Rml::Event& event) {
         return;
     }
     const Rml::Variant* value = event.GetTargetElement()->GetAttribute("onclick");
-    if (value == nullptr && value->GetType() != Rml::Variant::STRING) {
+    if (value == nullptr || value->GetType() != Rml::Variant::STRING) {
         return;
+    }
+    std::string action = value->Get<std::string>();
+    if (action == "spaceport") {
+        // Then somehow enable that
+        // Oh we need to get the hovered province
+        universe.clear<ctx::SelectedProvince>();
+        universe.emplace<ctx::SelectedProvince>(window.right_click_item, true);
     }
     SPDLOG_INFO("{}", value->Get<std::string>());
     window.document->Hide();
