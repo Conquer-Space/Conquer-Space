@@ -67,6 +67,7 @@ void SysProvinceInformation::DoUI(int delta_time) {
     if (selected_province != current_province) {
         current_province = selected_province;
         current_city = selected_province;
+        show_space_port = GetUniverse().get<ctx::SelectedProvince>(selected_province).select_spaceport;
         view_mode = ViewMode::COUNTRY_VIEW;
         visible = true;
     }
@@ -74,6 +75,9 @@ void SysProvinceInformation::DoUI(int delta_time) {
         return;
     }
     if (!visible) {
+        // Reset the province
+        GetUniverse().clear<ctx::SelectedProvince>();
+        current_province = entt::null;
         return;
     }
     // Get selected country
@@ -154,7 +158,12 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
         if (!has_spaceport) {
             ImGui::BeginDisabled();
         }
-        if (ImGui::BeginTabItem("Space Port")) {
+        ImGuiTabItemFlags flags = ImGuiTabItemFlags_None;
+        if (show_space_port) {
+            flags = ImGuiTabItemFlags_SetSelected;
+            show_space_port = false;
+        }
+        if (ImGui::BeginTabItem("Space Port", NULL, flags)) {
             SpacePortTab();
             ImGui::EndTabItem();
         }
@@ -705,13 +714,7 @@ void SysProvinceInformation::SpacePortResourceTab(const entt::entity city) {
 }
 
 bool SysProvinceInformation::HasSpacePort(const entt::entity entity) {
-    // Check if it has child cities and if they have spaceports
-    auto& province_comp = GetUniverse().get<components::Province>(entity);
-    bool has_spaceport = false;
-    for (auto& seg_entity : province_comp.cities) {
-        has_spaceport |= GetUniverse().any_of<components::infrastructure::SpacePort>(seg_entity);
-    }
-    return has_spaceport;
+    return core::actions::HasSpacePort(GetUniverse()(entity));
 }
 
 void SysProvinceInformation::ConstructionTab() {

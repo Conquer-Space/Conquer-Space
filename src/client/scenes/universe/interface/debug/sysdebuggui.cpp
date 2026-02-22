@@ -92,6 +92,7 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
                 {"lua", {"Executes lua script", lua}},
                 {"log_market", {"Logs market into a csv file", log_market}}};
     to_show_rmlui_window = Rml::Debugger::IsVisible();
+    GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
 }
 
 void SysDebugMenu::Init() {}
@@ -163,9 +164,8 @@ void SysDebugMenu::CreateMenuBar() {
         }
         if (ImGui::BeginMenu("Extra UI Indicators")) {
             if (ImGui::MenuItem("Star System Viewer Debug")) {
-                // FIXME(EhWhoamI)
-                //auto& debug_info = GetApp().GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
-                //debug_info.to_show = !debug_info.to_show;
+                auto& debug_info = GetUniverse().ctx().at<ctx::StarSystemViewDebug>();
+                debug_info.to_show = !debug_info.to_show;
             }
             ImGui::EndMenu();
         }

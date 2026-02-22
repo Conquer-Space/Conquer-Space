@@ -16,6 +16,10 @@
  */
 #pragma once
 
+#include <RmlUi/Core/DataModelHandle.h>
+#include <RmlUi/Core/Event.h>
+#include <RmlUi/Core/Types.h>
+
 #include <string>
 
 #include "client/components/clientctx.h"
@@ -32,6 +36,7 @@ class RightClickWindow : public SysRmlUiInterface {
     void SetupContent();
 
  private:
+    void SetupDataModels();
     class EventListener : public Rml::EventListener {
      public:
         explicit EventListener(core::Universe& universe) : universe(universe) {}
@@ -45,6 +50,26 @@ class RightClickWindow : public SysRmlUiInterface {
     Rml::Element* right_click_content = nullptr;
     Rml::Element* header_element;
     entt::entity right_click_item = entt::null;
+    Rml::DataModelHandle handle;
     bool to_right_click = false;
+
+    struct RightClickMenuItem {
+        std::string name;
+        std::string action;
+    };
+    void DetermineButtons(entt::entity entity);
+
+    class ClickEventListener : public Rml::EventListener {
+     public:
+        explicit ClickEventListener(core::Universe& universe, RightClickWindow& window)
+            : universe(universe), window(window) {}
+        void ProcessEvent(Rml::Event& event);
+        core::Universe& universe;
+        RightClickWindow& window;
+    } right_click_listener {GetUniverse(), *this};
+
+    std::vector<RightClickMenuItem> buttons;
+
+    void TestFunction(Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&);
 };
 }  // namespace cqsp::client::systems::rmlui

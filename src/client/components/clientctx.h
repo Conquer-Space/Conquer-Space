@@ -39,7 +39,9 @@ struct PauseOptions {
 
 struct SelectedCountry {};
 
-struct SelectedProvince {};
+struct SelectedProvince {
+    bool select_spaceport = false;
+};
 
 struct GameLoad {
     std::string load_dir;
