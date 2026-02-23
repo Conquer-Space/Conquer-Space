@@ -32,6 +32,7 @@
 #include "client/scenes/universe/interface/orbitfilter.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/rightclickwindow.h"
+#include "client/scenes/universe/interface/sidemenu.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
 #include "client/scenes/universe/interface/syspausemenu.h"
@@ -107,6 +108,7 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
+    AddRmlUiSystem<systems::rmlui::SideMenu>();
 }
 
 void UniverseScene::Update(float deltaTime) {
@@ -165,6 +167,7 @@ void UniverseScene::DoScreenshot() {
 void UniverseScene::CheckUiReload() {
     if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
         Rml::Factory::ClearStyleSheetCache();
+        Rml::Factory::ClearTemplateCache();
         for (auto& ui : documents) {
             ui->ReloadWindow();
         }

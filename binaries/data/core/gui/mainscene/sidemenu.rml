@@ -1,0 +1,116 @@
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+            body {
+                padding: 4px 4px 4px 4px;
+                background-color: rgba(0, 0, 0, 0);
+                width: auto;
+                height: 100%;
+                top: 0 px;
+                left: 0 px;
+                border: 0px;
+                align-content: center;
+                display: inline-block;
+            }
+
+            #button_holder {
+                display: flex;
+                align-content: center;
+                flex-direction: column;
+                margin-top: 30%;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .button_frame {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    
+    width: 64px; 
+    overflow: hidden;
+    padding: 0px 0px 0px 0px;
+    
+    transition: width 0.3s sine-out;
+}
+
+.active_button:hover .button_frame {
+    width: auto;
+}
+
+.active_button {
+    display: block;
+    width: auto;
+}
+
+h2 {
+    white-space: nowrap;
+    display: inline-block;
+    opacity: 0;
+    margin-left: 10px;
+}
+
+
+.turnimage {
+    flex-shrink: 0;
+}
+.active_button:hover h2 {
+    opacity: 1;
+}
+
+.button_text {
+    width: 0px;
+    max-width: 0px;
+    margin: 0px;
+    padding: 0px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    opacity: 0;
+    transition: max-width 0.4s sine-out, margin-right 0.4s sine-out, opacity 0.3s sine-out;
+}
+
+.active_button:hover .button_text {
+    max-width: 200px;
+    width: auto;
+    margin-right: 10px;
+    opacity: 1;
+}
+
+        </style>
+    </head>
+    <body>
+        <div id="button_holder">
+        <div id="country">
+            <h2 class="button_text">Country</h2>
+            <svg class="turnimage" src="fast-backward-button.svg" width="32" height="32" id="slow_down"></svg>
+        </div>
+        <div id="economy" class="active_button">
+                        <div class="button_frame">
+
+            <h2 class="button_text">Economy</h2>
+            <svg class="turnimage" src="fast-backward-button.svg" width="32" height="32" id="slow_down"></svg>
+            </div>
+        </div>
+        <div id="space" class="active_button">
+                        <div class="button_frame">
+
+            <h2 class="button_text">
+                Space Access
+            </h2>
+            <svg class="turnimage" src="fast-backward-button.svg" width="32" height="32" id="slow_down"></svg>
+                        </div>
+                        </div>
+        <div id="projects" class="active_button">
+            <div class="button_frame">
+                <h2 class="button_text">Projects</h2>
+                <svg class="turnimage" src="fast-backward-button.svg" width="32" height="32" id="slow_down"></svg>
+            </div>
+        </div>
+        </div>
+    </body>
+</rml>
