@@ -32,5 +32,12 @@ class SideMenu : public SysRmlUiInterface {
 
  private:
     std::string file_name = "../data/core/gui/mainscene/sidemenu.rml";
+
+    class ClickEventListener : public Rml::EventListener {
+     public:
+        explicit ClickEventListener(core::Universe& universe) : universe(universe) {}
+        void ProcessEvent(Rml::Event& event);
+        core::Universe& universe;
+    } right_click_listener {GetUniverse()};
 };
 }  // namespace cqsp::client::systems::rmlui

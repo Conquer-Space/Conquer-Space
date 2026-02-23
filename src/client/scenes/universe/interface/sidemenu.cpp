@@ -16,20 +16,29 @@
  */
 #include "client/scenes/universe/interface/sidemenu.h"
 
-#include "sidemenu.h"
+namespace cqsp::client::systems::rmlui {
+SideMenu::~SideMenu() {
+    document->RemoveEventListener(Rml::EventId::Click, &right_click_listener);
+    document->Close();
+}
 
-cqsp::client::systems::rmlui::SideMenu::~SideMenu() {}
+void SideMenu::Update(double delta_time) {}
 
-void cqsp::client::systems::rmlui::SideMenu::Update(double delta_time) {}
-
-void cqsp::client::systems::rmlui::SideMenu::OpenDocument() {
+void SideMenu::OpenDocument() {
     document = GetApp().LoadDocument(file_name);
+    SetupDocument();
     document->Show();
 }
 
-void cqsp::client::systems::rmlui::SideMenu::ReloadWindow() {
+void SideMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
+    // Event
+}
+
+void SideMenu::ReloadWindow() {
     document = GetApp().ReloadDocument(file_name);
+    SetupDocument();
     document->Show();
 }
 
-void cqsp::client::systems::rmlui::SideMenu::SetupDocument() {}
+void SideMenu::SetupDocument() { document->AddEventListener(Rml::EventId::Click, &right_click_listener); }
+}  // namespace cqsp::client::systems::rmlui
