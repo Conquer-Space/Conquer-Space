@@ -16,9 +16,15 @@
  */
 #include "client/scenes/universe/interface/sidemenu.h"
 
+#include "client/components/clientctx.h"
+
 namespace cqsp::client::systems::rmlui {
 SideMenu::~SideMenu() {
-    document->RemoveEventListener(Rml::EventId::Click, &right_click_listener);
+    Rml::ElementList list;
+    document->GetElementsByClassName(list, "active_button");
+    for (Rml::Element* element : list) {
+        element->RemoveEventListener(Rml::EventId::Click, &right_click_listener);
+    }
     document->Close();
 }
 
@@ -31,7 +37,17 @@ void SideMenu::OpenDocument() {
 }
 
 void SideMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
-    // Event
+    // Now we should get our event id or something
+    // Next time
+    Rml::Element* element = event.GetCurrentElement();
+    const std::string& id = element->GetId();
+    if (id == "projects") {
+        universe.ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::ProjectsMenu;
+    } else if (id == "space") {
+        universe.ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::SpaceMenu;
+    } else if (id == "economy") {
+        universe.ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::EconomyMenu;
+    }
 }
 
 void SideMenu::ReloadWindow() {
@@ -40,5 +56,11 @@ void SideMenu::ReloadWindow() {
     document->Show();
 }
 
-void SideMenu::SetupDocument() { document->AddEventListener(Rml::EventId::Click, &right_click_listener); }
+void SideMenu::SetupDocument() {
+    Rml::ElementList list;
+    document->GetElementsByClassName(list, "active_button");
+    for (Rml::Element* element : list) {
+        element->AddEventListener(Rml::EventId::Click, &right_click_listener);
+    }
+}
 }  // namespace cqsp::client::systems::rmlui
