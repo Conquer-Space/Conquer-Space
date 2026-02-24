@@ -30,13 +30,14 @@
 #include "core/components/population.h"
 #include "core/components/surface.h"
 #include "core/util/profiler.h"
+#include "sysproduction.h"
 
 namespace cqsp::core::systems {
 void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
-    auto& production_config = GetUniverse().economy_config.production_config;
+    const auto& production_config = GetUniverse().economy_config.production_config;
     components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
     auto& employer = industry_node.get<components::Employer>();
 
@@ -97,29 +98,14 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     factor /= 0.4;
     size.underutilization += factor;
 
+    ScaleConstruction(industry_node, pl_ratio);
+
     if (size.underutilization > production_config.underutilization_limit &&
         !industry_node.all_of<components::Construction>()) {
         // Then we should shrink the size of the factory by a certain factor since we have been not using the factory
         size.size *= 0.9;
         // Reset our underutilization so that we don't immediately kill our production
         size.underutilization = 0;
-    }
-
-    if (pl_ratio > 0.25 && size.continuous_gains > production_config.construction_limit &&
-        size.utilization >= size.size && !industry_node.all_of<components::Construction>()) {
-        // what's the ratio we should expand the factory at lol
-        // Now we should expand it...
-        // pl_ratio should be maybe
-        // Set our construction costs
-        if (recipenode.all_of<components::ConstructionCost>()) {
-            const auto& construction_cost = recipenode.get<components::ConstructionCost>();
-            auto& construction =
-                industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
-
-        } else {
-            auto& construction =
-                industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
-        }
     }
 
     // Let's start laying off people too if we have too much of a cut
@@ -156,19 +142,8 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
                                     double infra_cost) {
     ZoneScoped;
-    if (industry_node.any_of<components::Construction>()) {
-        // Then progress construction
-        auto& construction_progress = industry_node.get<components::Construction>();
-        // Process construction costs
-        construction_progress.progress++;
-        int size = construction_progress.levels;
-        if (construction_progress.progress >= construction_progress.maximum) {
-            industry_node.get<components::IndustrySize>().size += construction_progress.levels;
-            industry_node.remove<components::Construction>();
-        }
-        if (size == 0) {
-            return;
-        }
+    if (!HandleConstruction(industry_node, market)) {
+        return;
     }
     auto& production_config = GetUniverse().economy_config.production_config;
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
@@ -272,6 +247,69 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     population_segment.employed_amount += employer.population_fufilled;
     population_wallet += costs.wages;
 }
+
+void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
+    Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
+    components::IndustrySize& size = industry_node.get<components::IndustrySize>();
+    components::Recipe recipe = recipenode.get<components::Recipe>();
+    const auto& production_config = GetUniverse().economy_config.production_config;
+    if (!(pl_ratio > 0.25 && size.continuous_gains > production_config.construction_limit &&
+          size.utilization >= size.size && !industry_node.all_of<components::Construction>())) {
+        return;
+    }
+    // what's the ratio we should expand the factory at lol
+    // Now we should expand it...
+    // pl_ratio should be maybe
+    // Set our construction costs
+    if (recipenode.all_of<components::ConstructionCost>()) {
+        const auto& construction_cost = recipenode.get<components::ConstructionCost>();
+        // Let's assign construction costs
+        auto& construction = industry_node.emplace<components::Construction>(
+            0, construction_cost.time, static_cast<int>(0.25 * size.size * pl_ratio));
+    } else {
+        auto& construction =
+            industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
+    }
+}
+
+/**
+ * Returns true if we should continue with production false if we are constructing something
+ */
+bool SysProduction::HandleConstruction(Node& industry_node, components::Market& market) {
+    if (!industry_node.any_of<components::Construction>()) {
+        return true;
+    }
+
+    // Then progress construction
+    auto& construction_progress = industry_node.get<components::Construction>();
+    const auto& recipe_node = industry_node.Convert(industry_node.get<components::Production>().recipe);
+    // Now we should get our value...
+    // Process construction costs
+    // Add to market demand and cost
+    if (recipe_node.all_of<components::ConstructionCost>()) {
+        const auto& construction_cost = recipe_node.get<components::ConstructionCost>();
+        market.demand += construction_cost.cost;
+        double price = (construction_cost.cost * market.price).GetSum();
+        // then we should pass on the cost to who?
+        // Next time we can add all our various financializations that we want
+        // Let's just add it to the current wallet
+        auto& wallet = industry_node.get<components::Wallet>();
+        wallet -= price;
+    }
+    // If no shortage we progress construction
+    construction_progress.progress++;
+    int size = construction_progress.levels;
+    if (construction_progress.progress >= construction_progress.maximum) {
+        industry_node.get<components::IndustrySize>().size += construction_progress.levels;
+        industry_node.remove<components::Construction>();
+    }
+    // We don't have any construction?
+    if (size == 0) {
+        return true;
+    }
+    return false;
+}
+
 /// <summary>
 /// Runs the production cycle
 /// Consumes material from the market based on supply and then sells the manufactured goods on the market.
