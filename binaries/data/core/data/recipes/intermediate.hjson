@@ -15,6 +15,9 @@
                 worker: 1500
             }
         }
+        construction: {
+            heavy_machinery: 100
+        }
         tags: [
         ]
     }
