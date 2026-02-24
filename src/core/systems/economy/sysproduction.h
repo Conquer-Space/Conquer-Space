@@ -30,5 +30,6 @@ class SysProduction : public ISimulationSystem {
     void ProcessIndustries(Node& node);
     void ScaleIndustry(Node& industry_node, components::Market& market);
     void ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node, double infra_cost);
+    void HandleConstruction(Node& industry_node, components::Market& market);
 };
 }  // namespace cqsp::core::systems

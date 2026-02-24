@@ -110,8 +110,16 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         // what's the ratio we should expand the factory at lol
         // Now we should expand it...
         // pl_ratio should be maybe
-        auto& construction =
-            industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
+        // Set our construction costs
+        if (recipenode.all_of<components::ConstructionCost>()) {
+            const auto& construction_cost = recipenode.get<components::ConstructionCost>();
+            auto& construction =
+                industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
+
+        } else {
+            auto& construction =
+                industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
+        }
     }
 
     // Let's start laying off people too if we have too much of a cut
@@ -151,6 +159,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     if (industry_node.any_of<components::Construction>()) {
         // Then progress construction
         auto& construction_progress = industry_node.get<components::Construction>();
+        // Process construction costs
         construction_progress.progress++;
         int size = construction_progress.levels;
         if (construction_progress.progress >= construction_progress.maximum) {

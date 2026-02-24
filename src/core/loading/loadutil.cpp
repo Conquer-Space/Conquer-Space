@@ -85,7 +85,7 @@ bool LoadInitialValues(const Node& node, const Hjson::Value& value) {
     return LoadIdentifier(node, value);
 }
 
-components::ResourceMap HjsonToLedger(Universe& universe, Hjson::Value& hjson) {
+components::ResourceMap HjsonToLedger(Universe& universe, const Hjson::Value& hjson) {
     components::ResourceMap stockpile;
     for (auto& input_good : hjson) {
         if (!universe.goods.contains(input_good.first)) {
@@ -219,11 +219,11 @@ double ReadUnit(std::string_view value, UnitType unit_type, bool* correct) {
         case UnitType::Time:
             if (unit_string == "s") {
                 // Leave empty
-            } else if (unit_string == "m") {
+            } else if (unit_string == "m" || unit_string == "months" || unit_string == "month") {
                 read_value *= 60;
-            } else if (unit_string == "h") {
+            } else if (unit_string == "h" || unit_string == "hours" || unit_string == "hour") {
                 read_value *= (60 * 60);
-            } else if (unit_string == "d") {
+            } else if (unit_string == "d" || unit_string == "days" || unit_string == "day") {
                 read_value *= (60 * 60 * 24);
             } else {
                 mark_wrong();

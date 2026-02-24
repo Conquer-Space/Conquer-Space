@@ -41,7 +41,7 @@ bool LoadTags(const Node& node, const Hjson::Value& value);
 /// </summary>
 bool LoadInitialValues(const Node& node, const Hjson::Value& value);
 
-components::ResourceMap HjsonToLedger(Universe&, Hjson::Value&);
+components::ResourceMap HjsonToLedger(Universe&, const Hjson::Value&);
 
 bool VerifyHjsonValueExists(const Hjson::Value& value, const std::string& name, Hjson::Type type);
 /// <summary>

@@ -80,6 +80,24 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
 
+    if (values["construction"].defined() && values["construction"].type() == Hjson::Type::Map) {
+        // Then we get our time
+        // Maybe in the future we will have different stages for what resources we need
+        // for each construction stage and stuff
+        const Hjson::Value& construction = values["construction"];
+        auto& construction_cost = node.emplace<components::ConstructionCost>();
+        bool time_correct;
+        double time = ReadUnit(construction["time"].to_string(), components::types::UnitType::Time, &time_correct);
+        if (!time_correct) {
+            // Then we don't have a proper time...
+            time = 100;
+        }
+        construction_cost.time = static_cast<int>(time);
+        // Then get cost
+        const Hjson::Value& cost_map = construction["cost"];
+        construction_cost.cost = HjsonToLedger(universe, cost_map) / time;
+    }
+
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "raw") {
             recipe_component.type = components::ProductionType::mine;

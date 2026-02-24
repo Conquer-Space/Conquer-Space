@@ -88,6 +88,12 @@ struct Recipe {
     ResourceMap capitalcost;
 };
 
+struct ConstructionCost {
+    /* Per tick cost */
+    ResourceMap cost;
+    int time;
+};
+
 struct RecipeCost {
     ResourceMap fixed;
     ResourceMap scaling;
