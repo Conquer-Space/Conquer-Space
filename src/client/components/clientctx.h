@@ -62,4 +62,14 @@ enum class MapMode {
     */
     InvalidMapMode
 };
+
+enum class SelectedMenu {
+    /*
+    * We don't show any menu
+    */
+    NoMenu,
+    SpaceMenu,
+    EconomyMenu,
+    ProjectsMenu
+};
 }  // namespace cqsp::client::ctx

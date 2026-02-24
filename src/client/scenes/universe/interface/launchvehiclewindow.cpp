@@ -16,6 +16,7 @@
  */
 #include "client/scenes/universe/interface/launchvehiclewindow.h"
 
+#include "client/components/clientctx.h"
 #include "core/components/launchvehicle.h"
 #include "core/components/name.h"
 #include "core/components/player.h"
@@ -35,7 +36,11 @@ void LaunchVehicleWindow::DoUI(int delta_time) {
     }
 
     core::components::SpaceCapability& capability = GetUniverse().get<core::components::SpaceCapability>(player);
-    ImGui::Begin("Launch Vehicles");
+    bool selected = GetUniverse().ctx().at<ctx::SelectedMenu>() == ctx::SelectedMenu::SpaceMenu;
+    if (!selected) {
+        return;
+    }
+    ImGui::Begin("Launch Vehicles", &selected);
     // Now display our launch vehicles and types as well and so on
     ImGui::TextFmt("Launch Vehicles: {}", capability.launch_vehicle_list.size());
     ImGui::SameLine();
@@ -75,6 +80,10 @@ void LaunchVehicleWindow::DoUI(int delta_time) {
     ImGui::End();
 
     CreateLaunchVehicleWindow();
+
+    if (!selected) {
+        GetUniverse().ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::NoMenu;
+    }
 }
 
 void LaunchVehicleWindow::CreateLaunchVehicleWindow() {
