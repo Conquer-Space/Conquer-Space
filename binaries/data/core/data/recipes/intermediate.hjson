@@ -16,9 +16,9 @@
             }
         }
         construction: {
-            time: 4 months
+            time: 1 week
             cost: {
-                heavy_machinery: 100
+                heavy_machinery: 1000
             }
         }
         tags: [

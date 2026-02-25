@@ -288,7 +288,7 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
     // Add to market demand and cost
     if (recipe_node.all_of<components::ConstructionCost>()) {
         const auto& construction_cost = recipe_node.get<components::ConstructionCost>();
-        market.demand += construction_cost.cost;
+        market.consumption += construction_cost.cost;
         double price = (construction_cost.cost * market.price).GetSum();
         // then we should pass on the cost to who?
         // Next time we can add all our various financializations that we want
@@ -305,7 +305,7 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
     }
     // We don't have any construction?
     if (size == 0) {
-        return true;
+        return false;
     }
     return false;
 }

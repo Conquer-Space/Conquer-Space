@@ -758,7 +758,14 @@ void SysProvinceInformation::ConstructionTab() {
             auto node = core::actions::CreateFactory(GetUniverse()(current_province), GetUniverse()(selected_recipe),
                                                      construction_amount);
 
-            node.emplace<components::Construction>(0, 100, 0);
+            if (GetUniverse().all_of<components::ConstructionCost>(selected_recipe)) {
+                // Set our costs
+                auto& construction_cost = GetUniverse().get<components::ConstructionCost>(selected_recipe);
+                node.emplace<components::Construction>(0, construction_cost.time, 0);
+            } else {
+                node.emplace<components::Construction>(0, 100, 0);
+            }
+            // Add counstruction costs
         }
     }
     ImGui::EndChild();
