@@ -253,8 +253,8 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
     components::Recipe recipe = recipenode.get<components::Recipe>();
     const auto& production_config = GetUniverse().economy_config.production_config;
-    if (!(pl_ratio > 0.25 && size.continuous_gains > production_config.construction_limit &&
-          size.utilization >= size.size && !industry_node.all_of<components::Construction>())) {
+    if (pl_ratio <= 0.25 || size.continuous_gains <= production_config.construction_limit ||
+          size.utilization < size.size || industry_node.all_of<components::Construction>())) {
         return;
     }
     // what's the ratio we should expand the factory at lol
