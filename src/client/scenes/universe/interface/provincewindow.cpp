@@ -751,6 +751,13 @@ void SysProvinceInformation::ConstructionTab() {
         ImGui::TextFmt("{}, {}", core::util::GetName(GetUniverse(), recipe_comp.output.entity),
                        util::NumberToHumanString(recipe_comp.output.amount));
         ImGui::TextFmt("Expected profit: {}", revenue - input_cost - capital_cost);
+        if (GetUniverse().all_of<components::ConstructionCost>(selected_recipe)) {
+            auto& cost = GetUniverse().get<components::ConstructionCost>(selected_recipe);
+            ImGui::Separator();
+            ImGui::TextFmt("Cost");
+            ImGui::TextFmt("Will take {} ticks", cost.time);
+            ResourceMapTable(GetUniverse(), cost.cost, "cost_table");
+        }
     }
     ImGui::SliderInt("Factory construction count", &construction_amount, 1, 1000);
     if (ImGui::Button("Construct Factory!")) {

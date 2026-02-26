@@ -92,7 +92,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
             // Then we don't have a proper time...
             time = 100;
         }
-        construction_cost.time = static_cast<int>(time);
+        construction_cost.time = universe.date.ToTicks(static_cast<int>(time));  // Convert seconds to ticks
         // Then get cost
         const Hjson::Value& cost_map = construction["cost"];
         construction_cost.cost = HjsonToLedger(universe, cost_map) / time;
