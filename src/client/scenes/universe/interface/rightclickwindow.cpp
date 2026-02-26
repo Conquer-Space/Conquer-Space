@@ -68,11 +68,29 @@ void RightClickWindow::DetermineButtons(entt::entity entity) {
         if (core::actions::HasSpacePort(GetUniverse()(entity))) {
             buttons.push_back({"Open Space Port", "spaceport"});
         }
+        auto& province = GetUniverse().get<core::components::Province>(entity);
+        // If it's uncolonized
+        if (province.country == entt::null) {
+            buttons.push_back({"Set Up Colony", "colonize"});
+        }
     }
     handle.DirtyAllVariables();
 }
 
-void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {}
+void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {
+    if (event.GetTargetElement() == nullptr) {
+        return;
+    }
+    const Rml::Variant* value = event.GetTargetElement()->GetAttribute("onclick");
+    if (value == nullptr || value->GetType() != Rml::Variant::STRING) {
+        return;
+    }
+    std::string action = value->Get<std::string>();
+    if (action == "colonize") {
+        // then we should set our hover text
+        universe.ctx().at<ctx::HoveringItem>().ui_space = "Start the process of setting up a colony on this province";
+    }
+}
 
 void RightClickWindow::Update(double delta_time) {
     bool mouse_over_this = MouseOverDocument();
