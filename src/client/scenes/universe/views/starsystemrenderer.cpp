@@ -586,6 +586,9 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
 
 void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec4 color) {
     // We should update the texture
+    if (!universe.valid(body)) {
+        return;
+    }
     auto& data = universe.get<PlanetTexture>(body);
     if (!data.province_index_map.contains(province)) {
         return;

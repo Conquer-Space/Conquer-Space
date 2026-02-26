@@ -15,6 +15,13 @@
                 worker: 1500
             }
         }
+        construction: {
+            time: 4 weeks
+            cost: {
+                heavy_machinery: 1000
+                concrete: 2500
+            }
+        }
         tags: [
         ]
     }

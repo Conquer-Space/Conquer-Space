@@ -33,6 +33,12 @@
                 worker: 100
             }
         }
+        construction: {
+            time: 3 weeks
+            cost: {
+                concrete: 1000
+            }
+        }
         tags: [
             ratio
             raw
@@ -125,7 +131,26 @@
         }
         cost: {
             labor: {
-                worker: 10
+                worker: 100
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
+        name: Sand Mining
+        identifier: silicates_mining
+        input: {
+            heavy_machinery: 0.1
+        }
+        output: {
+            silicates: 1000
+        }
+        cost: {
+            labor: {
+                worker: 150
             }
         }
         tags: [

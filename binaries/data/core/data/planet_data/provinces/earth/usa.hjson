@@ -65,6 +65,10 @@
                 material_costs: 6000
                 profit: 4438.5589331573865
             }
+            {
+                recipe: silicates_mining
+                size: 10
+            }
         ]
         tags:
         [

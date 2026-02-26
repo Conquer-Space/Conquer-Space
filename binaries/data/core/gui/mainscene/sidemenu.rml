@@ -8,7 +8,7 @@
                 background-color: rgba(0, 0, 0, 0);
                 width: auto;
                 height: auto;
-                top: 40%;
+                top: 25%;
                 left: 0 px;
                 border: 0px;
                 align-content: center;
@@ -38,7 +38,7 @@
             .active_button {
                 display: block;
                 width: auto;
-                margin-top: 30px;
+                margin-top: 15px;
             }
             h2 {
                 white-space: nowrap;
@@ -61,11 +61,11 @@
                 white-space: nowrap;
                 display: inline-block;
                 opacity: 0;
-                transition: max-width 0.4s sine-out, margin-right 0.4s sine-out, opacity 0.3s sine-out;
+                transition: width 0.4s sine-out, margin-right 0.4s sine-out, opacity 0.3s sine-out;
             }
             .active_button:hover .button_text {
                 max-width: 200px;
-                width: auto;
+                width: 160px;
                 margin-right: 10px;
                 opacity: 1;
             }
@@ -91,6 +91,12 @@
                 <div class="button_frame">
                     <h2 class="button_text">Projects</h2>
                     <svg class="turnimage" src="treasure-map-placeholder.svg" width="32" height="32" id="slow_down"></svg>
+                </div>
+            </div>
+            <div id="situations" class="active_button">
+                <div class="button_frame">
+                    <h2 class="button_text">Situations</h2>
+                    <svg class="turnimage" src="hazard-sign-placeholder.svg" width="32" height="32" id="slow_down"></svg>
                 </div>
             </div>
         </div>
