@@ -109,6 +109,10 @@ void SysProvinceInformation::ProvinceView() {
             break;
         }
     }
+    if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
+        auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
+        ImGui::TextFmt("Target for colonization by {}", GetName(GetUniverse(), target.colonizer));
+    }
     // List the cities
     auto& city_list = GetUniverse().get<components::Province>(current_province);
     int population = 0;

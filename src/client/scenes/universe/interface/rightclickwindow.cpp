@@ -149,6 +149,12 @@ void RightClickWindow::ClickEventListener::ProcessEvent(Rml::Event& event) {
         // Oh we need to get the hovered province
         universe.clear<ctx::SelectedProvince>();
         universe.emplace<ctx::SelectedProvince>(window.right_click_item, true);
+    } else if (action == "colonize") {
+        // then we should emplace some sort of thing on the thing
+        // In theory what if multiple countries colonize a place at the same time
+        if (!universe.all_of<core::components::ColonizationTarget>(window.right_click_item)) {
+            universe.emplace<core::components::ColonizationTarget>(window.right_click_item, universe.GetPlayer());
+        }
     }
     SPDLOG_INFO("{}", value->Get<std::string>());
     window.document->Hide();

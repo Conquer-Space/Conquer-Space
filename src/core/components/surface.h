@@ -30,6 +30,12 @@ struct Settlements {
     std::vector<entt::entity> provinces;
 };
 
+struct ColonizationTarget {
+    // TODO(EhWhoAmI): This should be a vector or something as multiple entities might want to colonize a specific
+    // place
+    entt::entity colonizer;
+};
+
 struct City {
     entt::entity province;
 };
