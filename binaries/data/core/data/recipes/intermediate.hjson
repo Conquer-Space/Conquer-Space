@@ -16,9 +16,10 @@
             }
         }
         construction: {
-            time: 1 week
+            time: 4 weeks
             cost: {
                 heavy_machinery: 1000
+                concrete: 2500
             }
         }
         tags: [
