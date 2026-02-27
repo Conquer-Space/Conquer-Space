@@ -113,23 +113,7 @@ void SysProvinceInformation::ProvinceView() {
         auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
         ImGui::TextFmt("Target for colonization by {}", GetName(GetUniverse(), target.colonizer));
     }
-    // List the cities
-    auto& city_list = GetUniverse().get<components::Province>(current_province);
-    int population = 0;
-
-    // Also add the population of the actual province
-    auto& settlement = GetUniverse().get<Settlement>(current_province);
-    for (auto& seg_entity : settlement.population) {
-        auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
-        population += segment.population;
-    }
-    if (city_list.country == entt::null) {
-        ImGui::TextFmt("Not part of any country");
-    } else {
-        ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
-    }
-    ImGui::TextFmt("Population: {}", NumberToHumanString(population));
-    ImGui::Separator();
+    PopulationSummary();
     ProvinceIndustryTabs();
 }
 
@@ -780,5 +764,31 @@ void SysProvinceInformation::ConstructionTab() {
         }
     }
     ImGui::EndChild();
+}
+
+void SysProvinceInformation::ColonizationTabs() {
+    // Now we should do some math and stuff for buttons
+    ImGui::TextFmt("Colonization");
+    // then we should progress the stages of colonization
+}
+
+void SysProvinceInformation::PopulationSummary() {
+    // List the cities
+    auto& city_list = GetUniverse().get<components::Province>(current_province);
+    int population = 0;
+
+    // Also add the population of the actual province
+    auto& settlement = GetUniverse().get<Settlement>(current_province);
+    for (auto& seg_entity : settlement.population) {
+        auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
+        population += segment.population;
+    }
+    if (city_list.country == entt::null) {
+        ImGui::TextFmt("Not part of any country");
+    } else {
+        ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
+    }
+    ImGui::TextFmt("Population: {}", NumberToHumanString(population));
+    ImGui::Separator();
 }
 }  // namespace cqsp::client::systems
