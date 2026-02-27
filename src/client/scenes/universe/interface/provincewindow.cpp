@@ -770,6 +770,9 @@ void SysProvinceInformation::ColonizationTabs() {
     // Now we should do some math and stuff for buttons
     ImGui::TextFmt("Colonization");
     // then we should progress the stages of colonization
+    if (ImGui::Button("Send rocket here")) {
+        // Find list of space ports and dispatch something here
+    }
 }
 
 void SysProvinceInformation::PopulationSummary() {
