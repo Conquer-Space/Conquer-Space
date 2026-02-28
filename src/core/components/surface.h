@@ -36,9 +36,9 @@ struct ColonizationTarget {
     // TODO(EhWhoAmI): This should be a vector or something as multiple entities might want to colonize a specific
     // place
     entt::entity colonizer;
-    ColonizationSteps steps;
+    ColonizationSteps steps = ColonizationSteps::Surveying;
     // Progress in percentage or something
-    int progress;
+    int progress = 0;
 };
 
 struct City {
