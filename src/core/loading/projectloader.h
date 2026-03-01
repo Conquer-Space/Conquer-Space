@@ -16,32 +16,18 @@
  */
 #pragma once
 
-#include <cstdint>
-#include <vector>
+#include "core/loading/hjsonloader.h"
 
-#include "core/components/resourceledger.h"
+namespace cqsp::core::loading {
+class ProjectLoader : public HjsonLoader {
+ public:
+    explicit ProjectLoader(Universe& universe) : HjsonLoader(universe) {}
 
-namespace cqsp::core::components {
-enum class ProjectType { Design, Manufacturing, Integration };
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, Node& node) override;
+    void PostLoad(const Node& node) override;
 
-struct Project {
-    // Current progress
-    uint64_t progress;
-
-    // The final progress in days or something
-    uint64_t max_progress;
-    // Then we also attach some sort of resource ledger for the consumption
-    // Also somehow
-    double project_total_cost = 0;
-    double project_last_cost = 0;
-
-    ProjectType type;
-    entt::entity result;
-    entt::entity project_template;
+ private:
+    Hjson::Value default_val;
 };
-
-struct ProjectTemplate {
-    ResourceVector cost;
-    int max_progress;
-};
-}  // namespace cqsp::core::components
+}  // namespace cqsp::core::loading
