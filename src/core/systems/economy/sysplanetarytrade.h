@@ -27,7 +27,8 @@ namespace cqsp::core::systems {
 // Main goal is to maintain stable pricing
 class SysPlanetaryTrade : public ISimulationSystem {
  public:
-    explicit SysPlanetaryTrade(Game& game) : ISimulationSystem(game), initial_tick(true) {}
+    explicit SysPlanetaryTrade(Game& game)
+        : ISimulationSystem(game), initial_tick(true), base_prices(GetUniverse().GoodCount()) {}
     void DoSystem() override;
     int Interval() override { return ECONOMIC_TICK; }
     void Init() override;

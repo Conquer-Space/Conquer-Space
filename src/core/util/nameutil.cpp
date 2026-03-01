@@ -94,8 +94,6 @@ std::string GetEntityType(const Universe& universe, entt::entity entity) {
         return "Province";
     } else if (universe.any_of<components::Organization>(entity)) {
         return "Organization";
-    } else if (universe.any_of<components::science::Lab>(entity)) {
-        return "Science Lab";
     } else if (universe.any_of<components::Commercial>(entity)) {
         return "Commercial";
     } else if (universe.any_of<components::ships::Ship>(entity)) {

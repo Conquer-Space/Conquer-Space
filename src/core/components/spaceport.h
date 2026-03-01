@@ -45,6 +45,12 @@ struct TransportedGood {
  * But for now, we'll support a limited amount of space launch systems
  */
 struct SpacePort {
+    explicit SpacePort(size_t goods)
+        : demanded_resources(goods),
+          demanded_resources_rate(goods),
+          output_resources(goods),
+          output_resources_rate(goods),
+          resource_stockpile(goods) {}
     // The key is target, and queue
     // The entt entity must have an orbit, and we must be able to rendezvous to that entity
     // So this is the list of goods that it wants to deliver to different places
