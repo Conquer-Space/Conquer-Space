@@ -161,8 +161,8 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
-    components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
-    components::ResourceMap input = (recipe.input * size.utilization) + capitalinput;
+    components::ResourceVector capitalinput = recipe.capitalcost * (size.size);
+    components::ResourceVector input = (recipe.input * size.utilization) + capitalinput;
 
     // Calculate the greatest possible production
     components::ResourceMap output;
@@ -197,7 +197,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
     // the production
-    costs.material_costs = (input * market.price).GetSum();
+    costs.material_costs = input.MultiplyAndGetSum(market.price);
     costs.wages = employer.population_fufilled * size.wages;
     costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
@@ -254,7 +254,7 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
     components::Recipe recipe = recipenode.get<components::Recipe>();
     const auto& production_config = GetUniverse().economy_config.production_config;
     if (pl_ratio <= 0.25 || size.continuous_gains <= production_config.construction_limit ||
-          size.utilization < size.size || industry_node.all_of<components::Construction>()) {
+        size.utilization < size.size || industry_node.all_of<components::Construction>()) {
         return;
     }
     // what's the ratio we should expand the factory at lol
@@ -289,7 +289,8 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
     if (recipe_node.all_of<components::ConstructionCost>()) {
         const auto& construction_cost = recipe_node.get<components::ConstructionCost>();
         market.consumption += construction_cost.cost;
-        double price = (construction_cost.cost * market.price).GetSum();
+        double price = construction_cost.cost.MultiplyAndGetSum(market.price);
+
         // then we should pass on the cost to who?
         // Next time we can add all our various financializations that we want
         // Let's just add it to the current wallet

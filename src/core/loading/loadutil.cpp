@@ -98,6 +98,20 @@ components::ResourceMap HjsonToLedger(Universe& universe, const Hjson::Value& hj
     return stockpile;
 }
 
+components::ResourceVector HjsonToVector(Universe& universe, const Hjson::Value& hjson) {
+    components::ResourceVector stockpile;
+    for (auto& input_good : hjson) {
+        if (!universe.goods.contains(input_good.first)) {
+            // Ideally we'd like to fail out of here but let's just fail silently here for now
+            SPDLOG_ERROR("Non-existent good {}, skipping!", input_good.first);
+            continue;
+        }
+        stockpile.push_back(std::make_pair(universe.good_map[universe.goods[input_good.first]], input_good.second));
+    }
+    stockpile.Finalize();
+    return stockpile;
+}
+
 bool VerifyHjsonValueExists(const Hjson::Value& value, const std::string& name, Hjson::Type type) {
     return value[name].type() == type;
 }

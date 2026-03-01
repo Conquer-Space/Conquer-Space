@@ -22,7 +22,9 @@
 #include "engine/gui.h"
 
 namespace cqsp::client::systems {
-void ResourceMapTable(core::Universe& universe, core::components::ResourceMap& ledger, const char* name) {
+namespace {
+template <class T>
+void ResourceMapTable(const core::Universe& universe, const T& ledger, const char* name) {
     const ImVec4 id_copy_color = ImVec4(0.921568627f, 0.392156863f, 0.203921569f, 1.f);
     if (!ImGui::BeginTable(name, 2)) {
         return;
@@ -48,5 +50,15 @@ void ResourceMapTable(core::Universe& universe, core::components::ResourceMap& l
         ImGui::TextFmt("{}", in.second);
     }
     ImGui::EndTable();
+}
+}  // namespace
+
+void ResourceMapTable(const core::Universe& universe, const core::components::ResourceMap& ledger, const char* name) {
+    ResourceMapTable<core::components::ResourceMap>(universe, ledger, name);
+}
+
+void ResourceMapTable(const core::Universe& universe, const core::components::ResourceVector& ledger,
+                      const char* name) {
+    ResourceMapTable<core::components::ResourceVector>(universe, ledger, name);
 }
 }  // namespace cqsp::client::systems

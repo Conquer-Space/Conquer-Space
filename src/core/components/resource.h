@@ -78,25 +78,25 @@ struct RecipeOutput {
 };
 
 struct Recipe {
-    ResourceMap input;
+    ResourceVector input;
     RecipeOutput output;
     ProductionType type;
     float interval;
     // The actual factory worker amount is workers * productivity
     double workers;
 
-    ResourceMap capitalcost;
+    ResourceVector capitalcost;
 };
 
 struct ConstructionCost {
     /* Per tick cost */
-    ResourceMap cost;
+    ResourceVector cost;
     int time;
 };
 
 struct RecipeCost {
-    ResourceMap fixed;
-    ResourceMap scaling;
+    ResourceVector fixed;
+    ResourceVector scaling;
 };
 
 struct ResourceConsumption : public ResourceMap {};

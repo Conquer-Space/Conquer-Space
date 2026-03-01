@@ -724,12 +724,12 @@ void SysProvinceInformation::ConstructionTab() {
         auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
         ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
         ImGui::Text("Input");
-        double input_cost = market.price.MultiplyAndGetSum(recipe_comp.input);
+        double input_cost = recipe_comp.input.MultiplyAndGetSum(market.price);
         ImGui::TextFmt("Input Default Cost: {}", util::NumberToHumanString(input_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
         ImGui::Separator();
         ImGui::Text("Capital Cost");
-        double capital_cost = market.price.MultiplyAndGetSum(recipe_comp.capitalcost);
+        double capital_cost = recipe_comp.capitalcost.MultiplyAndGetSum(market.price);
         ImGui::TextFmt("Capital Default Cost: {}", util::NumberToHumanString(capital_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
         ImGui::Separator();
