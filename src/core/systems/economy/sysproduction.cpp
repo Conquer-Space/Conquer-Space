@@ -165,8 +165,8 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     components::ResourceVector input = (recipe.input * size.utilization) + capitalinput;
 
     // Calculate the greatest possible production
-    components::ResourceMap output;
-    output[recipe.output.entity] = recipe.output.amount * size.utilization;
+    components::ResourceVector output;
+    output.push_back(std::pair(recipe.output.entity, recipe.output.amount * size.utilization));
 
     // Figure out what's throttling production and maintenance
     // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
@@ -201,7 +201,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     costs.wages = employer.population_fufilled * size.wages;
     costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
-    costs.revenue = (output * market.price).GetSum();
+    costs.revenue = output.MultiplyAndGetSum(market.price);
     costs.profit = costs.revenue - costs.maintenance - costs.material_costs - costs.wages - costs.transport;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += costs.profit;

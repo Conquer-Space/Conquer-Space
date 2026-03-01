@@ -37,6 +37,6 @@ class SysPlanetaryTrade : public ISimulationSystem {
  private:
     bool initial_tick;
 
-    components::ResourceMap base_prices;
+    components::ResourceLedger base_prices;
 };
 }  // namespace cqsp::core::systems

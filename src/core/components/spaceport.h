@@ -54,11 +54,11 @@ struct SpacePort {
     int launchpads = 0;
     entt::entity reference_body = entt::null;
 
-    ResourceMap demanded_resources;
-    ResourceMap demanded_resources_rate;
-    ResourceMap output_resources;
-    ResourceMap output_resources_rate;
-    ResourceMap resource_stockpile;
+    ResourceLedger demanded_resources;
+    ResourceLedger demanded_resources_rate;
+    ResourceLedger output_resources;
+    ResourceLedger output_resources_rate;
+    ResourceLedger resource_stockpile;
 
     std::vector<entt::entity> projects;
     std::vector<entt::entity> stored_launch_vehicles;
