@@ -114,7 +114,11 @@ void SysProvinceInformation::ProvinceView() {
         ImGui::TextFmt("Target for colonization by {}", GetName(GetUniverse(), target.colonizer));
     }
     PopulationSummary();
-    ProvinceIndustryTabs();
+    if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
+        ColonizationTabs();
+    } else {
+        ProvinceIndustryTabs();
+    }
 }
 
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
@@ -769,11 +773,61 @@ void SysProvinceInformation::ConstructionTab() {
 void SysProvinceInformation::ColonizationTabs() {
     // Now we should do some math and stuff for buttons
     ImGui::TextFmt("Colonization");
+    auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
+    ImGui::TextFmt("Steps");
+    // When we change to a proper rmlui ui we should make icons for this lol
+    ImGui::Text("Surveying");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Initial surveying to pick an appropriate landing site");
+        ImGui::Text("Land probes or even initial missions to ensure that the landing site is fine");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Preparation");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Preparation of the site for human landing");
+        ImGui::Text("Land components for power or initial components for");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Initial Base");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("A skeleton crew lands for final assembly,");
+        ImGui::Text("and inspect and verify that the base works as designed");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Human Settlement");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("A small crew rotates in and out every now and then");
+        ImGui::Text("The settlement still undergoes expansion and work");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Permanent Settlement");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text(
+            "Permanent settlement, there is crew that lives for months or even years on end maintaining the colony");
+        ImGui::Text("Once this settlement gets sufficient economic independence, you can convert to a market economy.");
+        ImGui::EndTooltip();
+    }
     // then we should progress the stages of colonization
-    if (ImGui::Button("Send rocket here")) {
-        // Find list of space ports and dispatch something here
-        // Then how do we do the math or something
-        // Then we
+    // Rn we should just send rockets and they'll just transition to the next step lol
+    if (ImGui::Button("Send rocket for next stage")) {
+        // Then some how do that
     }
 }
 

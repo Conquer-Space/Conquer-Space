@@ -30,7 +30,7 @@ struct Settlements {
     std::vector<entt::entity> provinces;
 };
 
-enum class ColonizationSteps { Surveying, Preparation, InitialBase, HumanSettlement, Expansion, PermanentSettlement };
+enum class ColonizationSteps { Surveying, Preparation, InitialBase, HumanSettlement, PermanentSettlement };
 
 struct ColonizationTarget {
     // TODO(EhWhoAmI): This should be a vector or something as multiple entities might want to colonize a specific
