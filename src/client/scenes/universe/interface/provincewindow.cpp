@@ -829,8 +829,10 @@ void SysProvinceInformation::ColonizationTabs() {
     if (ImGui::Button("Send rocket for next stage")) {
         // Then some how do that
         auto player_node = GetUniverse()(GetUniverse().GetPlayer());
-        // Then we should add to the queue or something?
-        // How should we do the format
+        auto& province_comp = GetUniverse().get<components::Province>(current_province);
+        entt::entity new_mission = GetUniverse().create();
+        new_mission = GetUniverse().emplace<components::Mission>(new_mission);
+        // Now we set stuff
     }
 }
 
