@@ -30,22 +30,11 @@
 
 namespace cqsp::core::loading {
 bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    std::string country_identifier = values["country"].to_string();
-    std::string planet_identifier = values["planet"].to_string();
-    if (!universe.planets.contains(planet_identifier)) {
-        SPDLOG_WARN("Unable to find planet for the province!");
-    }
-    Node planet_node(universe, universe.planets[planet_identifier]);
     const auto& identifier = node.get<components::Identifier>().identifier;
-    entt::entity country_entity = entt::null;
+    Node planet_node = GetPlanet(values["planet"].to_string(), identifier);
 
-    if (universe.countries.find(country_identifier) != universe.countries.end()) {
-        country_entity = universe.countries[country_identifier];
-    } else if (!country_identifier.empty()) {
-        SPDLOG_WARN("Unable to find country {} for province {}", country_identifier, identifier);
-    }
-    Node province_node(universe, country_entity);
-    node.emplace<components::Province>(province_node);
+    Node country_node = GetCountry(values["country"].to_string(), identifier);
+    node.emplace<components::Province>(country_node);
     auto& color = node.emplace<components::ProvinceColor>(values["color"][0].to_int64(), values["color"][1].to_int64(),
                                                           values["color"][2].to_int64());
     if (universe.provinces.find(identifier) == universe.provinces.end()) {
@@ -55,8 +44,8 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     // Add province to country
     // check if it is assigned to a country
-    if (province_node.valid()) {
-        province_node.get_or_emplace<components::CountryCityList>().province_list.push_back(node);
+    if (country_node.valid()) {
+        country_node.get_or_emplace<components::CountryCityList>().province_list.push_back(node);
     }
     universe.province_colors[planet_node][static_cast<int>(color)] = node;
     universe.colors_province[planet_node][node] = static_cast<int>(color);
@@ -129,9 +118,9 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     //SPDLOG_INFO("Load Provinces");
     if (!values["province"].empty()) {
         if (universe.provinces[values["province"]] != universe.provinces.end()) {
-            Node province_node(universe, universe.provinces[values["province"]]);
+            Node country_node(universe, universe.provinces[values["province"]]);
             // Now add self to province
-            province_node.get<components::Province>().cities.push_back(node);
+            country_node.get<components::Province>().cities.push_back(node);
         } else {
             // SPDLOG_WARN("Province {} has province {}, but it's undefined", identifier, values["province"].to_string());
         }
@@ -187,6 +176,24 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
 }
 
 void ProvinceLoader::PostLoad(const Node& node) {}
+
+Node ProvinceLoader::GetCountry(const std::string& country_identifier, const std::string& identifier) {
+    entt::entity country_entity = entt::null;
+    if (universe.countries.contains(country_identifier)) {
+        country_entity = universe.countries[country_identifier];
+    } else if (!country_identifier.empty()) {
+        SPDLOG_WARN("Unable to find country {} for province {}", country_identifier, identifier);
+    }
+    return Node(universe, country_entity);
+}
+
+Node ProvinceLoader::GetPlanet(const std::string& planet_identifier, const std::string& identifier) {
+    if (!universe.planets.contains(planet_identifier)) {
+        SPDLOG_WARN("Unable to find planet for the province {}!", identifier);
+        return Node(universe, entt::null);
+    }
+    return Node(universe, universe.planets[planet_identifier]);
+}
 
 void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier) {
     for (int i = 0; i < industry_hjson.size(); i++) {

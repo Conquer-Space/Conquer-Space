@@ -36,5 +36,7 @@ class ProvinceLoader : public HjsonLoader {
 
  private:
     Hjson::Value default_val;
+    Node GetCountry(const std::string& country_identifier, const std::string& identifier);
+    Node GetPlanet(const std::string& planet_identifier, const std::string& identifier);
 };
 }  // namespace cqsp::core::loading
