@@ -22,7 +22,6 @@ namespace cqsp::core::actions {
 Node CreateLab(Universe& universe) {
     Node entity(universe);
     // Create labs
-    entity.emplace<components::science::Lab>();
     return entity;
 }
 

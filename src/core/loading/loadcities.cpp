@@ -76,7 +76,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     //SPDLOG_INFO("Load SpacePort");
     if (!values["space-port"].empty()) {
         // Add space port
-        auto& space_port = node.emplace<components::infrastructure::SpacePort>();
+        auto& space_port = node.emplace<components::infrastructure::SpacePort>(universe.GoodCount());
         space_port.reference_body = sc.planet;
     }
     //SPDLOG_INFO("Load Country");

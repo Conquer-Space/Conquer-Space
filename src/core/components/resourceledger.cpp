@@ -286,6 +286,13 @@ void ResourceMap::MultiplyAdd(const ResourceMap &other, double value) {
     }
 }
 
+void ResourceMap::MultiplyAdd(const ResourceVector &other, double value) {
+    // Then something we have to do
+    for (auto &val : other) {
+        (*this)[val.first] += val.second * value;
+    }
+}
+
 void ResourceMap::RemoveResourcesLimited(const ResourceMap &other) {
     for (auto iterator = other.begin(); iterator != other.end(); iterator++) {
         double &t = (*this)[iterator->first];
@@ -566,6 +573,27 @@ ResourceLedger ResourceLedger::operator/(const double value) const {
     return result;
 }
 
+void ResourceLedger::operator-=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] -= good.second;
+    }
+}
+void ResourceLedger::operator+=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] += good.second;
+    }
+}
+void ResourceLedger::operator*=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] *= good.second;
+    }
+}
+void ResourceLedger::operator/=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] /= good.second;
+    }
+}
+
 bool ResourceLedger::operator<(const ResourceLedger &other) {
     for (ITERATE_GOODS(i)) {
         if ((*this)[i] >= other[i]) return false;
@@ -803,5 +831,258 @@ double ResourceLedger::MultiplyAndGetSum(const ResourceLedger &other) const {
         sum += other[i] * (*this)[i];
     }
     return sum;
+}
+
+double ResourceVector::Average() {
+    if (empty()) {
+        return std::numeric_limits<double>::infinity();
+    }
+    double average = 0.0;
+    for (auto &good : *this) {
+        average += good.second;
+    }
+    return average / static_cast<double>(size());
+}
+
+double ResourceVector::Min() {
+    double val = std::numeric_limits<double>::infinity();
+    for (auto &good : *this) {
+        if (good.second < val) {
+            val = good.second;
+        }
+    }
+    return val;
+}
+
+double ResourceVector::Max() {
+    double val = -std::numeric_limits<double>::infinity();
+    for (auto &good : *this) {
+        if (good.second > val) {
+            val = good.second;
+        }
+    }
+    return val;
+}
+
+GoodEntity ResourceVector::MaxGood() {
+    double val = -std::numeric_limits<double>::infinity();
+    GoodEntity good_ent;
+    for (auto &good : *this) {
+        if (good.second > val) {
+            val = good.second;
+            good_ent = good.first;
+        }
+    }
+    return good_ent;
+}
+
+void ResourceVector::Finalize() {
+    std::sort(begin(), end(), [](const std::pair<GoodEntity, double> &a, const std::pair<GoodEntity, double> &b) {
+        return a.first < b.first;
+    });
+    shrink_to_fit();
+}
+
+double ResourceVector::GetSum() {
+    double sum = 0;
+    for (auto &good : *this) {
+        sum += good.second;
+    }
+    return sum;
+}
+
+double ResourceVector::MultiplyAndGetSum(const ResourceLedger &other) const {
+    double sum = 0;
+    for (auto &good : *this) {
+        sum += good.second * other[good.first];
+    }
+    return sum;
+}
+
+GoodEntity ResourceVector::MinGood() {
+    double val = std::numeric_limits<double>::infinity();
+    GoodEntity good_ent;
+    for (auto &good : *this) {
+        if (good.second < val) {
+            val = good.second;
+            good_ent = good.first;
+        }
+    }
+    return good_ent;
+}
+
+void ResourceVector::operator-=(const double value) {
+    for (auto &good : *this) {
+        good.second -= value;
+    }
+}
+
+void ResourceVector::operator+=(const double value) {
+    for (auto &good : *this) {
+        good.second += value;
+    }
+}
+
+void ResourceVector::operator*=(const double value) {
+    for (auto &good : *this) {
+        good.second *= value;
+    }
+}
+
+void ResourceVector::operator/=(const double value) {
+    for (auto &good : *this) {
+        good.second /= value;
+    }
+}
+
+ResourceVector ResourceVector::operator-(const double value) const {
+    ResourceVector map = *this;
+    for (auto &val : map) {
+        val.second -= value;
+    }
+    return map;
+}
+
+ResourceVector ResourceVector::operator+(const double value) const {
+    ResourceVector map = *this;
+    for (auto &val : map) {
+        val.second += value;
+    }
+    return map;
+}
+
+ResourceVector ResourceVector::operator*(const double value) const {
+    ResourceVector map = *this;
+    for (auto &val : map) {
+        val.second *= value;
+    }
+    return map;
+}
+
+ResourceVector ResourceVector::operator/(const double value) const {
+    ResourceVector map = *this;
+    for (auto &val : map) {
+        val.second /= value;
+    }
+    return map;
+}
+
+ResourceVector ResourceVector::operator+(const ResourceVector &other) const {
+    ResourceVector result;
+    result.reserve(this->size() + other.size());
+
+    auto it1 = this->begin();
+    auto it2 = other.begin();
+
+    while (it1 != this->end() && it2 != other.end()) {
+        if (it1->first < it2->first) {
+            result.push_back(*it1++);
+        } else if (it2->first < it1->first) {
+            result.push_back(*it2++);
+        } else {
+            // Keys are equal, sum them
+            result.push_back({it1->first, it1->second + it2->second});
+            it1++;
+            it2++;
+        }
+    }
+    // Append remaining elements
+    result.insert(result.end(), it1, this->end());
+    result.insert(result.end(), it2, other.end());
+    result.shrink_to_fit();
+    return result;
+}
+
+ResourceVector ResourceVector::operator*(const ResourceVector &other) const {
+    ResourceVector result;
+    result.reserve(this->size() + other.size());
+
+    auto it1 = this->begin();
+    auto it2 = other.begin();
+
+    while (it1 != this->end() && it2 != other.end()) {
+        if (it1->first < it2->first || it2->first < it1->first) {
+            continue;
+        } else {
+            // Keys are equal, sum them
+            result.push_back({it1->first, it1->second * it2->second});
+            it1++;
+            it2++;
+        }
+    }
+    result.shrink_to_fit();
+    return result;
+}
+
+void ResourceVector::operator-=(const ResourceMap &map) {
+    for (auto &good : *this) {
+        good.second -= map[good.first];
+    }
+}
+
+void ResourceVector::operator+=(const ResourceMap &map) {
+    for (auto &good : *this) {
+        good.second += map[good.first];
+    }
+}
+
+void ResourceVector::operator*=(const ResourceMap &map) {
+    for (auto &good : *this) {
+        good.second *= map[good.first];
+    }
+}
+
+void ResourceVector::operator/=(const ResourceMap &map) {
+    for (auto &good : *this) {
+        good.second /= map[good.first];
+    }
+}
+
+void ResourceVector::operator-=(const ResourceLedger &map) {
+    for (auto &good : *this) {
+        good.second -= map[good.first];
+    }
+}
+
+void ResourceVector::operator+=(const ResourceLedger &map) {
+    for (auto &good : *this) {
+        good.second += map[good.first];
+    }
+}
+
+void ResourceVector::operator*=(const ResourceLedger &map) {
+    for (auto &good : *this) {
+        good.second *= map[good.first];
+    }
+}
+
+void ResourceVector::operator/=(const ResourceLedger &map) {
+    for (auto &good : *this) {
+        good.second /= map[good.first];
+    }
+}
+
+void ResourceMap::operator-=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] -= good.second;
+    }
+}
+
+void ResourceMap::operator*=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] *= good.second;
+    }
+}
+
+void ResourceMap::operator+=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] += good.second;
+    }
+}
+
+void ResourceMap::operator/=(const ResourceVector &other) {
+    for (auto &good : other) {
+        (*this)[good.first] /= good.second;
+    }
 }
 }  // namespace cqsp::core::components

@@ -28,10 +28,12 @@ namespace cqsp::core::components {
 enum class GoodEntity : uint32_t {};
 
 class ResourceLedger;
+class ResourceVector;
 
 typedef std::map<GoodEntity, double> LedgerMap;
 
-class ResourceMap : private LedgerMap {
+/// Try to avoid using this unless you really need it since this is extremely slow
+class [[deprecated]] ResourceMap : private LedgerMap {
  public:
     ResourceMap() = default;
     ~ResourceMap() = default;
@@ -54,6 +56,11 @@ class ResourceMap : private LedgerMap {
     void operator+=(const ResourceLedger&);
     void operator*=(const ResourceLedger&);
     void operator/=(const ResourceLedger&);
+
+    void operator-=(const ResourceVector&);
+    void operator+=(const ResourceVector&);
+    void operator*=(const ResourceVector&);
+    void operator/=(const ResourceVector&);
 
     void operator-=(const double value);
     void operator+=(const double value);
@@ -111,6 +118,7 @@ class ResourceMap : private LedgerMap {
     void TransferTo(ResourceMap&, const ResourceMap&);
     // Equivalant to this += other * double
     void MultiplyAdd(const ResourceMap&, double);
+    void MultiplyAdd(const ResourceVector&, double);
 
     /// <summary>
     /// Removes the resources, and if the amount of resources removed are more than the resources
@@ -207,6 +215,101 @@ class ResourceMap : private LedgerMap {
     using LedgerMap::value_comp;
 };
 
+/// <summary>
+/// This is a vector meant for fast iteration
+/// </summary>
+class ResourceVector : public std::vector<std::pair<GoodEntity, double>> {
+    typedef std::pair<GoodEntity, double> LedgerPair;
+    typedef std::vector<LedgerPair> LedgerVector;
+
+ public:
+    ResourceVector() = default;
+    ~ResourceVector() = default;
+
+    void operator-=(const ResourceMap&);
+    void operator+=(const ResourceMap&);
+    void operator*=(const ResourceMap&);
+    void operator/=(const ResourceMap&);
+
+    void operator-=(const ResourceLedger&);
+    void operator+=(const ResourceLedger&);
+    void operator*=(const ResourceLedger&);
+    void operator/=(const ResourceLedger&);
+
+    void operator-=(const double value);
+    void operator+=(const double value);
+    void operator*=(const double value);
+    void operator/=(const double value);
+
+    ResourceVector operator-(const double value) const;
+    ResourceVector operator+(const double value) const;
+    ResourceVector operator*(const double value) const;
+    ResourceVector operator/(const double value) const;
+
+    ResourceVector operator+(const ResourceVector& value) const;
+    ResourceVector operator*(const ResourceVector& value) const;
+
+    /// <summary>
+    /// Returns the average of all values in the ledger, with
+    /// division by zero resulting in infiniy
+    /// </summary>
+    double Average();
+
+    double Min();
+    double Max();
+    GoodEntity MinGood();
+    GoodEntity MaxGood();
+
+    void Finalize();
+
+    bool HasGood(const GoodEntity& good) const {
+        return std::find_if(begin(), end(), [good](const LedgerPair& _good) { return _good.first == good; }) != end();
+    }
+
+    double operator[](const GoodEntity& good) const {
+        auto val = std::find_if(begin(), end(), [good](const LedgerPair& _good) { return _good.first == good; });
+        if (val == end()) {
+            return 0;
+        } else {
+            return val->second;
+        }
+    }
+
+    /**
+     * Gets the sum of all the goods in this resource ledger.
+     */
+    double GetSum();
+
+    /// <summary>
+    /// Multiplies the numbers stated in the resource ledger. Used for calculating the price, becuase
+    /// usually the resource ledger will be the price.
+    /// </summary>
+    /// <param name=""></param>
+    /// <returns></returns>
+    double MultiplyAndGetSum(const ResourceLedger& other) const;
+
+    bool contains(const GoodEntity& entity) const {
+        return std::find_if(begin(), end(), [entity](const LedgerPair& _good) { return _good.first == entity; }) !=
+               end();
+    }
+
+    // All the things that we get from map
+    using LedgerVector::operator=;
+    using LedgerVector::begin;
+    using LedgerVector::cbegin;
+    using LedgerVector::cend;
+    using LedgerVector::clear;
+    using LedgerVector::crbegin;
+    using LedgerVector::crend;
+    using LedgerVector::emplace;
+    using LedgerVector::empty;
+    using LedgerVector::end;
+    using LedgerVector::erase;
+    using LedgerVector::rbegin;
+    using LedgerVector::rend;
+    using LedgerVector::size;
+};
+
 class ResourceLedger {
  private:
     std::vector<double> ledger;
@@ -235,6 +338,11 @@ class ResourceLedger {
     void operator+=(const ResourceMap&);
     void operator*=(const ResourceMap&);
     void operator/=(const ResourceMap&);
+
+    void operator-=(const ResourceVector&);
+    void operator+=(const ResourceVector&);
+    void operator*=(const ResourceVector&);
+    void operator/=(const ResourceVector&);
 
     void operator-=(const double value);
     void operator+=(const double value);

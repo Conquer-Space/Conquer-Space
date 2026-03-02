@@ -16,31 +16,18 @@
  */
 #pragma once
 
-#include <vector>
+#include "core/loading/hjsonloader.h"
 
-#include <entt/entt.hpp>
+namespace cqsp::core::loading {
+class ProjectLoader : public HjsonLoader {
+ public:
+    explicit ProjectLoader(Universe& universe) : HjsonLoader(universe) {}
 
-namespace cqsp::core::components {
-/// <summary>
-/// The civilization or organization that owns or governs the city
-/// </summary>
-struct Governed {
-    entt::entity governor;
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, Node& node) override;
+    void PostLoad(const Node& node) override;
+
+ private:
+    Hjson::Value default_val;
 };
-
-struct Organization {};
-
-struct Country {
-    entt::entity capital_city = entt::null;
-    std::array<float, 3> color;
-};
-
-struct CountryCityList {
-    std::vector<entt::entity> city_list;
-    std::vector<entt::entity> province_list;
-};
-
-struct MissionQueue {
-    std::vector<entt::entity> list;
-};
-}  // namespace cqsp::core::components
+}  // namespace cqsp::core::loading

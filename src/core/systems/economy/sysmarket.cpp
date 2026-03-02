@@ -52,7 +52,9 @@ void SysMarket::DoSystem() {
             // Remove the ones that are less than zero
             space_port.output_resources -= space_port.output_resources_rate;
             // If they're higher we set the output resouurces to zero
-            for (auto& [good, value] : space_port.output_resources) {
+
+            for (auto good : GetUniverse().GoodIterator()) {
+                double value = space_port.output_resources[good];
                 if (value < 0) {
                     space_port.output_resources_rate[good] = 0;
                 }

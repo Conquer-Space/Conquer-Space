@@ -20,19 +20,4 @@
 
 #include "core/components/science.h"
 
-void cqsp::core::systems::SysScienceLab::DoSystem() {
-    ZoneScoped;
-    auto labs = GetUniverse().nodes<components::science::Lab>();
-    // Add to the science
-    for (Node lab_node : labs) {
-        // Add to the scientific progress of the area, I guess
-        auto& lab = lab_node.get<components::science::Lab>();
-        // Progress the science, I guess
-        // Get the science progress, and add to it, somehow
-        auto& science_progress = lab_node.get_or_emplace<components::science::ScientificProgress>();
-        // Progress science
-        science_progress.science_progress.MultiplyAdd(lab.science_contribution, Interval());
-
-        // If the research is done, then research tech
-    }
-}
+void cqsp::core::systems::SysScienceLab::DoSystem() {}

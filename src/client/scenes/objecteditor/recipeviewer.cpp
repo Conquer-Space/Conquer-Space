@@ -73,7 +73,15 @@ void SysRecipeViewer::DoUI(int delta_time) {
 void SysRecipeViewer::DoUpdate(int delta_time) {}
 
 namespace {
-double GetLedgerCost(core::Universe& universe, components::ResourceMap& ledger) {
+double GetLedgerCost(core::Universe& universe, const components::ResourceMap& ledger) {
+    double input_cost = 0;
+    for (auto& [entity, amount] : ledger) {
+        input_cost = universe.get<components::Price>(entity) * amount;
+    }
+    return input_cost;
+}
+
+double GetLedgerCost(core::Universe& universe, const components::ResourceVector& ledger) {
     double input_cost = 0;
     for (auto& [entity, amount] : ledger) {
         input_cost = universe.get<components::Price>(entity) * amount;

@@ -16,12 +16,15 @@
  */
 #include "core/systems/economy/syslaunchvehicleproduction.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/projects.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
 void SysLaunchVehicleProduction::DoSystem() {
+    ZoneScoped;
     // List cities with launch pads and then add the cost to the economy above...
     auto view = GetUniverse().view<components::City, components::infrastructure::SpacePort>();
     for (entt::entity entity : view) {
@@ -44,10 +47,11 @@ void SysLaunchVehicleProduction::DoSystem() {
                 continue;
             }
             // Otherwise we consume resources
-            components::ResourceMap& ledger = GetUniverse().get<components::ResourceMap>(project);
+            components::ProjectTemplate& project_template =
+                GetUniverse().get<components::ProjectTemplate>(project_comp.project_template);
             auto& market = GetUniverse().get<components::Market>(province);
-            market.consumption += ledger;
-            project_comp.project_last_cost = (ledger * market.price).GetSum();
+            market.consumption += project_template.cost;
+            project_comp.project_last_cost = project_template.cost.MultiplyAndGetSum(market.price);
         }
 
         for (entt::entity completed_project : completed_projects) {

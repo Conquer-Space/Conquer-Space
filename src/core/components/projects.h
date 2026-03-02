@@ -19,6 +19,8 @@
 #include <cstdint>
 #include <vector>
 
+#include "core/components/resourceledger.h"
+
 namespace cqsp::core::components {
 enum class ProjectType { Design, Manufacturing, Integration };
 
@@ -35,5 +37,16 @@ struct Project {
 
     ProjectType type;
     entt::entity result;
+    entt::entity project_template;
+};
+
+struct ProjectTemplate {
+    ResourceVector cost;
+    int max_progress;
+};
+
+struct Mission {
+    entt::entity project;
+    entt::entity target_body;
 };
 }  // namespace cqsp::core::components

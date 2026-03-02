@@ -68,11 +68,29 @@ void RightClickWindow::DetermineButtons(entt::entity entity) {
         if (core::actions::HasSpacePort(GetUniverse()(entity))) {
             buttons.push_back({"Open Space Port", "spaceport"});
         }
+        auto& province = GetUniverse().get<core::components::Province>(entity);
+        // If it's uncolonized
+        if (province.country == entt::null) {
+            buttons.push_back({"Set Up Colony", "colonize"});
+        }
     }
     handle.DirtyAllVariables();
 }
 
-void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {}
+void RightClickWindow::EventListener::ProcessEvent(Rml::Event& event) {
+    if (event.GetTargetElement() == nullptr) {
+        return;
+    }
+    const Rml::Variant* value = event.GetTargetElement()->GetAttribute("onclick");
+    if (value == nullptr || value->GetType() != Rml::Variant::STRING) {
+        return;
+    }
+    std::string action = value->Get<std::string>();
+    if (action == "colonize") {
+        // then we should set our hover text
+        universe.ctx().at<ctx::HoveringItem>().ui_space = "Start the process of setting up a colony on this province";
+    }
+}
 
 void RightClickWindow::Update(double delta_time) {
     bool mouse_over_this = MouseOverDocument();
@@ -131,6 +149,12 @@ void RightClickWindow::ClickEventListener::ProcessEvent(Rml::Event& event) {
         // Oh we need to get the hovered province
         universe.clear<ctx::SelectedProvince>();
         universe.emplace<ctx::SelectedProvince>(window.right_click_item, true);
+    } else if (action == "colonize") {
+        // then we should emplace some sort of thing on the thing
+        // In theory what if multiple countries colonize a place at the same time
+        if (!universe.all_of<core::components::ColonizationTarget>(window.right_click_item)) {
+            universe.emplace<core::components::ColonizationTarget>(window.right_click_item, universe.GetPlayer());
+        }
     }
     SPDLOG_INFO("{}", value->Get<std::string>());
     window.document->Hide();

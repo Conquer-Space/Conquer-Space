@@ -49,6 +49,9 @@ class SysProvinceInformation : public SysUserInterface {
     bool HasSpacePort(const entt::entity entity);
     void IndustryListIndustryRow(const entt::entity industry);
 
+    void PopulationSummary();
+    void ColonizationTabs();
+
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
 

@@ -16,6 +16,8 @@
  */
 #include "core/systems/economy/sysinterplanetarytrade.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/bodies.h"
 #include "core/components/market.h"
 #include "core/components/spaceport.h"
@@ -23,6 +25,7 @@
 
 namespace cqsp::core::systems {
 void SysInterplanetaryTrade::DoSystem() {
+    ZoneScoped;
     auto planetary_markets =
         GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Settlements>();
     for (Node market_node : planetary_markets) {

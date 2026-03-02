@@ -39,7 +39,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
     auto& recipe_component = node.emplace<components::Recipe>();
 
     Hjson::Value input_value = values["input"];
-    recipe_component.input = HjsonToLedger(universe, input_value);
+    recipe_component.input = HjsonToVector(universe, input_value);
 
     Hjson::Value output_value = values["output"];
     // Just get the first value
@@ -60,7 +60,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
         if (cost_map["capital"].defined()) {
             Hjson::Value capital = cost_map["capital"];
-            recipe_component.capitalcost = HjsonToLedger(universe, capital);
+            recipe_component.capitalcost = HjsonToVector(universe, capital);
         }
 
         if (cost_map["labor"].defined()) {
@@ -71,12 +71,12 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
         if (cost_map["fixed"].defined()) {
             Hjson::Value fixed = cost_map["fixed"];
-            recipe_cost.fixed = HjsonToLedger(universe, fixed);
+            recipe_cost.fixed = HjsonToVector(universe, fixed);
         }
 
         if (cost_map["scaling"].defined()) {
             Hjson::Value scaling = cost_map["scaling"];
-            recipe_cost.scaling = HjsonToLedger(universe, scaling);
+            recipe_cost.scaling = HjsonToVector(universe, scaling);
         }
     }
 
@@ -95,7 +95,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
         construction_cost.time = universe.date.ToTicks(static_cast<int>(time));  // Convert seconds to ticks
         // Then get cost
         const Hjson::Value& cost_map = construction["cost"];
-        construction_cost.cost = HjsonToLedger(universe, cost_map) / time;
+        construction_cost.cost = HjsonToVector(universe, cost_map) / time;
     }
 
     for (int i = 0; i < values["tags"].size(); i++) {

@@ -109,24 +109,16 @@ void SysProvinceInformation::ProvinceView() {
             break;
         }
     }
-    // List the cities
-    auto& city_list = GetUniverse().get<components::Province>(current_province);
-    int population = 0;
-
-    // Also add the population of the actual province
-    auto& settlement = GetUniverse().get<Settlement>(current_province);
-    for (auto& seg_entity : settlement.population) {
-        auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
-        population += segment.population;
+    if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
+        auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
+        ImGui::TextFmt("Target for colonization by {}", GetName(GetUniverse(), target.colonizer));
     }
-    if (city_list.country == entt::null) {
-        ImGui::TextFmt("Not part of any country");
+    PopulationSummary();
+    if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
+        ColonizationTabs();
     } else {
-        ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
+        ProvinceIndustryTabs();
     }
-    ImGui::TextFmt("Population: {}", NumberToHumanString(population));
-    ImGui::Separator();
-    ProvinceIndustryTabs();
 }
 
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
@@ -736,12 +728,12 @@ void SysProvinceInformation::ConstructionTab() {
         auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
         ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
         ImGui::Text("Input");
-        double input_cost = market.price.MultiplyAndGetSum(recipe_comp.input);
+        double input_cost = recipe_comp.input.MultiplyAndGetSum(market.price);
         ImGui::TextFmt("Input Default Cost: {}", util::NumberToHumanString(input_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
         ImGui::Separator();
         ImGui::Text("Capital Cost");
-        double capital_cost = market.price.MultiplyAndGetSum(recipe_comp.capitalcost);
+        double capital_cost = recipe_comp.capitalcost.MultiplyAndGetSum(market.price);
         ImGui::TextFmt("Capital Default Cost: {}", util::NumberToHumanString(capital_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
         ImGui::Separator();
@@ -776,5 +768,89 @@ void SysProvinceInformation::ConstructionTab() {
         }
     }
     ImGui::EndChild();
+}
+
+void SysProvinceInformation::ColonizationTabs() {
+    // Now we should do some math and stuff for buttons
+    ImGui::TextFmt("Colonization");
+    auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
+    ImGui::TextFmt("Steps");
+    // When we change to a proper rmlui ui we should make icons for this lol
+    ImGui::Text("Surveying");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Initial surveying to pick an appropriate landing site");
+        ImGui::Text("Land probes or even initial missions to ensure that the landing site is fine");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Preparation");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Preparation of the site for human landing");
+        ImGui::Text("Land components for power or initial components for");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Initial Base");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("A skeleton crew lands for final assembly,");
+        ImGui::Text("and inspect and verify that the base works as designed");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Human Settlement");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("A small crew rotates in and out every now and then");
+        ImGui::Text("The settlement still undergoes expansion and work");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    ImGui::Text("Permanent Settlement");
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text(
+            "Permanent settlement, there is crew that lives for months or even years on end maintaining the colony");
+        ImGui::Text("Once this settlement gets sufficient economic independence, you can convert to a market economy.");
+        ImGui::EndTooltip();
+    }
+    // then we should progress the stages of colonization
+    // Rn we should just send rockets and they'll just transition to the next step lol
+    if (ImGui::Button("Send rocket for next stage")) {
+        // Then some how do that
+        auto player_node = GetUniverse()(GetUniverse().GetPlayer());
+        // Then we should add to the queue or something?
+        // How should we do the format
+    }
+}
+
+void SysProvinceInformation::PopulationSummary() {
+    // List the cities
+    auto& city_list = GetUniverse().get<components::Province>(current_province);
+    int population = 0;
+
+    // Also add the population of the actual province
+    auto& settlement = GetUniverse().get<Settlement>(current_province);
+    for (auto& seg_entity : settlement.population) {
+        auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
+        population += segment.population;
+    }
+    if (city_list.country == entt::null) {
+        ImGui::TextFmt("Not part of any country");
+    } else {
+        ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
+    }
+    ImGui::TextFmt("Population: {}", NumberToHumanString(population));
+    ImGui::Separator();
 }
 }  // namespace cqsp::client::systems
