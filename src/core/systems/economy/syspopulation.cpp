@@ -72,6 +72,7 @@ void SysPopulationGrowth::DoSystem() {
 void SysPopulationConsumption::ProcessSettlement(Node& settlement, const ResourceConsumption& marginal_propensity_base,
                                                  const ResourceConsumption& autonomous_consumption_base,
                                                  const float savings) {
+    ZoneScoped;
     // Get the transport cost
     if (!settlement.any_of<components::infrastructure::CityInfrastructure>()) {
         return;

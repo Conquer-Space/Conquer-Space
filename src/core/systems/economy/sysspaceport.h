@@ -32,5 +32,7 @@ class SysSpacePort : public ISimulationSystem {
                                     entt::entity reference_body, entt::entity target);
     entt::entity ReturnFromMoonManeuver(const components::infrastructure::TransportedGood& element,
                                         entt::entity reference_body, entt::entity target);
+    void ProcessShippedGood(const components::infrastructure::TransportedGood& element, entt::entity target,
+                            entt::entity common_soi, components::infrastructure::SpacePort& port_component);
 };
 }  // namespace cqsp::core::systems

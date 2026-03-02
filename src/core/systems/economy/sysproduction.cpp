@@ -30,10 +30,10 @@
 #include "core/components/population.h"
 #include "core/components/surface.h"
 #include "core/util/profiler.h"
-#include "sysproduction.h"
 
 namespace cqsp::core::systems {
 void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {
+    ZoneScoped;
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
@@ -249,6 +249,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 }
 
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
+    ZoneScoped;
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
     components::Recipe recipe = recipenode.get<components::Recipe>();
@@ -276,6 +277,7 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
  * Returns true if we should continue with production false if we are constructing something
  */
 bool SysProduction::HandleConstruction(Node& industry_node, components::Market& market) {
+    ZoneScoped;
     if (!industry_node.any_of<components::Construction>()) {
         return true;
     }

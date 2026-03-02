@@ -16,12 +16,15 @@
  */
 #include "core/systems/economy/syslaunchvehicleproduction.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/projects.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
 void SysLaunchVehicleProduction::DoSystem() {
+    ZoneScoped;
     // List cities with launch pads and then add the cost to the economy above...
     auto view = GetUniverse().view<components::City, components::infrastructure::SpacePort>();
     for (entt::entity entity : view) {
