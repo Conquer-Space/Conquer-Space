@@ -44,4 +44,9 @@ struct ProjectTemplate {
     ResourceVector cost;
     int max_progress;
 };
+
+struct Mission {
+    entt::entity project;
+    entt::entity target_body;
+};
 }  // namespace cqsp::core::components

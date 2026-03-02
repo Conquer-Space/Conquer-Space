@@ -828,6 +828,9 @@ void SysProvinceInformation::ColonizationTabs() {
     // Rn we should just send rockets and they'll just transition to the next step lol
     if (ImGui::Button("Send rocket for next stage")) {
         // Then some how do that
+        auto player_node = GetUniverse()(GetUniverse().GetPlayer());
+        // Then we should add to the queue or something?
+        // How should we do the format
     }
 }
 
