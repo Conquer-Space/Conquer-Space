@@ -29,7 +29,6 @@
 #include "core/components/organizations.h"
 #include "core/components/population.h"
 #include "core/components/surface.h"
-#include "core/util/profiler.h"
 
 namespace cqsp::core::systems {
 void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {

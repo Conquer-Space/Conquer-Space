@@ -43,7 +43,6 @@
 #include "application.h"
 #include "core/util/logging.h"
 #include "core/util/paths.h"
-#include "core/util/profiler.h"
 #include "core/version.h"
 #include "engine/audio/audiointerface.h"
 #include "engine/cqspgui.h"

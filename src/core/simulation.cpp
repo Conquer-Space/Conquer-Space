@@ -48,7 +48,6 @@
 #include "core/systems/science/syssciencelab.h"
 #include "core/systems/science/systechnology.h"
 #include "core/systems/scriptrunner.h"
-#include "core/util/profiler.h"
 
 namespace cqsp::core::systems::simulation {
 Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) {}

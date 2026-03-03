@@ -23,7 +23,6 @@
 
 #include <tracy/Tracy.hpp>
 
-#include "core/util/profiler.h"
 namespace cqsp::core::systems {
 SysScript::SysScript(Game &game) : ISimulationSystem(game) {
     sol::optional<std::vector<sol::table>> optional = game.GetScriptInterface()["events"]["data"];

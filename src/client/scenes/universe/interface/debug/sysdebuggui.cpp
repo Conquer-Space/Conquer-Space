@@ -26,7 +26,6 @@
 #include "core/components/name.h"
 #include "core/systems/history/sysmarketdumper.h"
 #include "core/util/nameutil.h"
-#include "core/util/profiler.h"
 #include "glad/glad.h"
 
 namespace cqsp::client::systems {
