@@ -75,7 +75,7 @@ class SysStarSystemRenderer {
     engine::Renderable sky;
     engine::Renderable planet_circle;
     engine::Renderable ship_overlay;
-    engine::Renderable city;
+    engine::Renderable city_render_object;
     engine::Renderable sun;
 
     asset::ShaderProgram_t orbit_shader;
@@ -98,6 +98,7 @@ class SysStarSystemRenderer {
     void DrawModels();
 
     void DrawEntityName(glm::vec3 &object_pos, entt::entity ent_id);
+    void DrawEntityName(glm::vec3 &object_pos, const std::string &name);
     void DrawPlanetBillboard(const entt::entity &ent_id, const glm::vec3 &object_pos);
     void DrawShipIcon(const glm::vec3 &object_pos);
     void DrawCityIcon(const glm::vec3 &object_pos, float alpha_value);
@@ -113,8 +114,8 @@ class SysStarSystemRenderer {
 
     void DrawStar(const entt::entity &entity, glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
-    void DrawIndividualCity(const entt::entity city_entity, const glm::vec3 &object_pos, const glm::quat &quat,
-                            double radius);
+    void DrawIndividualCity(const entt::entity city_entity, const glm::vec3 &offset, const glm::vec3 &object_pos,
+                            const glm::quat &quat, double radius, const std::string &name);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
 
     asset::ShaderProgram_t ConstructShader(const std::string &key);

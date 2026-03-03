@@ -76,7 +76,7 @@ class StarSystemController {
     void FocusPlanetView();
     void FocusCityView();
 
-    void CalculateCityPositions();
+    void CalculateCityPositions(entt::entity entity);
 
     void CenterCameraOnPoint();
     void SetCameraToPlanetReferenceFrame();

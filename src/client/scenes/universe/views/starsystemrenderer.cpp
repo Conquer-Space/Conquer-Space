@@ -250,12 +250,15 @@ void SysStarSystemRenderer::DrawModels() {
 }
 
 void SysStarSystemRenderer::DrawEntityName(glm::vec3& object_pos, entt::entity ent_id) {
-    std::string text = GetName(universe, ent_id);
+    DrawEntityName(object_pos, GetName(universe, ent_id));
+}
+
+void SysStarSystemRenderer::DrawEntityName(glm::vec3& object_pos, const std::string& name) {
     glm::vec3 pos = GetBillboardPosition(object_pos);
     // Check if the position on screen is within bounds
     if (pos.z < 1 && pos.z > -1 &&
         (pos.x > 0 && pos.x < app.GetWindowWidth() && pos.y > 0 && pos.y < app.GetWindowHeight())) {
-        app.DrawText(text, pos.x, pos.y, 20);
+        app.DrawText(name, pos.x, pos.y, 20);
     }
 }
 
@@ -287,10 +290,10 @@ void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos, float alph
 
     glm::mat4 planetDispMat = GetBillboardMatrix(pos);
 
-    SetBillboardProjection(city.shaderProgram, planetDispMat);
-    city.shaderProgram->Set("color", 1, 0, 1, alpha_value);
+    SetBillboardProjection(city_render_object.shaderProgram, planetDispMat);
+    city_render_object.shaderProgram->Set("color", 1, 0, 1, alpha_value);
 
-    engine::DrawFast(city);
+    engine::DrawFast(city_render_object);
 }
 
 void SysStarSystemRenderer::DrawAllCities(auto& bodies) {
@@ -468,22 +471,22 @@ void SysStarSystemRenderer::DrawTerrainlessPlanet(const entt::entity& entity, gl
 void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::entity& body_entity) {
     ZoneScoped;
     // Draw Cities
-    if (!universe.all_of<Settlements>(body_entity)) {
+    if (!universe.all_of<client::components::PlanetCityOffsets>(body_entity)) {
         return;
     }
-    std::vector<entt::entity> cities = universe.get<Settlements>(body_entity).settlements;
-    if (cities.empty()) {
+    auto& offsets = universe.get<client::components::PlanetCityOffsets>(body_entity);
+    if (offsets.offsets.empty()) {
         return;
     }
 
     Body& body = universe.get<Body>(body_entity);
     auto quat = controller.GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
 
-    city.shaderProgram->UseProgram();
-    city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
-    for (entt::entity city_entity : cities) {
+    city_render_object.shaderProgram->UseProgram();
+    city_render_object.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
+    for (const auto& [city_entity, offset, name] : offsets.offsets) {
         // Calculate position to render
-        DrawIndividualCity(city_entity, object_pos, quat, body.radius);
+        DrawIndividualCity(city_entity, offset, object_pos, quat, body.radius, name);
     }
 
     if (controller.ShouldDrawCityPrototype()) {
@@ -491,21 +494,17 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     }
 }
 
-void SysStarSystemRenderer::DrawIndividualCity(const entt::entity city_entity, const glm::vec3& object_pos,
-                                               const glm::quat& quat, double radius) {
+void SysStarSystemRenderer::DrawIndividualCity(const entt::entity city_entity, const glm::vec3& offset,
+                                               const glm::vec3& object_pos, const glm::quat& quat, double radius,
+                                               const std::string& name) {
     ZoneScoped;
-    if (!universe.any_of<Offset>(city_entity)) {
-        // Calculate offset
-        return;
-    }
-    const Offset& offset = universe.get<Offset>(city_entity);
-    glm::vec3 city_pos = offset.offset * static_cast<float>(radius);
+    glm::vec3 city_pos = offset;
     // Check if line of sight and city position intersects the sphere that is the planet
     city_pos = quat * city_pos;
     glm::vec3 city_world_pos = city_pos + object_pos;
     if (CityIsVisible(city_world_pos, object_pos, camera.cam_pos)) {
         // If it's reasonably close, then we can show city names
-        DrawEntityName(city_world_pos, city_entity);
+        DrawEntityName(city_world_pos, name);
         DrawCityIcon(city_world_pos,
                      Lerp(1, 0, (glm::length(camera.cam_pos - city_pos) - 6378.1 * 10) / (6378.1 * 10)));
     }
@@ -740,8 +739,8 @@ void SysStarSystemRenderer::InitializeMeshes() {
     ship_overlay.mesh = engine::primitive::CreateFilledTriangle();
     ship_overlay.shaderProgram = circle_shader;
 
-    city.mesh = engine::primitive::MakeTexturedPaneMesh();
-    city.shaderProgram = circle_shader;
+    city_render_object.mesh = engine::primitive::MakeTexturedPaneMesh();
+    city_render_object.shaderProgram = circle_shader;
 
     // Planet spheres
     textured_planet.mesh = sphere_mesh;
