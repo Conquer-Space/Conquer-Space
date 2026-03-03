@@ -27,6 +27,7 @@
 namespace cqsp::core::components::infrastructure {
 struct TransportedGood {
     entt::entity good;
+    entt::entity province;
     double amount;
     double fulfilled;
     double priority;

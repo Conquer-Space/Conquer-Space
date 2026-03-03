@@ -27,6 +27,7 @@
 #include "core/components/name.h"
 #include "core/components/orbit.h"
 #include "core/components/orders.h"
+#include "core/components/ships.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
@@ -45,7 +46,8 @@ void SysSpacePort::DoSystem() {
             entt::entity common_soi = commands::GetCommonSOI(GetUniverse(), port_component.reference_body, target);
             while (!delivery_queue.empty()) {
                 components::infrastructure::TransportedGood& element = delivery_queue.back();
-                if (common_soi == target) ProcessShippedGood(delivery_queue.back(), target, common_soi, port_component);
+                // So this disables moons or something
+                ProcessShippedGood(delivery_queue.back(), target, common_soi, port_component);
                 // But we should also have non good stuff...
                 delivery_queue.pop_back();
             }
@@ -155,8 +157,14 @@ void SysSpacePort::ProcessShippedGood(const components::infrastructure::Transpor
     }
 
     if (ship != entt::null) {
-        auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
-        stockpile[GetUniverse().good_map[element.good]] = element.amount;
+        // We transfer to the body
+        if (GetUniverse().good_map.contains(element.good)) {
+            auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
+            stockpile[GetUniverse().good_map[element.good]] = element.amount;
+        } else {
+            auto& cargo = GetUniverse().emplace<components::ships::CargoHold>(ship);
+            cargo.cargo.push_back(element.good);
+        }
         GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
     }
 }

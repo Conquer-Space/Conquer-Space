@@ -42,6 +42,7 @@ class SysProvinceInformation : public SysUserInterface {
     void SpacePortProjectsTab(const entt::entity city);
     void RocketManufacturingTab(const entt::entity city);
     void RocketManufacturingRightPanel(const entt::entity city);
+    void SpacePortMissionTab(const entt::entity city);
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
@@ -67,6 +68,7 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity selected_recipe = entt::null;
     int construction_amount = 1;
     bool show_space_port = false;
+    entt::entity selected_project = entt::null;
 
     bool segment_prices = true;
     entt::entity selected_launch_vehicle;

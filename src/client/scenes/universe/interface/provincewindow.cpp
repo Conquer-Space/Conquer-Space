@@ -350,6 +350,10 @@ void SysProvinceInformation::SpacePortTab() {
             SpacePortResourceTab(space_port_city);
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Missions")) {
+            SpacePortMissionTab(space_port_city);
+            ImGui::EndTabItem();
+        }
         ImGui::EndTabBar();
     }
 }
@@ -673,6 +677,30 @@ void SysProvinceInformation::RocketManufacturingRightPanel(const entt::entity ci
     }
 }
 
+void SysProvinceInformation::SpacePortMissionTab(const entt::entity city) {
+    // Now we should list the missions and launch them and add them to the space port queue or something
+    // TODO(EhWhoAmI): Make sure that the player is launching from the appropriate launch site that they own lol
+    entt::entity player = GetUniverse().GetPlayer();
+    auto& queue = GetUniverse().get<components::MissionQueue>(player);
+    for (entt::entity entity : queue.list) {
+        bool selected = (selected_project == entity);
+        if (ImGui::SelectableFmt("{}", &selected, GetName(GetUniverse(), entity))) {
+            selected_project = entity;
+        }
+    }
+    if (GetUniverse().valid(selected_project) && GetUniverse().all_of<components::Mission>(selected_project)) {
+        if (ImGui::Button("Dispatch mission")) {
+            auto& mission = GetUniverse().get<components::Mission>(selected_project);
+            // Then we add it to the queue or something
+            auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+            components::infrastructure::TransportedGood good;
+            good.good = selected_project;
+            good.province = mission.province;
+            space_port.deliveries[mission.target_body].push_back(good);
+        }
+    }
+}
+
 void SysProvinceInformation::SpacePortOrdersTab(const entt::entity city) {
     // Just list it for a basic UI
     auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
@@ -887,7 +915,7 @@ void SysProvinceInformation::ColonizationTabs() {
         // Then we set our target mission or something
         auto& queue = player_node.get<components::MissionQueue>();
         queue.list.push_back(new_mission);
-        // Now do something
+        // We should have set the project too and stuff
     }
 }
 

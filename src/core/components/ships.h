@@ -37,6 +37,10 @@ struct PowerSuite {};
 
 struct Crash {};
 
+struct CargoHold {
+    std::vector<entt::entity> cargo;
+};
+
 struct Fleet {
     unsigned int echelon = 0;
     std::vector<entt::entity> subfleets;
