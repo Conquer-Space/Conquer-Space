@@ -97,6 +97,13 @@ function civinfopanel:civinfopanel()
             self:planetmarketinfopanel()
             ImGui.EndTabItem()
         end
+        if ImGui.BeginTabItem("Mission Queue") then
+            local queue = core.get_mission_queue(player)
+            for _, mission in pairs(queue) do
+                ImGui.Text(core.get_name(mission))
+            end
+            ImGui.EndTabItem()
+        end
         ImGui.EndTabBar()
     end
 end

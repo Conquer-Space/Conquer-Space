@@ -776,7 +776,13 @@ void SysProvinceInformation::ColonizationTabs() {
     auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
     ImGui::TextFmt("Steps");
     // When we change to a proper rmlui ui we should make icons for this lol
+    if (target.steps == components::ColonizationSteps::Surveying) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
     ImGui::Text("Surveying");
+    if (target.steps == components::ColonizationSteps::Surveying) {
+        ImGui::PopStyleColor();
+    }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         ImGui::Text("Initial surveying to pick an appropriate landing site");
@@ -786,7 +792,13 @@ void SysProvinceInformation::ColonizationTabs() {
     ImGui::SameLine();
     ImGui::Text("->");
     ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::Preparation) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
     ImGui::Text("Preparation");
+    if (target.steps == components::ColonizationSteps::Preparation) {
+        ImGui::PopStyleColor();
+    }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         ImGui::Text("Preparation of the site for human landing");
@@ -796,7 +808,13 @@ void SysProvinceInformation::ColonizationTabs() {
     ImGui::SameLine();
     ImGui::Text("->");
     ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::InitialBase) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
     ImGui::Text("Initial Base");
+    if (target.steps == components::ColonizationSteps::InitialBase) {
+        ImGui::PopStyleColor();
+    }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         ImGui::Text("A skeleton crew lands for final assembly,");
@@ -806,7 +824,13 @@ void SysProvinceInformation::ColonizationTabs() {
     ImGui::SameLine();
     ImGui::Text("->");
     ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::HumanSettlement) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
     ImGui::Text("Human Settlement");
+    if (target.steps == components::ColonizationSteps::HumanSettlement) {
+        ImGui::PopStyleColor();
+    }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         ImGui::Text("A small crew rotates in and out every now and then");
@@ -816,7 +840,13 @@ void SysProvinceInformation::ColonizationTabs() {
     ImGui::SameLine();
     ImGui::Text("->");
     ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::PermanentSettlement) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
     ImGui::Text("Permanent Settlement");
+    if (target.steps == components::ColonizationSteps::PermanentSettlement) {
+        ImGui::PopStyleColor();
+    }
     if (ImGui::IsItemHovered()) {
         ImGui::BeginTooltip();
         ImGui::Text(
@@ -835,9 +865,29 @@ void SysProvinceInformation::ColonizationTabs() {
         // Now we set stuff
         mission_comp.province = current_province;
         mission_comp.target_body = province_comp.planet;
+
+        auto& identifier = GetUniverse().emplace<components::Name>(new_mission).name;
+        switch (target.steps) {
+            case components::ColonizationSteps::Surveying:
+                identifier = "Surveying";
+                break;
+            case components::ColonizationSteps::Preparation:
+                identifier = "Preparation";
+                break;
+            case components::ColonizationSteps::InitialBase:
+                identifier = "Initial Base";
+                break;
+            case components::ColonizationSteps::HumanSettlement:
+                identifier = "Human Settlement";
+                break;
+            case components::ColonizationSteps::PermanentSettlement:
+                identifier = "Permanent Settlement";
+                break;
+        }
         // Then we set our target mission or something
-        auto& queue = player_node.get_or_emplace<components::MissionQueue>();
+        auto& queue = player_node.get<components::MissionQueue>();
         queue.list.push_back(new_mission);
+        // Now do something
     }
 }
 
