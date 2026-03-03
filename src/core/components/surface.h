@@ -71,6 +71,7 @@ struct CityTimeZone {
 
 struct Province {
     entt::entity country = entt::null;
+    entt::entity planet = entt::null;
     std::vector<entt::entity> cities;
     std::vector<entt::entity> neighbors;
 };

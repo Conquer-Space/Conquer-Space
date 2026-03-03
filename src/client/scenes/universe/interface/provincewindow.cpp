@@ -831,8 +831,13 @@ void SysProvinceInformation::ColonizationTabs() {
         auto player_node = GetUniverse()(GetUniverse().GetPlayer());
         auto& province_comp = GetUniverse().get<components::Province>(current_province);
         entt::entity new_mission = GetUniverse().create();
-        new_mission = GetUniverse().emplace<components::Mission>(new_mission);
+        auto& mission_comp = GetUniverse().emplace<components::Mission>(new_mission);
         // Now we set stuff
+        mission_comp.province = current_province;
+        mission_comp.target_body = province_comp.planet;
+        // Then we set our target mission or something
+        auto& queue = player_node.get_or_emplace<components::MissionQueue>();
+        queue.list.push_back(new_mission);
     }
 }
 

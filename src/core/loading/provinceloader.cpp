@@ -32,9 +32,8 @@ namespace cqsp::core::loading {
 bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     const auto& identifier = node.get<components::Identifier>().identifier;
     Node planet_node = GetPlanet(values["planet"].to_string(), identifier);
-
     Node country_node = GetCountry(values["country"].to_string(), identifier);
-    node.emplace<components::Province>(country_node);
+    node.emplace<components::Province>(country_node, planet_node);
     auto& color = node.emplace<components::ProvinceColor>(values["color"][0].to_int64(), values["color"][1].to_int64(),
                                                           values["color"][2].to_int64());
     if (universe.provinces.find(identifier) == universe.provinces.end()) {
