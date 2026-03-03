@@ -219,6 +219,7 @@ void SysStarSystemRenderer::DrawSkybox() {
 }
 
 void SysStarSystemRenderer::DrawModels() {
+    ZoneScoped;
     // Loop through the space bodies that are close
     for (entt::entity ship : universe.view<ships::Ship, ctx::VisibleOrbit>()) {
         // Get the model of the object
@@ -278,6 +279,7 @@ void SysStarSystemRenderer::DrawPlanetBillboard(const entt::entity& ent_id, cons
 }
 
 void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos, float alpha_value) {
+    ZoneScoped;
     glm::vec3 pos = GetBillboardPosition(object_pos);
     if (pos.z >= 1 || pos.z <= -1) {
         return;
@@ -288,10 +290,11 @@ void SysStarSystemRenderer::DrawCityIcon(const glm::vec3& object_pos, float alph
     SetBillboardProjection(city.shaderProgram, planetDispMat);
     city.shaderProgram->Set("color", 1, 0, 1, alpha_value);
 
-    engine::Draw(city);
+    engine::DrawFast(city);
 }
 
 void SysStarSystemRenderer::DrawAllCities(auto& bodies) {
+    ZoneScoped;
     for (auto body_entity : bodies) {
         glm::vec3 object_pos = controller.CalculateCenteredObject(body_entity);
         RenderCities(object_pos, body_entity);
@@ -478,23 +481,9 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
 
     city.shaderProgram->UseProgram();
     city.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
-    for (auto city_entity : cities) {
+    for (entt::entity city_entity : cities) {
         // Calculate position to render
-        if (!universe.any_of<Offset>(city_entity)) {
-            // Calculate offset
-            continue;
-        }
-        Offset doffset = universe.get<Offset>(city_entity);
-        glm::vec3 city_pos = universe.get<Offset>(city_entity).offset * (float)body.radius;
-        // Check if line of sight and city position intersects the sphere that is the planet
-        city_pos = quat * city_pos;
-        glm::vec3 city_world_pos = city_pos + object_pos;
-        if (CityIsVisible(city_world_pos, object_pos, camera.cam_pos)) {
-            // If it's reasonably close, then we can show city names
-            DrawEntityName(city_world_pos, city_entity);
-            DrawCityIcon(city_world_pos,
-                         Lerp(1, 0, (glm::length(camera.cam_pos - city_pos) - 6378.1 * 10) / (6378.1 * 10)));
-        }
+        DrawIndividualCity(city_entity, object_pos, quat, body.radius);
     }
 
     if (controller.ShouldDrawCityPrototype()) {
@@ -502,12 +491,33 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     }
 }
 
+void SysStarSystemRenderer::DrawIndividualCity(const entt::entity city_entity, const glm::vec3& object_pos,
+                                               const glm::quat& quat, double radius) {
+    ZoneScoped;
+    if (!universe.any_of<Offset>(city_entity)) {
+        // Calculate offset
+        return;
+    }
+    const Offset& offset = universe.get<Offset>(city_entity);
+    glm::vec3 city_pos = offset.offset * static_cast<float>(radius);
+    // Check if line of sight and city position intersects the sphere that is the planet
+    city_pos = quat * city_pos;
+    glm::vec3 city_world_pos = city_pos + object_pos;
+    if (CityIsVisible(city_world_pos, object_pos, camera.cam_pos)) {
+        // If it's reasonably close, then we can show city names
+        DrawEntityName(city_world_pos, city_entity);
+        DrawCityIcon(city_world_pos,
+                     Lerp(1, 0, (glm::length(camera.cam_pos - city_pos) - 6378.1 * 10) / (6378.1 * 10)));
+    }
+}
+
 bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos) {
-    if (glm::length(cam_pos - city_pos) > 6378.1 * 100) {
+    const float dist = 6378.1 * 100;
+    if (glm::length2(cam_pos - city_pos) > dist * dist) {
         return false;
     }
-    float dist = glm::dot((planet_pos - city_pos), (cam_pos - city_pos));
-    return (dist < 0);
+    const float theta = glm::dot((planet_pos - city_pos), (cam_pos - city_pos));
+    return (theta < 0);
 }
 
 void SysStarSystemRenderer::LoadPlanetTextures() {
@@ -771,6 +781,7 @@ glm::mat4 SysStarSystemRenderer::GetBillboardMatrix(const glm::vec3& pos) {
 }
 
 glm::vec3 SysStarSystemRenderer::GetBillboardPosition(const glm::vec3& object_pos) {
+    ZoneScoped;
     return glm::project(object_pos, camera.camera_matrix, camera.projection, camera.viewport);
 }
 

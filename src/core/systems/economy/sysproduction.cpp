@@ -322,18 +322,20 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
 /// <param name="market">The market the industry uses.</param>
 void SysProduction::ProcessIndustries(Node& node) {
     ZoneScoped;
+    auto& settlement = node.get<components::Settlement>();
+    if (settlement.population.empty()) {
+        return;
+    }
     auto& market = node.get<components::Market>();
     auto& production_config = GetUniverse().economy_config.production_config;
+
+    auto& industries = node.get<components::IndustrialZone>();
+    Node population_node = node.Convert(settlement.population.front());
+
     // Get the transport cost
     auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
-
-    auto& industries = node.get<components::IndustrialZone>();
-    if (node.get<components::Settlement>().population.empty()) {
-        return;
-    }
-    Node population_node = node.Convert(node.get<components::Settlement>().population.front());
     for (Node industry_node : node.Convert(industries.industries)) {
         // We should also check for industries we want to construct
         ProcessIndustry(industry_node, market, population_node, infra_cost);
@@ -344,7 +346,6 @@ void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
     // Each industrial zone is a a market
-    BEGIN_TIMED_BLOCK(Industry);
     int factories = 0;
     // Loop through the markets
     int settlement_count = 0;
@@ -352,7 +353,6 @@ void SysProduction::DoSystem() {
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
     }
-    END_TIMED_BLOCK(Industry);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
 }
 }  // namespace cqsp::core::systems

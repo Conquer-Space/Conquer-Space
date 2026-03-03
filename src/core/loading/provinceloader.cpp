@@ -49,7 +49,6 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     universe.province_colors[planet_node][static_cast<int>(color)] = node;
     universe.colors_province[planet_node][node] = static_cast<int>(color);
 
-    planet_node.get_or_emplace<components::Settlements>().settlements.push_back(node);
     //SPDLOG_INFO("Load Timezone");
     if (!values["timezone"].empty()) {
         entt::entity tz = universe.time_zones[values["timezone"].to_string()];
@@ -99,7 +98,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     auto& industry = node.emplace<components::IndustrialZone>();
     auto& market = node.emplace<components::Market>(universe.GoodCount());
     market.parent_market = planet_node;
-    planet_node.get<components::Settlements>().provinces.push_back(node.entity());
+    planet_node.get_or_emplace<components::Settlements>().provinces.push_back(node.entity());
     // Commercial area
     Node commercial_node(universe);
 

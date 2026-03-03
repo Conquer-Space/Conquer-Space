@@ -113,6 +113,8 @@ class SysStarSystemRenderer {
 
     void DrawStar(const entt::entity &entity, glm::vec3 &object_pos);
     void RenderCities(glm::vec3 &object_pos, const entt::entity &body_entity);
+    void DrawIndividualCity(const entt::entity city_entity, const glm::vec3 &object_pos, const glm::quat &quat,
+                            double radius);
     bool CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_pos, glm::vec3 cam_pos);
 
     asset::ShaderProgram_t ConstructShader(const std::string &key);
