@@ -60,7 +60,7 @@ using core::util::GetName;
 
 using util::NumberToHumanString;
 
-void SysProvinceInformation::Init() { launch_vehicle_search_text.fill(0); }
+void SysProvinceInformation::Init() {}
 
 void SysProvinceInformation::DoUI(int delta_time) {
     const entt::entity selected_province = GetUniverse().view<ctx::SelectedProvince>().front();
@@ -114,11 +114,13 @@ void SysProvinceInformation::ProvinceView() {
         ImGui::TextFmt("Target for colonization by {}", GetName(GetUniverse(), target.colonizer));
     }
     PopulationSummary();
+
     if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
         ColonizationTabs();
-    } else {
-        ProvinceIndustryTabs();
+        ImGui::Separator();
     }
+
+    ProvinceIndustryTabs();
 }
 
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
@@ -166,6 +168,10 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             ImGui::BeginTooltip();
             ImGui::Text("Build a Space Port in this province");
             ImGui::EndTooltip();
+        }
+        if (ImGui::BeginTabItem("Landed Vehicles")) {
+            LandedTab();
+            ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Economy")) {
             // Show economy window
@@ -572,17 +578,24 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
 }
 
 void SysProvinceInformation::DockedTab(const entt::entity city) {
-    if (!GetUniverse().any_of<components::DockedShips>(city)) {
+    if (!GetUniverse().any_of<components::DockedShips>(current_province)) {
         return;
     }
     auto& docked_ships = GetUniverse().get<components::DockedShips>(current_province);
-
-    for (entt::entity docked : docked_ships.docked_ships) {
-        ImGui::Selectable(core::util::GetName(GetUniverse(), docked).c_str());
-        if (ImGui::IsItemHovered()) {
-            systems::gui::EntityTooltip(GetUniverse(), docked);
+    docked_ships_tab.Display("docked_ships", GetUniverse(), docked_ships.docked_ships);
+    ImGui::SameLine();
+    ImGui::BeginChild("docked_ships_right", ImVec2(400, 700));
+    entt::entity selected = docked_ships_tab.GetSelected();
+    if (GetUniverse().valid(selected)) {
+        // Then we just say what it's holding or something
+        if (GetUniverse().all_of<components::ships::CargoHold>(selected)) {
+            auto& cargo = GetUniverse().get<components::ships::CargoHold>(selected);
+            for (entt::entity item : cargo.cargo) {
+                ImGui::TextFmt("Cargo: {}", GetName(GetUniverse(), item));
+            }
         }
     }
+    ImGui::EndChild();
 }
 
 void SysProvinceInformation::SpacePortProjectsTab(const entt::entity city) {
@@ -617,45 +630,20 @@ void SysProvinceInformation::RocketManufacturingTab(const entt::entity city) {
     entt::entity player = GetUniverse().GetPlayer();
     core::components::SpaceCapability& capability = GetUniverse().get<core::components::SpaceCapability>(player);
     ImGui::TextFmt("Launch Vehicles: {}", capability.launch_vehicle_list.size());
-    ImGui::BeginChild("launch_vehicle_viewer_left", ImVec2(300, 700));
-    ImGui::InputText("##launch_vehicle_viewer_search_text", launch_vehicle_search_text.data(),
-                     launch_vehicle_search_text.size());
-    std::string search_string(launch_vehicle_search_text.data());
-    std::transform(search_string.begin(), search_string.end(), search_string.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
 
-    ImGui::BeginChild("launch_vehicle_viewer_scroll");
-    for (entt::entity launch_vehicle : capability.launch_vehicle_list) {
-        bool is_selected = launch_vehicle == selected_launch_vehicle;
-        std::string name = core::util::GetName(GetUniverse(), launch_vehicle);
-        std::string name_lower = name;
-        std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
-                       [](unsigned char c) { return std::tolower(c); });
-        if (!search_string.empty()) {
-            // Then we can check if the text contains it
-            if (name_lower.find(search_string) == std::string::npos) {
-                continue;
-            }
-        }
-        // Now check if the string is in stuff
-        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
-            selected_launch_vehicle = launch_vehicle;
-        }
-    }
-    ImGui::EndChild();
-    ImGui::EndChild();
+    launch_vehicle_menu.Display("launch_vehicle", GetUniverse(), capability.launch_vehicle_list);
     ImGui::SameLine();
-    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
+    ImGui::BeginChild("launch_vehicle_right", ImVec2(400, 700));
     RocketManufacturingRightPanel(city);
     ImGui::EndChild();
 }
 
 void SysProvinceInformation::RocketManufacturingRightPanel(const entt::entity city) {
-    if (!GetUniverse().valid(selected_launch_vehicle)) {
+    if (!GetUniverse().valid(launch_vehicle_menu.GetSelected())) {
         return;
     }
-    std::string name = core::util::GetName(GetUniverse(), selected_launch_vehicle);
-    auto& launch_vehicle = GetUniverse().get<core::components::LaunchVehicle>(selected_launch_vehicle);
+    std::string name = core::util::GetName(GetUniverse(), launch_vehicle_menu.GetSelected());
+    auto& launch_vehicle = GetUniverse().get<core::components::LaunchVehicle>(launch_vehicle_menu.GetSelected());
     ImGui::TextFmt("{}", name);
     ImGui::Separator();
     ImGui::TextFmt("Reliability: {}%", launch_vehicle.reliability * 100);
@@ -671,7 +659,7 @@ void SysProvinceInformation::RocketManufacturingRightPanel(const entt::entity ci
         project.progress = 0;
         project.max_progress = launch_vehicle.manufacture_time;
         project.type = components::ProjectType::Manufacturing;
-        project.result = selected_launch_vehicle;
+        project.result = launch_vehicle_menu.GetSelected();
         GetUniverse().emplace<components::ResourceMap>(result);
         space_port.projects.push_back(result);
     }
@@ -736,6 +724,8 @@ void SysProvinceInformation::SpacePortResourceTab(const entt::entity city) {
 bool SysProvinceInformation::HasSpacePort(const entt::entity entity) {
     return core::actions::HasSpacePort(GetUniverse()(entity));
 }
+
+void SysProvinceInformation::LandedTab() { DockedTab(current_province); }
 
 void SysProvinceInformation::ConstructionTab() {
     // Let's list the recipes and stuff like that

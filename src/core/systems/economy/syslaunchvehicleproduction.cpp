@@ -47,6 +47,10 @@ void SysLaunchVehicleProduction::DoSystem() {
                 continue;
             }
             // Otherwise we consume resources
+            if (!GetUniverse().valid(project_comp.project_template) ||
+                GetUniverse().all_of<components::ProjectTemplate>(project_comp.project_template)) {
+                continue;
+            }
             components::ProjectTemplate& project_template =
                 GetUniverse().get<components::ProjectTemplate>(project_comp.project_template);
             auto& market = GetUniverse().get<components::Market>(province);
