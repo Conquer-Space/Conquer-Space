@@ -154,6 +154,7 @@ void RightClickWindow::ClickEventListener::ProcessEvent(Rml::Event& event) {
         // In theory what if multiple countries colonize a place at the same time
         if (!universe.all_of<core::components::ColonizationTarget>(window.right_click_item)) {
             universe.emplace<core::components::ColonizationTarget>(window.right_click_item, universe.GetPlayer());
+            SPDLOG_INFO("Colonizing {}", core::util::GetName(universe, window.right_click_item));
         }
     }
     SPDLOG_INFO("{}", value->Get<std::string>());

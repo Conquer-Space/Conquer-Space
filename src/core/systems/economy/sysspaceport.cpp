@@ -90,8 +90,13 @@ entt::entity SysSpacePort::TargetMoonManeuver(const components::infrastructure::
         ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
     // Then target the target body
     // Land on armstrong
+    entt::entity land_target = element.target_province;
+    if (element.target_province == entt::null) {
+        auto& cities = GetUniverse().get<components::Settlements>(target);
+        land_target = cities.settlements.front();
+    }
     auto& cities = GetUniverse().get<components::Settlements>(target);
-    commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
+    commands::LandOnMoon(GetUniverse(), ship, target, land_target);
     return ship;
 }
 
@@ -133,10 +138,14 @@ entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructu
     command_queue.commands.push_back(reenter);
 
     entt::entity dock_city = GetUniverse().create();
-    auto& cities = GetUniverse().get<components::Settlements>(target);
+    if (element.target_province == entt::null) {
+        auto& cities = GetUniverse().get<components::Settlements>(target);
+        GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, cities.settlements.front());
+    } else {
+        GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, element.target_province);
+    }
     GetUniverse().emplace<components::Trigger>(dock_city, components::Trigger::OnCrash);
     GetUniverse().emplace<components::Command>(dock_city, components::Command::LandOnBody);
-    GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, cities.settlements.front());
     command_queue.commands.push_back(dock_city);
 
     return ship;

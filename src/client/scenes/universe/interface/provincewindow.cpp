@@ -695,7 +695,7 @@ void SysProvinceInformation::SpacePortMissionTab(const entt::entity city) {
             auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
             components::infrastructure::TransportedGood good;
             good.good = selected_project;
-            good.province = mission.province;
+            good.target_province = mission.province;
             space_port.deliveries[mission.target_body].push_back(good);
         }
     }
