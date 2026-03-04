@@ -883,6 +883,23 @@ void ResourceVector::Finalize() {
     shrink_to_fit();
 }
 
+bool ResourceVector::HasGood(const GoodEntity &good) const {
+    return std::find_if(begin(), end(), [good](const LedgerPair &_good) { return _good.first == good; }) != end();
+}
+
+double ResourceVector::operator[](const GoodEntity &good) const {
+    auto val = std::find_if(begin(), end(), [good](const LedgerPair &_good) { return _good.first == good; });
+    if (val == end()) {
+        return 0;
+    } else {
+        return val->second;
+    }
+}
+
+bool ResourceVector::contains(const GoodEntity &entity) const {
+    return std::find_if(begin(), end(), [entity](const LedgerPair &_good) { return _good.first == entity; }) != end();
+}
+
 double ResourceVector::GetSum() {
     double sum = 0;
     for (auto &good : *this) {

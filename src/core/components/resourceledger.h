@@ -262,18 +262,9 @@ class ResourceVector : public std::vector<std::pair<GoodEntity, double>> {
 
     void Finalize();
 
-    bool HasGood(const GoodEntity& good) const {
-        return std::find_if(begin(), end(), [good](const LedgerPair& _good) { return _good.first == good; }) != end();
-    }
+    bool HasGood(const GoodEntity& good) const;
 
-    double operator[](const GoodEntity& good) const {
-        auto val = std::find_if(begin(), end(), [good](const LedgerPair& _good) { return _good.first == good; });
-        if (val == end()) {
-            return 0;
-        } else {
-            return val->second;
-        }
-    }
+    double operator[](const GoodEntity& good) const;
 
     /**
      * Gets the sum of all the goods in this resource ledger.
@@ -288,10 +279,7 @@ class ResourceVector : public std::vector<std::pair<GoodEntity, double>> {
     /// <returns></returns>
     double MultiplyAndGetSum(const ResourceLedger& other) const;
 
-    bool contains(const GoodEntity& entity) const {
-        return std::find_if(begin(), end(), [entity](const LedgerPair& _good) { return _good.first == entity; }) !=
-               end();
-    }
+    bool contains(const GoodEntity& entity) const;
 
     // All the things that we get from map
     using LedgerVector::operator=;
