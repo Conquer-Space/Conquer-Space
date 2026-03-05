@@ -24,6 +24,7 @@
 #include "core/components/bodies.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
+#include "core/util/orbit/groundtrack.h"
 #include "engine/gui.h"
 
 namespace cqsp::client::systems {
@@ -132,6 +133,30 @@ void StarSystemViewUI::RenderSelectedObjectInformation() {
         glm::vec3 final_velocity = kin.velocity + norm;
         ImGui::TextFmt("Velocity vector: {} {} {}", final_velocity.x, final_velocity.y, final_velocity.z);
 
+        // Get our parent object
+        if (universe.all_of<components::types::Orbit>(controller.m_viewing_entity)) {
+            const auto& orbit = universe.get<components::types::Orbit>(controller.m_viewing_entity);
+            if (universe.valid(orbit.reference_body) &&
+                universe.all_of<components::bodies::Body>(orbit.reference_body)) {
+                auto& planet_comp = universe.get<components::bodies::Body>(orbit.reference_body);
+                glm::quat quat =
+                    controller.GetBodyRotation(planet_comp.axial, planet_comp.rotation, planet_comp.rotation_offset);
+                // Now we should
+                components::types::SurfaceCoordinate ground_track = core::util::GetGroundTrack(quat, kin.position);
+                ImGui::TextFmt("Ground Track: {} {}", ground_track.latitude(), ground_track.longitude());
+                if (ImGui::IsItemClicked(ImGuiMouseButton_Left)) {
+                    // Then we should then copy the coordinates
+                    ImGui::SetClipboardText(
+                        fmt::format("{}, {}", ground_track.latitude(), ground_track.longitude()).c_str());
+                }
+                if (ImGui::IsItemHovered()) {
+                    ImGui::BeginTooltip();
+                    ImGui::TextColored(ImVec4(0.921568627f, 0.392156863f, 0.203921569f, 1.f),
+                                       "Click to copy identifier");
+                    ImGui::EndTooltip();
+                }
+            }
+        }
         if (ImGui::Button("Burn prograde")) {
             // Add 10m/s prograde or something
             auto& impulse = universe.get_or_emplace<components::types::Impulse>(controller.m_viewing_entity);
