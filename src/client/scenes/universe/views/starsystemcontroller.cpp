@@ -616,8 +616,8 @@ void StarSystemController::CalculateCityPositions(entt::entity entity) {
             continue;
         }
         auto& coord = universe.get<SurfaceCoordinate>(city_entity);
-        offsets.offsets.emplace_back(std::make_tuple(city_entity, types::toVec3(coord.universe_view(), body.radius),
-                                                     GetName(universe, city_entity)));
+        offsets.offsets.emplace_back(city_entity, types::toVec3(coord.universe_view(), body.radius),
+                                     GetName(universe, city_entity));
     }
     SPDLOG_INFO("Calculated offset");
 }
