@@ -38,45 +38,7 @@ void SysMarket::DoSystem() {
     auto goodsview = GetUniverse().nodes<components::Price>();
 
     for (Node market_node : marketview) {
-        ZoneScoped;
-        // Get the resources and process the price
-        // Get demand
-        Market& market = market_node.get<Market>();
-
-        // Add a supply if there is a space port
-        if (market_node.any_of<components::infrastructure::SpacePort>()) {
-            // Then add output resources to the market
-            auto& space_port = market_node.get<components::infrastructure::SpacePort>();
-            market.supply += space_port.output_resources_rate;
-
-            // Remove the ones that are less than zero
-            space_port.output_resources -= space_port.output_resources_rate;
-            // If they're higher we set the output resouurces to zero
-
-            for (auto good : GetUniverse().GoodIterator()) {
-                double value = space_port.output_resources[good];
-                if (value < 0) {
-                    space_port.output_resources_rate[good] = 0;
-                }
-            }
-        }
-
-        // TODO(EhWhoAmI): GDP Calculations
-        // market.gdp = market.volume* market.price;
-
-        // Calculate Supply and demand
-        // Add combined supply and demand to compute S/D ratio
-        market.supply = market.production;
-        market.demand = market.consumption;
-        market.supply.AddPositive(market.trade);
-        market.demand.AddNegative(market.trade);
-        market.sd_ratio = (market.supply).SafeDivision(market.demand);
-
-        for (auto good : GetUniverse().GoodIterator()) {
-            DeterminePrice(market, good);
-        }
-
-        DetermineShortages(market);
+        ProcessMarket(market_node);
     }
 }
 
@@ -107,6 +69,48 @@ void SysMarket::DetermineShortages(components::Market& market) {
     }
     market.last_deficit = deficit;
     market.deficit += deficit;
+}
+
+void SysMarket::ProcessMarket(Node& market_node) {
+    ZoneScoped;
+    // Get the resources and process the price
+    // Get demand
+    Market& market = market_node.get<Market>();
+
+    // Add a supply if there is a space port
+    if (market_node.any_of<components::infrastructure::SpacePort>()) {
+        // Then add output resources to the market
+        auto& space_port = market_node.get<components::infrastructure::SpacePort>();
+        market.supply += space_port.output_resources_rate;
+
+        // Remove the ones that are less than zero
+        space_port.output_resources -= space_port.output_resources_rate;
+        // If they're higher we set the output resouurces to zero
+
+        for (auto good : GetUniverse().GoodIterator()) {
+            double value = space_port.output_resources[good];
+            if (value < 0) {
+                space_port.output_resources_rate[good] = 0;
+            }
+        }
+    }
+
+    // TODO(EhWhoAmI): GDP Calculations
+    // market.gdp = market.volume* market.price;
+
+    // Calculate Supply and demand
+    // Add combined supply and demand to compute S/D ratio
+    market.supply = market.production;
+    market.demand = market.consumption;
+    market.supply.AddPositive(market.trade);
+    market.demand.AddNegative(market.trade);
+    market.sd_ratio = (market.supply).SafeDivision(market.demand);
+
+    for (auto good : GetUniverse().GoodIterator()) {
+        DeterminePrice(market, good);
+    }
+
+    DetermineShortages(market);
 }
 
 void SysMarket::DeterminePrice(Market& market, components::GoodEntity good_entity) {
