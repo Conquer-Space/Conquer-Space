@@ -17,6 +17,7 @@
 #pragma once
 
 #include "core/components/market.h"
+#include "core/components/surface.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 #include "core/universe.h"
@@ -36,6 +37,9 @@ class SysPlanetaryTrade : public ISimulationSystem {
     void DeterminePrice(components::Market& market, components::GoodEntity good_entity);
 
  private:
+    void ConsolidateConsumption(components::Market& p_market, components::Settlements& settlements);
+    void DetermineMarketTrade(components::Market& p_market, components::Settlements& settlements);
+    void DetermineTrade(components::Market& p_market, Node settlement_node);
     bool initial_tick;
 
     components::ResourceLedger base_prices;
