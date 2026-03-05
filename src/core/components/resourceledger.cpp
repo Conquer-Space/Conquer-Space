@@ -866,7 +866,7 @@ double ResourceVector::Max() {
 
 GoodEntity ResourceVector::MaxGood() {
     double val = -std::numeric_limits<double>::infinity();
-    GoodEntity good_ent;
+    GoodEntity good_ent = static_cast<GoodEntity>(-1);
     for (auto &good : *this) {
         if (good.second > val) {
             val = good.second;
@@ -918,7 +918,7 @@ double ResourceVector::MultiplyAndGetSum(const ResourceLedger &other) const {
 
 GoodEntity ResourceVector::MinGood() {
     double val = std::numeric_limits<double>::infinity();
-    GoodEntity good_ent;
+    GoodEntity good_ent = static_cast<GoodEntity>(-1);
     for (auto &good : *this) {
         if (good.second < val) {
             val = good.second;
