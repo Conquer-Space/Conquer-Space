@@ -16,10 +16,13 @@
  */
 #include "core/systems/economy/sysfinance.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/market.h"
 
 namespace cqsp::core::systems {
 void SysWalletReset::DoSystem() {
+    ZoneScoped;
     for (Node wallet_node : GetUniverse().nodes<components::Wallet>()) {
         wallet_node.get<components::Wallet>().Reset();
     }

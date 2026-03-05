@@ -27,6 +27,7 @@ namespace cqsp::engine {
 void Draw(Renderable &);
 void Draw(Renderable &, asset::ShaderProgram_t &shader);
 void Draw(Renderable &, asset::ShaderProgram *shader);
+void DrawFast(Renderable &);
 
 typedef std::shared_ptr<Renderable> BasicRendererObject;
 

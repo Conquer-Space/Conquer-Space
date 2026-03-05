@@ -30,6 +30,8 @@ namespace cqsp::engine {
 using asset::ShaderProgram_t;
 using asset::Texture;
 
+void DrawFast(Renderable &renderable) { renderable.mesh->Draw(); }
+
 void Draw(Renderable &renderable) {
     renderable.shaderProgram->UseProgram();
     int i = -1;

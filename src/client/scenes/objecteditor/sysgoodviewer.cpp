@@ -150,6 +150,7 @@ void SysGoodViewer::InputRecipeTable() {
         ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), recipe));
         RecipeTooltip(recipe);
         ImGui::TableSetColumnIndex(1);
+        // Now
         ImGui::TextFmt("{}", recipe_comp.input[GetUniverse().good_map[selected_good]]);
     }
     ImGui::EndTable();

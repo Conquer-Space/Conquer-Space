@@ -39,4 +39,8 @@ struct CountryCityList {
     std::vector<entt::entity> city_list;
     std::vector<entt::entity> province_list;
 };
+
+struct MissionQueue {
+    std::vector<entt::entity> list;
+};
 }  // namespace cqsp::core::components

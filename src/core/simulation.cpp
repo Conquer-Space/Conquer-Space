@@ -22,6 +22,8 @@
 #include <string>
 #include <vector>
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/area.h"
 #include "core/components/coordinates.h"
 #include "core/components/event.h"
@@ -46,7 +48,6 @@
 #include "core/systems/science/syssciencelab.h"
 #include "core/systems/science/systechnology.h"
 #include "core/systems/scriptrunner.h"
-#include "core/util/profiler.h"
 
 namespace cqsp::core::systems::simulation {
 Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()) {}
@@ -90,19 +91,18 @@ void Simulation::Init() {
 }
 
 void Simulation::tick() {
+    ZoneScoped;
     m_universe.DisableTick();
     m_universe.date.IncrementDate();
     // Get previous tick spacing
 
     auto start = std::chrono::high_resolution_clock::now();
-    BEGIN_TIMED_BLOCK(Game_Loop);
 
     for (auto& sys : system_list) {
         if (m_universe.date.GetDate() % sys->Interval() == 0) {
             sys->DoSystem();
         }
     }
-    END_TIMED_BLOCK(Game_Loop);
     auto end = std::chrono::high_resolution_clock::now();
     int len = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     const int expected_len = 250;

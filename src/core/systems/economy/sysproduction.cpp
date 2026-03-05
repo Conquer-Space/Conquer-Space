@@ -29,11 +29,10 @@
 #include "core/components/organizations.h"
 #include "core/components/population.h"
 #include "core/components/surface.h"
-#include "core/util/profiler.h"
-#include "sysproduction.h"
 
 namespace cqsp::core::systems {
 void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {
+    ZoneScoped;
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
@@ -161,12 +160,12 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
-    components::ResourceMap capitalinput = recipe.capitalcost * (size.size);
-    components::ResourceMap input = (recipe.input * size.utilization) + capitalinput;
+    components::ResourceVector capitalinput = recipe.capitalcost * (size.size);
+    components::ResourceVector input = (recipe.input * size.utilization) + capitalinput;
 
     // Calculate the greatest possible production
-    components::ResourceMap output;
-    output[recipe.output.entity] = recipe.output.amount * size.utilization;
+    components::ResourceVector output;
+    output.push_back(std::pair(recipe.output.entity, recipe.output.amount * size.utilization));
 
     // Figure out what's throttling production and maintenance
     // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
@@ -197,11 +196,11 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
     // the production
-    costs.material_costs = (input * market.price).GetSum();
+    costs.material_costs = input.MultiplyAndGetSum(market.price);
     costs.wages = employer.population_fufilled * size.wages;
     costs.transport = 0;  //output_transport_cost + input_transport_cost;
 
-    costs.revenue = (output * market.price).GetSum();
+    costs.revenue = output.MultiplyAndGetSum(market.price);
     costs.profit = costs.revenue - costs.maintenance - costs.material_costs - costs.wages - costs.transport;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += costs.profit;
@@ -249,12 +248,13 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 }
 
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
+    ZoneScoped;
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::IndustrySize& size = industry_node.get<components::IndustrySize>();
     components::Recipe recipe = recipenode.get<components::Recipe>();
     const auto& production_config = GetUniverse().economy_config.production_config;
     if (pl_ratio <= 0.25 || size.continuous_gains <= production_config.construction_limit ||
-          size.utilization < size.size || industry_node.all_of<components::Construction>()) {
+        size.utilization < size.size || industry_node.all_of<components::Construction>()) {
         return;
     }
     // what's the ratio we should expand the factory at lol
@@ -276,6 +276,7 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
  * Returns true if we should continue with production false if we are constructing something
  */
 bool SysProduction::HandleConstruction(Node& industry_node, components::Market& market) {
+    ZoneScoped;
     if (!industry_node.any_of<components::Construction>()) {
         return true;
     }
@@ -289,7 +290,8 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
     if (recipe_node.all_of<components::ConstructionCost>()) {
         const auto& construction_cost = recipe_node.get<components::ConstructionCost>();
         market.consumption += construction_cost.cost;
-        double price = (construction_cost.cost * market.price).GetSum();
+        double price = construction_cost.cost.MultiplyAndGetSum(market.price);
+
         // then we should pass on the cost to who?
         // Next time we can add all our various financializations that we want
         // Let's just add it to the current wallet
@@ -319,18 +321,20 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
 /// <param name="market">The market the industry uses.</param>
 void SysProduction::ProcessIndustries(Node& node) {
     ZoneScoped;
+    auto& settlement = node.get<components::Settlement>();
+    if (settlement.population.empty()) {
+        return;
+    }
     auto& market = node.get<components::Market>();
     auto& production_config = GetUniverse().economy_config.production_config;
+
+    auto& industries = node.get<components::IndustrialZone>();
+    Node population_node = node.Convert(settlement.population.front());
+
     // Get the transport cost
     auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
-
-    auto& industries = node.get<components::IndustrialZone>();
-    if (node.get<components::Settlement>().population.empty()) {
-        return;
-    }
-    Node population_node = node.Convert(node.get<components::Settlement>().population.front());
     for (Node industry_node : node.Convert(industries.industries)) {
         // We should also check for industries we want to construct
         ProcessIndustry(industry_node, market, population_node, infra_cost);
@@ -341,7 +345,6 @@ void SysProduction::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
     // Each industrial zone is a a market
-    BEGIN_TIMED_BLOCK(Industry);
     int factories = 0;
     // Loop through the markets
     int settlement_count = 0;
@@ -349,7 +352,6 @@ void SysProduction::DoSystem() {
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
     }
-    END_TIMED_BLOCK(Industry);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
 }
 }  // namespace cqsp::core::systems

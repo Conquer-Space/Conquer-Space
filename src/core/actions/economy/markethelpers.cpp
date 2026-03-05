@@ -28,15 +28,6 @@ void AddParticipant(Node& market_node, Node& participant) {
     static_cast<void>(participant.get_or_emplace<components::Wallet>());
 }
 
-double GetCost(Node& market, const components::ResourceMap& ledger) {
-    if (!market.any_of<components::Market>()) {
-        return 0.0;
-    }
-    return 0.0;
-    // TODO(EhWhoAmI): Fix or delete
-    //return market.get<components::Market>().GetPrice(ledger);
-}
-
 Node CreateMarket(Universe& universe) {
     Node market(universe);
     static_cast<void>(market.get_or_emplace<components::Market>(universe.GoodCount()));

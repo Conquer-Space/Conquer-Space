@@ -60,7 +60,7 @@ using core::util::GetName;
 
 using util::NumberToHumanString;
 
-void SysProvinceInformation::Init() { launch_vehicle_search_text.fill(0); }
+void SysProvinceInformation::Init() {}
 
 void SysProvinceInformation::DoUI(int delta_time) {
     const entt::entity selected_province = GetUniverse().view<ctx::SelectedProvince>().front();
@@ -109,23 +109,17 @@ void SysProvinceInformation::ProvinceView() {
             break;
         }
     }
-    // List the cities
-    auto& city_list = GetUniverse().get<components::Province>(current_province);
-    int population = 0;
+    if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
+        auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
+        ImGui::TextFmt("Target for colonization by {}", GetName(GetUniverse(), target.colonizer));
+    }
+    PopulationSummary();
 
-    // Also add the population of the actual province
-    auto& settlement = GetUniverse().get<Settlement>(current_province);
-    for (auto& seg_entity : settlement.population) {
-        auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
-        population += segment.population;
+    if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
+        ColonizationTabs();
+        ImGui::Separator();
     }
-    if (city_list.country == entt::null) {
-        ImGui::TextFmt("Not part of any country");
-    } else {
-        ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
-    }
-    ImGui::TextFmt("Population: {}", NumberToHumanString(population));
-    ImGui::Separator();
+
     ProvinceIndustryTabs();
 }
 
@@ -174,6 +168,10 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             ImGui::BeginTooltip();
             ImGui::Text("Build a Space Port in this province");
             ImGui::EndTooltip();
+        }
+        if (ImGui::BeginTabItem("Landed Vehicles")) {
+            LandedTab();
+            ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Economy")) {
             // Show economy window
@@ -356,6 +354,10 @@ void SysProvinceInformation::SpacePortTab() {
         }
         if (ImGui::BeginTabItem("Resources")) {
             SpacePortResourceTab(space_port_city);
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Missions")) {
+            SpacePortMissionTab(space_port_city);
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
@@ -576,17 +578,24 @@ void SysProvinceInformation::LaunchTab(const entt::entity city) {
 }
 
 void SysProvinceInformation::DockedTab(const entt::entity city) {
-    if (!GetUniverse().any_of<components::DockedShips>(city)) {
+    if (!GetUniverse().any_of<components::DockedShips>(current_province)) {
         return;
     }
     auto& docked_ships = GetUniverse().get<components::DockedShips>(current_province);
-
-    for (entt::entity docked : docked_ships.docked_ships) {
-        ImGui::Selectable(core::util::GetName(GetUniverse(), docked).c_str());
-        if (ImGui::IsItemHovered()) {
-            systems::gui::EntityTooltip(GetUniverse(), docked);
+    docked_ships_tab.Display("docked_ships", GetUniverse(), docked_ships.docked_ships);
+    ImGui::SameLine();
+    ImGui::BeginChild("docked_ships_right", ImVec2(400, 700));
+    entt::entity selected = docked_ships_tab.GetSelected();
+    if (GetUniverse().valid(selected)) {
+        // Then we just say what it's holding or something
+        if (GetUniverse().all_of<components::ships::CargoHold>(selected)) {
+            auto& cargo = GetUniverse().get<components::ships::CargoHold>(selected);
+            for (entt::entity item : cargo.cargo) {
+                ImGui::TextFmt("Cargo: {}", GetName(GetUniverse(), item));
+            }
         }
     }
+    ImGui::EndChild();
 }
 
 void SysProvinceInformation::SpacePortProjectsTab(const entt::entity city) {
@@ -621,45 +630,20 @@ void SysProvinceInformation::RocketManufacturingTab(const entt::entity city) {
     entt::entity player = GetUniverse().GetPlayer();
     core::components::SpaceCapability& capability = GetUniverse().get<core::components::SpaceCapability>(player);
     ImGui::TextFmt("Launch Vehicles: {}", capability.launch_vehicle_list.size());
-    ImGui::BeginChild("launch_vehicle_viewer_left", ImVec2(300, 700));
-    ImGui::InputText("##launch_vehicle_viewer_search_text", launch_vehicle_search_text.data(),
-                     launch_vehicle_search_text.size());
-    std::string search_string(launch_vehicle_search_text.data());
-    std::transform(search_string.begin(), search_string.end(), search_string.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
 
-    ImGui::BeginChild("launch_vehicle_viewer_scroll");
-    for (entt::entity launch_vehicle : capability.launch_vehicle_list) {
-        bool is_selected = launch_vehicle == selected_launch_vehicle;
-        std::string name = core::util::GetName(GetUniverse(), launch_vehicle);
-        std::string name_lower = name;
-        std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
-                       [](unsigned char c) { return std::tolower(c); });
-        if (!search_string.empty()) {
-            // Then we can check if the text contains it
-            if (name_lower.find(search_string) == std::string::npos) {
-                continue;
-            }
-        }
-        // Now check if the string is in stuff
-        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
-            selected_launch_vehicle = launch_vehicle;
-        }
-    }
-    ImGui::EndChild();
-    ImGui::EndChild();
+    launch_vehicle_menu.Display("launch_vehicle", GetUniverse(), capability.launch_vehicle_list);
     ImGui::SameLine();
-    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
+    ImGui::BeginChild("launch_vehicle_right", ImVec2(400, 700));
     RocketManufacturingRightPanel(city);
     ImGui::EndChild();
 }
 
 void SysProvinceInformation::RocketManufacturingRightPanel(const entt::entity city) {
-    if (!GetUniverse().valid(selected_launch_vehicle)) {
+    if (!GetUniverse().valid(launch_vehicle_menu.GetSelected())) {
         return;
     }
-    std::string name = core::util::GetName(GetUniverse(), selected_launch_vehicle);
-    auto& launch_vehicle = GetUniverse().get<core::components::LaunchVehicle>(selected_launch_vehicle);
+    std::string name = core::util::GetName(GetUniverse(), launch_vehicle_menu.GetSelected());
+    auto& launch_vehicle = GetUniverse().get<core::components::LaunchVehicle>(launch_vehicle_menu.GetSelected());
     ImGui::TextFmt("{}", name);
     ImGui::Separator();
     ImGui::TextFmt("Reliability: {}%", launch_vehicle.reliability * 100);
@@ -675,9 +659,33 @@ void SysProvinceInformation::RocketManufacturingRightPanel(const entt::entity ci
         project.progress = 0;
         project.max_progress = launch_vehicle.manufacture_time;
         project.type = components::ProjectType::Manufacturing;
-        project.result = selected_launch_vehicle;
+        project.result = launch_vehicle_menu.GetSelected();
         GetUniverse().emplace<components::ResourceMap>(result);
         space_port.projects.push_back(result);
+    }
+}
+
+void SysProvinceInformation::SpacePortMissionTab(const entt::entity city) {
+    // Now we should list the missions and launch them and add them to the space port queue or something
+    // TODO(EhWhoAmI): Make sure that the player is launching from the appropriate launch site that they own lol
+    entt::entity player = GetUniverse().GetPlayer();
+    auto& queue = GetUniverse().get<components::MissionQueue>(player);
+    for (entt::entity entity : queue.list) {
+        bool selected = (selected_project == entity);
+        if (ImGui::SelectableFmt("{}", &selected, GetName(GetUniverse(), entity))) {
+            selected_project = entity;
+        }
+    }
+    if (GetUniverse().valid(selected_project) && GetUniverse().all_of<components::Mission>(selected_project)) {
+        if (ImGui::Button("Dispatch mission")) {
+            auto& mission = GetUniverse().get<components::Mission>(selected_project);
+            // Then we add it to the queue or something
+            auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+            components::infrastructure::TransportedGood good;
+            good.good = selected_project;
+            good.target_province = mission.province;
+            space_port.deliveries[mission.target_body].push_back(good);
+        }
     }
 }
 
@@ -717,6 +725,8 @@ bool SysProvinceInformation::HasSpacePort(const entt::entity entity) {
     return core::actions::HasSpacePort(GetUniverse()(entity));
 }
 
+void SysProvinceInformation::LandedTab() { DockedTab(current_province); }
+
 void SysProvinceInformation::ConstructionTab() {
     // Let's list the recipes and stuff like that
     ImGui::BeginChild("construction_recipe_left", ImVec2(ImGui::GetContentRegionAvail().x * 0.5, -1.f), true);
@@ -736,12 +746,12 @@ void SysProvinceInformation::ConstructionTab() {
         auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
         ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
         ImGui::Text("Input");
-        double input_cost = market.price.MultiplyAndGetSum(recipe_comp.input);
+        double input_cost = recipe_comp.input.MultiplyAndGetSum(market.price);
         ImGui::TextFmt("Input Default Cost: {}", util::NumberToHumanString(input_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");
         ImGui::Separator();
         ImGui::Text("Capital Cost");
-        double capital_cost = market.price.MultiplyAndGetSum(recipe_comp.capitalcost);
+        double capital_cost = recipe_comp.capitalcost.MultiplyAndGetSum(market.price);
         ImGui::TextFmt("Capital Default Cost: {}", util::NumberToHumanString(capital_cost));
         ResourceMapTable(GetUniverse(), recipe_comp.capitalcost, "capital_table");
         ImGui::Separator();
@@ -776,5 +786,146 @@ void SysProvinceInformation::ConstructionTab() {
         }
     }
     ImGui::EndChild();
+}
+
+void SysProvinceInformation::ColonizationTabs() {
+    // Now we should do some math and stuff for buttons
+    ImGui::TextFmt("Colonization");
+    auto& target = GetUniverse().get<components::ColonizationTarget>(current_province);
+    ImGui::TextFmt("Steps");
+    // When we change to a proper rmlui ui we should make icons for this lol
+    if (target.steps == components::ColonizationSteps::Surveying) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
+    ImGui::Text("Surveying");
+    if (target.steps == components::ColonizationSteps::Surveying) {
+        ImGui::PopStyleColor();
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Initial surveying to pick an appropriate landing site");
+        ImGui::Text("Land probes or even initial missions to ensure that the landing site is fine");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::Preparation) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
+    ImGui::Text("Preparation");
+    if (target.steps == components::ColonizationSteps::Preparation) {
+        ImGui::PopStyleColor();
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("Preparation of the site for human landing");
+        ImGui::Text("Land components for power or initial components for");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::InitialBase) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
+    ImGui::Text("Initial Base");
+    if (target.steps == components::ColonizationSteps::InitialBase) {
+        ImGui::PopStyleColor();
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("A skeleton crew lands for final assembly,");
+        ImGui::Text("and inspect and verify that the base works as designed");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::HumanSettlement) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
+    ImGui::Text("Human Settlement");
+    if (target.steps == components::ColonizationSteps::HumanSettlement) {
+        ImGui::PopStyleColor();
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text("A small crew rotates in and out every now and then");
+        ImGui::Text("The settlement still undergoes expansion and work");
+        ImGui::EndTooltip();
+    }
+    ImGui::SameLine();
+    ImGui::Text("->");
+    ImGui::SameLine();
+    if (target.steps == components::ColonizationSteps::PermanentSettlement) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.921568627, 0.392156863, 0.203921569, 1));
+    }
+    ImGui::Text("Permanent Settlement");
+    if (target.steps == components::ColonizationSteps::PermanentSettlement) {
+        ImGui::PopStyleColor();
+    }
+    if (ImGui::IsItemHovered()) {
+        ImGui::BeginTooltip();
+        ImGui::Text(
+            "Permanent settlement, there is crew that lives for months or even years on end maintaining the colony");
+        ImGui::Text("Once this settlement gets sufficient economic independence, you can convert to a market economy.");
+        ImGui::EndTooltip();
+    }
+    // then we should progress the stages of colonization
+    // Rn we should just send rockets and they'll just transition to the next step lol
+    if (ImGui::Button("Send rocket for next stage")) {
+        // Then some how do that
+        auto player_node = GetUniverse()(GetUniverse().GetPlayer());
+        auto& province_comp = GetUniverse().get<components::Province>(current_province);
+        entt::entity new_mission = GetUniverse().create();
+        auto& mission_comp = GetUniverse().emplace<components::Mission>(new_mission);
+        // Now we set stuff
+        mission_comp.province = current_province;
+        mission_comp.target_body = province_comp.planet;
+
+        auto& identifier = GetUniverse().emplace<components::Name>(new_mission).name;
+        switch (target.steps) {
+            case components::ColonizationSteps::Surveying:
+                identifier = "Surveying";
+                break;
+            case components::ColonizationSteps::Preparation:
+                identifier = "Preparation";
+                break;
+            case components::ColonizationSteps::InitialBase:
+                identifier = "Initial Base";
+                break;
+            case components::ColonizationSteps::HumanSettlement:
+                identifier = "Human Settlement";
+                break;
+            case components::ColonizationSteps::PermanentSettlement:
+                identifier = "Permanent Settlement";
+                break;
+        }
+        // Then we set our target mission or something
+        auto& queue = player_node.get<components::MissionQueue>();
+        queue.list.push_back(new_mission);
+        // We should have set the project too and stuff
+    }
+}
+
+void SysProvinceInformation::PopulationSummary() {
+    // List the cities
+    auto& city_list = GetUniverse().get<components::Province>(current_province);
+    int population = 0;
+
+    // Also add the population of the actual province
+    auto& settlement = GetUniverse().get<Settlement>(current_province);
+    for (auto& seg_entity : settlement.population) {
+        auto& segment = GetUniverse().get<PopulationSegment>(seg_entity);
+        population += segment.population;
+    }
+    if (city_list.country == entt::null) {
+        ImGui::TextFmt("Not part of any country");
+    } else {
+        ImGui::TextFmt("Part of {}", GetName(GetUniverse(), city_list.country));
+    }
+    ImGui::TextFmt("Population: {}", NumberToHumanString(population));
+    ImGui::Separator();
 }
 }  // namespace cqsp::client::systems

@@ -34,6 +34,10 @@ struct Offset {
     glm::vec3 offset;
 };
 
+struct PlanetCityOffsets {
+    std::vector<std::tuple<entt::entity, glm::vec3, std::string>> offsets;
+};
+
 struct TerrainTextureData {
     asset::Texture* terrain_albedo = nullptr;
     asset::Texture* heightmap = nullptr;

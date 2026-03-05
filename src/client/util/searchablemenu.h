@@ -16,17 +16,28 @@
  */
 #pragma once
 
-#include <entt/entt.hpp>
+#include <array>
+#include <vector>
 
-#include "core/components/resource.h"
+#include <entt/entity/entity.hpp>
+
 #include "core/universe.h"
 
-namespace cqsp::core::actions {
-/// <summary>
-/// Creates a market two instance.
-/// </summary>
-Node CreateMarket(Universe& universe);
+namespace cqsp::client::systems {
+class SearchableMenu {
+ public:
+    SearchableMenu() { search_text.fill(0); }
 
-void AddParticipant(Node& market, Node& participant);
+    void Display(const std::string& name, core::Universe& universe, const std::vector<entt::entity>& list);
 
-}  // namespace cqsp::core::actions
+    entt::entity GetSelected() const { return selected_item; }
+
+    // Right menu is just put as normal lol
+ private:
+    // We want it to be immediate mode so we should just send it through a lambda or something?
+    void LeftMenu(const std::string& name, core::Universe& universe, const std::vector<entt::entity>& list);
+
+    std::array<char, 255> search_text;
+    entt::entity selected_item = entt::null;
+};
+}  // namespace cqsp::client::systems

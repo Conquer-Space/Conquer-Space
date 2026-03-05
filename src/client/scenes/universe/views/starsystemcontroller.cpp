@@ -34,7 +34,6 @@
 #include "core/components/ships.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
-#include "starsystemcontroller.h"
 
 namespace cqsp::client::systems {
 namespace components = core::components;
@@ -46,6 +45,7 @@ using client::components::Offset;
 using client::components::PlanetTexture;
 using components::Name;
 using components::Settlements;
+using core::util::GetName;
 using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
@@ -374,7 +374,7 @@ void StarSystemController::FoundCity() {
 
     universe.clear<CityFounding>();
 
-    CalculateCityPositions();
+    CalculateCityPositions(m_viewing_entity);
 }
 
 void StarSystemController::PreRender() {
@@ -595,25 +595,29 @@ glm::vec3 StarSystemController::CalculateMouseRay(const glm::vec3& ray_nds) {
     return glm::normalize(glm::vec3(inv.x, inv.y, inv.z));
 }
 
-void StarSystemController::CalculateCityPositions() {
-    // Calculate offset for all cities on planet if they exist
-    if (!universe.valid(m_viewing_entity)) {
+/// Calculate offset for all cities on planet if they exist
+void StarSystemController::CalculateCityPositions(entt::entity entity) {
+    using client::components::PlanetCityOffsets;
+    if (!universe.valid(entity)) {
         return;
     }
-    if (!universe.all_of<Settlements>(m_viewing_entity)) {
+    if (!universe.all_of<Settlements>(entity)) {
         return;
     }
-    std::vector<entt::entity> cities = universe.get<Settlements>(m_viewing_entity).settlements;
+    std::vector<entt::entity> cities = universe.get<Settlements>(entity).settlements;
     if (cities.empty()) {
         return;
     }
-    for (auto& city_entity : cities) {
+    auto& offsets = universe.get_or_emplace<PlanetCityOffsets>(entity);
+    auto& body = universe.get<Body>(entity);
+    offsets.offsets.clear();
+    for (const entt::entity& city_entity : cities) {
         if (!universe.all_of<SurfaceCoordinate>(city_entity)) {
             continue;
         }
         auto& coord = universe.get<SurfaceCoordinate>(city_entity);
-        Body parent = universe.get<Body>(m_viewing_entity);
-        universe.emplace_or_replace<Offset>(city_entity, types::toVec3(coord.universe_view(), 1));
+        offsets.offsets.emplace_back(city_entity, types::toVec3(coord.universe_view(), body.radius),
+                                     GetName(universe, city_entity));
     }
     SPDLOG_INFO("Calculated offset");
 }
@@ -668,7 +672,7 @@ void StarSystemController::SeeEntity() {
     } else {
         camera.scroll = 5;
     }
-    CalculateCityPositions();
+    CalculateCityPositions(m_viewing_entity);
 }
 
 glm::vec3 StarSystemController::CalculateCenteredObject(const entt::entity& ent) {

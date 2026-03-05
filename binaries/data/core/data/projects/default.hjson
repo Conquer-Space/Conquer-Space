@@ -1,0 +1,11 @@
+[
+    {
+        identifier: probe
+        construction: {
+            time: 4 weeks
+            cost: {
+                steel: 1000
+            }
+        }
+    }
+]

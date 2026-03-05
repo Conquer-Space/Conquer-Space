@@ -37,14 +37,6 @@ struct Science {
     std::vector<entt::entity> fields;
 };
 
-struct Lab {
-    ResourceMap science_contribution;
-};
-
-struct ScientificProgress {
-    ResourceMap science_progress;
-};
-
 struct ScienceProject {};
 
 struct ScientificResearch {

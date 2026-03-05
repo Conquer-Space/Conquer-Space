@@ -27,17 +27,6 @@
 #include "core/components/resource.h"
 
 namespace cqsp::core::actions {
-Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& builder, int productivity) {
-    Node factory = CreateFactory(city, recipe, productivity);
-    if (factory == entt::null) {
-        return city.universe().null();
-    }
-    AddParticipant(market, factory);
-    auto cost = GetFactoryCost(city, recipe, productivity);
-
-    return factory;
-}
-
 Node CreateFactory(Node city, Node recipe, int productivity, double wages, double cash_reserves) {
     // Make the factory
     auto& universe = city.universe();
@@ -93,17 +82,6 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages, doubl
     employer.population_needed = recipe_comp.workers * productivity;
     employer.segment = entt::null;
     return factory;
-}
-
-components::ResourceMap GetFactoryCost(Node& city, Node& recipe, int productivity) {
-    components::ResourceMap ledger;
-    // Get the recipe and things
-    if (recipe.any_of<components::RecipeCost>()) {
-        auto& cost = recipe.get<components::RecipeCost>();
-        ledger.MultiplyAdd(cost.scaling, productivity);
-        ledger += cost.fixed;
-    }
-    return ledger;
 }
 
 Node CreateCommercialArea(Node& city) {

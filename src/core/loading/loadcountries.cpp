@@ -57,6 +57,7 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
             }
         }
     }
+    node.emplace<components::MissionQueue>();
 
     return true;
 }

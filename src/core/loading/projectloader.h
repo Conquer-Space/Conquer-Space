@@ -14,16 +14,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "core/util/profiler.h"
+#pragma once
 
-#include <spdlog/spdlog.h>
+#include "core/loading/hjsonloader.h"
 
-// Define the thing
-std::map<std::string, int> profiler_information_map;
+namespace cqsp::core::loading {
+class ProjectLoader : public HjsonLoader {
+ public:
+    explicit ProjectLoader(Universe& universe) : HjsonLoader(universe) {}
 
-void set_time_block(const std::string& str, std::chrono::high_resolution_clock::time_point start,
-                    std::chrono::high_resolution_clock::time_point end) {
-    profiler_information_map[str] = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-}
+    const Hjson::Value& GetDefaultValues() override { return default_val; }
+    bool LoadValue(const Hjson::Value& values, Node& node) override;
+    void PostLoad(const Node& node) override;
 
-std::map<std::string, int>& get_profile_information() { return profiler_information_map; }
+ private:
+    Hjson::Value default_val;
+};
+}  // namespace cqsp::core::loading

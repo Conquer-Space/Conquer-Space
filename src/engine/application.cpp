@@ -43,7 +43,6 @@
 #include "application.h"
 #include "core/util/logging.h"
 #include "core/util/paths.h"
-#include "core/util/profiler.h"
 #include "core/version.h"
 #include "engine/audio/audiointerface.h"
 #include "engine/cqspgui.h"
@@ -336,17 +335,12 @@ void Application::run() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        // Gui
-        //BEGIN_TIMED_BLOCK(UiCreation);
         m_scene_manager.Ui(deltaTime);
-        //END_TIMED_BLOCK(UiCreation);
 
-        //BEGIN_TIMED_BLOCK(ImGui_Render);
         {
             ZoneScopedN("ImGui::Render");
             ImGui::Render();
         }
-        //END_TIMED_BLOCK(ImGui_Render);
 
         rml_context->Update();
         m_audio_interface->OnFrame();
@@ -355,10 +349,7 @@ void Application::run() {
         glClearColor(0.f, 0.f, 0.f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-        // Render scene
-        //BEGIN_TIMED_BLOCK(Scene_Render);
         m_scene_manager.Render(deltaTime);
-        //END_TIMED_BLOCK(Scene_Render);
 
         // Shut the opengl debugger up
         int drawFboId = 0;

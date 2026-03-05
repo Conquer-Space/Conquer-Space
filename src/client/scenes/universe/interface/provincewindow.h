@@ -19,6 +19,7 @@
 #include <string>
 
 #include "client/systems/sysgui.h"
+#include "client/util/searchablemenu.h"
 
 namespace cqsp::client::systems {
 class SysProvinceInformation : public SysUserInterface {
@@ -42,12 +43,17 @@ class SysProvinceInformation : public SysUserInterface {
     void SpacePortProjectsTab(const entt::entity city);
     void RocketManufacturingTab(const entt::entity city);
     void RocketManufacturingRightPanel(const entt::entity city);
+    void SpacePortMissionTab(const entt::entity city);
     void InfrastructureTab();
     void IndustryListWindow();
     void DisplayWallet(entt::entity entity);
     void ConstructionTab();
     bool HasSpacePort(const entt::entity entity);
+    void LandedTab();
     void IndustryListIndustryRow(const entt::entity industry);
+
+    void PopulationSummary();
+    void ColonizationTabs();
 
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
@@ -64,10 +70,11 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity selected_recipe = entt::null;
     int construction_amount = 1;
     bool show_space_port = false;
+    entt::entity selected_project = entt::null;
 
     bool segment_prices = true;
-    entt::entity selected_launch_vehicle;
-    std::array<char, 255> launch_vehicle_search_text;
+    SearchableMenu launch_vehicle_menu;
+    SearchableMenu docked_ships_tab;
 
     enum class ViewMode { COUNTRY_VIEW, CITY_VIEW } view_mode = ViewMode::COUNTRY_VIEW;
 };

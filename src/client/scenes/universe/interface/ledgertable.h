@@ -20,5 +20,6 @@
 #include "core/universe.h"
 
 namespace cqsp::client::systems {
-void ResourceMapTable(core::Universe& universe, core::components::ResourceMap& ledger, const char* name);
+void ResourceMapTable(const core::Universe& universe, const core::components::ResourceMap& ledger, const char* name);
+void ResourceMapTable(const core::Universe& universe, const core::components::ResourceVector& ledger, const char* name);
 }  // namespace cqsp::client::systems

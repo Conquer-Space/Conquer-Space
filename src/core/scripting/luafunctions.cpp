@@ -37,6 +37,7 @@
 #include "core/components/organizations.h"
 #include "core/components/player.h"
 #include "core/components/population.h"
+#include "core/components/projects.h"
 #include "core/components/resource.h"
 #include "core/components/science.h"
 #include "core/components/ships.h"
@@ -376,6 +377,11 @@ void FunctionCivilizations(Universe& universe, ScriptInterface& script_engine) {
     REGISTER_FUNCTION("get_player", [&]() { return universe.view<components::Player>().front(); });
     REGISTER_FUNCTION("get_capital_city",
                       [&](entt::entity civ) { return universe.get<components::Country>(civ).capital_city; });
+
+    REGISTER_FUNCTION("get_mission_queue", [&](entt::entity country) {
+        auto& queue = universe.get<components::MissionQueue>(country);
+        return sol::as_table(queue.list);
+    });
 }
 
 void FunctionScience(Universe& universe, ScriptInterface& script_engine) {

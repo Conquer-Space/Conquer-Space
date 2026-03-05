@@ -27,6 +27,7 @@
 namespace cqsp::core::components::infrastructure {
 struct TransportedGood {
     entt::entity good;
+    entt::entity target_province = entt::null;
     double amount;
     double fulfilled;
     double priority;
@@ -45,6 +46,12 @@ struct TransportedGood {
  * But for now, we'll support a limited amount of space launch systems
  */
 struct SpacePort {
+    explicit SpacePort(size_t goods)
+        : demanded_resources(goods),
+          demanded_resources_rate(goods),
+          output_resources(goods),
+          output_resources_rate(goods),
+          resource_stockpile(goods) {}
     // The key is target, and queue
     // The entt entity must have an orbit, and we must be able to rendezvous to that entity
     // So this is the list of goods that it wants to deliver to different places
@@ -54,11 +61,11 @@ struct SpacePort {
     int launchpads = 0;
     entt::entity reference_body = entt::null;
 
-    ResourceMap demanded_resources;
-    ResourceMap demanded_resources_rate;
-    ResourceMap output_resources;
-    ResourceMap output_resources_rate;
-    ResourceMap resource_stockpile;
+    ResourceLedger demanded_resources;
+    ResourceLedger demanded_resources_rate;
+    ResourceLedger output_resources;
+    ResourceLedger output_resources_rate;
+    ResourceLedger resource_stockpile;
 
     std::vector<entt::entity> projects;
     std::vector<entt::entity> stored_launch_vehicles;

@@ -70,8 +70,6 @@ class SysDebugMenu : public SysUserInterface {
      */
     float fps_history_len = 10;
 
-    std::map<std::string, std::vector<ImVec2>> history_maps;
-
     AssetWindow asset_window;
 };
 }  // namespace cqsp::client::systems

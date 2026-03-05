@@ -21,7 +21,8 @@
 #include <string>
 #include <vector>
 
-#include "core/util/profiler.h"
+#include <tracy/Tracy.hpp>
+
 namespace cqsp::core::systems {
 SysScript::SysScript(Game &game) : ISimulationSystem(game) {
     sol::optional<std::vector<sol::table>> optional = game.GetScriptInterface()["events"]["data"];
@@ -39,12 +40,11 @@ SysScript::~SysScript() {
 }
 
 void SysScript::DoSystem() {
-    BEGIN_TIMED_BLOCK(ScriptEngine);
+    ZoneScoped;
     GetGame().GetScriptInterface()["date"] = GetUniverse().date.GetDate();
     for (auto &evt : events) {
         sol::protected_function_result result = evt["on_tick"](evt);
         GetGame().GetScriptInterface().ParseResult(result);
     }
-    END_TIMED_BLOCK(ScriptEngine);
 }
 }  // namespace cqsp::core::systems

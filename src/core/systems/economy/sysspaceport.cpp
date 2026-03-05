@@ -27,9 +27,11 @@
 #include "core/components/name.h"
 #include "core/components/orbit.h"
 #include "core/components/orders.h"
+#include "core/components/ships.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
+#include "sysspaceport.h"
 
 namespace cqsp::core::systems {
 void SysSpacePort::DoSystem() {
@@ -43,24 +45,10 @@ void SysSpacePort::DoSystem() {
             // Let's try to figure out the target
             entt::entity common_soi = commands::GetCommonSOI(GetUniverse(), port_component.reference_body, target);
             while (!delivery_queue.empty()) {
-                entt::entity ship = entt::null;
                 components::infrastructure::TransportedGood& element = delivery_queue.back();
-                if (common_soi == target) {
-                    // Returning from moon
-                    ship = ReturnFromMoonManeuver(element, port_component.reference_body, target);
-                } else if (common_soi == port_component.reference_body) {
-                    // Target moon
-                    ship = TargetMoonManeuver(element, port_component.reference_body, target);
-                } else {
-                    SPDLOG_INFO("Interplanetary transfers not supported yet");
-                }
-
-                if (ship != entt::null) {
-                    auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
-                    stockpile[GetUniverse().good_map[element.good]] = element.amount;
-
-                    GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
-                }
+                // So this disables moons or something
+                ProcessShippedGood(delivery_queue.back(), target, common_soi, port_component);
+                // But we should also have non good stuff...
                 delivery_queue.pop_back();
             }
         }
@@ -69,6 +57,7 @@ void SysSpacePort::DoSystem() {
 }
 
 void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
+    ZoneScoped;
     if (!GetUniverse().any_of<components::DockedShips>(space_port)) {
         return;
     }
@@ -101,8 +90,13 @@ entt::entity SysSpacePort::TargetMoonManeuver(const components::infrastructure::
         ship, fmt::format("{} Transport Vehicle", util::GetName(GetUniverse(), element.good)));
     // Then target the target body
     // Land on armstrong
+    entt::entity land_target = element.target_province;
+    if (element.target_province == entt::null) {
+        auto& cities = GetUniverse().get<components::Settlements>(target);
+        land_target = cities.settlements.front();
+    }
     auto& cities = GetUniverse().get<components::Settlements>(target);
-    commands::LandOnMoon(GetUniverse(), ship, target, cities.settlements.front());
+    commands::LandOnMoon(GetUniverse(), ship, target, land_target);
     return ship;
 }
 
@@ -144,12 +138,43 @@ entt::entity SysSpacePort::ReturnFromMoonManeuver(const components::infrastructu
     command_queue.commands.push_back(reenter);
 
     entt::entity dock_city = GetUniverse().create();
-    auto& cities = GetUniverse().get<components::Settlements>(target);
+    if (element.target_province == entt::null) {
+        auto& cities = GetUniverse().get<components::Settlements>(target);
+        GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, cities.settlements.front());
+    } else {
+        GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, element.target_province);
+    }
     GetUniverse().emplace<components::Trigger>(dock_city, components::Trigger::OnCrash);
     GetUniverse().emplace<components::Command>(dock_city, components::Command::LandOnBody);
-    GetUniverse().emplace<components::OrbitEntityTarget>(dock_city, cities.settlements.front());
     command_queue.commands.push_back(dock_city);
 
     return ship;
+}
+
+void SysSpacePort::ProcessShippedGood(const components::infrastructure::TransportedGood& element, entt::entity target,
+                                      entt::entity common_soi, components::infrastructure::SpacePort& port_component) {
+    ZoneScoped;
+    entt::entity ship = entt::null;
+    if (common_soi == target) {
+        // Returning from moon
+        ship = ReturnFromMoonManeuver(element, port_component.reference_body, target);
+    } else if (common_soi == port_component.reference_body) {
+        // Target moon
+        ship = TargetMoonManeuver(element, port_component.reference_body, target);
+    } else {
+        SPDLOG_ERROR("Interplanetary transfers not supported yet");
+    }
+
+    if (ship != entt::null) {
+        // We transfer to the body
+        if (GetUniverse().good_map.contains(element.good)) {
+            auto& stockpile = GetUniverse().emplace<components::ResourceStockpile>(ship);
+            stockpile[GetUniverse().good_map[element.good]] = element.amount;
+        } else {
+            auto& cargo = GetUniverse().emplace<components::ships::CargoHold>(ship);
+            cargo.cargo.push_back(element.good);
+        }
+        GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
+    }
 }
 }  // namespace cqsp::core::systems

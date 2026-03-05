@@ -26,7 +26,6 @@
 #include "core/components/name.h"
 #include "core/systems/history/sysmarketdumper.h"
 #include "core/util/nameutil.h"
-#include "core/util/profiler.h"
 #include "glad/glad.h"
 
 namespace cqsp::client::systems {
@@ -108,19 +107,6 @@ void SysDebugMenu::CqspMetricsWindow() {
                          sizeof(std::decay_t<decltype(*time_history.begin())>));
         ImPlot::EndPlot();
     }
-
-    ImPlot::SetNextAxisLimits(ImAxis_X1, GetApp().GetTime() - fps_history_len, GetApp().GetTime(), ImGuiCond_Always);
-    if (ImPlot::BeginPlot("Profiler", ImVec2(-1, 0), ImPlotFlags_NoMouseText | ImPlotFlags_NoChild)) {
-        ImPlot::SetupAxis(ImAxis_X1, "Time (s)", ImPlotAxisFlags_AutoFit);
-        ImPlot::SetupAxis(ImAxis_Y1, "Run time (us)", ImPlotAxisFlags_AutoFit);
-        ImPlot::SetupLegend(ImPlotLocation_SouthEast);
-        for (auto it = history_maps.begin(); it != history_maps.end(); it++) {
-            ImPlot::PlotLine(it->first.c_str(), &it->second[0].x, &it->second[0].y, it->second.size(), 0, 0,
-                             sizeof(float) * 2);
-        }
-        ImPlot::EndPlot();
-    }
-    get_profile_information().clear();
     ImGui::End();
 }
 
@@ -270,14 +256,6 @@ void SysDebugMenu::DoUpdate(int delta_time) {
     }
     time_history.emplace_back(time);
     fps_history.emplace_back(fps);
-
-    for (auto it = get_profile_information().begin(); it != get_profile_information().end(); it++) {
-        if (!history_maps[it->first].empty() && (history_maps[it->first].begin()->x + fps_history_len) < time) {
-            history_maps[it->first].erase(history_maps[it->first].begin());
-        }
-
-        history_maps[it->first].emplace_back(time, it->second);
-    }
 
     // Add lua logging information
     if (!GetScriptInterface().values.empty()) {

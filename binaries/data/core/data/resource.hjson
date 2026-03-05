@@ -40,4 +40,9 @@
         type: hjson
         hints: {}
     }
+    projects: {
+        path: projects
+        type: hjson
+        hints: {}
+    }
 }

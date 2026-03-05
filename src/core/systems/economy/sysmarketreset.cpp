@@ -16,10 +16,13 @@
  */
 #include "core/systems/economy/sysmarketreset.h"
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/market.h"
 
 namespace cqsp::core::systems {
 void SysMarketReset::DoSystem() {
+    ZoneScoped;
     for (Node market_node : GetUniverse().nodes<components::Market>()) {
         // Reset the ledgers
         components::Market& market = market_node.get<components::Market>();
