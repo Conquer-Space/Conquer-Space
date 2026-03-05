@@ -43,6 +43,7 @@ void SysMarket::DoSystem() {
 }
 
 void SysMarket::DetermineShortages(components::Market& market) {
+    ZoneScoped;
     components::ResourceLedger& market_supply = market.supply;
     components::ResourceLedger& market_demand = market.demand;
     double deficit = 0;
@@ -100,16 +101,8 @@ void SysMarket::ProcessMarket(Node& market_node) {
 
     // Calculate Supply and demand
     // Add combined supply and demand to compute S/D ratio
-    market.supply = market.production;
-    market.demand = market.consumption;
-    market.supply.AddPositive(market.trade);
-    market.demand.AddNegative(market.trade);
-    market.sd_ratio = (market.supply).SafeDivision(market.demand);
-
-    for (auto good : GetUniverse().GoodIterator()) {
-        DeterminePrice(market, good);
-    }
-
+    DetermineSupplyDemand(market);
+    DeterminePrices(market);
     DetermineShortages(market);
 }
 
@@ -124,6 +117,22 @@ void SysMarket::DeterminePrice(Market& market, components::GoodEntity good_entit
     price = base_prices[good_entity] *
             (1. + GetUniverse().economy_config.market_config.base_price_deviation *
                       std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
+}
+
+void SysMarket::DeterminePrices(components::Market& market) {
+    ZoneScoped;
+    for (auto good : GetUniverse().GoodIterator()) {
+        DeterminePrice(market, good);
+    }
+}
+
+void SysMarket::DetermineSupplyDemand(components::Market& market) {
+    ZoneScoped;
+    market.supply = market.production;
+    market.demand = market.consumption;
+    market.supply.AddPositive(market.trade);
+    market.demand.AddNegative(market.trade);
+    market.sd_ratio = (market.supply).SafeDivision(market.demand);
 }
 
 void SysMarket::Init() {
