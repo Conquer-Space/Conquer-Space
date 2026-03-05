@@ -329,7 +329,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     auto& body = universe.get<bodies::Body>(entity);
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-    position *= glm::mat4(controller.GetBodyRotation(body.axial, body.rotation, body.rotation_offset));
+    position *= glm::mat4(controller.GetBodyRotation(body));
 
     // Rotate
     float scale = body.radius;
@@ -480,7 +480,7 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     }
 
     Body& body = universe.get<Body>(body_entity);
-    auto quat = controller.GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
+    auto quat = controller.GetBodyRotation(body);
 
     city_render_object.shaderProgram->UseProgram();
     city_render_object.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);

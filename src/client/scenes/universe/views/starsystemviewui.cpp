@@ -139,8 +139,7 @@ void StarSystemViewUI::RenderSelectedObjectInformation() {
             if (universe.valid(orbit.reference_body) &&
                 universe.all_of<components::bodies::Body>(orbit.reference_body)) {
                 auto& planet_comp = universe.get<components::bodies::Body>(orbit.reference_body);
-                glm::quat quat =
-                    controller.GetBodyRotation(planet_comp.axial, planet_comp.rotation, planet_comp.rotation_offset);
+                glm::quat quat = controller.GetBodyRotation(planet_comp);
                 // Now we should
                 components::types::SurfaceCoordinate ground_track = core::util::GetGroundTrack(quat, kin.position);
                 ImGui::TextFmt("Ground Track: {} {}", ground_track.latitude(), ground_track.longitude());

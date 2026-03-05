@@ -34,6 +34,7 @@
 #include "core/components/ships.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
+#include "core/util/orbit/groundtrack.h"
 
 namespace cqsp::client::systems {
 namespace components = core::components;
@@ -239,21 +240,27 @@ SurfaceCoordinate StarSystemController::GetMouseSurfaceIntersection() {
     p = glm::normalize(p);
 
     Body& planet_comp = universe.get<Body>(hovering_planet);
-    glm::quat quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation, planet_comp.rotation_offset);
+    glm::quat quat = GetBodyRotation(planet_comp);
     // Rotate the vector based on the axial tilt and rotation.
     p = glm::inverse(quat) * p;
 
     return types::ToSurfaceCoordinate(p);
 }
 
-glm::quat StarSystemController::GetBodyRotation(double axial, double rotation, double day_offset) {
+glm::quat StarSystemController::GetBodyRotation(double axial, double rotation, double day_offset) const {
     // Need to interpolate between the frames
     float rot = (float)bodies::GetPlanetRotationAngle(
         universe.date.ToSecond() + universe.tick_fraction * components::StarDate::TIME_INCREMENT, rotation, day_offset);
     if (rotation == 0) {
         rot = 0;
     }
+
     return glm::quat {{(float)-axial, 0, 0}} * glm::quat {{0, 0, (float)std::fmod(rot, types::TWOPI)}};
+}
+
+glm::quat StarSystemController::GetBodyRotation(const Body& body) const {
+    return core::util::GetBodyRotation(
+        universe.date.ToSecond() + universe.tick_fraction * components::StarDate::TIME_INCREMENT, body);
 }
 
 void StarSystemController::CenterCameraOnCity() {
@@ -339,10 +346,9 @@ void StarSystemController::SelectProvince() {
 
 core::components::types::SurfaceCoordinate StarSystemController::GetCameraOverCoordinate() {
     if (m_viewing_entity != entt::null && universe.valid(m_viewing_entity) && universe.all_of<Body>(m_viewing_entity)) {
-        auto& planet_comp = universe.get<Body>(m_viewing_entity);
         // Get the planet
         // Then we should reset the coordinate
-        glm::quat quat = GetBodyRotation(planet_comp.axial, planet_comp.rotation, planet_comp.rotation_offset);
+        glm::quat quat = GetBodyRotation(universe.get<Body>(m_viewing_entity));
         // Rotate the vector based on the axial tilt and rotation.
         glm::vec3 p = glm::inverse(quat) * camera.CameraPositionNormalized();
 
@@ -396,7 +402,7 @@ void StarSystemController::CenterCameraOnPoint() {
     }
     Body& body = universe.get<Body>(planet);
 
-    glm::quat quat = GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
+    glm::quat quat = GetBodyRotation(body);
 
     glm::vec3 vec = types::toVec3(target_surface_coordinate.universe_view(), 1);
     auto s = quat * vec;

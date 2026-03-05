@@ -18,8 +18,10 @@
 
 #include <glm/glm.hpp>
 
+#include "core/components/bodies.h"
 #include "core/components/coordinates.h"
 
 namespace cqsp::core::util {
+glm::quat GetBodyRotation(double time, const components::bodies::Body& body);
 components::types::SurfaceCoordinate GetGroundTrack(const glm::quat& planet_rotation_matrix, const glm::vec3& position);
 }  // namespace cqsp::core::util

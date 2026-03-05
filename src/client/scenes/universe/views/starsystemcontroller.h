@@ -22,6 +22,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/views/starsystemcamera.h"
+#include "core/components/bodies.h"
 #include "core/components/coordinates.h"
 #include "core/universe.h"
 #include "engine/application.h"
@@ -43,7 +44,8 @@ class StarSystemController {
     /// </summary>
     /// <param name="axial">Axial rotation in radians</param>
     /// <param name="rotation">Rotation period in seconds</param>
-    glm::quat GetBodyRotation(double axial, double rotation, double day_offset);
+    glm::quat GetBodyRotation(double axial, double rotation, double day_offset) const;
+    glm::quat GetBodyRotation(const core::components::bodies::Body &body) const;
 
     bool ShouldDrawCityPrototype();
 
