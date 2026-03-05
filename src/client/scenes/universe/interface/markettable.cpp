@@ -39,8 +39,6 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
     }
 
     components::Market& market = universe.get<components::Market>(market_entity);
-    ImGui::TextFmt("Has {} entities attached to it", market.participants.size());
-
     // Get resource stockpile
     if (!ImGui::BeginTable("marketinfotable", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         return;

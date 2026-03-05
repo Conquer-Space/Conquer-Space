@@ -92,8 +92,6 @@ struct Market {
         supply.clear();
     }
 
-    std::set<entt::entity> participants;
-
     std::vector<entt::entity> connected_markets;
 
     ResourceLedger market_access;
@@ -109,8 +107,6 @@ struct Market {
 
     double trade_deficit = 0;
     double last_trade_deficit = 0;
-
-    void AddParticipant(entt::entity participant) { participants.insert(participant); }
 };
 
 /// <summary>

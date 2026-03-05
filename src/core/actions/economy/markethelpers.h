@@ -26,7 +26,4 @@ namespace cqsp::core::actions {
 /// Creates a market two instance.
 /// </summary>
 Node CreateMarket(Universe& universe);
-
-void AddParticipant(Node& market, Node& participant);
-
 }  // namespace cqsp::core::actions
