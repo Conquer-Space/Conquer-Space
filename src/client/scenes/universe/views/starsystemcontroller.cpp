@@ -716,6 +716,10 @@ void StarSystemController::ResetProvinceColor(entt::entity province) {
             break;
         case ctx::MapMode::CountryMapMode: {
             const auto& province_comp = universe.get<components::Province>(province);
+            if (!universe.valid(province_comp.country)) {
+                renderer.UpdatePlanetProvinceColors(focused_planet, province, glm::vec4(0., 0., 0., 0.));
+                break;
+            }
             auto& country_comp = universe.get<components::Country>(province_comp.country);
             glm::vec4 color =
                 glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], DEFAULT_PROVINCE_APLHA);
