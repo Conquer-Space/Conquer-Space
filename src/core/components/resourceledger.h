@@ -33,7 +33,7 @@ class ResourceVector;
 typedef std::map<GoodEntity, double> LedgerMap;
 
 /// Try to avoid using this unless you really need it since this is extremely slow
-class [[deprecated]] ResourceMap : private LedgerMap {
+class /* [[deprecated]] */ ResourceMap : private LedgerMap {
  public:
     ResourceMap() = default;
     ~ResourceMap() = default;

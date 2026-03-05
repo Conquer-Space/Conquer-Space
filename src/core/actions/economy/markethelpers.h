@@ -26,20 +26,7 @@ namespace cqsp::core::actions {
 /// Creates a market two instance.
 /// </summary>
 Node CreateMarket(Universe& universe);
-/// <summary>
-/// Note: This will only buy the maximum resources that are in the market.
-/// If there aren't enough resources on the market, then we buy all the
-/// remaining resources on the market.
-/// You'll have to calculate how much you want later on
-/// </summary>
-/// <param name="universe"></param>
-/// <param name="agent"></param>
-/// <param name="purchase"></param>
-/// <returns></returns>
-//bool PurchaseGood(Node& agent, const components::ResourceMap& purchase);
-bool SellGood(Node& agent, const components::ResourceMap& selling);
 
 void AddParticipant(Node& market, Node& participant);
 
-double GetCost(Node& market, const components::ResourceMap& ledger);
 }  // namespace cqsp::core::actions

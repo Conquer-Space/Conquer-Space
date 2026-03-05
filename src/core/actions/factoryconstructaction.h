@@ -25,19 +25,6 @@
 
 namespace cqsp::core::actions {
 /// <summary>
-/// Will charge the entity builder the amount needed to construct the factory/building. You'll have to find a
-/// organization that can construct it though.
-/// </summary>
-/// <param name="city"></param>
-/// <param name="market"></param>
-/// <param name="recipe"></param>
-/// <param name="builder"></param>
-/// <param name="productivity"></param>
-/// <returns>The factory entity created, entt::null if it's not possible.</returns>
-[[nodiscard]] Node OrderConstructionFactory(Node& city, Node& market, Node& recipe, Node& builder,
-                                            int productivity = 1);
-
-/// <summary>
 /// Creates a factory from thin air
 /// </summary>
 /// <param name="universe"></param>
@@ -46,8 +33,6 @@ namespace cqsp::core::actions {
 /// <param name="productivity"></param>
 /// <returns>The factory entity created</returns>
 Node CreateFactory(Node city, Node recipe, int productivity = 1, double wages = 10, double cash_reserves = 0);
-
-components::ResourceMap GetFactoryCost(Node& city, Node& recipe, int productivity = 1);
 
 [[nodiscard]] Node CreateCommercialArea(Node& city);
 }  // namespace cqsp::core::actions
