@@ -30,6 +30,7 @@ class SysOrbit : public ISimulationSystem {
 
  private:
     void ParseOrbitTree(entt::entity parent, entt::entity body);
+    void ComputePosition(entt::entity parent, entt::entity body);
 
     /// <summary>
     /// Sets the SOI of the entity to the parent
@@ -46,7 +47,7 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="universe"></param>
     /// <param name="parent"></param>
     /// <param name="body">Body that we want to check if it's entering a SOI</param>
-    bool CheckEnterSOI(const entt::entity& parent, const entt::entity& body);
+    bool CheckEnterSOI(const entt::entity& parent, const entt::entity& body, components::types::Kinematics& pos);
 
     /// <summary>
     /// Check if the entity has crashed into its parent object

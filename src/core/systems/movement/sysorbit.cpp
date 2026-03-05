@@ -19,6 +19,7 @@
 #include <cmath>
 #include <vector>
 
+#include <glm/gtx/norm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <tracy/Tracy.hpp>
 
@@ -195,7 +196,6 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     ZoneScoped;
-
     if (!GetUniverse().valid(body)) {
         return;
     }
@@ -207,6 +207,12 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         SPDLOG_INFO("{} {}", core::util::GetName(GetUniverse(), body), body);
         return;
     }
+    ComputePosition(parent, body);
+    ParseChildren(body);
+}
+
+void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
+    ZoneScoped;
     auto& orb = GetUniverse().get<types::Orbit>(body);
 
     {
@@ -216,13 +222,6 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     UpdateCommandQueue(orb, body, parent);
 
     auto& pos = GetUniverse().get_or_emplace<types::Kinematics>(body);
-
-    // Set our current true anomaly for debugging purposes
-    if (GetUniverse().any_of<types::SetTrueAnomaly>(body)) {
-        orb.v = GetUniverse().get<types::SetTrueAnomaly>(body).true_anomaly;
-        // Set new mean anomaly at epoch
-        GetUniverse().remove<types::SetTrueAnomaly>(body);
-    }
     {
         ZoneScopedN("Position determination");
         pos.position = types::toVec3(orb);
@@ -254,9 +253,7 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
                 future_center = future_pos.center + future_pos.position;
             }
         }
-        if (CheckEnterSOI(parent, body)) {
-            //auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
-            //pause_opt.to_tick = false;
+        if (CheckEnterSOI(parent, body, pos)) {
             SPDLOG_INFO("Entered SOI");
         }
     }
@@ -266,11 +263,9 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     future_pos.position =
         types::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
     future_pos.center = future_center;
-
-    ParseChildren(body);
 }
 
-bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& body) {
+bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& body, Kinematics& pos) {
     ZoneScoped;
     // We should ignore bodies
     if (GetUniverse().any_of<Body>(body)) {
@@ -279,11 +274,6 @@ bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& bod
     SPDLOG_TRACE("Calculating SOI entrance for {} in {}", util::GetName(universe, body),
                  util::GetName(universe, parent));
 
-    if (!GetUniverse().all_of<Kinematics, Orbit>(body)) {
-        return false;
-    }
-    auto& pos = GetUniverse().get<Kinematics>(body);
-    auto& orb = GetUniverse().get<Orbit>(body);
     // Check parents for SOI if we're intersecting with anything
     auto& o_system = GetUniverse().get<OrbitalSystem>(parent);
 
@@ -298,7 +288,7 @@ bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& bod
         if (glm::distance(target_position.position, pos.position) > body_comp.SOI) {
             continue;
         }
-
+        auto& orb = GetUniverse().get<Orbit>(body);
         EnterSOI(entity, body, parent, orb, pos, body_comp, target_position);
 
         // I have a bad feeling about this
