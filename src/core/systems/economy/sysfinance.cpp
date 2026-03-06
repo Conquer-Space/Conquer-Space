@@ -23,8 +23,8 @@
 namespace cqsp::core::systems {
 void SysWalletReset::DoSystem() {
     ZoneScoped;
-    for (Node wallet_node : GetUniverse().nodes<components::Wallet>()) {
-        wallet_node.get<components::Wallet>().Reset();
+    for (auto&& [entity, wallet] : GetUniverse().view<components::Wallet>().each()) {
+        wallet.Reset();
     }
 }
 }  // namespace cqsp::core::systems
