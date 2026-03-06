@@ -50,10 +50,13 @@ void SysOrbit::DoSystem() {
         types::UpdateOrbit(orbit, GetUniverse().date.ToSecond());
         kinematics.position = types::toVec3(orbit);
         kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
-        body_storage[entity] = std::make_pair(kinematics.position, body.SOI);
         future_pos.position =
             types::OrbitTimeToVec3(orbit, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
-        future_position_storage[entity] = future_pos.position;
+        auto& cache = body_cache[entity];
+        cache.position = kinematics.position;
+        cache.radius = body.radius;
+        cache.SOI = body.SOI;
+        cache.future_position = future_pos.position;
     }
 
     // now compute our hierachy
@@ -250,23 +253,21 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
     if (parent != entt::null) {
         ZoneScopedN("Future Position computation");
         // If distance is above SOI, then be annoyed
-        double SOI = body_storage[parent].second;
+        auto& parent_data = body_cache[parent];
+        double SOI = parent_data.SOI;
         if (glm::length(pos.position) > SOI) {
             auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
             auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
             LeaveSOI(body, parent, orb, pos, p_pos);
         }
 
-        if (CrashObject(orb, body, pos, 100)) {
+        if (CrashObject(orb, body, pos, parent_data.radius)) {
             return;
         }
 
-        pos.center = center_storage[parent];
+        pos.center = parent_data.center;
+        future_center = parent_data.future_center;
 
-        {
-            ZoneScopedN("Computing future position");
-            future_center = center_storage[parent];
-        }
         if (CheckEnterSOI(parent, body, pos)) {
             SPDLOG_INFO("Entered SOI");
         }
@@ -296,8 +297,8 @@ bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& bod
             continue;
         }
 
-        const auto& [target_pos, SOI] = body_storage[entity];
-        if (glm::distance(target_pos, pos.position) > SOI) {
+        auto& child_cache = body_cache[entity];
+        if (glm::distance(child_cache.position, pos.position) > child_cache.SOI) {
             continue;
         }
         auto& orb = GetUniverse().get<Orbit>(body);
@@ -349,10 +350,13 @@ void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity par
 void SysOrbit::ComputeCenters(entt::entity entity, glm::dvec3 parent_pos, glm::dvec3 future_parent_pos) {
     auto& system = GetUniverse().get<OrbitalSystem>(entity);
     for (const entt::entity child : system.bodies) {
-        glm::dvec3 pos = body_storage[child].first + parent_pos;
-        glm::dvec3 future_pos = future_position_storage[child] + future_parent_pos;
-        center_storage[child] = pos;
-        future_center_storage[child] = future_pos;
+        auto& cache = body_cache[child];
+        glm::dvec3 pos = cache.position + parent_pos;
+        glm::dvec3 future_pos = cache.future_position + future_parent_pos;
+
+        cache.center = pos;
+        cache.future_center = future_pos;
+
         ComputeCenters(child, pos, future_pos);
         GetUniverse().get<Kinematics>(child).center = parent_pos;
         GetUniverse().get<types::FuturePosition>(child).center = future_parent_pos;

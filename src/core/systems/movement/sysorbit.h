@@ -31,6 +31,15 @@ class SysOrbit : public ISimulationSystem {
     void Init() override;
 
  private:
+    struct BodyCache {
+        glm::dvec3 position;
+        glm::dvec3 center;
+        glm::dvec3 future_position;
+        glm::dvec3 future_center;
+        double SOI;
+        double radius;
+    };
+
     void ParseOrbitTree(entt::entity parent, entt::entity body);
     void ComputePosition(entt::entity parent, entt::entity body);
 
@@ -74,9 +83,6 @@ class SysOrbit : public ISimulationSystem {
     void ComputeCenters(entt::entity entity, glm::dvec3 parent_pos, glm::dvec3 future_parent_pos);
     const bool debug_prints = false;
 
-    std::unordered_map<entt::entity, std::pair<glm::dvec3, double>> body_storage;
-    std::unordered_map<entt::entity, glm::dvec3> center_storage;
-    std::unordered_map<entt::entity, glm::dvec3> future_position_storage;
-    std::unordered_map<entt::entity, glm::dvec3> future_center_storage;
+    std::unordered_map<entt::entity, BodyCache> body_cache;
 };
 }  // namespace cqsp::core::systems
