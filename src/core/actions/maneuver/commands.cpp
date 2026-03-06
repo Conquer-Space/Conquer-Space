@@ -338,6 +338,9 @@ entt::entity GetCommonSOI(Universe& universe, entt::entity source, entt::entity 
     return source_list[source_list.size() - 1];
 }
 
+/**
+ * Leave the SOI at the orbital altitude of altitude
+ */
 void LeaveSOI(Universe& universe, entt::entity agent, double altitude) {
     entt::entity escape_action = universe.create();
     universe.emplace<Trigger>(escape_action, Trigger::OnManeuver);

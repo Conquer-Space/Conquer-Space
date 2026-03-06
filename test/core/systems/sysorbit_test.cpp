@@ -325,6 +325,56 @@ TEST_F(SysOrbitTest, BasicTransferToMoonTest) {
     EXPECT_LT(ship_orbit.eccentricity, 0.1);
 }
 
+TEST_F(SysOrbitTest, BasicTransferFromMoonTest) {
+    auto& moon_body_component = universe.get<cqsp::core::components::bodies::Body>(moon);
+    // Chaser ship
+    cqsp::core::components::types::Orbit source_orbit =
+        cqsp::core::components::types::Orbit(3000, 0.00001, 5.4, 5.8, 0.1, 0);
+    source_orbit.GM = moon_body_component.GM;
+    source_orbit.reference_body = moon;
+    entt::entity ship = cqsp::core::actions::LaunchShip(universe, source_orbit);
+    Tick(1);
+    cqsp::core::systems::commands::LeaveSOI(universe, ship, 3700 * 5);
+    cqsp::core::systems::commands::PushManeuver(universe, ship,
+                                                cqsp::core::systems::commands::MakeManeuver(glm::dvec3(0, 0, 0), 1000));
+
+    // Check for the maneuvers
+    ASSERT_TRUE(universe.all_of<cqsp::core::components::CommandQueue>(ship));
+    auto& command_queue = universe.get<cqsp::core::components::CommandQueue>(ship);
+
+    // Add some dummy action so that we can wait until we exit the soi
+    entt::entity circularize = universe.create();
+    universe.emplace<cqsp::core::components::Trigger>(circularize, cqsp::core::components::Trigger::OnExitSOI);
+    universe.emplace<cqsp::core::components::Command>(circularize,
+                                                      cqsp::core::components::Command::CircularizeAtPeriapsis);
+    command_queue.commands.push_back(circularize);
+
+    // Tick to the activation maneuver
+    ASSERT_EQ(command_queue.maneuvers.size(), 1);
+    TickSeconds(command_queue.maneuvers.front().time);
+
+    // Then tick to the actual real maneuver
+    ASSERT_EQ(command_queue.maneuvers.size(), 1);
+    TickSeconds(command_queue.maneuvers.front().time);
+    ASSERT_EQ(command_queue.maneuvers.size(), 0);
+
+    auto& ship_orbit = universe.get<cqsp::core::components::types::Orbit>(ship);
+    // We should have a hyperbolic orbit right now
+    SPDLOG_INFO("Waiting to leave SOI (eccentricity is {})", ship_orbit.eccentricity);
+    ASSERT_GT(ship_orbit.eccentricity, 1.);
+    // We should be leaving the moon right now
+    while (!command_queue.commands.empty()) {
+        Tick(1);
+    }
+
+    // Now we should be on route to the moon
+    // Let's check if our apoapsis is intersecting with the moon's orbit
+    EXPECT_TRUE(ship_orbit.reference_body == earth);
+    // Make sure we hit the moon while we're less than the SOI
+    int time = 0;
+    double time_to_periapsis = ship_orbit.TimeToTrueAnomaly(0);
+}
+
 TEST_F(SysOrbitTest, DISABLED_EccentricTransferToMoonTest) {
     // Let's add something into orbit
     // Let's set this to LEO, at 500 km

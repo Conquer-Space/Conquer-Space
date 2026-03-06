@@ -52,6 +52,9 @@ void SysOrbit::DoSystem() {
         body_storage[entity] = std::make_pair(kinematics.position, body.SOI);
     }
 
+    // now compute our hierachy
+    ComputeCenters(GetUniverse().sun, glm::dvec3(0, 0, 0));
+
     ParseOrbitTree(entt::null, GetUniverse().sun);
 }
 
@@ -149,7 +152,12 @@ void SysOrbit::ParseChildren(entt::entity body) {
         return;
     }
     auto& orbital_system = GetUniverse().get<components::bodies::OrbitalSystem>(body);
-    for (entt::entity entity : orbital_system.all()) {
+    for (entt::entity entity : orbital_system.bodies) {
+        // We should shortcircuit and get our children lol
+        ParseChildren(entity);
+    }
+    // Parse the child bodies
+    for (entt::entity entity : orbital_system.children) {
         // Calculate position
         ParseOrbitTree(body, entity);
     }
@@ -251,14 +259,11 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
         }
 
         CalculateImpulse(orb, body);
-        pos.center = p_pos.center + p_pos.position;
+        pos.center = center_storage[parent];
 
         {
             ZoneScopedN("Computing future position");
-            if (GetUniverse().any_of<types::FuturePosition>(parent)) {
-                auto& future_pos = GetUniverse().get<types::FuturePosition>(parent);
-                future_center = future_pos.center + future_pos.position;
-            }
+            future_center = center_storage[parent];
         }
         if (CheckEnterSOI(parent, body, pos)) {
             SPDLOG_INFO("Entered SOI");
@@ -337,5 +342,15 @@ void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity par
     auto& vec = GetUniverse().get<OrbitalSystem>(parent).children;
     vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
     GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
+}
+
+void SysOrbit::ComputeCenters(entt::entity entity, glm::dvec3 parent_pos) {
+    auto& system = GetUniverse().get<OrbitalSystem>(entity);
+    for (const entt::entity child : system.bodies) {
+        glm::dvec3 pos = body_storage[child].first + parent_pos;
+        center_storage[child] = pos;
+        ComputeCenters(child, pos);
+        GetUniverse().get<Kinematics>(child).center = parent_pos;
+    }
 }
 }  // namespace cqsp::core::systems

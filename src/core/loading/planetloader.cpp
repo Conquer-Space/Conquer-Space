@@ -61,6 +61,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Node& node) {
     node.emplace<components::Market>(universe.GoodCount());
     node.emplace<components::PlanetaryMarket>(universe.GoodCount());
     node.emplace<bodies::OrbitalSystem>();
+    node.emplace<types::Kinematics>();
 
     node.emplace<bodies::NautralObject>();
     if (values["type"].type() != Hjson::Type::Undefined) {
