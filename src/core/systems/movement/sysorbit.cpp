@@ -59,7 +59,7 @@ void SysOrbit::DoSystem() {
     // now compute our hierachy
     ComputeCenters(GetUniverse().sun, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0));
 
-    ParseOrbitTree(entt::null, GetUniverse().sun);
+    ParseChildren(GetUniverse().sun);
 }
 
 void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos,
@@ -226,7 +226,6 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         return;
     }
     ComputePosition(parent, body);
-    ParseChildren(body);
 }
 
 void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
@@ -247,22 +246,21 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
         pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
     }
     glm::dvec3 future_center = glm::dvec3(0, 0, 0);
+    CalculateImpulse(orb, body);
     if (parent != entt::null) {
         ZoneScopedN("Future Position computation");
-        auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
         // If distance is above SOI, then be annoyed
-        auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
-        if (glm::length(pos.position) > p_bod.SOI) {
+        double SOI = body_storage[parent].second;
+        if (glm::length(pos.position) > SOI) {
+            auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
+            auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
             LeaveSOI(body, parent, orb, pos, p_pos);
         }
 
-        // If it has crashed it is unlikely to have it's own orbital system, and even if it does
-        // everything on that orbital system likely crashed as well
-        if (CrashObject(orb, body, pos, p_bod.radius)) {
+        if (CrashObject(orb, body, pos, 100)) {
             return;
         }
 
-        CalculateImpulse(orb, body);
         pos.center = center_storage[parent];
 
         {
