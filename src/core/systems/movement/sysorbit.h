@@ -72,6 +72,6 @@ class SysOrbit : public ISimulationSystem {
 
     const bool debug_prints = false;
 
-    std::unordered_map<entt::entity, std::vector<std::pair<glm::dvec3, double>>> body_storage;
+    std::unordered_map<entt::entity, std::pair<glm::dvec3, double>> body_storage;
 };
 }  // namespace cqsp::core::systems

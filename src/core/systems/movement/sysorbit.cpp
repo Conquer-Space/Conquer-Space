@@ -44,7 +44,14 @@ using types::Orbit;
 void SysOrbit::DoSystem() {
     ZoneScoped;
     Universe& universe = GetGame().GetUniverse();
-    // Let's parse the orbital stuff
+    // Let's parse the bodies
+    for (auto&& [entity, orbit, body, kinematics] : universe.view<Orbit, Body, Kinematics>().each()) {
+        types::UpdateOrbit(orbit, GetUniverse().date.ToSecond());
+        kinematics.position = types::toVec3(orbit);
+        kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
+        body_storage[entity] = std::make_pair(kinematics.position, body.SOI);
+    }
+
     ParseOrbitTree(entt::null, GetUniverse().sun);
 }
 
@@ -284,12 +291,13 @@ bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& bod
             continue;
         }
 
-        const auto& body_comp = GetUniverse().get<Body>(entity);
-        const auto& target_position = GetUniverse().get<Kinematics>(entity);
-        if (glm::distance(target_position.position, pos.position) > body_comp.SOI) {
+        const auto& [target_pos, SOI] = body_storage[entity];
+        if (glm::distance(target_pos, pos.position) > SOI) {
             continue;
         }
         auto& orb = GetUniverse().get<Orbit>(body);
+        const auto& body_comp = GetUniverse().get<Body>(entity);
+        const auto& target_position = GetUniverse().get<Kinematics>(entity);
         EnterSOI(entity, body, parent, orb, pos, body_comp, target_position);
 
         // I have a bad feeling about this
