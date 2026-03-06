@@ -65,41 +65,48 @@ void SysOrbit::DoSystem() {
     // ParseChildren(GetUniverse().sun);
     for (auto&& [entity, orbit, kinematics, future_pos] :
          universe.view<Orbit, Kinematics, types::FuturePosition>(entt::exclude<Body>).each()) {
-        // Now let's compute all our updates
-        entt::entity parent = orbit.reference_body;
-        types::UpdateOrbit(orbit, GetUniverse().date.ToSecond());
-        UpdateCommandQueue(orbit, entity, parent);
-
-        kinematics.position = types::toVec3(orbit);
-        kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
-
-        glm::dvec3 future_center = glm::dvec3(0, 0, 0);
-        if (parent != entt::null) {
-            ZoneScopedN("Future Position computation");
-            // If distance is above SOI, then be annoyed
-            auto& parent_data = body_cache[parent];
-            double SOI = parent_data.SOI;
-            if (glm::length(kinematics.position) > SOI) {
-                auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
-                auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
-                LeaveSOI(entity, parent, orbit, kinematics, p_pos);
-            }
-
-            if (CrashObject(orbit, entity, kinematics, parent_data.radius)) {
-                return;
-            }
-
-            kinematics.center = parent_data.center;
-            future_center = parent_data.future_center;
-
-            if (CheckEnterSOI(parent, entity, kinematics)) {
-                SPDLOG_INFO("Entered SOI");
-            }
-        }
-        future_pos.position =
-            types::OrbitTimeToVec3(orbit, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
-        future_pos.center = future_center;
+        CalculatePosition(entity, orbit, kinematics, future_pos);
     }
+}
+
+void SysOrbit::CalculatePosition(entt::entity entity, components::types::Orbit& orbit,
+                                 components::types::Kinematics& kinematics,
+                                 components::types::FuturePosition& future_pos) {
+    ZoneScoped;
+    // Now let's compute all our updates
+    entt::entity parent = orbit.reference_body;
+    types::UpdateOrbit(orbit, GetUniverse().date.ToSecond());
+    UpdateCommandQueue(orbit, entity, parent);
+
+    kinematics.position = types::toVec3(orbit);
+    kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
+
+    glm::dvec3 future_center = glm::dvec3(0, 0, 0);
+    if (parent != entt::null) {
+        ZoneScopedN("Future Position computation");
+        // If distance is above SOI, then be annoyed
+        auto& parent_data = body_cache[parent];
+        double SOI = parent_data.SOI;
+        if (glm::length(kinematics.position) > SOI) {
+            auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
+            auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
+            LeaveSOI(entity, parent, orbit, kinematics, p_pos);
+        }
+
+        if (CrashObject(orbit, entity, kinematics, parent_data.radius)) {
+            return;
+        }
+
+        kinematics.center = parent_data.center;
+        future_center = parent_data.future_center;
+
+        if (CheckEnterSOI(parent, entity, kinematics)) {
+            SPDLOG_INFO("Entered SOI");
+        }
+    }
+    future_pos.position =
+        types::OrbitTimeToVec3(orbit, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
+    future_pos.center = future_center;
 }
 
 void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos,
@@ -136,9 +143,6 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
 
 bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, Kinematics& pos, double radius) {
     ZoneScoped;
-    if (GetUniverse().any_of<Body>(body)) {
-        return false;
-    }
     if (GetUniverse().any_of<ships::Crash>(body)) {
         pos.position = glm::dvec3(0);
         // Also clear the command queue or something

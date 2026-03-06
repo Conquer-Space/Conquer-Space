@@ -81,6 +81,9 @@ class SysOrbit : public ISimulationSystem {
                   components::types::Kinematics& vehicle_position, const components::bodies::Body& body_comp,
                   const components::types::Kinematics& target_position);
     void ComputeCenters(entt::entity entity, glm::dvec3 parent_pos, glm::dvec3 future_parent_pos);
+    void CalculatePosition(entt::entity entity, components::types::Orbit& orbit,
+                           components::types::Kinematics& kinematics, components::types::FuturePosition& future_pos);
+
     const bool debug_prints = false;
 
     std::unordered_map<entt::entity, BodyCache> body_cache;
