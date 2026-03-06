@@ -58,7 +58,8 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="body"></param>
     /// <param name="parent"></param>
     /// <returns>If the object's altitude is below the body's radius</returns>
-    bool CrashObject(components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    bool CrashObject(components::types::Orbit& orb, entt::entity body, components::types::Kinematics& pos,
+                     double radius);
 
     void UpdateCommandQueue(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 

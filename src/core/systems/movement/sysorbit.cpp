@@ -87,13 +87,11 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
     commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnExitSOI);
 }
 
-bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
+bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, Kinematics& pos, double radius) {
     ZoneScoped;
     if (GetUniverse().any_of<Body>(body)) {
         return false;
     }
-    auto& p_bod = GetUniverse().get<Body>(parent);
-    auto& pos = GetUniverse().get<Kinematics>(body);
     if (GetUniverse().any_of<ships::Crash>(body)) {
         pos.position = glm::dvec3(0);
         // Also clear the command queue or something
@@ -104,7 +102,7 @@ bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
     }
 
     // Next time we need to account for the atmosphere
-    if (glm::length(pos.position) > p_bod.radius) {
+    if (glm::length(pos.position) > radius) {
         return false;
     }
     // Check if there is a command
@@ -248,7 +246,7 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
 
         // If it has crashed it is unlikely to have it's own orbital system, and even if it does
         // everything on that orbital system likely crashed as well
-        if (CrashObject(orb, body, parent)) {
+        if (CrashObject(orb, body, pos, p_bod.radius)) {
             return;
         }
 
