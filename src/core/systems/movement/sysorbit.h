@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <unordered_map>
 #include <vector>
 
 #include "core/components/orbit.h"
@@ -61,7 +62,7 @@ class SysOrbit : public ISimulationSystem {
 
     void UpdateCommandQueue(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 
-    void CalculateImpulse(components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void CalculateImpulse(components::types::Orbit& orb, entt::entity body);
 
     void ParseChildren(entt::entity body);
 
@@ -70,5 +71,7 @@ class SysOrbit : public ISimulationSystem {
                   const components::types::Kinematics& target_position);
 
     const bool debug_prints = false;
+
+    std::unordered_map<entt::entity, std::vector<std::pair<glm::dvec3, double>>> body_storage;
 };
 }  // namespace cqsp::core::systems

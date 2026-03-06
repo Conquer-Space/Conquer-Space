@@ -44,6 +44,7 @@ using types::Orbit;
 void SysOrbit::DoSystem() {
     ZoneScoped;
     Universe& universe = GetGame().GetUniverse();
+    // Let's parse the orbital stuff
     ParseOrbitTree(entt::null, GetUniverse().sun);
 }
 
@@ -117,7 +118,7 @@ bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
 /**
  * Adds an impulse in the body centered inertial frame
  */
-void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body, entt::entity parent) {
+void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body) {
     ZoneScoped;
     if (!GetUniverse().any_of<types::Impulse>(body)) {
         return;
@@ -143,7 +144,7 @@ void SysOrbit::ParseChildren(entt::entity body) {
         return;
     }
     auto& orbital_system = GetUniverse().get<components::bodies::OrbitalSystem>(body);
-    for (entt::entity entity : orbital_system.children) {
+    for (entt::entity entity : orbital_system.all()) {
         // Calculate position
         ParseOrbitTree(body, entity);
     }
@@ -221,6 +222,7 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
     }
     UpdateCommandQueue(orb, body, parent);
 
+    auto& future_pos = GetUniverse().get_or_emplace<types::FuturePosition>(body);
     auto& pos = GetUniverse().get_or_emplace<types::Kinematics>(body);
     {
         ZoneScopedN("Position determination");
@@ -243,7 +245,7 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
             return;
         }
 
-        CalculateImpulse(orb, body, parent);
+        CalculateImpulse(orb, body);
         pos.center = p_pos.center + p_pos.position;
 
         {
@@ -259,7 +261,6 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
     }
 
     // If they're crashed then we don't care about the future position
-    auto& future_pos = GetUniverse().get_or_emplace<types::FuturePosition>(body);
     future_pos.position =
         types::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
     future_pos.center = future_center;

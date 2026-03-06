@@ -41,7 +41,7 @@ void SysStarSystemTree::Init() {
 
     auto& orbital_system = GetUniverse().get<OrbitalSystem>(GetUniverse().sun);
     planets.emplace(GetUniverse().sun);
-    planets.insert(orbital_system.children.begin(), orbital_system.children.end());
+    planets.insert(orbital_system.bodies.begin(), orbital_system.bodies.end());
     planets.sort([&](const entt::entity lhs, const entt::entity rhs) {
         return (GetUniverse().get<types::Orbit>(lhs).semi_major_axis <
                 GetUniverse().get<types::Orbit>(rhs).semi_major_axis);
@@ -102,7 +102,7 @@ void SysStarSystemTree::SeePlanetSelectable(entt::entity entity) {
 }
 
 void SysStarSystemTree::DoChildTree(entt::entity entity) {
-    for (auto child : GetUniverse().get<OrbitalSystem>(entity).children) {
+    for (auto child : GetUniverse().get<OrbitalSystem>(entity).all()) {
         std::string child_name = GetName(GetUniverse(), child);
         bool is_selected = (child == selected_planet);
         if (!GetUniverse().any_of<OrbitalSystem>(child)) {
@@ -132,7 +132,6 @@ void SysStarSystemTree::DoChildTree(entt::entity entity) {
                 gui::EntityTooltip(GetUniverse(), child);
             }
         }
-        // If it has children we should
     }
 }
 }  // namespace cqsp::client::systems
