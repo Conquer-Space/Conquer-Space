@@ -63,6 +63,9 @@ void SysOrbit::DoSystem() {
     ComputeCenters(GetUniverse().sun, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0));
 
     ParseChildren(GetUniverse().sun);
+    for (auto&& [entity, orbit, body, kinematics, future_pos] :
+         universe.view<Orbit, Body, Kinematics, types::FuturePosition>().each()) {
+    }
 }
 
 void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos,
