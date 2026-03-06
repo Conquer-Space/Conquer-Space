@@ -187,7 +187,7 @@ void StarSystemController::UpdateMapMode() {
     if (last_map_mode == current_map_mode) {
         return;
     }
-    if (!universe.all_of<PlanetTexture>(focused_planet)) {
+    if (!universe.valid(focused_planet) || !universe.all_of<PlanetTexture>(focused_planet)) {
         return;
     }
     switch (current_map_mode) {

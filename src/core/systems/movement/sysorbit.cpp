@@ -45,15 +45,19 @@ void SysOrbit::DoSystem() {
     ZoneScoped;
     Universe& universe = GetGame().GetUniverse();
     // Let's parse the bodies
-    for (auto&& [entity, orbit, body, kinematics] : universe.view<Orbit, Body, Kinematics>().each()) {
+    for (auto&& [entity, orbit, body, kinematics, future_pos] :
+         universe.view<Orbit, Body, Kinematics, types::FuturePosition>().each()) {
         types::UpdateOrbit(orbit, GetUniverse().date.ToSecond());
         kinematics.position = types::toVec3(orbit);
         kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
         body_storage[entity] = std::make_pair(kinematics.position, body.SOI);
+        future_pos.position =
+            types::OrbitTimeToVec3(orbit, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
+        future_position_storage[entity] = future_pos.position;
     }
 
     // now compute our hierachy
-    ComputeCenters(GetUniverse().sun, glm::dvec3(0, 0, 0));
+    ComputeCenters(GetUniverse().sun, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0));
 
     ParseOrbitTree(entt::null, GetUniverse().sun);
 }
@@ -344,13 +348,22 @@ void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity par
     GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
 }
 
-void SysOrbit::ComputeCenters(entt::entity entity, glm::dvec3 parent_pos) {
+void SysOrbit::ComputeCenters(entt::entity entity, glm::dvec3 parent_pos, glm::dvec3 future_parent_pos) {
     auto& system = GetUniverse().get<OrbitalSystem>(entity);
     for (const entt::entity child : system.bodies) {
         glm::dvec3 pos = body_storage[child].first + parent_pos;
+        glm::dvec3 future_pos = future_position_storage[child] + future_parent_pos;
         center_storage[child] = pos;
-        ComputeCenters(child, pos);
+        future_center_storage[child] = future_pos;
+        ComputeCenters(child, pos, future_pos);
         GetUniverse().get<Kinematics>(child).center = parent_pos;
+        GetUniverse().get<types::FuturePosition>(child).center = future_parent_pos;
+    }
+}
+
+void SysOrbit::Init() {
+    for (entt::entity entity : GetUniverse().view<Orbit, Body, Kinematics>()) {
+        GetUniverse().emplace<types::FuturePosition>(entity);
     }
 }
 }  // namespace cqsp::core::systems

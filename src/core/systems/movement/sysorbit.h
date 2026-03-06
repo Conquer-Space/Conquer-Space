@@ -28,6 +28,7 @@ class SysOrbit : public ISimulationSystem {
     explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return 1; }
+    void Init() override;
 
  private:
     void ParseOrbitTree(entt::entity parent, entt::entity body);
@@ -70,10 +71,12 @@ class SysOrbit : public ISimulationSystem {
     void EnterSOI(entt::entity entity, entt::entity body, entt::entity parent, components::types::Orbit& orb,
                   components::types::Kinematics& vehicle_position, const components::bodies::Body& body_comp,
                   const components::types::Kinematics& target_position);
-    void ComputeCenters(entt::entity entity, glm::dvec3 parent_pos);
+    void ComputeCenters(entt::entity entity, glm::dvec3 parent_pos, glm::dvec3 future_parent_pos);
     const bool debug_prints = false;
 
     std::unordered_map<entt::entity, std::pair<glm::dvec3, double>> body_storage;
     std::unordered_map<entt::entity, glm::dvec3> center_storage;
+    std::unordered_map<entt::entity, glm::dvec3> future_position_storage;
+    std::unordered_map<entt::entity, glm::dvec3> future_center_storage;
 };
 }  // namespace cqsp::core::systems
