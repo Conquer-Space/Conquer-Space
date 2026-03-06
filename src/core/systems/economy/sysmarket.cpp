@@ -33,12 +33,12 @@ using components::Market;
 
 void SysMarket::DoSystem() {
     ZoneScoped;
-    auto marketview = GetUniverse().nodes<Market>(entt::exclude<components::PlanetaryMarket>);
+    auto marketview = GetUniverse().view<Market>(entt::exclude<components::PlanetaryMarket>);
 
     auto goodsview = GetUniverse().nodes<components::Price>();
 
-    for (Node market_node : marketview) {
-        ProcessMarket(market_node);
+    for (auto&& [entity, market] : marketview.each()) {
+        ProcessMarket(GetUniverse()(entity), market);
     }
 }
 
@@ -72,12 +72,8 @@ void SysMarket::DetermineShortages(components::Market& market) {
     market.deficit += deficit;
 }
 
-void SysMarket::ProcessMarket(Node& market_node) {
+void SysMarket::ProcessMarket(Node market_node, components::Market& market) {
     ZoneScoped;
-    // Get the resources and process the price
-    // Get demand
-    Market& market = market_node.get<Market>();
-
     // Add a supply if there is a space port
     if (market_node.any_of<components::infrastructure::SpacePort>()) {
         // Then add output resources to the market
