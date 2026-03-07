@@ -557,6 +557,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         data.province_indices.reserve(static_cast<size_t>(province_height) * static_cast<size_t>(province_width));
         // Counter to assign to the array of colors
         uint16_t current_province_idx = 1;
+        data.province_index_map[entt::null] = 0;
         // We expect the province map will be the same dimensions as the province texture, so it should be fine?
         for (int idx = 0; idx < province_width * province_height; idx++) {
             // Position on the map
@@ -585,6 +586,17 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
                static_cast<size_t>(province_width) * static_cast<size_t>(province_height));
         // Check that our province map and indices are the right size.
         assert(data.province_map.size() == data.province_indices.size());
+        // If the province doesn't have a pixel then we will not add the index, so the index ends up being 0.
+        // We should probably fix this by not having any provinces with no pixels
+        // As a temp fix, let's sort through all the provinces and figure out what province exists or not and
+        // then add it into the map so that it doesn't just go straight to zero
+        auto& settlements = universe.get<components::Settlements>(body);
+        for (entt::entity province : settlements.provinces) {
+            if (!data.province_index_map.contains(province)) {
+                data.province_index_map[province] = current_province_idx;
+                current_province_idx++;
+            }
+        }
         GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
 
         data.has_provinces = true;

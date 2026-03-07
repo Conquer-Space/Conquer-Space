@@ -102,6 +102,7 @@ class StarSystemController {
     void HandleProvinceHoverColor();
 
     glm::vec4 GetCountryProvinceColor(entt::entity province);
+    glm::vec4 ColonizationTargetProvinceColor(entt::entity province);
 
     void SelectProvince();
 
