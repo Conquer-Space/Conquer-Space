@@ -16,12 +16,26 @@
  */
 #pragma once
 
+#include <unordered_map>
+
+#include <entt/entity/entity.hpp>
+
 namespace cqsp::core::components {
 enum class States {
-    FLYBY, // Entered the SOI of a body
-    ORBIT, // Entered the SOI with an eccentricity of less than 1
-    ATMOSPHERIC_FLIGHT, // Flew in a body
-    LANDED, // Landed on the body
-    RETURN // Returned from landing from a body
+    FLYBY,               // Entered the SOI of a body
+    ORBIT,               // Entered the SOI with an eccentricity of less than 1
+    ATMOSPHERIC_FLIGHT,  // Flew in a body
+    LANDED,              // Landed on the body
+    RETURN               // Returned from landing from a body
+};
+
+struct DiscoveryStatus {
+    bool flyby;
+    bool orbit;
+    bool atmospheric_flight;
+    bool landed;
+    bool returned;
+    // Then the number of states that have been surveyed?
+    std::unordered_map<entt::entity, uint8_t> survey_state;
 };
 }  // namespace cqsp::core::components

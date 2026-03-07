@@ -63,7 +63,7 @@ void RightClickWindow::DetermineButtons(entt::entity entity) {
     buttons.clear();
     if (GetUniverse().any_of<core::components::bodies::Body>(entity)) {
         buttons.push_back({"Send to orbit", "somerandomaction"});
-        buttons.push_back({"Body Stats", "somerandomaction"});
+        buttons.push_back({"Body Surveying", "information"});
     }
     if (GetUniverse().any_of<core::components::Province>(entity)) {
         if (core::actions::HasSpacePort(GetUniverse()(entity))) {
