@@ -242,12 +242,6 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
     REGISTER_FUNCTION("market_last_trade_deficit",
                       [&](entt::entity market) { return universe.get<components::Market>(market).last_trade_deficit; });
 
-    REGISTER_FUNCTION("attach_market", [&](entt::entity market_entity, entt::entity participant) {
-        Node market_node(universe, market_entity);
-        Node participant_node(universe, participant);
-        actions::AddParticipant(market_node, participant_node);
-    });
-
     REGISTER_FUNCTION("get_balance", [&](entt::entity participant) {
         return universe.get_or_emplace<Wallet>(participant).GetBalance();
     });

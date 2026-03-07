@@ -19,6 +19,8 @@
 #include <numeric>
 #include <ranges>
 
+#include <tracy/Tracy.hpp>
+
 #include "core/components/history.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
@@ -27,6 +29,7 @@ namespace cqsp::core::systems::history {
 void SysMarketCsvHistory::Init() {}
 
 void SysMarketCsvHistory::DoSystem() {
+    ZoneScoped;
     // Now log every system
     auto view = GetUniverse().view<components::LogMarket, components::Market>();
     for (entt::entity entity : view) {

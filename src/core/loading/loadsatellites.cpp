@@ -158,6 +158,8 @@ bool SatelliteLoader::LoadValue(const Hjson::Value& values, Node& node) {
     Node reference_node(universe, orbit->reference_body);
     reference_node.get<bodies::OrbitalSystem>().push_back(node);
     node.emplace<components::ships::Ship>();
+    node.emplace<types::FuturePosition>();
+    node.emplace<types::Kinematics>();
     SPDLOG_INFO("Loaded orbit!");
     return true;
 }

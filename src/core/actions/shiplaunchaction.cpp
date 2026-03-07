@@ -73,7 +73,9 @@ entt::entity LaunchShip(Universe& universe, const components::types::Orbit& orbi
     // Now do things
     auto& o = universe.emplace<types::Orbit>(ship, orbit);
     universe.emplace<types::Kinematics>(ship);
+    universe.emplace<types::FuturePosition>(ship);
     auto& body = universe.get<bodies::Body>(orbit.reference_body);
+
     o.GM = body.GM;
     universe.get<bodies::OrbitalSystem>(orbit.reference_body).push_back(ship);
     return ship;

@@ -23,12 +23,10 @@
 namespace cqsp::core::systems {
 void SysMarketReset::DoSystem() {
     ZoneScoped;
-    for (Node market_node : GetUniverse().nodes<components::Market>()) {
-        // Reset the ledgers
-        components::Market& market = market_node.get<components::Market>();
+    GetUniverse().view<components::Market>().each([](components::Market& market) {
         market.ResetLedgers();
         market.production.clear();
         market.consumption.clear();
-    }
+    });
 }
 }  // namespace cqsp::core::systems

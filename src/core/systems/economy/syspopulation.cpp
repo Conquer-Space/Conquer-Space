@@ -74,6 +74,10 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
                                                  const float savings) {
     ZoneScoped;
     // Get the transport cost
+    auto& settlement_comp = settlement.get<components::Settlement>();
+    if (settlement_comp.population.empty()) {
+        return;
+    }
     if (!settlement.any_of<components::infrastructure::CityInfrastructure>()) {
         return;
     }
@@ -82,7 +86,6 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
     auto& market = settlement.get<components::Market>();
     // Loop through the population segments through the settlements
-    auto& settlement_comp = settlement.get<components::Settlement>();
     for (Node node_segment : settlement.Convert(settlement_comp.population)) {
         // Compute things
         components::PopulationSegment& segment = node_segment.get_or_emplace<components::PopulationSegment>();

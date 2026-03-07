@@ -329,7 +329,7 @@ void SysStarSystemRenderer::DrawTexturedPlanet(const glm::vec3& object_pos, cons
     auto& body = universe.get<bodies::Body>(entity);
     glm::mat4 position = glm::mat4(1.f);
     position = glm::translate(position, object_pos);
-    position *= glm::mat4(controller.GetBodyRotation(body.axial, body.rotation, body.rotation_offset));
+    position *= glm::mat4(controller.GetBodyRotation(body));
 
     // Rotate
     float scale = body.radius;
@@ -480,7 +480,7 @@ void SysStarSystemRenderer::RenderCities(glm::vec3& object_pos, const entt::enti
     }
 
     Body& body = universe.get<Body>(body_entity);
-    auto quat = controller.GetBodyRotation(body.axial, body.rotation, body.rotation_offset);
+    auto quat = controller.GetBodyRotation(body);
 
     city_render_object.shaderProgram->UseProgram();
     city_render_object.shaderProgram->setVec4("color", 0.5, 0.5, 0.5, 1);
@@ -595,7 +595,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
 
 void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::entity province, glm::vec4 color) {
     // We should update the texture
-    if (!universe.valid(body)) {
+    if (!universe.valid(body) || !universe.all_of<PlanetTexture>(body)) {
         return;
     }
     auto& data = universe.get<PlanetTexture>(body);
@@ -852,27 +852,21 @@ float SysStarSystemRenderer::GetWindowRatio() { return window_ratio; }
 
 void SysStarSystemRenderer::DrawAllOrbits() {
     ZoneScoped;
-    for (entt::entity orbit_entity : universe.view<Orbit>()) {
-        // Check the type of orbiting things, and then don't render if it doesn't fit the filter
-        if (universe.any_of<bodies::Planet>(orbit_entity)) {  // Always render planet orbits
-            // Render no matter what
-            DrawOrbit(orbit_entity);
-            continue;
-        }
-        if (!universe.any_of<ctx::VisibleOrbit>(orbit_entity)) {  // Visible orbits will not be rendered
-            continue;
-        }
+
+    for (entt::entity orbit_entity : universe.view<Orbit, bodies::Planet, OrbitMesh>()) {
+        DrawOrbit(orbit_entity);
+    }
+
+    for (entt::entity orbit_entity : universe.view<Orbit, ctx::VisibleOrbit, OrbitMesh>()) {
         DrawOrbit(orbit_entity);
     }
 }
 
 void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
-    if (!universe.any_of<OrbitMesh>(entity)) {
-        return;
-    }
     glm::vec3 center = glm::vec3(0, 0, 0);
     // If it has a parent, draw around the parent
-    entt::entity ref = universe.get<Orbit>(entity).reference_body;
+    auto& orb = universe.get<Orbit>(entity);
+    entt::entity ref = orb.reference_body;
     if (ref != entt::null) {
         center = controller.CalculateObjectPos(ref);
     } else {
@@ -881,25 +875,11 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
     glm::mat4 transform = glm::mat4(1.f);
     transform = glm::translate(transform, controller.CalculateCenteredObject(center));
     // Actually you just need to rotate the orbit
-    auto body = universe.get<Body>(ref);
     //transform *= glm::mat4(
     //    glm::quat{{0.f, 0, (float)body.axial}});
     // Draw orbit
     orbit_shader->SetMVP(transform, camera.camera_matrix, app.Get3DProj());
 
-    //Set the color of each orbit based on its distance from its center body
-
-    auto& orb = universe.get<Orbit>(entity);
-
-    const double dis = orb.semi_major_axis;
-    const double max_dis = body.SOI;
-    const double inc = orb.inclination;
-
-    const float min_launch_dis = body.radius;
-    float col = dis - min_launch_dis;
-    float r = log(col) / log(max_dis);
-    float g = 1 - r;
-    float b = inc / 3.15;
     glm::vec4 color_v = {1.f, 1.f, 1.f, 0.7f};
     if (universe.any_of<ships::Ship>(entity)) {
         color_v = {0.10196078431372549f, 0.6313725490196078f, 0.24313725490196078f, 0.7f};

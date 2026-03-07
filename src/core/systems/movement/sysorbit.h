@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <unordered_map>
 #include <vector>
 
 #include "core/components/orbit.h"
@@ -27,9 +28,20 @@ class SysOrbit : public ISimulationSystem {
     explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     int Interval() override { return 1; }
+    void Init() override;
 
  private:
+    struct BodyCache {
+        glm::dvec3 position;
+        glm::dvec3 center;
+        glm::dvec3 future_position;
+        glm::dvec3 future_center;
+        double SOI;
+        double radius;
+    };
+
     void ParseOrbitTree(entt::entity parent, entt::entity body);
+    void ComputePosition(entt::entity parent, entt::entity body);
 
     /// <summary>
     /// Sets the SOI of the entity to the parent
@@ -46,7 +58,7 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="universe"></param>
     /// <param name="parent"></param>
     /// <param name="body">Body that we want to check if it's entering a SOI</param>
-    bool CheckEnterSOI(const entt::entity& parent, const entt::entity& body);
+    bool CheckEnterSOI(const entt::entity& parent, const entt::entity& body, components::types::Kinematics& pos);
 
     /// <summary>
     /// Check if the entity has crashed into its parent object
@@ -56,18 +68,24 @@ class SysOrbit : public ISimulationSystem {
     /// <param name="body"></param>
     /// <param name="parent"></param>
     /// <returns>If the object's altitude is below the body's radius</returns>
-    bool CrashObject(components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    bool CrashObject(components::types::Orbit& orb, entt::entity body, components::types::Kinematics& pos,
+                     double radius);
 
     void UpdateCommandQueue(components::types::Orbit& orb, entt::entity body, entt::entity parent);
 
-    void CalculateImpulse(components::types::Orbit& orb, entt::entity body, entt::entity parent);
+    void CalculateImpulse(components::types::Orbit& orb, entt::entity body);
 
     void ParseChildren(entt::entity body);
 
     void EnterSOI(entt::entity entity, entt::entity body, entt::entity parent, components::types::Orbit& orb,
                   components::types::Kinematics& vehicle_position, const components::bodies::Body& body_comp,
                   const components::types::Kinematics& target_position);
+    void ComputeCenters(entt::entity entity, glm::dvec3 parent_pos, glm::dvec3 future_parent_pos);
+    void CalculatePosition(entt::entity entity, components::types::Orbit& orbit,
+                           components::types::Kinematics& kinematics, components::types::FuturePosition& future_pos);
 
     const bool debug_prints = false;
+
+    std::unordered_map<entt::entity, BodyCache> body_cache;
 };
 }  // namespace cqsp::core::systems

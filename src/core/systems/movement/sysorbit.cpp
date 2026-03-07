@@ -19,6 +19,7 @@
 #include <cmath>
 #include <vector>
 
+#include <glm/gtx/norm.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <tracy/Tracy.hpp>
 
@@ -43,7 +44,69 @@ using types::Orbit;
 void SysOrbit::DoSystem() {
     ZoneScoped;
     Universe& universe = GetGame().GetUniverse();
-    ParseOrbitTree(entt::null, GetUniverse().sun);
+    // Let's parse the bodies
+    for (auto&& [entity, orbit, body, kinematics, future_pos] :
+         universe.view<Orbit, Body, Kinematics, types::FuturePosition>().each()) {
+        types::UpdateOrbit(orbit, GetUniverse().date.ToSecond());
+        kinematics.position = types::toVec3(orbit);
+        kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
+        future_pos.position =
+            types::OrbitTimeToVec3(orbit, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
+        auto& cache = body_cache[entity];
+        cache.position = kinematics.position;
+        cache.radius = body.radius;
+        cache.SOI = body.SOI;
+        cache.future_position = future_pos.position;
+    }
+
+    // now compute our hierachy
+    ComputeCenters(GetUniverse().sun, glm::dvec3(0, 0, 0), glm::dvec3(0, 0, 0));
+
+    // ParseChildren(GetUniverse().sun);
+    for (auto&& [entity, orbit, kinematics, future_pos] :
+         universe.view<Orbit, Kinematics, types::FuturePosition>(entt::exclude<Body>).each()) {
+        CalculatePosition(entity, orbit, kinematics, future_pos);
+    }
+}
+
+void SysOrbit::CalculatePosition(entt::entity entity, components::types::Orbit& orbit,
+                                 components::types::Kinematics& kinematics,
+                                 components::types::FuturePosition& future_pos) {
+    ZoneScoped;
+    // Now let's compute all our updates
+    entt::entity parent = orbit.reference_body;
+    types::UpdateOrbit(orbit, GetUniverse().date.ToSecond());
+    UpdateCommandQueue(orbit, entity, parent);
+
+    kinematics.position = types::toVec3(orbit);
+    kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
+
+    glm::dvec3 future_center = glm::dvec3(0, 0, 0);
+    if (parent != entt::null) {
+        ZoneScopedN("Future Position computation");
+        // If distance is above SOI, then be annoyed
+        auto& parent_data = body_cache[parent];
+        double SOI = parent_data.SOI;
+        if (glm::length(kinematics.position) > SOI) {
+            auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
+            auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
+            LeaveSOI(entity, parent, orbit, kinematics, p_pos);
+        }
+
+        if (CrashObject(orbit, entity, kinematics, parent_data.radius)) {
+            return;
+        }
+
+        kinematics.center = parent_data.center;
+        future_center = parent_data.future_center;
+
+        if (CheckEnterSOI(parent, entity, kinematics)) {
+            SPDLOG_INFO("Entered SOI");
+        }
+    }
+    future_pos.position =
+        types::OrbitTimeToVec3(orbit, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
+    future_pos.center = future_center;
 }
 
 void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& orb, Kinematics& pos,
@@ -78,13 +141,8 @@ void SysOrbit::LeaveSOI(const entt::entity& body, entt::entity& parent, Orbit& o
     commands::ProcessCommandQueue(GetUniverse(), body, components::Trigger::OnExitSOI);
 }
 
-bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
+bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, Kinematics& pos, double radius) {
     ZoneScoped;
-    if (GetUniverse().any_of<Body>(body)) {
-        return false;
-    }
-    auto& p_bod = GetUniverse().get<Body>(parent);
-    auto& pos = GetUniverse().get<Kinematics>(body);
     if (GetUniverse().any_of<ships::Crash>(body)) {
         pos.position = glm::dvec3(0);
         // Also clear the command queue or something
@@ -95,7 +153,7 @@ bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
     }
 
     // Next time we need to account for the atmosphere
-    if (glm::length(pos.position) > p_bod.radius) {
+    if (glm::length(pos.position) > radius) {
         return false;
     }
     // Check if there is a command
@@ -116,7 +174,7 @@ bool SysOrbit::CrashObject(Orbit& orb, entt::entity body, entt::entity parent) {
 /**
  * Adds an impulse in the body centered inertial frame
  */
-void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body, entt::entity parent) {
+void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body) {
     ZoneScoped;
     if (!GetUniverse().any_of<types::Impulse>(body)) {
         return;
@@ -125,6 +183,9 @@ void SysOrbit::CalculateImpulse(types::Orbit& orb, entt::entity body, entt::enti
     // Then also convert the velocity
     auto& impulse = GetUniverse().get<types::Impulse>(body);
     auto reference = orb.reference_body;
+    if (!GetUniverse().all_of<Kinematics>(body)) {
+        SPDLOG_INFO("entity doesn't have a kinematics");
+    }
     auto& pos = GetUniverse().get_or_emplace<Kinematics>(body);
 
     orb = types::Vec3ToOrbit(pos.position, pos.velocity + impulse.impulse, orb.GM, GetUniverse().date.ToSecond());
@@ -142,10 +203,11 @@ void SysOrbit::ParseChildren(entt::entity body) {
         return;
     }
     auto& orbital_system = GetUniverse().get<components::bodies::OrbitalSystem>(body);
-    for (entt::entity entity : orbital_system.children) {
-        // Calculate position
-        ParseOrbitTree(body, entity);
+    for (entt::entity entity : orbital_system.bodies) {
+        // We should shortcircuit and get our children lol
+        ParseChildren(entity);
     }
+
     // Now check if anything has crashed and remove
     orbital_system.children.erase(std::remove_if(orbital_system.children.begin(), orbital_system.children.end(),
                                                  [&](entt::entity entity) {
@@ -153,7 +215,6 @@ void SysOrbit::ParseChildren(entt::entity body) {
                                                          GetUniverse().destroy(entity);
                                                          return true;
                                                      }
-
                                                      return false;
                                                  }),
                                   orbital_system.children.end());
@@ -195,7 +256,6 @@ void SysOrbit::UpdateCommandQueue(Orbit& orb, entt::entity body, entt::entity pa
 
 void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     ZoneScoped;
-
     if (!GetUniverse().valid(body)) {
         return;
     }
@@ -207,6 +267,11 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
         SPDLOG_INFO("{} {}", core::util::GetName(GetUniverse(), body), body);
         return;
     }
+    ComputePosition(parent, body);
+}
+
+void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
+    ZoneScoped;
     auto& orb = GetUniverse().get<types::Orbit>(body);
 
     {
@@ -215,62 +280,45 @@ void SysOrbit::ParseOrbitTree(entt::entity parent, entt::entity body) {
     }
     UpdateCommandQueue(orb, body, parent);
 
+    auto& future_pos = GetUniverse().get_or_emplace<types::FuturePosition>(body);
     auto& pos = GetUniverse().get_or_emplace<types::Kinematics>(body);
-
-    // Set our current true anomaly for debugging purposes
-    if (GetUniverse().any_of<types::SetTrueAnomaly>(body)) {
-        orb.v = GetUniverse().get<types::SetTrueAnomaly>(body).true_anomaly;
-        // Set new mean anomaly at epoch
-        GetUniverse().remove<types::SetTrueAnomaly>(body);
-    }
     {
         ZoneScopedN("Position determination");
         pos.position = types::toVec3(orb);
         pos.velocity = types::OrbitVelocityToVec3(orb, orb.v);
     }
     glm::dvec3 future_center = glm::dvec3(0, 0, 0);
+    CalculateImpulse(orb, body);
     if (parent != entt::null) {
         ZoneScopedN("Future Position computation");
-        auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
         // If distance is above SOI, then be annoyed
-        auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
-        if (glm::length(pos.position) > p_bod.SOI) {
+        auto& parent_data = body_cache[parent];
+        double SOI = parent_data.SOI;
+        if (glm::length(pos.position) > SOI) {
+            auto& p_bod = GetUniverse().get<components::bodies::Body>(parent);
+            auto& p_pos = GetUniverse().get_or_emplace<types::Kinematics>(parent);
             LeaveSOI(body, parent, orb, pos, p_pos);
         }
 
-        // If it has crashed it is unlikely to have it's own orbital system, and even if it does
-        // everything on that orbital system likely crashed as well
-        if (CrashObject(orb, body, parent)) {
+        if (CrashObject(orb, body, pos, parent_data.radius)) {
             return;
         }
 
-        CalculateImpulse(orb, body, parent);
-        pos.center = p_pos.center + p_pos.position;
+        pos.center = parent_data.center;
+        future_center = parent_data.future_center;
 
-        {
-            ZoneScopedN("Computing future position");
-            if (GetUniverse().any_of<types::FuturePosition>(parent)) {
-                auto& future_pos = GetUniverse().get<types::FuturePosition>(parent);
-                future_center = future_pos.center + future_pos.position;
-            }
-        }
-        if (CheckEnterSOI(parent, body)) {
-            //auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
-            //pause_opt.to_tick = false;
+        if (CheckEnterSOI(parent, body, pos)) {
             SPDLOG_INFO("Entered SOI");
         }
     }
 
     // If they're crashed then we don't care about the future position
-    auto& future_pos = GetUniverse().get_or_emplace<types::FuturePosition>(body);
     future_pos.position =
         types::OrbitTimeToVec3(orb, GetUniverse().date.ToSecond() + components::StarDate::TIME_INCREMENT);
     future_pos.center = future_center;
-
-    ParseChildren(body);
 }
 
-bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& body) {
+bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& body, Kinematics& pos) {
     ZoneScoped;
     // We should ignore bodies
     if (GetUniverse().any_of<Body>(body)) {
@@ -279,11 +327,6 @@ bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& bod
     SPDLOG_TRACE("Calculating SOI entrance for {} in {}", util::GetName(universe, body),
                  util::GetName(universe, parent));
 
-    if (!GetUniverse().all_of<Kinematics, Orbit>(body)) {
-        return false;
-    }
-    auto& pos = GetUniverse().get<Kinematics>(body);
-    auto& orb = GetUniverse().get<Orbit>(body);
     // Check parents for SOI if we're intersecting with anything
     auto& o_system = GetUniverse().get<OrbitalSystem>(parent);
 
@@ -293,12 +336,13 @@ bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& bod
             continue;
         }
 
-        const auto& body_comp = GetUniverse().get<Body>(entity);
-        const auto& target_position = GetUniverse().get<Kinematics>(entity);
-        if (glm::distance(target_position.position, pos.position) > body_comp.SOI) {
+        auto& child_cache = body_cache[entity];
+        if (glm::distance(child_cache.position, pos.position) > child_cache.SOI) {
             continue;
         }
-
+        auto& orb = GetUniverse().get<Orbit>(body);
+        const auto& body_comp = GetUniverse().get<Body>(entity);
+        const auto& target_position = GetUniverse().get<Kinematics>(entity);
         EnterSOI(entity, body, parent, orb, pos, body_comp, target_position);
 
         // I have a bad feeling about this
@@ -341,4 +385,22 @@ void SysOrbit::EnterSOI(entt::entity entity, entt::entity body, entt::entity par
     vec.erase(std::remove(vec.begin(), vec.end(), body), vec.end());
     GetUniverse().emplace_or_replace<bodies::DirtyOrbit>(body);
 }
+
+void SysOrbit::ComputeCenters(entt::entity entity, glm::dvec3 parent_pos, glm::dvec3 future_parent_pos) {
+    auto& system = GetUniverse().get<OrbitalSystem>(entity);
+    for (const entt::entity child : system.bodies) {
+        auto& cache = body_cache[child];
+        glm::dvec3 pos = cache.position + parent_pos;
+        glm::dvec3 future_pos = cache.future_position + future_parent_pos;
+
+        cache.center = pos;
+        cache.future_center = future_pos;
+
+        ComputeCenters(child, pos, future_pos);
+        GetUniverse().get<Kinematics>(child).center = parent_pos;
+        GetUniverse().get<types::FuturePosition>(child).center = future_parent_pos;
+    }
+}
+
+void SysOrbit::Init() {}
 }  // namespace cqsp::core::systems

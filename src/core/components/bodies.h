@@ -18,6 +18,7 @@
 
 #include <limits>
 #include <map>
+#include <ranges>
 #include <string>
 #include <tuple>
 #include <vector>
@@ -91,6 +92,109 @@ struct TexturedTerrain {
 
 struct NautralObject {};
 
+// For convenience, create a type-function that returns the first type of a parameter pack.
+template <typename T, typename... Rest>
+struct GetFirstTypeT {
+    using Type = T;
+};
+template <typename... Pack>
+using GetFirstType = GetFirstTypeT<Pack...>::Type;
+
+// The `ExpandedIter` type will be recursively instantiated to implement the `ConcatIter` for a
+// concatenated view.
+template <typename... Ranges>
+struct ExpandedIter;
+
+template <typename R, typename... Ranges>
+struct ExpandedIter<R, Ranges...> {
+    using EltT = std::ranges::range_value_t<R>;
+    using IterT = std::ranges::iterator_t<R>;
+    R& r;
+    IterT iter;
+    ExpandedIter<Ranges...> rest_iter;
+    ExpandedIter(R& r, Ranges&... rest) : r(r), rest_iter(rest...) { iter = r.begin(); }
+    bool is_end() const {
+        if (iter == r.end()) {
+            return rest_iter.is_end();
+        } else {
+            return false;
+        }
+    }
+    auto current() {
+        if constexpr (sizeof...(Ranges) != 0) {
+            if (iter == r.end()) {
+                return rest_iter.current();
+            }
+        }
+        return *iter;
+    }
+    void next() {
+        if (iter == r.end()) {
+            rest_iter.next();
+        } else {
+            ++iter;
+        }
+    }
+};
+
+template <>
+struct ExpandedIter<> {
+    bool is_end() const { return true; }
+    void next() {}
+};
+
+template <typename... Views>
+class ConcatIter {
+    ExpandedIter<Views...> exp_iter;
+
+ public:
+    using EltT = std::ranges::range_value_t<GetFirstType<Views...>>;
+
+    ConcatIter(Views&... views) : exp_iter(views...) {}
+    ConcatIter(const ConcatIter&) = delete;
+    ConcatIter(ConcatIter&& other) = default;
+    ConcatIter& operator=(const ConcatIter&) = delete;
+    ConcatIter& operator=(ConcatIter&&) = delete;
+
+    bool is_end() const { return exp_iter.is_end(); }
+    EltT operator*() { return exp_iter.current(); }
+    ConcatIter& operator++() {
+        exp_iter.next();
+        return *this;
+    }
+
+ private:
+};
+
+struct EndIter {};
+
+template <typename... Rs>
+bool operator==(const ConcatIter<Rs...>& iter, EndIter) {
+    return iter.is_end();
+}
+
+template <typename... Ranges>
+class ConcatView {
+    using IterT = ConcatIter<decltype(std::views::all(std::forward<Ranges>(std::declval<Ranges&>())))...>;
+    std::tuple<decltype(std::views::all(std::forward<Ranges>(std::declval<Ranges&>())))...> views;
+
+ public:
+    ConcatView(Ranges&&... ranges) : views(std::views::all(std::forward<Ranges>(ranges))...) {}
+
+    IterT begin() { return std::make_from_tuple<IterT>(views); }
+    EndIter end() { return {}; };
+
+ private:
+};
+
+// Concatenate ranges with same (or compatible?) element type.
+template <typename... Rs>
+    requires(std::ranges::range<Rs> && ...)
+ConcatView<Rs...> concat(Rs&&... rs) {
+    ConcatView<Rs...> v(std::forward<Rs>(rs)...);
+    return v;
+}
+
 /// <summary>
 /// An object for the children of an orbital object.
 /// </summary>
@@ -102,6 +206,7 @@ struct OrbitalSystem {
     // Large bodies such as moons or planets
     std::vector<entt::entity> bodies;
     void push_back(const entt::entity entity) { children.push_back(entity); }
+    auto all() { return concat(bodies, children); }
 };
 
 struct DirtyOrbit {};

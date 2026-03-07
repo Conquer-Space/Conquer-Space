@@ -23,7 +23,6 @@ namespace cqsp::core::actions {
 
 void AddParticipant(Node& market_node, Node& participant) {
     auto& market = market_node.get<components::Market>();
-    market.participants.insert(participant);
     participant.emplace<components::MarketAgent>(market_node);
     static_cast<void>(participant.get_or_emplace<components::Wallet>());
 }
