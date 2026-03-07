@@ -58,8 +58,12 @@ struct PlanetTexture {
     std::vector<entt::entity> province_map;
     // Indices for the color on the map
     std::vector<uint16_t> province_indices;
-    std::vector<float> province_colors;
-    std::map<entt::entity, uint16_t> province_index_map;
+    // province_colors.size() == 4 * province_map.size()
+    // Alpha values of the province colors
+    // I feel like we can change this to a glm::vec4
+    std::vector<glm::vec4> province_colors;
+    // Stores the
+    std::unordered_map<entt::entity, uint16_t> province_index_map;
 
     // Width and height of the province indices vector and the
     // province map

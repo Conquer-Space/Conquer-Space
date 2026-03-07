@@ -604,10 +604,7 @@ void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::
     }
     uint16_t province_idx = data.province_index_map[province];
     size_t stride = 4;
-    data.province_colors[static_cast<size_t>(province_idx) * stride] = color.r;
-    data.province_colors[static_cast<size_t>(province_idx) * stride + 1] = color.g;
-    data.province_colors[static_cast<size_t>(province_idx) * stride + 2] = color.b;
-    data.province_colors[static_cast<size_t>(province_idx) * stride + 3] = color.a;
+    data.province_colors[static_cast<size_t>(province_idx)] = color;
 
     // Now we generate our province index map as an isampler2D
     // Now update the buffer
@@ -643,7 +640,7 @@ void SysStarSystemRenderer::ResetPlanetProvinceColors(entt::entity entity) {
         return;
     }
     for (size_t i = 0; i < data.province_colors.size(); i++) {
-        data.province_colors[i] = 0.f;
+        data.province_colors[i] = glm::vec4(0.f);
     }
     // In theory not optimal but surely we don't call this every frame
     MassUpdatePlanetProvinceColors(entity);
@@ -674,11 +671,11 @@ void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int p
     data.province_index_texture->texture_type = GL_TEXTURE_2D;
 
     // Now let's generate our indices for the color for the province
-    const size_t color_count = static_cast<size_t>(province_count) * 4;
+    const size_t color_count = static_cast<size_t>(province_count);
     data.province_colors.reserve(color_count);
     // Now let's just assign random colors...
     for (size_t i = 0; i < color_count; i++) {
-        data.province_colors.push_back(0.f);
+        data.province_colors.push_back(glm::vec4(0.f));
     }
 
     // Generate TBO
