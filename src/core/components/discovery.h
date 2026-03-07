@@ -16,10 +16,12 @@
  */
 #pragma once
 
-#include <hjson.h>
-
-#include "core/universe.h"
-
-namespace cqsp::core::loading {
-void LoadTerrainData(cqsp::core::Universe&, const Hjson::Value&);
-}  // namespace cqsp::core::loading
+namespace cqsp::core::components {
+enum class States {
+    FLYBY, // Entered the SOI of a body
+    ORBIT, // Entered the SOI with an eccentricity of less than 1
+    ATMOSPHERIC_FLIGHT, // Flew in a body
+    LANDED, // Landed on the body
+    RETURN // Returned from landing from a body
+};
+}  // namespace cqsp::core::components

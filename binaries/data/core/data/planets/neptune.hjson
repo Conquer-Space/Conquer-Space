@@ -20,6 +20,9 @@
         {
             terrain: neptunemap
         }
+        atmosphere: {
+            scale_height: 19.7 km
+        }
         tags: []
     }
 ]

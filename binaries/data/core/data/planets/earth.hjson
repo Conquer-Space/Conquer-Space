@@ -27,6 +27,9 @@
             province_definitions: province_defs
             adjacencies: province_adj_map
         }
+        atmosphere: {
+            scale_height: 8.5 km
+        }
         tags:
         [
             market

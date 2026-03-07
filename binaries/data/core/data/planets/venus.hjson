@@ -20,6 +20,9 @@
         {
             terrain: venusmap
         }
+        atmosphere: {
+            scale_height: 15.9 km
+        }
         tags: []
     }
 ]

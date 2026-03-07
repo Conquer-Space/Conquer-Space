@@ -1,10 +1,4 @@
 {
-    terrain_colors: {
-        path: planetterrain.hjson
-        type: hjson
-        hints: {
-        }
-    }
     tech_fields: {
         path: science/fields
         type: hjson

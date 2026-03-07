@@ -46,7 +46,6 @@ namespace types = components::types;
 void ScriptUniverseGenerator::Generate(Universe& universe) {
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
-    script_engine["terrain_colors"] = universe.terrain_data;
     script_engine["fields"] = universe.fields;
     script_engine["technologies"] = universe.technologies;
     script_engine["countries"] = universe.countries;

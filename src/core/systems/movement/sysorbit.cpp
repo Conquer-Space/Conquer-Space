@@ -320,10 +320,6 @@ void SysOrbit::ComputePosition(entt::entity parent, entt::entity body) {
 
 bool SysOrbit::CheckEnterSOI(const entt::entity& parent, const entt::entity& body, Kinematics& pos) {
     ZoneScoped;
-    // We should ignore bodies
-    if (GetUniverse().any_of<Body>(body)) {
-        return false;
-    }
     SPDLOG_TRACE("Calculating SOI entrance for {} in {}", util::GetName(universe, body),
                  util::GetName(universe, parent));
 
