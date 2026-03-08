@@ -99,7 +99,7 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource<loading::PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
     LoadResource<loading::TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
     LoadResource<loading::CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
-    LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "projects");
+    LoadResource<loading::ProjectLoader>(asset_manager, conquer_space.GetUniverse(), "projects");
 
     // LoadPlanetProvinces(asset_manager, conquer_space);
     LoadResource<loading::ProvinceLoader>(asset_manager, conquer_space.GetUniverse(), "provinces");

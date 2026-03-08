@@ -27,6 +27,7 @@
 #include "client/scenes/universe/views/starsystemview.h"
 #include "core/actions/cityactions.h"
 #include "core/components/bodies.h"
+#include "core/components/colony.h"
 #include "core/components/coordinates.h"
 #include "core/components/name.h"
 #include "core/components/organizations.h"
@@ -933,5 +934,4 @@ glm::vec3 StarSystemController::CalculateFutureCenteredPosition(const entt::enti
     }
     return object_pos;
 }
-
 }  // namespace cqsp::client::systems

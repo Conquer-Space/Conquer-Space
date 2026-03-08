@@ -22,6 +22,7 @@
 #include "client/components/rightclick.h"
 #include "core/actions/shiplaunchaction.h"
 #include "core/components/bodies.h"
+#include "core/components/colony.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"

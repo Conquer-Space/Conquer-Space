@@ -28,6 +28,7 @@
 #include "core/actions/factoryconstructaction.h"
 #include "core/actions/maneuver/commands.h"
 #include "core/actions/shiplaunchaction.h"
+#include "core/components/colony.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/launchvehicle.h"
@@ -44,7 +45,6 @@
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
-#include "provincewindow.h"
 
 namespace cqsp::client::systems {
 
@@ -731,8 +731,7 @@ void SysProvinceInformation::ConstructionTab() {
     // Let's list the recipes and stuff like that
     ImGui::BeginChild("construction_recipe_left", ImVec2(ImGui::GetContentRegionAvail().x * 0.5, -1.f), true);
     auto recipe_view = GetUniverse().view<components::Recipe>();
-    for (entt::entity recipe : recipe_view) {
-        auto& recipe_comp = GetUniverse().get<components::Recipe>(recipe);
+    for (auto&& [recipe, recipe_comp] : recipe_view.each()) {
         bool selected = (selected_recipe == recipe);
         if (ImGui::SelectableFmt("{}", &selected, GetName(GetUniverse(), recipe))) {
             selected_recipe = recipe;
