@@ -60,7 +60,9 @@ enum class MapMode {
     /*
     * This map mode is not intended to be actually used, this is just to force a reset of a map mode
     */
-    InvalidMapMode
+    InvalidMapMode,
+    ResourceMapMode,
+    ScienceMapMode,
 };
 
 enum class SelectedMenu {

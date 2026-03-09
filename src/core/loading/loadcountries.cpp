@@ -37,15 +37,15 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
 
     if (!values["color"].empty() && values["color"].type() == Hjson::Type::Vector && values["color"].size() == 3) {
-        country.color[0] = std::clamp(static_cast<float>(values["color"][0].to_double()) / 255.f, 0.f, 1.f);
-        country.color[1] = std::clamp(static_cast<float>(values["color"][1].to_double()) / 255.f, 0.f, 1.f);
-        country.color[2] = std::clamp(static_cast<float>(values["color"][2].to_double()) / 255.f, 0.f, 1.f);
+        country.color = glm::vec3(std::clamp(static_cast<float>(values["color"][0].to_double()) / 255.f, 0.f, 1.f),
+                                  std::clamp(static_cast<float>(values["color"][1].to_double()) / 255.f, 0.f, 1.f),
+                                  std::clamp(static_cast<float>(values["color"][2].to_double()) / 255.f, 0.f, 1.f));
     } else {
         // Compute string hash on identifier
         uint32_t value = StringHash(identifier);
-        country.color[0] = static_cast<float>(value & 0xFF) / 255.f;
-        country.color[1] = static_cast<float>((value >> 8) & 0xFF) / 255.f;
-        country.color[2] = static_cast<float>((value >> 16) & 0xFF) / 255.f;
+        country.color =
+            glm::vec3(static_cast<float>(value & 0xFF) / 255.f, static_cast<float>((value >> 8) & 0xFF) / 255.f,
+                      static_cast<float>((value >> 16) & 0xFF) / 255.f);
     }
 
     if (!values["tags"].empty() && values["tags"].type() == Hjson::Type::Vector) {
