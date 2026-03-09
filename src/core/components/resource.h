@@ -88,6 +88,9 @@ struct Recipe {
     ResourceVector capitalcost;
 };
 
+/**
+ * What it takes to construct, like 
+ */
 struct ConstructionCost {
     /* Per tick cost */
     ResourceVector cost;

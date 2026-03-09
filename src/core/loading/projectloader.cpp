@@ -16,6 +16,7 @@
  */
 #include "core/loading/projectloader.h"
 
+#include "core/components/colony.h"
 #include "core/components/projects.h"
 #include "core/loading/loadutil.h"
 
@@ -31,6 +32,13 @@ bool ProjectLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     project_template.max_progress = time;
     project_template.cost = HjsonToVector(universe, construction["cost"]);
+    if (values["crew"].type() == Hjson::Type::Int64) {
+        // Then we can have a crew quarters
+        node.emplace<components::HabitationModule>(static_cast<uint16_t>(values["crew"].to_int64()));
+    }
+    if (values["survey"].type() == Hjson::Type::Bool) {
+        // Then we can parse
+    }
     return true;
 }
 

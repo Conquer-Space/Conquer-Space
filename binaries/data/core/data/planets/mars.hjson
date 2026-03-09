@@ -21,6 +21,9 @@
         {
             terrain: marsmap
         }
+        atmosphere: {
+            scale_height: 11.1 km
+        }
         tags: []
     }
 ]

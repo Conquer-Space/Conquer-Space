@@ -7,5 +7,18 @@
                 steel: 1000
             }
         }
+        survey: true
+    }
+    {
+        identifier: habitation_module
+        construction: {
+            time: 4 weeks
+            cost: {
+                steel: 1000
+                plastic: 500
+            }
+        }
+        // Now other attributes or something
+        crew: 10
     }
 ]

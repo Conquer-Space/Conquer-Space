@@ -22,6 +22,7 @@
 #include "client/components/rightclick.h"
 #include "core/actions/shiplaunchaction.h"
 #include "core/components/bodies.h"
+#include "core/components/colony.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
@@ -63,6 +64,7 @@ void RightClickWindow::DetermineButtons(entt::entity entity) {
     buttons.clear();
     if (GetUniverse().any_of<core::components::bodies::Body>(entity)) {
         buttons.push_back({"Send to orbit", "somerandomaction"});
+        buttons.push_back({"Body Surveying", "information"});
     }
     if (GetUniverse().any_of<core::components::Province>(entity)) {
         if (core::actions::HasSpacePort(GetUniverse()(entity))) {

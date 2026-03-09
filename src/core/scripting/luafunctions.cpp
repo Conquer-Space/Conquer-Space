@@ -127,10 +127,6 @@ void FunctionUniverseBodyGen(Universe& universe, ScriptInterface& script_engine)
         Body& bod = universe.get<Body>(body);
         bod.radius = radius;
     });
-
-    REGISTER_FUNCTION("create_terrain", [&](entt::entity planet, int seed, entt::entity terrain_type) {
-        static_cast<void>(universe.emplace<bodies::Terrain>(planet, seed, terrain_type));
-    });
 }
 
 void FunctionCivilizationGen(Universe& universe, ScriptInterface& script_engine) {

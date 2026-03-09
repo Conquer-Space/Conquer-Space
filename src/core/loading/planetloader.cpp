@@ -104,6 +104,11 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     body_comp.GM = values["gm"].to_double();
 
+    if (values["atmosphere"].type() != Hjson::Type::Null) {
+        double scale_height = ReadUnit(values["atmosphere"]["scale_height"].to_string(), UnitType::Distance);
+        node.emplace<bodies::Atmosphere>(scale_height);
+    }
+
     bool rotation_correct;
     if (values["day_length"].type() != Hjson::Type::Null) {
         body_comp.rotation = ReadUnit(values["day_length"].to_string(), UnitType::Time, &rotation_correct);

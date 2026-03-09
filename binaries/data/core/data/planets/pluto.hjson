@@ -16,6 +16,9 @@
             LAN: 110.3627463601493 deg
             arg_periapsis: 114.2937178928628 deg
         }
+        atmosphere: {
+            scale_height: 50 km
+        }
         tags: []
     }
 ]

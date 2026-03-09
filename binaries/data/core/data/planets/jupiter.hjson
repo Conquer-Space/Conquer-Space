@@ -21,6 +21,9 @@
         {
             terrain: jupitermap
         }
+        atmosphere: {
+            scale_height: 27 km
+        }
         tags: []
     }
 ]

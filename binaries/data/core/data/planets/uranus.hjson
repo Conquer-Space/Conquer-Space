@@ -20,6 +20,9 @@
         {
             terrain: uranusmap
         }
+        atmosphere: {
+            scale_height: 27.7 km
+        }
         tags: []
     }
 ]

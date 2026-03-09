@@ -32,7 +32,6 @@
 #include "core/loading/loadgoods.h"
 #include "core/loading/loadnames.h"
 #include "core/loading/loadsatellites.h"
-#include "core/loading/loadterrain.h"
 #include "core/loading/planetloader.h"
 #include "core/loading/projectloader.h"
 #include "core/loading/provinceloader.h"
@@ -100,7 +99,7 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource<loading::PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
     LoadResource<loading::TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
     LoadResource<loading::CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
-    LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "projects");
+    LoadResource<loading::ProjectLoader>(asset_manager, conquer_space.GetUniverse(), "projects");
 
     // LoadPlanetProvinces(asset_manager, conquer_space);
     LoadResource<loading::ProvinceLoader>(asset_manager, conquer_space.GetUniverse(), "provinces");
@@ -112,10 +111,6 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     LoadResource(asset_manager, conquer_space.m_universe, "names", loading::LoadNameLists);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_fields", loading::LoadFields);
     LoadResource(asset_manager, conquer_space.m_universe, "tech_list", loading::LoadTechnologies);
-
-    // Initialize planet terrains
-    HjsonAsset* asset = asset_manager.GetAsset<HjsonAsset>("core:terrain_colors");
-    loading::LoadTerrainData(conquer_space.GetUniverse(), asset->data);
 
     // Load scripts
     // Load lua functions
