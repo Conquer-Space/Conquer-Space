@@ -20,6 +20,7 @@
 #include "core/components/market.h"
 #include "core/components/name.h"
 #include "core/components/organizations.h"
+#include "core/components/science.h"
 #include "core/util/logging.h"
 
 namespace cqsp::core::loading {
@@ -58,7 +59,7 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
     node.emplace<components::MissionQueue>();
-
+    node.emplace<components::science::ScientificResearch>();
     return true;
 }
 

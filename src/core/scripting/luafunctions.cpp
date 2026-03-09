@@ -24,7 +24,6 @@
 #include "core/actions/cityactions.h"
 #include "core/actions/economy/markethelpers.h"
 #include "core/actions/factoryconstructaction.h"
-#include "core/actions/science/labs.h"
 #include "core/actions/shiplaunchaction.h"
 #include "core/components/area.h"
 #include "core/components/bodies.h"
@@ -212,11 +211,6 @@ void FunctionEconomy(Universe& universe, ScriptInterface& script_engine) {
         consumption[universe.good_map[good]] = amount;
     });
 
-    REGISTER_FUNCTION("set_resource", [&](entt::entity planet, entt::entity resource, int seed) {
-        auto& dist = universe.get_or_emplace<components::ResourceDistribution>(planet);
-        dist.dist[resource] = seed;
-    });
-
     // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
     // The macro cannot take lambadas that contain templates that contain commas
     auto lambda = [&]() {
@@ -377,23 +371,12 @@ void FunctionCivilizations(Universe& universe, ScriptInterface& script_engine) {
 void FunctionScience(Universe& universe, ScriptInterface& script_engine) {
     CREATE_NAMESPACE(core);
 
-    REGISTER_FUNCTION("create_lab", [&]() { return actions::CreateLab(universe); });
+    // Now let's define our
+    lua_namespace.new_usertype<components::science::ScientificResearch>(
+        "ScientificResearch", "research", &components::science::ScientificResearch::research);
 
-    REGISTER_FUNCTION("add_science", [&](entt::entity lab, entt::entity research, double progress) {
-        Node lab_node(universe, lab);
-        Node research_node(universe, research);
-        actions::AddScienceResearch(lab_node, research_node, progress);
-    });
-
-    REGISTER_FUNCTION("add_tech_progress", [&](entt::entity entity) {
-        universe.emplace<components::science::TechnologicalProgress>(entity);
-        universe.emplace<ScientificResearch>(entity);
-    });
-
-    REGISTER_FUNCTION("complete_technology", [&](entt::entity entity, entt::entity tech) {
-        Node civilization(universe, entity);
-        Node tech_node(universe, tech);
-        actions::ResearchTech(civilization, tech_node);
+    REGISTER_FUNCTION("get_scientific_research", [&](entt::entity country) {
+        return universe.get<components::science::ScientificResearch>(country);
     });
 }
 

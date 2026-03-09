@@ -20,7 +20,6 @@
 
 #include <string>
 
-#include "core/actions/science/technologyactions.h"
 #include "core/loading/hjsonloader.h"
 #include "core/universe.h"
 

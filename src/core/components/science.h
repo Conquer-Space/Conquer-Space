@@ -43,13 +43,6 @@ struct ScientificResearch {
     int research = 0;
 };
 
-struct TechnologicalProgress {
-    std::set<entt::entity> researched_techs;
-    // A recipe that has been unlocked? Idk how this should work
-    std::set<entt::entity> researched_recipes;
-    std::set<entt::entity> researched_mining;
-};
-
 struct Technology {
     std::set<entt::entity> fields;
     std::vector<std::string> actions;
