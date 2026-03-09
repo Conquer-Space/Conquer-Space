@@ -23,5 +23,15 @@
         axial: 1.5424 deg
         day_length: 27.321661 d
         tags: []
+        colonization_steps: [
+            {
+                state: survey
+                thing: 100
+            }
+            {
+            }
+            {
+            }
+        ]
     }
 ]

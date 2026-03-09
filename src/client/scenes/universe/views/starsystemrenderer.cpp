@@ -687,7 +687,7 @@ void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int p
     data.province_colors.reserve(color_count);
     // Now let's just assign random colors...
     for (size_t i = 0; i < color_count; i++) {
-        data.province_colors.push_back(glm::vec4(0.f));
+        data.province_colors.emplace_back(0.f);
     }
 
     // Generate TBO
