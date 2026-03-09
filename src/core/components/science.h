@@ -31,7 +31,6 @@ struct Field {
     std::vector<entt::entity> adjacent;  // same
 };
 
-// A scientific research
 struct Science {
     int difficulty;
     std::vector<entt::entity> fields;
@@ -39,11 +38,9 @@ struct Science {
 
 struct ScienceProject {};
 
+// The amount of research a country has
 struct ScientificResearch {
-    // the int is the number of ticks left
-    std::map<entt::entity, int> current_research;
-
-    std::set<entt::entity> potential_research;
+    int research = 0;
 };
 
 struct TechnologicalProgress {
