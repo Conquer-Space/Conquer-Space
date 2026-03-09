@@ -7,7 +7,8 @@
                 steel: 1000
             }
         }
-        survey: true
+        // So this just provides enough of this that we can accomplish it
+        survey: 100
     }
     {
         identifier: habitation_module

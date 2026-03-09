@@ -180,6 +180,7 @@ class StarSystemController {
     ctx::MapMode last_map_mode = ctx::MapMode::NoMapMode;
 
     entt::entity focused_planet = entt::null;
+    entt::entity last_focused_planet = entt::null;
     entt::entity last_hovered_province = entt::null;
 };
 }  // namespace cqsp::client::systems

@@ -101,6 +101,7 @@ void StarSystemController::Update(float delta_time) {
     UpdateMapMode();
     HandleProvinceHoverColor();
     HandleHoverTooltip();
+    last_focused_planet = focused_planet;
 }
 
 void StarSystemController::MoveCamera(double delta_time) {
@@ -186,7 +187,7 @@ bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding
 void StarSystemController::UpdateMapMode() {
     auto current_map_mode = universe.ctx().at<ctx::MapMode>();
 
-    if (last_map_mode == current_map_mode) {
+    if (focused_planet == last_focused_planet && last_map_mode == current_map_mode) {
         return;
     }
     if (!universe.valid(focused_planet) || !universe.all_of<Settlements, PlanetTexture>(focused_planet)) {
