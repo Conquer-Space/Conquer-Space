@@ -45,8 +45,6 @@
 #include "core/systems/economy/sysspaceport.h"
 #include "core/systems/history/sysmarketcsvlogger.h"
 #include "core/systems/movement/sysorbit.h"
-#include "core/systems/science/syssciencelab.h"
-#include "core/systems/science/systechnology.h"
 #include "core/systems/scriptrunner.h"
 
 namespace cqsp::core::systems::simulation {
@@ -55,9 +53,6 @@ Simulation::Simulation(Game& game) : m_game(game), m_universe(game.GetUniverse()
 void Simulation::CreateSystems() {
     AddSystem<SysScript>();
     AddSystem<SysWalletReset>();
-
-    AddSystem<SysScienceLab>();
-    AddSystem<SysTechProgress>();
 
     // Economy progress
     AddSystem<SysMarketReset>();

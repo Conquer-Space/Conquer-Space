@@ -98,4 +98,9 @@ struct CapitalCity {};
 struct DockedShips {
     std::vector<entt::entity> docked_ships;
 };
+
+struct ResourceAmenability {
+    int science;
+    int resources;
+};
 }  // namespace cqsp::core::components

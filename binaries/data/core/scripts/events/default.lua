@@ -4,7 +4,6 @@ local starting_event = {
 
 function starting_event:on_tick()
     if date == 0 then
-        local home_name = core.get_name(core.get_civilization_planet(core.get_player()))
         core.push_event(core.get_player(), {
             id = "rocket-event",
             image = "core:rocket-event",
@@ -13,8 +12,8 @@ function starting_event:on_tick()
             "the stars for guidance, inspiration, and hope. But now, "..
             "we have finally reached the technological advancement to touch the stars. "..
             "This promises to bring untold changes to our culture, economy, and technology. "..
-            "This will change our future forever. For the first time in history, our people "..
-            "will no longer solely reside on "..home_name..", and will be an interplanetary civilization.",
+            "This will change our future forever. For the first time in history, we "..
+            "will no longer solely reside on Earth, and will be an interplanetary civilization.",
             actions = {{
                 name = "Begin!",
                 tooltip = "Starts the \"Conquer The Stars\" event chain",

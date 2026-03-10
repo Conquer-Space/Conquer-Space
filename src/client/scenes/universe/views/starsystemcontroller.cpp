@@ -17,6 +17,7 @@
 #include "client/scenes/universe/views/starsystemcontroller.h"
 
 #include <numbers>
+#include <sstream>
 
 #include <tracy/Tracy.hpp>
 
@@ -100,6 +101,7 @@ void StarSystemController::Update(float delta_time) {
     UpdateMapMode();
     HandleProvinceHoverColor();
     HandleHoverTooltip();
+    last_focused_planet = focused_planet;
 }
 
 void StarSystemController::MoveCamera(double delta_time) {
@@ -185,7 +187,7 @@ bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding
 void StarSystemController::UpdateMapMode() {
     auto current_map_mode = universe.ctx().at<ctx::MapMode>();
 
-    if (last_map_mode == current_map_mode) {
+    if (focused_planet == last_focused_planet && last_map_mode == current_map_mode) {
         return;
     }
     if (!universe.valid(focused_planet) || !universe.all_of<Settlements, PlanetTexture>(focused_planet)) {
@@ -538,6 +540,29 @@ glm::vec3 toRGB(const glm::vec3 hsl) {
 
     return result;
 }
+
+glm::vec3 HexToRgb(const std::string& str) {
+    if (str.empty()) {
+        return glm::vec3(0.f);
+    }
+    std::stringstream ss;
+    if (str.at(0) == '#') {
+        // Then we substring it
+        ss << std::hex << str.substr(1, std::string::npos).c_str();
+    } else {
+        ss << std::hex << str.c_str();
+    }
+    // If it starts with a # then we shouldn't parse it?
+
+    unsigned int x;
+    ss >> x;
+    // Then we convert
+
+    int r = (x & 0xFF0000) >> 16;
+    int g = (x & 0x00FF00) >> 8;
+    int b = (x & 0x0000FF);
+    return glm::vec3(r, g, b) / 255.f;
+}
 }  // namespace
 
 /**
@@ -729,14 +754,24 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
             } else {
                 if (universe.valid(province_comp.country)) {
                     auto& country_comp = universe.get<components::Country>(province_comp.country);
-                    glm::vec4 color = glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2],
-                                                DEFAULT_PROVINCE_APLHA);
+                    glm::vec4 color = glm::vec4(country_comp.color, DEFAULT_PROVINCE_APLHA);
                     return color;
                 }
                 return ColonizationTargetProvinceColor(province);
             }
             break;
         }
+        case ctx::MapMode::ResourceMapMode: {
+            // Then we should just color on green to red
+            auto& amenability = universe.get<components::ResourceAmenability>(province);
+            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), amenability.resources / 10.f),
+                             DEFAULT_PROVINCE_APLHA);
+        } break;
+        case ctx::MapMode::ScienceMapMode: {
+            auto& amenability = universe.get<components::ResourceAmenability>(province);
+            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), amenability.science / 10.f),
+                             DEFAULT_PROVINCE_APLHA);
+        } break;
         default:
         case ctx::MapMode::InvalidMapMode:
             break;
@@ -749,8 +784,7 @@ glm::vec4 StarSystemController::ColonizationTargetProvinceColor(entt::entity pro
         auto& target = universe.get<components::ColonizationTarget>(province);
         if (universe.valid(target.colonizer)) {
             auto& country_comp = universe.get<components::Country>(target.colonizer);
-            return glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2],
-                             DEFAULT_PROVINCE_APLHA);
+            return glm::vec4(country_comp.color, DEFAULT_PROVINCE_APLHA);
         }
     }
     return glm::vec4(0.f);

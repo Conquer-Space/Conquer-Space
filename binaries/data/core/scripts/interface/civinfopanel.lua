@@ -104,6 +104,11 @@ function civinfopanel:civinfopanel()
             end
             ImGui.EndTabItem()
         end
+        if ImGui.BeginTabItem("Research") then
+            local research = core.get_scientific_research(player)
+            ImGui.Text(tostring(research.research))
+            ImGui.EndTabItem()
+        end
         ImGui.EndTabBar()
     end
 end

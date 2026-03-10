@@ -49,7 +49,7 @@ void SysEvent::DoUI(int delta_time) {
                      ImVec2(texture->width * multiplier, texture->height * multiplier));
         ImGui::Separator();
         ImGui::BeginChild("eventchild", ImVec2(-FLT_MIN, 150), false, window_flags);
-        ImGui::Text("%s", env->content.c_str());
+        ImGui::TextWrapped("%s", env->content.c_str());
         ImGui::EndChild();
         if (env->actions.empty()) {
             if (CQSPGui::DefaultButton("Ok", ImVec2(-FLT_MIN, 0))) {

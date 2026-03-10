@@ -38,7 +38,6 @@
 #include "client/scenes/universe/interface/syspausemenu.h"
 #include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
-#include "client/scenes/universe/interface/systechviewer.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
 #include "core/components/area.h"
 #include "core/components/bodies.h"

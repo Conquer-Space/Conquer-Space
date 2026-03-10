@@ -30,6 +30,8 @@ void MapModeWindow::DoUI(int delta_time) {
     MapModeButton("No Map Mode", ctx::MapMode::NoMapMode);
     MapModeButton("Country Map Mode", ctx::MapMode::CountryMapMode, ctx::MapMode::LocalSelectedMapMode);
     MapModeButton("Province Map Mode", ctx::MapMode::ProvinceMapMode);
+    MapModeButton("Resource Map Mode", ctx::MapMode::ResourceMapMode);
+    MapModeButton("Science Map Mode", ctx::MapMode::ScienceMapMode);
 
     ImGui::End();
 }

@@ -64,7 +64,7 @@ void SysOrbit::DoSystem() {
 
     // ParseChildren(GetUniverse().sun);
     for (auto&& [entity, orbit, kinematics, future_pos] :
-         universe.view<Orbit, Kinematics, types::FuturePosition>(entt::exclude<Body>).each()) {
+         universe.view<Orbit, Kinematics, types::FuturePosition>(entt::exclude<Body, ships::Crash>).each()) {
         CalculatePosition(entity, orbit, kinematics, future_pos);
     }
 }

@@ -23,6 +23,7 @@
 #include "core/actions/maneuver/transfers.h"
 #include "core/actions/shiplaunchaction.h"
 #include "core/components/bodies.h"
+#include "core/components/colony.h"
 #include "core/components/maneuver.h"
 #include "core/components/name.h"
 #include "core/components/orbit.h"
@@ -52,7 +53,50 @@ void SysSpacePort::DoSystem() {
                 delivery_queue.pop_back();
             }
         }
+    }
+
+    // then parse all cities with a docked ship
+    // and also parse provinces with a docked ship as well
+    for (auto&& [space_port, space_port_comp, docked_ships] :
+         GetUniverse().view<components::infrastructure::SpacePort, components::DockedShips>().each()) {
         ProcessDockedShips(space_port);
+    }
+
+    for (auto&& [space_port, docked_ships, province_comp] :
+         GetUniverse().view<components::DockedShips, components::Province>().each()) {
+        std::vector<entt::entity> to_remove;
+        for (entt::entity ship : docked_ships.docked_ships) {
+            // Now unload the resources in the space port
+            if (GetUniverse().any_of<components::ships::CargoHold>(ship)) {
+                auto& cargo = GetUniverse().get<components::ships::CargoHold>(ship);
+                // TODO: Check cargo
+                if (GetUniverse().valid(space_port) &&
+                    GetUniverse().any_of<components::ColonizationTarget>(space_port)) {
+                    auto& target = GetUniverse().get<components::ColonizationTarget>(space_port);
+                    // Progress target
+                    switch (target.steps) {
+                        case components::ColonizationSteps::Surveying:
+                            target.steps = components::ColonizationSteps::Preparation;
+                            break;
+                        case components::ColonizationSteps::Preparation:
+                            target.steps = components::ColonizationSteps::InitialBase;
+                            break;
+                        case components::ColonizationSteps::InitialBase:
+                            target.steps = components::ColonizationSteps::HumanSettlement;
+                            break;
+                        case components::ColonizationSteps::HumanSettlement:
+                            target.steps = components::ColonizationSteps::PermanentSettlement;
+                            break;
+                        case components::ColonizationSteps::PermanentSettlement:
+                            // Now we own the province?
+                            province_comp.country = target.colonizer;
+                            GetUniverse().remove<components::ColonizationTarget>(space_port);
+                    }
+                    // Once again rust would actually be great for this
+                    GetUniverse().remove<components::ships::CargoHold>(ship);
+                }
+            }
+        }
     }
 }
 
@@ -66,6 +110,35 @@ void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
     // Check for each of the docked ships
     for (entt::entity ship : docked_ships.docked_ships) {
         // Now unload the resources in the space port
+        if (GetUniverse().any_of<components::ships::CargoHold>(ship)) {
+            auto& cargo = GetUniverse().get<components::ships::CargoHold>(ship);
+            // TODO: Check cargo
+            auto& city_comp = GetUniverse().get<components::City>(space_port);
+            if (GetUniverse().valid(city_comp.province) &&
+                GetUniverse().any_of<components::ColonizationTarget>(city_comp.province)) {
+                auto& target = GetUniverse().get<components::ColonizationTarget>(city_comp.province);
+                // Progress target
+                switch (target.steps) {
+                    case components::ColonizationSteps::Surveying:
+                        target.steps = components::ColonizationSteps::Preparation;
+                        break;
+                    case components::ColonizationSteps::Preparation:
+                        target.steps = components::ColonizationSteps::InitialBase;
+                        break;
+                    case components::ColonizationSteps::InitialBase:
+                        target.steps = components::ColonizationSteps::HumanSettlement;
+                        break;
+                    case components::ColonizationSteps::HumanSettlement:
+                        target.steps = components::ColonizationSteps::PermanentSettlement;
+                        break;
+                    case components::ColonizationSteps::PermanentSettlement:
+                        // No longer a colonization target so we remove that component and then also do stuff
+                        GetUniverse().remove<components::ColonizationTarget>(city_comp.province);
+                        // Please don't access the target after this
+                        // rust would actually fix this
+                }
+            }
+        }
         if (!GetUniverse().any_of<components::ResourceStockpile>(ship)) {
             continue;
         }

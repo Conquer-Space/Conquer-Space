@@ -18,6 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <random>
+
 #include "core/actions/factoryconstructaction.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
@@ -170,6 +172,9 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             }
         }
     }
+    // Just fill in random values for now
+    // TODO(EhWhoAmI): Fix
+    node.emplace<components::ResourceAmenability>(distrib(gen), distrib(gen));
     return true;
 }
 
