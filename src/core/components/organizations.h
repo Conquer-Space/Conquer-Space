@@ -39,6 +39,7 @@ struct Country {
 struct CountryCityList {
     std::vector<entt::entity> city_list;
     std::vector<entt::entity> province_list;
+    std::vector<entt::entity> space_port_list;
 };
 
 struct MissionQueue {

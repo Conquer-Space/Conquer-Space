@@ -117,10 +117,9 @@ void SysProvinceInformation::ProvinceView() {
 
     if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
         ColonizationTabs();
-        ImGui::Separator();
+    } else {
+        ProvinceIndustryTabs();
     }
-
-    ProvinceIndustryTabs();
 }
 
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
@@ -676,10 +675,12 @@ void SysProvinceInformation::SpacePortMissionTab(const entt::entity city) {
             selected_project = entity;
         }
     }
-    if (GetUniverse().valid(selected_project) && GetUniverse().all_of<components::Mission>(selected_project)) {
+    if (GetUniverse().valid(selected_project) && GetUniverse().all_of<components::Mission>(selected_project) &&
+        !GetUniverse().all_of<components::MissionInProgress>(selected_project)) {
         if (ImGui::Button("Dispatch mission")) {
             auto& mission = GetUniverse().get<components::Mission>(selected_project);
             // Then we add it to the queue or something
+            GetUniverse().emplace<components::MissionInProgress>(selected_project);
             auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
             components::infrastructure::TransportedGood good;
             good.good = selected_project;
@@ -904,7 +905,6 @@ void SysProvinceInformation::ColonizationTabs() {
         // Then we set our target mission or something
         auto& queue = player_node.get<components::MissionQueue>();
         queue.list.push_back(new_mission);
-        // We should have set the project too and stuff
     }
 }
 

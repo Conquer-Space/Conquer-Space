@@ -34,6 +34,7 @@ class CityLoader : public HjsonLoader {
     void PostLoad(const Node& node) override;
 
     void ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier);
+    void LoadTags(const Hjson::Value& tags, Node& node);
 
  private:
     Hjson::Value default_val;
