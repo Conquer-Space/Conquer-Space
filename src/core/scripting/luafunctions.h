@@ -21,4 +21,5 @@
 
 namespace cqsp::core::scripting {
 void LoadFunctions(Universe& universe, ScriptInterface& script_engine);
+void LoadFunctions(Universe& universe, sol::state_view& script_engine);
 }  // namespace cqsp::core::scripting

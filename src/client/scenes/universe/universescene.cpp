@@ -51,6 +51,7 @@
 #include "core/components/population.h"
 #include "core/components/resource.h"
 #include "core/components/surface.h"
+#include "core/scripting/luafunctions.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/polygon.h"
 #include "engine/graphics/primitives/uvsphere.h"
@@ -73,13 +74,15 @@ namespace systems = client::systems;
 
 using core::systems::simulation::Simulation;
 
-UniverseScene::UniverseScene(engine::Application& app) : ClientScene(app) {}
+UniverseScene::UniverseScene(engine::Application& app)
+    : ClientScene(app), rml_lua_context(Rml::Lua::Interpreter::GetLuaState()) {}
 
 void UniverseScene::Init() {
     ZoneScoped;
 
     simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
 
+    core::scripting::LoadFunctions(GetUniverse(), rml_lua_context);
     system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();
 

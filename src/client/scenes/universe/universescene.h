@@ -107,6 +107,7 @@ class UniverseScene : public ClientScene {
     void ToggleTick();
 
     bool interp = true;
+    sol::state_view rml_lua_context;
 };
 
 void SeePlanet(core::Universe& universe, entt::entity ent);

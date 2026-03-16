@@ -5,3 +5,5 @@ function open_exploration_window(document)
     end
     return doc
 end
+player = core.get_player()
+print("Player: "..core.get_name(player))
