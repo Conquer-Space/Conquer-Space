@@ -69,15 +69,7 @@
             }
         </style>
 
-        <script>
-            function open_exploration_window2(document)
-                local doc = document.context:LoadDocument('binaries/data/core/gui/mainscene/exploration_window.rml')
-                if doc then
-                    doc:Show()
-                end
-                return doc
-            end
-        </script>
+        <script src="test.lua"></script>
     </head>
     <body>
         <div id="button_holder">

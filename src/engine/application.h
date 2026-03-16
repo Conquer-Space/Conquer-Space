@@ -16,22 +16,32 @@
  */
 #pragma once
 
+#include <RmlUi/Config/Config.h>
 #include <RmlUi/Core/Context.h>
+#include <RmlUi/Core/Element.h>
 #include <RmlUi/Core/ElementDocument.h>
+#include <RmlUi/Core/Event.h>
 #include <RmlUi/Core/EventListener.h>
 #include <RmlUi/Core/EventListenerInstancer.h>
+#include <RmlUi/Core/FileInterface.h>
 #include <RmlUi/Core/RenderInterface.h>
+#include <RmlUi/Core/Types.h>
 #include <glad/glad.h>
+#include <imgui_node_editor.h>
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <map>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
+#include <glm/fwd.hpp>
+
 #include "core/game.h"
 #include "engine/asset/assetmanager.h"
+#include "engine/asset/vfs/vfs.h"
 #include "engine/audio/iaudiointerface.h"
 #include "engine/clientoptions.h"
 #include "engine/engine.h"
@@ -43,6 +53,7 @@
 #include "engine/ui/RmlUi_Platform_GLFW.h"
 #include "engine/userinput.h"
 #include "engine/window.h"
+#include "graphics/shader.h"
 
 namespace cqsp::engine {
 class Application {
@@ -105,6 +116,7 @@ class Application {
 
     Rml::ElementDocument* LoadDocument(const std::string& path);
     void CloseDocument(const std::string& path);
+    bool DocumentIsLoaded(const std::string& path) { return loaded_documents.contains(path); }
 
     /// <summary>
     /// Reloads the document from the file
@@ -221,6 +233,24 @@ class Application {
 
     void CalculateProjections();
 
+    class RmlFileInterface : public Rml::FileInterface {
+     public:
+        RmlFileInterface();
+        ~RmlFileInterface();
+        Rml::FileHandle Open(const Rml::String& path);
+        // Closes a previously opened file.
+        void Close(Rml::FileHandle file);
+        // Reads data from a previously opened file.
+        size_t Read(void* buffer, size_t size, Rml::FileHandle file);
+
+        // Seeks to a point in a previously opened file.
+        bool Seek(Rml::FileHandle file, long offset, int origin);
+
+        // Returns the current position of the file pointer.
+        size_t Tell(Rml::FileHandle file);
+        std::string root;
+    };
+
     std::vector<std::string> cmd_line_args;
     bool full_screen;
     Window* m_window;
@@ -228,6 +258,7 @@ class Application {
 
     Rml::Context* rml_context;
     std::unique_ptr<SystemInterface_GLFW> m_system_interface;
+    std::unique_ptr<Rml::FileInterface> m_file_interface;
     std::unique_ptr<Rml::RenderInterface> m_render_interface;
     ax::NodeEditor::EditorContext* m_ne_context = nullptr;
 

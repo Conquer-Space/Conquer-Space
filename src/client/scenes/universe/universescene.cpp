@@ -17,6 +17,8 @@
 #include "client/scenes/universe/universescene.h"
 
 #include <RmlUi/Core/Factory.h>
+#include <RmlUi/Debugger.h>
+#include <RmlUi/Lua.h>
 
 #include <cmath>
 #include <string>
@@ -59,7 +61,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/polar_coordinates.hpp"
 #include "tracy/Tracy.hpp"
-#include "universescene.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -110,7 +111,6 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
-    AddRmlUiSystem<systems::rmlui::ExplorationWindow>();
 }
 
 void UniverseScene::Update(float deltaTime) {
@@ -172,6 +172,30 @@ void UniverseScene::CheckUiReload() {
         Rml::Factory::ClearTemplateCache();
         for (auto& ui : documents) {
             ui->ReloadWindow();
+        }
+        auto context = Rml::GetContext(0);
+        std::vector<Rml::ElementDocument*> reload_document_list;
+        for (int i = 0; i < context->GetNumDocuments(); i++) {
+            Rml::ElementDocument* document = context->GetDocument(i);
+            const Rml::String& src = document->GetSourceURL();
+            if (src.empty()) {
+                continue;
+            }
+            if (GetApp().DocumentIsLoaded(src)) {
+                continue;
+            }
+            reload_document_list.push_back(document);
+        }
+
+        for (Rml::ElementDocument* document : reload_document_list) {
+            const Rml::String& src = document->GetSourceURL();
+            SPDLOG_INFO("Reloading {}", src);
+            bool visible = document->IsVisible();
+            document->Close();
+            auto document2 = context->LoadDocument(src);
+            if (visible) {
+                document2->Show();
+            }
         }
     }
 }

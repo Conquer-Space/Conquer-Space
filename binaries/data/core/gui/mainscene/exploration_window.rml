@@ -23,6 +23,7 @@
         <div id="exit_button" onclick="document:Hide()">X</div>
         <!-- Content goes here -->
         <h1>Exploration</h1>
+        <div>testung</div>
         <div>Some panel to show all the planets</div>
         <div>Planet panel</div>
     </body>
