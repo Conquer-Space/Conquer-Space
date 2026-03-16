@@ -72,6 +72,7 @@ enum class SelectedMenu {
     NoMenu,
     SpaceMenu,
     EconomyMenu,
-    ProjectsMenu
+    ProjectsMenu,
+    ExplorationMenu
 };
 }  // namespace cqsp::client::ctx

@@ -25,6 +25,7 @@
 #include "client/components/rightclick.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
+#include "client/scenes/universe/interface/explorationwindow.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
 #include "client/scenes/universe/interface/launchvehiclewindow.h"
 #include "client/scenes/universe/interface/maintooltip.h"
@@ -109,6 +110,7 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
+    AddRmlUiSystem<systems::rmlui::ExplorationWindow>();
 }
 
 void UniverseScene::Update(float deltaTime) {
@@ -202,6 +204,10 @@ void UniverseScene::ManageTick() {
             simulation->tick();
         }
         system_renderer->OnTick();
+
+        for (auto& ui : documents) {
+            ui->OnTick();
+        }
     }
 }
 

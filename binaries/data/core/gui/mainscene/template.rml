@@ -1,0 +1,12 @@
+<!-- A template for all your rmlui interface desires -->
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+        </style>
+    </head>
+    <body>
+        <!-- Content goes here -->
+    </body>
+</rml>

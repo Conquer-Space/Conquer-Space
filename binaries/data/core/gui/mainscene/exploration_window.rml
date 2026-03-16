@@ -1,0 +1,29 @@
+<rml>
+    <head>
+        <title>Exploration Window</title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+            body {
+                width: 500 px;
+                height: 600 px;
+            }
+
+            #exit_button {
+                right: 0px;
+                top: 0px;
+                background-color: red;
+                position: absolute;
+                width: 30 px;
+                height: 30 px;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div id="exit_button" onclick="document:Hide()">X</div>
+        <!-- Content goes here -->
+        <h1>Exploration</h1>
+        <div>Some panel to show all the planets</div>
+        <div>Planet panel</div>
+    </body>
+</rml>

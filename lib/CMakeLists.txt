@@ -37,6 +37,8 @@ add_subdirectory(lunasvg)
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(RMLUI_SVG_PLUGIN ON CACHE BOOL "" FORCE)
+set(RMLUI_LUA_BINDINGS ON CACHE BOOL "" FORCE)
+set(RMLUI_LUA_BINDINGS_LIBRARY luajit CACHE STRING "" FORCE)
 add_subdirectory(RmlUi)
 
 set_target_properties(hjson glad stb rmlui rmlui_debugger lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")
