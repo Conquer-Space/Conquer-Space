@@ -128,6 +128,16 @@ void FunctionUniverseBodyGen(Universe& universe, T& script_engine) {
         Body& bod = universe.get<Body>(body);
         bod.radius = radius;
     });
+
+    REGISTER_FUNCTION("get_planets", [&]() {
+        auto view = universe.view<Body>();
+        // this is probably an antiBpattern but ah well
+        std::vector<entt::entity> bodies;
+        for (auto entity : view) {
+            bodies.push_back(entity);
+        }
+        return sol::as_table(bodies);
+    });
 }
 
 template <class T>

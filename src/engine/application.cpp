@@ -16,9 +16,9 @@
  */
 #include "engine/application.h"
 
+#include <RmlSolLua/RmlSolLua.h>
 #include <RmlUi/Core.h>
 #include <RmlUi/Debugger.h>
-#include <RmlUi/Lua.h>
 #include <fmt/core.h>
 #include <glad/glad.h>
 #include <hjson.h>
@@ -213,7 +213,8 @@ void Application::InitRmlUi() {
     reinterpret_cast<RenderInterface_GL3*>(m_render_interface.get())->SetViewport(GetWindowWidth(), GetWindowHeight());
     // Now we can initialize RmlUi.
     Rml::Initialise();
-    Rml::Lua::Initialise();
+    lua_state.open_libraries(sol::lib::base, sol::lib::string, sol::lib::table, sol::lib::math);
+    Rml::SolLua::Initialise(&lua_state);
 
     rml_context = Rml::CreateContext("main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
     if (rml_context == nullptr) {

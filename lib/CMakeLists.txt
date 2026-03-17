@@ -41,4 +41,13 @@ set(RMLUI_LUA_BINDINGS ON CACHE BOOL "" FORCE)
 set(RMLUI_LUA_BINDINGS_LIBRARY luajit CACHE STRING "" FORCE)
 add_subdirectory(RmlUi)
 
+# RmlSolLua calls find_package(RmlUi), find_package(sol2), and find_package(Lua).
+# Since all three are added as subdirectories, we point find_package to stub
+# configs (targets already in scope) and fix LUA_INCLUDE_DIR for Lua detection.
+set(RmlUi_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE PATH "" FORCE)
+set(sol2_DIR ${CMAKE_CURRENT_SOURCE_DIR}/cmake CACHE PATH "" FORCE)
+set(LUA_INCLUDE_DIR ${LUA_HEADERS} CACHE PATH "" FORCE)
+set(LUA_LIBRARIES ${LUA_LIBRARY} CACHE FILEPATH "" FORCE)
+add_subdirectory(RmlSolLua)
+
 set_target_properties(hjson glad stb rmlui rmlui_debugger lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")

@@ -74,15 +74,14 @@ namespace systems = client::systems;
 
 using core::systems::simulation::Simulation;
 
-UniverseScene::UniverseScene(engine::Application& app)
-    : ClientScene(app), rml_lua_context(Rml::Lua::Interpreter::GetLuaState()) {}
+UniverseScene::UniverseScene(engine::Application& app) : ClientScene(app) {}
 
 void UniverseScene::Init() {
     ZoneScoped;
 
     simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
 
-    core::scripting::LoadFunctions(GetUniverse(), rml_lua_context);
+    core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
     system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
@@ -173,9 +172,6 @@ void UniverseScene::CheckUiReload() {
     if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
         Rml::Factory::ClearStyleSheetCache();
         Rml::Factory::ClearTemplateCache();
-        for (auto& ui : documents) {
-            ui->ReloadWindow();
-        }
         auto context = Rml::GetContext(0);
         std::vector<Rml::ElementDocument*> reload_document_list;
         for (int i = 0; i < context->GetNumDocuments(); i++) {
@@ -184,21 +180,14 @@ void UniverseScene::CheckUiReload() {
             if (src.empty()) {
                 continue;
             }
+            document->ReloadStyleSheet();
             if (GetApp().DocumentIsLoaded(src)) {
                 continue;
             }
-            reload_document_list.push_back(document);
-        }
-
-        for (Rml::ElementDocument* document : reload_document_list) {
-            const Rml::String& src = document->GetSourceURL();
-            SPDLOG_INFO("Reloading {}", src);
-            bool visible = document->IsVisible();
             document->Close();
-            auto document2 = context->LoadDocument(src);
-            if (visible) {
-                document2->Show();
-            }
+        }
+        for (auto& ui : documents) {
+            ui->ReloadWindow();
         }
     }
 }

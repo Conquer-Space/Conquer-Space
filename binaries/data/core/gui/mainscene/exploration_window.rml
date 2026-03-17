@@ -4,8 +4,11 @@
         <link type="text/rcss" href="window.rcss"/>
         <style>
             body {
-                width: 500 px;
-                height: 600 px;
+                width: 80%;
+                height: 80%;
+                top: 10%;
+                display: flex;
+                flex-direction: column;
             }
 
             #exit_button {
@@ -16,15 +19,27 @@
                 width: 30 px;
                 height: 30 px;
             }
-        </style>
 
+            #exploration_title {
+                
+            }
+
+            #planet_panel {
+                border: 4px #20005c;
+            }
+
+            #planet_information {
+
+            }
+        </style>
+        <script src="exploration_menu.lua"></script>
     </head>
-    <body>
+    <body onload="ExplorationWindow.OnLoad(document)">
         <div id="exit_button" onclick="document:Hide()">X</div>
         <!-- Content goes here -->
-        <h1>Exploration</h1>
-        <div>testung</div>
-        <div>Some panel to show all the planets</div>
-        <div>Planet panel</div>
+        <h1 id="exploration_title">Exploration</h1>
+        <div id="planet_panel">
+        </div>
+        <div id="planet_information">Planet ascasfdjfsdjkd</div>
     </body>
 </rml>

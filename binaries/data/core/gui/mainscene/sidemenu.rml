@@ -68,8 +68,7 @@
                 opacity: 1;
             }
         </style>
-
-        <script src="test.lua"></script>
+        <script src="sidemenu.lua"></script>
     </head>
     <body>
         <div id="button_holder">

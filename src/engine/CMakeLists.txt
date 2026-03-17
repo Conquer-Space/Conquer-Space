@@ -59,4 +59,5 @@ target_link_libraries(cqsp-engine PUBLIC
     assimp::assimp
     debug Tracy::TracyClient
     cqsp-core
+    RmlSolLua
 )

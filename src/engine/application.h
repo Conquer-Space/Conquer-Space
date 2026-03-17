@@ -201,6 +201,8 @@ class Application {
         m_game = std::make_unique<T>();
     }
 
+    sol::state& GetSolState() { return lua_state; }
+
  private:
     void InitFonts();
 
@@ -291,6 +293,10 @@ class Application {
     glm::mat4 three_dim_projection;
     glm::mat4 rmlui_projection;
     bool to_halt;
+    /**
+     * Lua state for the ui
+     */
+    sol::state lua_state;
 
     bool draw_fps = false;
 };

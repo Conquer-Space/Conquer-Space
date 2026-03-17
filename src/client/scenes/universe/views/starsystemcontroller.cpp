@@ -197,9 +197,6 @@ void StarSystemController::UpdateMapMode() {
     // Then let's set the map mode
     auto& texture_map = universe.get<PlanetTexture>(focused_planet);
     auto& settlement_list = universe.get<Settlements>(focused_planet);
-    if (texture_map.province_index_map.contains(entt::null)) {
-        SPDLOG_INFO("asdf");
-    }
     for (entt::entity province : settlement_list.provinces) {
         if (texture_map.province_index_map[province] == 0) {
             SPDLOG_INFO("{}", province);
