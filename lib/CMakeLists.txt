@@ -37,8 +37,7 @@ add_subdirectory(lunasvg)
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(RMLUI_SVG_PLUGIN ON CACHE BOOL "" FORCE)
-set(RMLUI_LUA_BINDINGS ON CACHE BOOL "" FORCE)
-set(RMLUI_LUA_BINDINGS_LIBRARY luajit CACHE STRING "" FORCE)
+set(RMLUI_LUA_BINDINGS OFF CACHE BOOL "" FORCE)
 add_subdirectory(RmlUi)
 
 # RmlSolLua calls find_package(RmlUi), find_package(sol2), and find_package(Lua).
@@ -50,4 +49,4 @@ set(LUA_INCLUDE_DIR ${LUA_HEADERS} CACHE PATH "" FORCE)
 set(LUA_LIBRARIES ${LUA_LIBRARY} CACHE FILEPATH "" FORCE)
 add_subdirectory(RmlSolLua)
 
-set_target_properties(hjson glad stb rmlui rmlui_debugger lunasvg imgui_node_editor PROPERTIES FOLDER "Libs")
+set_target_properties(hjson glad stb rmlui rmlui_debugger lunasvg imgui_node_editor plutovg rmlui_core RmlSolLua svg2png TracyClient PROPERTIES FOLDER "Libs")

@@ -18,7 +18,6 @@
 
 #include <RmlUi/Core/Factory.h>
 #include <RmlUi/Debugger.h>
-#include <RmlUi/Lua.h>
 
 #include <cmath>
 #include <string>
