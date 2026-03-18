@@ -222,6 +222,7 @@ void Application::InitRmlUi() {
     }
 
     Rml::Debugger::Initialise(rml_context);
+    Rml::Factory::RegisterDataViewInstancer(&instancer, "number", false);
 
     // Load rmlui fonts
     // TODO(EhWhoAmI): Load this somewhere else

@@ -20,6 +20,7 @@
 #include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/Element.h>
 #include <RmlUi/Core/ElementDocument.h>
+#include <RmlUi/Core/ElementInstancer.h>
 #include <RmlUi/Core/Event.h>
 #include <RmlUi/Core/EventListener.h>
 #include <RmlUi/Core/EventListenerInstancer.h>
@@ -51,6 +52,7 @@
 #include "engine/scene.h"
 #include "engine/scenemanager.h"
 #include "engine/ui/RmlUi_Platform_GLFW.h"
+#include "engine/ui/numberelement.h"
 #include "engine/userinput.h"
 #include "engine/window.h"
 #include "graphics/shader.h"
@@ -297,8 +299,8 @@ class Application {
      * Lua state for the ui
      */
     sol::state lua_state;
-    std::unique_ptr<ElementInstancerGeneric>
+    Rml::DataViewInstancerDefault<ui::DataViewNumber> instancer;
 
-        bool draw_fps = false;
+    bool draw_fps = false;
 };
 }  // namespace cqsp::engine

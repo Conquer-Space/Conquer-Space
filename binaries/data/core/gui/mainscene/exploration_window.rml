@@ -51,7 +51,7 @@
         <div id="planet_information" data-model="planet_model">
             <h2>{{ name }}</h2>
             <h3>Orbit information</h3>
-            <p>Orbit: {{ orbit.semi_major_axis }}</p>
+            <p>Orbit: <p data-number="orbit.semi_major_axis"></p> km</p>
         </div>
     </body>
 </rml>
