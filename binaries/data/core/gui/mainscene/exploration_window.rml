@@ -29,17 +29,29 @@
             }
 
             #planet_information {
-
+                display: flex;
+                flex-direction: column;
+                margin: 0px;
+            }
+            .planet_button {
+                border: 4px #20005c;
+                width: 64px;
+                height: 64px;
             }
         </style>
-        <script src="exploration_menu.lua"></script>
+        <script src="exploration_window.lua"></script>
     </head>
     <body onload="ExplorationWindow.OnLoad(document)">
         <div id="exit_button" onclick="document:Hide()">X</div>
         <!-- Content goes here -->
         <h1 id="exploration_title">Exploration</h1>
         <div id="planet_panel">
+            <div id="planet_button" class="planet_button" style="display: none"></div>
         </div>
-        <div id="planet_information">Planet ascasfdjfsdjkd</div>
+        <div id="planet_information" data-model="planet_model">
+            <h2>{{ name }}</h2>
+            <h3>Orbit information</h3>
+            <p>Orbit: {{ orbit.semi_major_axis }}</p>
+        </div>
     </body>
 </rml>

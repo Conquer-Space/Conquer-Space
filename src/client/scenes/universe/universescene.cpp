@@ -81,6 +81,7 @@ void UniverseScene::Init() {
     simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
 
     core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
+    GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
     system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
@@ -179,7 +180,6 @@ void UniverseScene::CheckUiReload() {
             if (src.empty()) {
                 continue;
             }
-            document->ReloadStyleSheet();
             if (GetApp().DocumentIsLoaded(src)) {
                 continue;
             }

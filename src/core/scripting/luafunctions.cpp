@@ -43,6 +43,7 @@
 #include "core/components/surface.h"
 #include "core/loading/technology.h"
 #include "core/scripting/functionreg.h"
+#include "core/scripting/orbitfunctions.h"
 #include "core/util/nameutil.h"
 #include "core/util/random/stdrandom.h"
 #include "core/util/utilnumberdisplay.h"
@@ -74,8 +75,7 @@ using components::science::ScientificResearch;
 /// Initializes functions for RNG
 /// </summary>
 /// <param name="app"></param>
-template <class T>
-void FunctionRandom(Universe& universe, T& script_engine) {
+void FunctionRandom(Universe& universe, sol::state_view& script_engine) {
     // RNG
     // Make namespace
     CREATE_NAMESPACE(core);
@@ -86,8 +86,7 @@ void FunctionRandom(Universe& universe, T& script_engine) {
                       [&](int mean, int sd) { return universe.random->GetRandomNormalInt(mean, sd); });
 }
 
-template <class T>
-void FunctionUniverseBodyGen(Universe& universe, T& script_engine) {
+void FunctionUniverseBodyGen(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_planet", [&]() {
@@ -140,8 +139,7 @@ void FunctionUniverseBodyGen(Universe& universe, T& script_engine) {
     });
 }
 
-template <class T>
-void FunctionCivilizationGen(Universe& universe, T& script_engine) {
+void FunctionCivilizationGen(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_civilization", [&]() {
@@ -181,8 +179,7 @@ void FunctionCivilizationGen(Universe& universe, T& script_engine) {
     });
 }
 
-template <class T>
-void FunctionEconomy(Universe& universe, T& script_engine) {
+void FunctionEconomy(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("create_industries", [&](entt::entity city) { universe.emplace<IndustrialZone>(city); });
@@ -265,8 +262,7 @@ void FunctionEconomy(Universe& universe, T& script_engine) {
     REGISTER_FUNCTION("get_planetary_markets", get_planetary_markets);
 }
 
-template <class T>
-void FunctionUser(Universe& universe, T& script_engine) {
+void FunctionUser(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("set_name", [&](entt::entity entity, const std::string& name) {
@@ -284,8 +280,7 @@ void FunctionUser(Universe& universe, T& script_engine) {
     });
 }
 
-template <class T>
-void FunctionPopulation(Universe& universe, T& script_engine) {
+void FunctionPopulation(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_population_segment", [&](entt::entity settlement, uint64_t popsize) {
@@ -311,8 +306,7 @@ void FunctionPopulation(Universe& universe, T& script_engine) {
     REGISTER_FUNCTION("get_city", [&](const std::string& planet) { return universe.cities[planet]; });
 }
 
-template <class T>
-void FunctionShips(cqsp::core::Universe& universe, T& script_engine) {
+void FunctionShips(cqsp::core::Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("create_ship", [&](entt::entity civ, entt::entity orbit, entt::entity starsystem) {
@@ -323,8 +317,7 @@ void FunctionShips(cqsp::core::Universe& universe, T& script_engine) {
     });
 }
 
-template <class T>
-void FunctionEvent(Universe& universe, T& script_engine) {
+void FunctionEvent(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("push_event", [&](entt::entity entity, sol::table event_table) {
@@ -360,8 +353,7 @@ void FunctionEvent(Universe& universe, T& script_engine) {
     });
 }
 
-template <class T>
-void FunctionResource(Universe& universe, T& script_engine) {
+void FunctionResource(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("add_resource", [&](entt::entity storage, entt::entity resource, int amount) {
@@ -374,8 +366,7 @@ void FunctionResource(Universe& universe, T& script_engine) {
     });
 }
 
-template <class T>
-void FunctionCivilizations(Universe& universe, T& script_engine) {
+void FunctionCivilizations(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_player", [&]() { return universe.view<components::Player>().front(); });
@@ -388,8 +379,7 @@ void FunctionCivilizations(Universe& universe, T& script_engine) {
     });
 }
 
-template <class T>
-void FunctionScience(Universe& universe, T& script_engine) {
+void FunctionScience(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     // Now let's define our
@@ -402,8 +392,7 @@ void FunctionScience(Universe& universe, T& script_engine) {
 }
 
 // this is just meant for debugging and is not performant at all
-template <class T>
-sol::table GetMarketTable(Universe& universe, T& script_engine, entt::entity market) {
+sol::table GetMarketTable(Universe& universe, sol::state_view& script_engine, entt::entity market) {
     sol::table market_table = script_engine.create_table_with();
 
     Market& market_component = universe.get<Market>(market);
@@ -423,35 +412,30 @@ sol::table GetMarketTable(Universe& universe, T& script_engine, entt::entity mar
     return market_table;
 }
 
-template <class T>
-void FunctionTrade(Universe& universe, T& script_engine) {
+void FunctionTrade(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_market_table",
                       [&](entt::entity market) { return GetMarketTable(universe, script_engine, market); });
 }
 
-template <class T>
-void LoadAllFunctions(Universe& universe, T& script_engine) {
-    FunctionCivilizationGen<T>(universe, script_engine);
-    FunctionCivilizations<T>(universe, script_engine);
-    FunctionEconomy<T>(universe, script_engine);
-    FunctionPopulation<T>(universe, script_engine);
-    FunctionRandom<T>(universe, script_engine);
-    FunctionUniverseBodyGen<T>(universe, script_engine);
-    FunctionUser<T>(universe, script_engine);
-    FunctionEvent<T>(universe, script_engine);
-    FunctionShips<T>(universe, script_engine);
-    FunctionResource<T>(universe, script_engine);
-    FunctionScience<T>(universe, script_engine);
-    FunctionTrade<T>(universe, script_engine);
+void LoadAllFunctions(Universe& universe, sol::state_view& script_engine) {
+    FunctionCivilizationGen(universe, script_engine);
+    FunctionCivilizations(universe, script_engine);
+    FunctionEconomy(universe, script_engine);
+    FunctionPopulation(universe, script_engine);
+    FunctionRandom(universe, script_engine);
+    FunctionUniverseBodyGen(universe, script_engine);
+    FunctionUser(universe, script_engine);
+    FunctionEvent(universe, script_engine);
+    FunctionShips(universe, script_engine);
+    FunctionResource(universe, script_engine);
+    FunctionScience(universe, script_engine);
+    FunctionTrade(universe, script_engine);
+    LoadOrbitFunctions(universe, script_engine);
 }
 
-void LoadFunctions(Universe& universe, ScriptInterface& script_engine) {
-    LoadAllFunctions<sol::state_view>(universe, script_engine);
-}
+void LoadFunctions(Universe& universe, ScriptInterface& script_engine) { LoadAllFunctions(universe, script_engine); }
 
-void LoadFunctions(Universe& universe, sol::state_view& script_engine) {
-    LoadAllFunctions<sol::state_view>(universe, script_engine);
-}
+void LoadFunctions(Universe& universe, sol::state_view& script_engine) { LoadAllFunctions(universe, script_engine); }
 }  // namespace cqsp::core::scripting

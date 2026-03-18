@@ -297,7 +297,8 @@ class Application {
      * Lua state for the ui
      */
     sol::state lua_state;
+    std::unique_ptr<ElementInstancerGeneric>
 
-    bool draw_fps = false;
+        bool draw_fps = false;
 };
 }  // namespace cqsp::engine
