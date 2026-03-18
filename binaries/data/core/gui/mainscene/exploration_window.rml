@@ -38,6 +38,19 @@
                 width: 64px;
                 height: 64px;
             }
+
+            .orbit_box {
+                display: flex;
+                flex-direction: column;
+                margin: 0px;
+            }
+            .orbit_text {
+                margin: 0px;
+            }
+
+            .orbit_text:h2 {
+                margin: 5px;
+            }
         </style>
         <script src="exploration_window.lua"></script>
     </head>
@@ -50,8 +63,13 @@
         </div>
         <div id="planet_information" data-model="planet_model">
             <h2>{{ name }}</h2>
-            <h3>Orbit information</h3>
-            <p>Orbit: <p data-number="orbit.semi_major_axis"></p> km</p>
+            <div class="orbit_box">
+            <h3 class="orbit_text">Orbit information</h3>
+            <p class="orbit_text">Orbit: <p data-number="orbit.semi_major_axis"></p> km</p>
+            <p class="orbit_text">Eccentricity: <p data-number="orbit.eccentricity"></p></p>
+            <p class="orbit_text">Reference body: {{ reference_body_name }}</p>
+            </div>
+            <!-- Then other orbit information -->
         </div>
     </body>
 </rml>

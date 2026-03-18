@@ -3,7 +3,8 @@ ExplorationWindow = ExplorationWindow or {}
 
 local planet_model = {
     name = "",
-    orbit = core.Orbit:new()
+    orbit = core.Orbit:new(),
+    reference_body_name = ""
 }
 
 if not global_state.exploration_window then
@@ -14,6 +15,8 @@ end
 function ExplorationWindow.RefreshPlanet(planet)
     global_state.exploration_window.data_model.orbit = core.get_orbit(planet)
     global_state.exploration_window.data_model.name = core.get_name(planet)
+    local reference_body = global_state.exploration_window.data_model.orbit.reference_body
+    global_state.exploration_window.data_model.reference_body_name = core.get_name(reference_body)
 end
 
 -- now let's make a context or something
@@ -28,5 +31,7 @@ function ExplorationWindow.OnLoad(document)
         panel_button.style['display'] = 'inline'
         panel_button:SetAttribute('onclick', 'ExplorationWindow.RefreshPlanet('..planet..')')
         document:GetElementById('planet_panel'):AppendChild(panel_button)
+
+        ExplorationWindow.RefreshPlanet(planet)
     end
 end
