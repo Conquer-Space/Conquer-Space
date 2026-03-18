@@ -28,4 +28,4 @@
 	shallow = false
 [submodule "lib/RmlSolLua"]
 	path = lib/RmlSolLua
-	url = https://github.com/LoneBoco/RmlSolLua.git
+	url = https://github.com/EhWhoAmI/RmlSolLua.git
