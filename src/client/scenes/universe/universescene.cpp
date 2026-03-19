@@ -41,6 +41,7 @@
 #include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
+#include "client/scenes/universe/lua/hovertext.h"
 #include "core/components/area.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
@@ -81,7 +82,10 @@ void UniverseScene::Init() {
     simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
 
     core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
+    client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
+
     GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
+
     system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();
 

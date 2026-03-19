@@ -54,8 +54,8 @@
         </style>
         <script src="exploration_window.lua"></script>
     </head>
-    <body onload="ExplorationWindow.OnLoad(document)">
-        <div id="exit_button" onclick="document:Hide()">X</div>
+    <body onload="ExplorationWindow.OnLoad(document)" onmouseovercapture="client.ResetHover()">
+        <div id="exit_button" onclick="document:Hide()" onmouseovercapture="client.SetHoverText('hihiuwu')">X</div>
         <!-- Content goes here -->
         <h1 id="exploration_title">Exploration</h1>
         <div id="planet_panel">
@@ -65,7 +65,7 @@
             <h2>{{ name }}</h2>
             <div class="orbit_box">
             <h3 class="orbit_text">Orbit information</h3>
-            <p class="orbit_text">Orbit: <p data-number="orbit.semi_major_axis"></p> km</p>
+            <p class="orbit_text">Orbit: <p data-number="orbit.semi_major_axis" onmouseovercapture="client.SetHoverText('hihiuwu')"></p> km</p>
             <p class="orbit_text">Eccentricity: <p data-number="orbit.eccentricity"></p></p>
             <p class="orbit_text">Reference body: {{ reference_body_name }}</p>
             </div>
