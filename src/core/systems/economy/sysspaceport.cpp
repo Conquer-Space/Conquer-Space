@@ -67,35 +67,7 @@ void SysSpacePort::DoSystem() {
         std::vector<entt::entity> to_remove;
         for (entt::entity ship : docked_ships.docked_ships) {
             // Now unload the resources in the space port
-            if (GetUniverse().any_of<components::ships::CargoHold>(ship)) {
-                auto& cargo = GetUniverse().get<components::ships::CargoHold>(ship);
-                // TODO: Check cargo
-                if (GetUniverse().valid(space_port) &&
-                    GetUniverse().any_of<components::ColonizationTarget>(space_port)) {
-                    auto& target = GetUniverse().get<components::ColonizationTarget>(space_port);
-                    // Progress target
-                    switch (target.steps) {
-                        case components::ColonizationSteps::Surveying:
-                            target.steps = components::ColonizationSteps::Preparation;
-                            break;
-                        case components::ColonizationSteps::Preparation:
-                            target.steps = components::ColonizationSteps::InitialBase;
-                            break;
-                        case components::ColonizationSteps::InitialBase:
-                            target.steps = components::ColonizationSteps::HumanSettlement;
-                            break;
-                        case components::ColonizationSteps::HumanSettlement:
-                            target.steps = components::ColonizationSteps::PermanentSettlement;
-                            break;
-                        case components::ColonizationSteps::PermanentSettlement:
-                            // Now we own the province?
-                            province_comp.country = target.colonizer;
-                            GetUniverse().remove<components::ColonizationTarget>(space_port);
-                    }
-                    // Once again rust would actually be great for this
-                    GetUniverse().remove<components::ships::CargoHold>(ship);
-                }
-            }
+            ProcessLandedCargo(space_port, ship);
         }
     }
 }
@@ -113,15 +85,17 @@ void SysSpacePort::ProcessDockedShips(entt::entity space_port) {
         if (GetUniverse().any_of<components::ships::CargoHold>(ship)) {
             auto& cargo = GetUniverse().get<components::ships::CargoHold>(ship);
             // TODO: Check cargo
+            // Now check if the province has a colony. If it doesn't then we should add our colony thing
+            // Let's unpack our cargo and see our stuff
             auto& city_comp = GetUniverse().get<components::City>(space_port);
             if (GetUniverse().valid(city_comp.province) &&
                 GetUniverse().any_of<components::ColonizationTarget>(city_comp.province)) {
                 auto& target = GetUniverse().get<components::ColonizationTarget>(city_comp.province);
                 // Progress target
                 switch (target.steps) {
-                    case components::ColonizationSteps::Surveying:
+                    case components::ColonizationSteps::Surveying: {
                         target.steps = components::ColonizationSteps::Preparation;
-                        break;
+                    } break;
                     case components::ColonizationSteps::Preparation:
                         target.steps = components::ColonizationSteps::InitialBase;
                         break;
@@ -249,5 +223,53 @@ void SysSpacePort::ProcessShippedGood(const components::infrastructure::Transpor
         }
         GetUniverse().emplace<client::ctx::VisibleOrbit>(ship);
     }
+}
+
+void SysSpacePort::ProcessLandedCargo(entt::entity space_port, entt::entity ship) {
+    if (!GetUniverse().any_of<components::ships::CargoHold>(ship)) {
+        return;
+    }
+    auto& province_comp = GetUniverse().get<components::Province>(space_port);
+    // Then we should do something
+    if (!GetUniverse().valid(space_port) || !GetUniverse().any_of<components::ColonizationTarget>(space_port)) {
+        return;
+    }
+    auto& target = GetUniverse().get<components::ColonizationTarget>(space_port);
+    auto& cargo = GetUniverse().get<components::ships::CargoHold>(ship);
+    for (entt::entity item : cargo.cargo) {
+        // Now pop our cargo and unload and stuff?
+        if (GetUniverse().any_of<components::ColonyCoreModule>(item)) {
+            // Then we should emplace a colony to the province
+            if (!GetUniverse().any_of<components::Colony>(space_port)) {
+                auto& colony = GetUniverse().emplace<components::Colony>(space_port);
+                colony.components.push_back(item);
+            }
+            // Then we should get our colony later... but rn we do have this
+        }
+    }
+    // Get our cargo
+    // Progress target
+
+    switch (target.steps) {
+        case components::ColonizationSteps::Surveying: {
+            // Now we should add a colony
+            target.steps = components::ColonizationSteps::Preparation;
+        } break;
+        case components::ColonizationSteps::Preparation:
+            target.steps = components::ColonizationSteps::InitialBase;
+            break;
+        case components::ColonizationSteps::InitialBase:
+            target.steps = components::ColonizationSteps::HumanSettlement;
+            break;
+        case components::ColonizationSteps::HumanSettlement:
+            target.steps = components::ColonizationSteps::PermanentSettlement;
+            break;
+        case components::ColonizationSteps::PermanentSettlement:
+            // Now we own the province?
+            province_comp.country = target.colonizer;
+            GetUniverse().remove<components::ColonizationTarget>(space_port);
+            // Once again rust would actually be great for this
+    }
+    GetUniverse().remove<components::ships::CargoHold>(ship);
 }
 }  // namespace cqsp::core::systems

@@ -34,14 +34,27 @@ struct ColonizationTarget {
 
 struct Colony {
     // Since our population is likely to be very small, we should probably just have a resource ledger representing our
-    uint16_t population;
-    uint16_t max_population;  // The capacity that our colony can store
+    uint16_t population = 0;
+    uint16_t max_population = 0;  // The capacity that our colony can store
+    uint16_t power = 0;
+    float comms_power = 0;
     // The different stuff the different parts it will provide
     std::vector<entt::entity> components;
 };
 
 struct HabitationModule {
+    // Provides space for this many crew to live in
     uint16_t crew;
+};
+
+struct CommunicationsModule {
+    // Let's just make all comms modules perfect sdrs with infinite power lol
+    float power;
+};
+
+struct ColonyCoreModule {
+    // A control center and stuff
+    // ooh what if we just tack that on lol
 };
 
 struct Survey {};

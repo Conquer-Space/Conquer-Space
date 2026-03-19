@@ -906,6 +906,30 @@ void SysProvinceInformation::ColonizationTabs() {
         auto& queue = player_node.get<components::MissionQueue>();
         queue.list.push_back(new_mission);
     }
+    // Then we should add other stuff
+    // Now we should add more stuff as well
+    if (GetUniverse().any_of<components::Colony>(current_province)) {
+        auto& colony_comp = GetUniverse().get<components::Colony>(current_province);
+        ImGui::TextFmt("Population: {}/{}", colony_comp.population, colony_comp.max_population);
+        ImGui::TextFmt("Power: {}", colony_comp.power);
+        ImGui::TextFmt("Communications: {}", colony_comp.comms_power);
+    } else {
+        if (ImGui::Button("Set up colony")) {
+            // Ship it
+            entt::entity new_mission = GetUniverse().create();
+            // Then emplace a colony
+            GetUniverse().emplace<components::ColonyCoreModule>(new_mission);
+            auto& mission_comp = GetUniverse().emplace<components::Mission>(new_mission);
+            auto& identifier = GetUniverse().emplace<components::Name>(new_mission).name;
+            identifier = "Colony Core";
+            auto player_node = GetUniverse()(GetUniverse().GetPlayer());
+            auto& queue = player_node.get<components::MissionQueue>();
+            mission_comp.province = current_province;
+            auto& province_comp = GetUniverse().get<components::Province>(current_province);
+            mission_comp.target_body = province_comp.planet;
+            queue.list.push_back(new_mission);
+        }
+    }
 }
 
 void SysProvinceInformation::PopulationSummary() {
