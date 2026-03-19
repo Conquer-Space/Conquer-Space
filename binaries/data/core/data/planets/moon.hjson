@@ -8,7 +8,7 @@
         orbit:
         {
             eccentricity: 0.05298940093961622
-            semi_major_axis: 379750.3412619646 km
+            semi_major_axis: 384399.3412619646 km
             M0: 219.8346069893559 deg
             inclination: 5.022704921345476 deg
             LAN: 13.23683594105054 deg

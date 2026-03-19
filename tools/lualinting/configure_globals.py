@@ -88,6 +88,7 @@ def WriteConfigFile():
         variables = ["\"" + element + "\"" for element in variables]
         output.write(", ".join(variables))
         output.write("}\n")
+        output.write("ignore = {\"111\", \"112\", \"113\"}")
         output.write("unused = false")
         # Close file
     output.close()

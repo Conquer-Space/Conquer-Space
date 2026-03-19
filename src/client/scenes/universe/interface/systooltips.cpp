@@ -173,7 +173,7 @@ void EntityTooltipContent(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Argument of Periapsis: {} deg", types::toDegree(orbit.w));
         ImGui::TextFmt("True Anomaly: {} deg", types::toDegree(orbit.v));
         ImGui::TextFmt("Orbital Period: {} y {} d {} h {} m {} s", (int)(orbit.T() / (60 * 60 * 24 * 365)),
-                       (int)std::fmod(orbit.T() / (60 * 60 * 24), 24), (int)std::fmod(orbit.T() / (60 * 60), 60),
+                       (int)std::fmod(orbit.T() / (60 * 60 * 24), 365), (int)std::fmod(orbit.T() / (60 * 60), 24),
                        (int)std::fmod(orbit.T() / 60, 60), std::fmod(orbit.T(), 60));
     }
 
