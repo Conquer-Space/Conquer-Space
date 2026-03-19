@@ -28,15 +28,17 @@
 #include "core/components/name.h"
 #include "core/components/orbit.h"
 #include "core/components/orders.h"
+#include "core/components/organizations.h"
+#include "core/components/projects.h"
 #include "core/components/ships.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
-#include "sysspaceport.h"
 
 namespace cqsp::core::systems {
 void SysSpacePort::DoSystem() {
     ZoneScoped;
+    AutoMissionQueue();
     auto space_ports = GetUniverse().view<components::infrastructure::SpacePort>();
     for (entt::entity space_port : space_ports) {
         ZoneScoped;
@@ -68,6 +70,33 @@ void SysSpacePort::DoSystem() {
         for (entt::entity ship : docked_ships.docked_ships) {
             // Now unload the resources in the space port
             ProcessLandedCargo(space_port, ship);
+        }
+    }
+}
+
+void SysSpacePort::AutoMissionQueue() {
+    ZoneScoped;
+    for (auto&& [org, mission_queue, city_list] :
+         GetUniverse().view<components::MissionQueue, components::CountryCityList>().each()) {
+        // Now let's sort through the queue and just dump them to various space ports...
+        for (entt::entity mission : mission_queue.list) {
+            // then find the next available city list and stuff
+            if (city_list.space_port_list.empty()) {
+                continue;
+            }
+            if (!GetUniverse().all_of<components::Mission>(mission) ||
+                GetUniverse().all_of<components::MissionInProgress>(mission)) {
+                continue;
+            }
+            entt::entity city = city_list.space_port_list.front();
+            auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
+            // Then push back to the queue
+            auto& mission_comp = GetUniverse().get<components::Mission>(mission);
+            GetUniverse().emplace<components::MissionInProgress>(mission);
+            components::infrastructure::TransportedGood good;
+            good.good = mission;
+            good.target_province = mission_comp.province;
+            space_port.deliveries[mission_comp.target_body].push_back(good);
         }
     }
 }
@@ -244,7 +273,6 @@ void SysSpacePort::ProcessLandedCargo(entt::entity space_port, entt::entity ship
                 auto& colony = GetUniverse().emplace<components::Colony>(space_port);
                 colony.components.push_back(item);
             }
-            // Then we should get our colony later... but rn we do have this
         }
     }
     // Get our cargo

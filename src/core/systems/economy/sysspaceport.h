@@ -35,5 +35,6 @@ class SysSpacePort : public ISimulationSystem {
     void ProcessShippedGood(const components::infrastructure::TransportedGood& element, entt::entity target,
                             entt::entity common_soi, components::infrastructure::SpacePort& port_component);
     void ProcessLandedCargo(entt::entity space_port, entt::entity ship);
+    void AutoMissionQueue();
 };
 }  // namespace cqsp::core::systems
