@@ -6,7 +6,7 @@
         }
     }
     earthmap: {
-        path: earth8k.jpg
+        path: territories.png
         type: texture
         hints: {
         }
