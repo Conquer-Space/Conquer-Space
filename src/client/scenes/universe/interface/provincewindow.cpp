@@ -117,10 +117,9 @@ void SysProvinceInformation::ProvinceView() {
 
     if (GetUniverse().all_of<components::ColonizationTarget>(current_province)) {
         ColonizationTabs();
-        ImGui::Separator();
+    } else {
+        ProvinceIndustryTabs();
     }
-
-    ProvinceIndustryTabs();
 }
 
 void SysProvinceInformation::DisplayWallet(entt::entity entity) {
@@ -676,10 +675,12 @@ void SysProvinceInformation::SpacePortMissionTab(const entt::entity city) {
             selected_project = entity;
         }
     }
-    if (GetUniverse().valid(selected_project) && GetUniverse().all_of<components::Mission>(selected_project)) {
+    if (GetUniverse().valid(selected_project) && GetUniverse().all_of<components::Mission>(selected_project) &&
+        !GetUniverse().all_of<components::MissionInProgress>(selected_project)) {
         if (ImGui::Button("Dispatch mission")) {
             auto& mission = GetUniverse().get<components::Mission>(selected_project);
             // Then we add it to the queue or something
+            GetUniverse().emplace<components::MissionInProgress>(selected_project);
             auto& space_port = GetUniverse().get<components::infrastructure::SpacePort>(city);
             components::infrastructure::TransportedGood good;
             good.good = selected_project;
@@ -904,7 +905,30 @@ void SysProvinceInformation::ColonizationTabs() {
         // Then we set our target mission or something
         auto& queue = player_node.get<components::MissionQueue>();
         queue.list.push_back(new_mission);
-        // We should have set the project too and stuff
+    }
+    // Then we should add other stuff
+    // Now we should add more stuff as well
+    if (GetUniverse().any_of<components::Colony>(current_province)) {
+        auto& colony_comp = GetUniverse().get<components::Colony>(current_province);
+        ImGui::TextFmt("Population: {}/{}", colony_comp.population, colony_comp.max_population);
+        ImGui::TextFmt("Power: {}", colony_comp.power);
+        ImGui::TextFmt("Communications: {}", colony_comp.comms_power);
+    } else {
+        if (ImGui::Button("Set up colony")) {
+            // Ship it
+            entt::entity new_mission = GetUniverse().create();
+            // Then emplace a colony
+            GetUniverse().emplace<components::ColonyCoreModule>(new_mission);
+            auto& mission_comp = GetUniverse().emplace<components::Mission>(new_mission);
+            auto& identifier = GetUniverse().emplace<components::Name>(new_mission).name;
+            identifier = "Colony Core";
+            auto player_node = GetUniverse()(GetUniverse().GetPlayer());
+            auto& queue = player_node.get<components::MissionQueue>();
+            mission_comp.province = current_province;
+            auto& province_comp = GetUniverse().get<components::Province>(current_province);
+            mission_comp.target_body = province_comp.planet;
+            queue.list.push_back(new_mission);
+        }
     }
 }
 

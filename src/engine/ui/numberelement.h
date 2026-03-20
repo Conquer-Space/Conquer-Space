@@ -16,11 +16,23 @@
  */
 #pragma once
 
-#include <entt/entt.hpp>
+#include <iostream>
 
-#include "core/universe.h"
+#include "RmlUi/Core/Element.h"
+#include "RmlUi/Core/ElementText.h"
+#include "engine/ui/DataExpression.h"
+#include "engine/ui/DataView.h"
 
-namespace cqsp::core::actions {
-Node CreateLab(Universe& universe);
-void AddScienceResearch(Node& lab, Node& research, double progress);
-}  // namespace cqsp::core::actions
+namespace cqsp::engine::ui {
+class DataViewNumber final : public Rml::DataViewCommon {
+ public:
+    explicit DataViewNumber(Rml::Element* element);
+
+    // Update the data view.
+    // Returns true if the update resulted in a document change.
+    bool Update(Rml::DataModel& model);
+
+ private:
+    Rml::String previous_rml;
+};
+}  // namespace cqsp::engine::ui

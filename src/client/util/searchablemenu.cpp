@@ -29,9 +29,10 @@ void SearchableMenu::LeftMenu(const std::string& name, core::Universe& universe,
                    [](unsigned char c) { return std::tolower(c); });
 
     ImGui::BeginChild(fmt::format("{}_viewer_scroll", name).c_str());
-    for (entt::entity launch_vehicle : list) {
-        bool is_selected = launch_vehicle == selected_item;
-        std::string name = core::util::GetName(universe, launch_vehicle);
+    int idx = 0;
+    for (entt::entity entity : list) {
+        bool is_selected = entity == selected_item;
+        std::string name = core::util::GetName(universe, entity);
         std::string name_lower = name;
         std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
                        [](unsigned char c) { return std::tolower(c); });
@@ -41,10 +42,10 @@ void SearchableMenu::LeftMenu(const std::string& name, core::Universe& universe,
                 continue;
             }
         }
-        // Now check if the string is in stuff
-        if (ImGui::SelectableFmt("{}", &is_selected, name)) {
-            selected_item = launch_vehicle;
+        if (ImGui::SelectableFmt("{}###{}", &is_selected, name, idx)) {
+            selected_item = entity;
         }
+        idx++;
     }
     ImGui::EndChild();
     ImGui::EndChild();

@@ -17,6 +17,7 @@
 #include "client/scenes/universe/universescene.h"
 
 #include <RmlUi/Core/Factory.h>
+#include <RmlUi/Debugger.h>
 
 #include <cmath>
 #include <string>
@@ -25,6 +26,7 @@
 #include "client/components/rightclick.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
+#include "client/scenes/universe/interface/explorationwindow.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
 #include "client/scenes/universe/interface/launchvehiclewindow.h"
 #include "client/scenes/universe/interface/maintooltip.h"
@@ -38,8 +40,8 @@
 #include "client/scenes/universe/interface/syspausemenu.h"
 #include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
-#include "client/scenes/universe/interface/systechviewer.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
+#include "client/scenes/universe/lua/hovertext.h"
 #include "core/components/area.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
@@ -49,6 +51,7 @@
 #include "core/components/population.h"
 #include "core/components/resource.h"
 #include "core/components/surface.h"
+#include "core/scripting/luafunctions.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/polygon.h"
 #include "engine/graphics/primitives/uvsphere.h"
@@ -59,7 +62,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/polar_coordinates.hpp"
 #include "tracy/Tracy.hpp"
-#include "universescene.h"
 
 // If the game is paused or not, like when escape is pressed
 bool game_halted = false;
@@ -78,6 +80,11 @@ void UniverseScene::Init() {
     ZoneScoped;
 
     simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
+
+    core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
+    client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
+
+    GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
 
     system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();
@@ -169,6 +176,19 @@ void UniverseScene::CheckUiReload() {
     if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
         Rml::Factory::ClearStyleSheetCache();
         Rml::Factory::ClearTemplateCache();
+        auto context = Rml::GetContext(0);
+        std::vector<Rml::ElementDocument*> reload_document_list;
+        for (int i = 0; i < context->GetNumDocuments(); i++) {
+            Rml::ElementDocument* document = context->GetDocument(i);
+            const Rml::String& src = document->GetSourceURL();
+            if (src.empty()) {
+                continue;
+            }
+            if (GetApp().DocumentIsLoaded(src)) {
+                continue;
+            }
+            document->Close();
+        }
         for (auto& ui : documents) {
             ui->ReloadWindow();
         }
@@ -203,6 +223,10 @@ void UniverseScene::ManageTick() {
             simulation->tick();
         }
         system_renderer->OnTick();
+
+        for (auto& ui : documents) {
+            ui->OnTick();
+        }
     }
 }
 

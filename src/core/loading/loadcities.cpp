@@ -74,10 +74,12 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
 
     //SPDLOG_INFO("Load SpacePort");
+    bool has_spaceport = false;
     if (!values["space-port"].empty()) {
         // Add space port
         auto& space_port = node.emplace<components::infrastructure::SpacePort>(universe.GoodCount());
         space_port.reference_body = sc.planet;
+        has_spaceport = true;
     }
     //SPDLOG_INFO("Load Country");
     if (!values["country"].empty()) {
@@ -85,7 +87,11 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             Node country_node(universe, universe.countries[values["country"]]);
             node.emplace<components::Governed>(country_node);
             // Add self to country?
-            country_node.get_or_emplace<components::CountryCityList>().city_list.push_back(node);
+            auto& city_list = country_node.get_or_emplace<components::CountryCityList>();
+            city_list.city_list.push_back(node);
+            if (has_spaceport) {
+                city_list.space_port_list.push_back(node);
+            }
         } else {
             SPDLOG_INFO("City {} has country {}, but it's undefined", identifier, values["country"].to_string());
         }
@@ -97,7 +103,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         if (universe.provinces.contains(values["province"])) {
             Node province_node(universe, universe.provinces[values["province"]]);
             // Now add self to province
-            province_node.get<components::Province>().cities.push_back(node);
+            auto& province_comp = province_node.get<components::Province>();
+            province_comp.cities.push_back(node);
             city_component.province = province_node;
         } else {
             SPDLOG_WARN("City {} has province {}, but it's undefined", identifier, values["province"].to_string());
@@ -121,30 +128,8 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
             highway.extent = values["infrastructure"]["highway"].to_double();
         }
     }
-
-    //SPDLOG_INFO("Load Tags");
     if (!values["tags"].empty()) {
-        for (int i = 0; i < values["tags"].size(); i++) {
-            if (values["tags"][i].to_string() == "capital") {
-                // Then it's a capital city of whatever country it's in
-                node.emplace<components::CapitalCity>();
-                // Add to parent country
-                if (!node.any_of<components::Governed>()) {
-                    continue;
-                }
-                Node governor_node = universe(node.get<components::Governed>().governor);
-                auto& country_comp = universe.get<components::Country>(governor_node);
-                if (country_comp.capital_city != entt::null) {
-                    // Get name
-                    SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
-                                util::GetName(universe, governor_node),
-                                util::GetName(universe, country_comp.capital_city), util::GetName(universe, node));
-                    // Remove capital tag on the other capital city
-                    universe(country_comp.capital_city).remove<components::CapitalCity>();
-                }
-                country_comp.capital_city = node;
-            }
-        }
+        LoadTags(values["tags"], node);
     }
     //SPDLOG_INFO("Save City");
     universe.cities[identifier] = node;
@@ -170,5 +155,28 @@ void CityLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& node, s
     }
 }
 
+void CityLoader::LoadTags(const Hjson::Value& tags, Node& node) {
+    for (int i = 0; i < tags.size(); i++) {
+        if (tags[i].to_string() == "capital") {
+            // Then it's a capital city of whatever country it's in
+            node.emplace<components::CapitalCity>();
+            // Add to parent country
+            if (!node.any_of<components::Governed>()) {
+                continue;
+            }
+            Node governor_node = universe(node.get<components::Governed>().governor);
+            auto& country_comp = universe.get<components::Country>(governor_node);
+            if (country_comp.capital_city != entt::null) {
+                // Get name
+                SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
+                            util::GetName(universe, governor_node), util::GetName(universe, country_comp.capital_city),
+                            util::GetName(universe, node));
+                // Remove capital tag on the other capital city
+                universe(country_comp.capital_city).remove<components::CapitalCity>();
+            }
+            country_comp.capital_city = node;
+        }
+    }
+}
 void CityLoader::PostLoad(const Node& node) {}
 }  // namespace cqsp::core::loading

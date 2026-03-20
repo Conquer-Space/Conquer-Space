@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <random>
 #include <string_view>
 
 #include "core/loading/hjsonloader.h"
@@ -27,7 +28,7 @@ namespace cqsp::core::loading {
 /// </summary>
 class ProvinceLoader : public HjsonLoader {
  public:
-    explicit ProvinceLoader(Universe& universe) : HjsonLoader(universe) {}
+    explicit ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(rd()), distrib(1, 10) {}
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Node& node) override;
@@ -38,5 +39,9 @@ class ProvinceLoader : public HjsonLoader {
     Hjson::Value default_val;
     Node GetCountry(const std::string& country_identifier, const std::string& identifier);
     Node GetPlanet(const std::string& planet_identifier, const std::string& identifier);
+
+    std::random_device rd;
+    std::mt19937 gen;
+    std::uniform_int_distribution<> distrib;
 };
 }  // namespace cqsp::core::loading

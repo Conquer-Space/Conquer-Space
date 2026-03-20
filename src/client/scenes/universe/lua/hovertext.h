@@ -16,13 +16,9 @@
  */
 #pragma once
 
-#include "core/systems/isimulationsystem.h"
+#include "core/scripting/scripting.h"
+#include "core/universe.h"
 
-namespace cqsp::core::systems {
-class SysTechProgress : public ISimulationSystem {
- public:
-    explicit SysTechProgress(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
-};
-}  // namespace cqsp::core::systems
+namespace cqsp::client::scripting {
+void LoadHoverFunctions(core::Universe& universe, sol::state_view& script_engine);
+}  // namespace cqsp::client::scripting

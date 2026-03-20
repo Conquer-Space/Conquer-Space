@@ -19,6 +19,7 @@
 #include <vector>
 
 #include <entt/entt.hpp>
+#include <glm/vec3.hpp>
 
 namespace cqsp::core::components {
 /// <summary>
@@ -32,12 +33,13 @@ struct Organization {};
 
 struct Country {
     entt::entity capital_city = entt::null;
-    std::array<float, 3> color;
+    glm::vec3 color;
 };
 
 struct CountryCityList {
     std::vector<entt::entity> city_list;
     std::vector<entt::entity> province_list;
+    std::vector<entt::entity> space_port_list;
 };
 
 struct MissionQueue {

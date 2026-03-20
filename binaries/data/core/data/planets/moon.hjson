@@ -8,7 +8,7 @@
         orbit:
         {
             eccentricity: 0.05298940093961622
-            semi_major_axis: 379750.3412619646 km
+            semi_major_axis: 384399.3412619646 km
             M0: 219.8346069893559 deg
             inclination: 5.022704921345476 deg
             LAN: 13.23683594105054 deg
@@ -25,12 +25,28 @@
         tags: []
         colonization_steps: [
             {
-                state: survey
-                thing: 100
+                identifier: survey
+                // We need 100 of whatever points for this stage to accomplish this
+                stage: 100
             }
             {
+                identifier: preparation
+                // We need a base but for now let's do the basic stuff
+                stage: 100
             }
             {
+                identifier: initial_base
+                stage: 100
+            }
+            {
+                identifier: settlement
+                stage: 100
+            }
+            {
+                // Once we hit this stage we will go to the colony view
+                // Let's just do a basic we recieved this much launches or something
+                identifier: permanent_settlement
+                stage: 100
             }
         ]
     }

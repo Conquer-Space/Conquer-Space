@@ -114,8 +114,4 @@ struct FailedResourceTransfer {
 struct FailedResourceProduction {};
 
 struct FailedResourceConsumption {};
-
-struct ResourceDistribution {
-    std::map<entt::entity, double> dist;
-};
 }  // namespace cqsp::core::components

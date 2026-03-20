@@ -18,7 +18,6 @@
 
 #include <spdlog/spdlog.h>
 
-#include "core/actions/science/technologyactions.h"
 #include "core/components/name.h"
 #include "core/components/science.h"
 #include "core/loading/loadutil.h"

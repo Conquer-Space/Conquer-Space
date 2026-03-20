@@ -26,3 +26,6 @@
 	path = vcpkg
 	url = https://github.com/microsoft/vcpkg
 	shallow = false
+[submodule "lib/RmlSolLua"]
+	path = lib/RmlSolLua
+	url = https://github.com/EhWhoAmI/RmlSolLua.git

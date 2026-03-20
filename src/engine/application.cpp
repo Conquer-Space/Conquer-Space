@@ -16,6 +16,7 @@
  */
 #include "engine/application.h"
 
+#include <RmlSolLua/RmlSolLua.h>
 #include <RmlUi/Core.h>
 #include <RmlUi/Debugger.h>
 #include <fmt/core.h>
@@ -40,10 +41,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <tracy/Tracy.hpp>
 
-#include "application.h"
 #include "core/util/logging.h"
 #include "core/util/paths.h"
 #include "core/version.h"
+#include "engine/asset/vfs/nativevfs.h"
 #include "engine/audio/audiointerface.h"
 #include "engine/cqspgui.h"
 #include "engine/enginelogger.h"
@@ -205,12 +206,15 @@ void Application::InitRmlUi() {
     m_system_interface = std::make_unique<SystemInterface_GLFW>();
     m_system_interface->SetWindow((static_cast<GLWindow*>(GetWindow())->window));
     m_render_interface = std::make_unique<RenderInterface_GL3>();
-
+    m_file_interface = std::make_unique<RmlFileInterface>();
     Rml::SetSystemInterface(m_system_interface.get());
     Rml::SetRenderInterface(m_render_interface.get());
+    Rml::SetFileInterface(m_file_interface.get());
     reinterpret_cast<RenderInterface_GL3*>(m_render_interface.get())->SetViewport(GetWindowWidth(), GetWindowHeight());
     // Now we can initialize RmlUi.
     Rml::Initialise();
+    lua_state.open_libraries(sol::lib::base, sol::lib::string, sol::lib::table, sol::lib::math);
+    Rml::SolLua::Initialise(&lua_state);
 
     rml_context = Rml::CreateContext("main", Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
     if (rml_context == nullptr) {
@@ -218,6 +222,7 @@ void Application::InitRmlUi() {
     }
 
     Rml::Debugger::Initialise(rml_context);
+    Rml::Factory::RegisterDataViewInstancer(&instancer, "number", false);
 
     // Load rmlui fonts
     // TODO(EhWhoAmI): Load this somewhere else
@@ -574,4 +579,32 @@ bool Application::HoveringOnRmluiComponent() {
     Rml::Element* element = GetRmlUiContext()->GetHoverElement();
     return (element != nullptr && element->GetTagName() != "#root");
 }
+
+Application::RmlFileInterface::RmlFileInterface() { root = core::util::GetCqspDataPath() + "/"; }
+
+Application::RmlFileInterface::~RmlFileInterface() {}
+
+Rml::FileHandle Application::RmlFileInterface::Open(const Rml::String& path) {
+    std::string path2 = path;
+    if (path.find('|') != std::string::npos) {
+        // Then replace it
+        path2 = Rml::StringUtilities::Replace(path2, '|', ':');
+    }
+    // TODO: also do relative path
+    FILE* fp = fopen((path2).c_str(), "rb");
+    if (fp != nullptr) return (Rml::FileHandle)fp;
+
+    // Attempt to open the file relative to the current working directory.
+    fp = fopen(path.c_str(), "rb");
+    return (Rml::FileHandle)fp;
+}
+
+void Application::RmlFileInterface::Close(Rml::FileHandle file) { fclose((FILE*)file); }
+size_t Application::RmlFileInterface::Read(void* buffer, size_t size, Rml::FileHandle file) {
+    return fread(buffer, 1, size, (FILE*)file);
+}
+bool Application::RmlFileInterface::Seek(Rml::FileHandle file, long offset, int origin) {
+    return fseek((FILE*)file, offset, origin) == 0;
+}
+size_t Application::RmlFileInterface::Tell(Rml::FileHandle file) { return ftell((FILE*)file); }
 }  // namespace cqsp::engine

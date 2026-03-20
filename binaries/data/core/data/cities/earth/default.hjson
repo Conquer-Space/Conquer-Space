@@ -43,7 +43,6 @@
         coordinates: {
             latitude: 35.6839
             longitude: 139.7744
-
         }
         planet: earth
         timezone: JST
@@ -61,7 +60,6 @@
         coordinates: {
             latitude: 39.904
             longitude: 116.4075
-
         }
         planet: earth
         timezone: CST

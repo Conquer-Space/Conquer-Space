@@ -1,0 +1,75 @@
+<rml>
+    <head>
+        <title>Exploration Window</title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+            body {
+                width: 80%;
+                height: 80%;
+                top: 10%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            #exit_button {
+                right: 0px;
+                top: 0px;
+                background-color: red;
+                position: absolute;
+                width: 30 px;
+                height: 30 px;
+            }
+
+            #exploration_title {
+                
+            }
+
+            #planet_panel {
+                border: 4px #20005c;
+            }
+
+            #planet_information {
+                display: flex;
+                flex-direction: column;
+                margin: 0px;
+            }
+            .planet_button {
+                border: 4px #20005c;
+                width: 64px;
+                height: 64px;
+            }
+
+            .orbit_box {
+                display: flex;
+                flex-direction: column;
+                margin: 0px;
+            }
+            .orbit_text {
+                margin: 0px;
+            }
+
+            .orbit_text:h2 {
+                margin: 5px;
+            }
+        </style>
+        <script src="exploration_window.lua"></script>
+    </head>
+    <body onload="ExplorationWindow.OnLoad(document)" onmouseovercapture="client.ResetHover()">
+        <div id="exit_button" onclick="document:Hide()">X</div>
+        <!-- Content goes here -->
+        <h1 id="exploration_title">Exploration</h1>
+        <div id="planet_panel">
+            <div id="planet_button" class="planet_button" style="display: none"></div>
+        </div>
+        <div id="planet_information" data-model="planet_model">
+            <h2>{{ name }}</h2>
+            <div class="orbit_box">
+            <h3 class="orbit_text">Orbit information</h3>
+            <p class="orbit_text">Orbit: <p data-number="orbit.semi_major_axis"></p> km</p>
+            <p class="orbit_text">Eccentricity: <p data-number="orbit.eccentricity"></p></p>
+            <p class="orbit_text" onmouseovercapture="client.SetHoverEntity(global_state.exploration_window.data_model.orbit.reference_body)">Reference body: {{ reference_body_name }}</p>
+            </div>
+            <!-- Then other exploration information -->
+        </div>
+    </body>
+</rml>
