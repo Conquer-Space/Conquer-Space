@@ -19,6 +19,9 @@
 #include "core/components/orbit.h"
 #include "core/scripting/functionreg.h"
 
+// Helper function to get around sol's error
+#define SOL_PROPERTY(type, prop_type, name) \
+    sol::property([](type& self) { return self.name; }, [](type& self, prop_type name) { self.name = name; })
 namespace cqsp::core::scripting {
 
 namespace bodies = components::bodies;
@@ -30,9 +33,12 @@ void LoadOrbitFunctions(Universe& universe, sol::state_view& script_engine) {
     // Register orbit data
     lua_namespace.new_usertype<types::Orbit>(
         "Orbit", sol::constructors<types::Orbit()>(), "GetPeriapsis", &types::Orbit::GetPeriapsis, "eccentricity",
-        &types::Orbit::eccentricity, "semi_major_axis", &types::Orbit::semi_major_axis, "inclination",
-        &types::Orbit::inclination, "LAN", &types::Orbit::LAN, "w", &types::Orbit::w, "v", &types::Orbit::v, "GM",
-        &types::Orbit::GM, "reference_body", &types::Orbit::reference_body);
+        SOL_PROPERTY(types::Orbit, double, eccentricity), "semi_major_axis",
+        SOL_PROPERTY(types::Orbit, double, semi_major_axis), "inclination",
+        SOL_PROPERTY(types::Orbit, double, inclination), "LAN", SOL_PROPERTY(types::Orbit, double, LAN), "w",
+        SOL_PROPERTY(types::Orbit, double, semi_major_axis), "v", SOL_PROPERTY(types::Orbit, double, v), "GM",
+        SOL_PROPERTY(types::Orbit, double, GM), "reference_body",
+        SOL_PROPERTY(types::Orbit, entt::entity, reference_body));
     REGISTER_FUNCTION("get_orbit", [&](entt::entity entity) { return universe.get<types::Orbit>(entity); });
 }
 }  // namespace cqsp::core::scripting
