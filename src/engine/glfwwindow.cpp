@@ -190,7 +190,9 @@ bool GLWindow::InitWindow(int width, int height) {
     window = glfwCreateWindow(width, height, "Conquer Space", NULL, NULL);
     if (window == NULL) {
         glfwTerminate();
-        ENGINE_LOG_CRITICAL("Cannot load glfw");
+        const char* description;
+        int code = glfwGetError(&description);
+        ENGINE_LOG_CRITICAL("Cannot load glfw: {}", description);
         return false;
     }
 
