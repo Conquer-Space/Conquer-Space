@@ -27,7 +27,7 @@ bool DataViewNumber::Update(Rml::DataModel& model) {
     Rml::Element* element = GetElement();
     Rml::DataExpressionInterface expr_interface(&model, element);
 
-    if (element && GetExpression().Run(expr_interface, variant)) {
+    if (element != nullptr && GetExpression().Run(expr_interface, variant)) {
         if (variant.GetType() == Rml::Variant::STRING) {
             Rml::String new_rml = variant.Get<Rml::String>();
             if (new_rml != previous_rml) {
