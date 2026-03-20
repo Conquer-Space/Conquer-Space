@@ -379,17 +379,7 @@ void FunctionCivilizations(Universe& universe, sol::state_view& script_engine) {
     });
 }
 
-void FunctionScience(Universe& universe, sol::state_view& script_engine) {
-    CREATE_NAMESPACE(core);
-
-    // Now let's define our
-    lua_namespace.new_usertype<components::science::ScientificResearch>(
-        "ScientificResearch", "research", &components::science::ScientificResearch::research);
-
-    REGISTER_FUNCTION("get_scientific_research", [&](entt::entity country) {
-        return universe.get<components::science::ScientificResearch>(country);
-    });
-}
+void FunctionScience(Universe& universe, sol::state_view& script_engine) { CREATE_NAMESPACE(core); }
 
 // this is just meant for debugging and is not performant at all
 sol::table GetMarketTable(Universe& universe, sol::state_view& script_engine, entt::entity market) {
