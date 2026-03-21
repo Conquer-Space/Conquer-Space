@@ -1,28 +1,38 @@
 [
-    {
-        identifier: north_island
-        name: North Island
-        color:
-        [
-            176
-            39
-            142
-        ]
-        country: new_zealand
-        planet: earth
-    }
-    {
-        identifier: nelson
-        name: Nelson
-        color: "#b00b08"
-        country: new_zealand
-        planet: earth
-    }
-    {
-        identifier: otago
-        name: Otago
-        color: "#affcc5"
-        country: new_zealand
-        planet: earth
-    }
+  {
+    identifier: southern_islands
+    color: 29738a
+    country: new_zealand
+    planet: earth
+  }
+  {
+    identifier: north_island
+    color: 98313a
+    country: new_zealand
+    planet: earth
+  }
+  {
+    identifier: mangaia
+    color: a85b09
+    country: new_zealand
+    planet: earth
+  }
+  {
+    identifier: penrhyn
+    color: c0340b
+    country: new_zealand
+    planet: earth
+  }
+  {
+    identifier: pukapuka
+    color: f2ef94
+    country: new_zealand
+    planet: earth
+  }
+  {
+    identifier: tokelau
+    color: 4685cf
+    country: new_zealand
+    planet: earth
+  }
 ]

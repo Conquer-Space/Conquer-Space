@@ -1,0 +1,17 @@
+[
+  {
+    identifier: name
+    color: color
+    planet: earth
+  }
+  {
+    identifier: western_sahara
+    color: 1802f3
+    planet: earth
+  }
+  {
+    identifier: antarctica
+    color: 70beb0
+    planet: earth
+  }
+]

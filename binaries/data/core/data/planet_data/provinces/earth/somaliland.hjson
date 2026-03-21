@@ -1,13 +1,8 @@
 [
-    {
-        identifier: somaliland
-        color:
-        [
-            2
-            186
-            211
-        ]
-        country: somaliland
-        planet: earth
-    }
+  {
+    identifier: somaliland
+    color: 8edbf1
+    country: somaliland
+    planet: earth
+  }
 ]

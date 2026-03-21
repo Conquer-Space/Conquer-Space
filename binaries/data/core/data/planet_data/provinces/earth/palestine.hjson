@@ -1,0 +1,14 @@
+[
+  {
+    identifier: gaza_strip
+    color: 3a4a21
+    country: palestine
+    planet: earth
+  }
+  {
+    identifier: west_bank
+    color: 510e9d
+    country: palestine
+    planet: earth
+  }
+]

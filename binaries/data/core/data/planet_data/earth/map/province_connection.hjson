@@ -962,7 +962,7 @@
   ]
   alabama:
   [
-    florida_usa
+    florida
     mississippi
     georgia
     tennessee
@@ -1057,7 +1057,7 @@
     la_union_el_salvador
     choluteca
   ]
-  florida_usa:
+  florida:
   [
     alabama
     georgia
@@ -1208,7 +1208,7 @@
   ]
   georgia:
   [
-    florida_usa
+    florida
     north_carolina
     south_carolina
     alabama

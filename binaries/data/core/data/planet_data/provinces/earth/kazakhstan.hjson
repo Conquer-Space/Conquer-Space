@@ -1,189 +1,86 @@
 [
-    {
-        identifier: almaty
-        color:
-        [
-            5
-            188
-            245
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: almaty_city
-        color:
-        [
-            243
-            44
-            103
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: aqmola
-        color:
-        [
-            237
-            154
-            59
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: aqtobe
-        color:
-        [
-            78
-            141
-            6
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: astana
-        color:
-        [
-            243
-            58
-            170
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: atyrau
-        color:
-        [
-            80
-            170
-            248
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: baykonur_lease_in_qyzylorda
-        color:
-        [
-            93
-            180
-            54
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: east_kazakhstan
-        color:
-        [
-            5
-            174
-            178
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: mangghystau
-        color:
-        [
-            78
-            98
-            61
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: north_kazakhstan
-        color:
-        [
-            79
-            227
-            78
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: pavlodar
-        color:
-        [
-            80
-            42
-            157
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: qaraghandy
-        color:
-        [
-            237
-            168
-            126
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: qostanay
-        color:
-        [
-            80
-            28
-            90
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: qyzylorda
-        color:
-        [
-            78
-            112
-            128
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: south_kazakhstan
-        color:
-        [
-            15
-            67
-            182
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: west_kazakhstan
-        color:
-        [
-            80
-            113
-            236
-        ]
-        country: kazakhstan
-        planet: earth
-    }
-    {
-        identifier: zhambyl
-        color:
-        [
-            15
-            24
-            237
-        ]
-        country: kazakhstan
-        planet: earth
-    }
+  {
+    identifier: east_kazakhstan
+    color: 6f9e49
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: almaty
+    color: 1d5f92
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: zhambyl
+    color: 37e0e5
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: south_kazakhstan
+    color: c598e3
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: mangghystau
+    color: 14bf2e
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: qyzylorda
+    color: e57036
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: aqtobe
+    color: 7e494e
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: north_kazakhstan
+    color: 1ff7ef
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: qostanay
+    color: d62d27
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: pavlodar
+    color: c6d659
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: west_kazakhstan
+    color: d843d5
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: atyrau
+    color: 66a3ed
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: aqmola
+    color: 19f7c4
+    country: kazakhstan
+    planet: earth
+  }
+  {
+    identifier: qaraghandy
+    color: ef9a0c
+    country: kazakhstan
+    planet: earth
+  }
 ]

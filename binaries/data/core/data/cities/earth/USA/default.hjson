@@ -50,7 +50,7 @@
         space-port: {
             launch: 0
         }
-        province: florida_usa
+        province: florida
     }
     {
         name: Miami
@@ -62,6 +62,6 @@
             latitude: 25.78
             longitude: -80.21
         }
-        province: florida_usa
+        province: florida
     }
 ]

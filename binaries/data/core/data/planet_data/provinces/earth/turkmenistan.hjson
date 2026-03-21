@@ -1,57 +1,32 @@
 [
-    {
-        identifier: ahal
-        color:
-        [
-            57
-            54
-            201
-        ]
-        country: turkmenistan
-        planet: earth
-    }
-    {
-        identifier: balkan
-        color:
-        [
-            78
-            83
-            250
-        ]
-        country: turkmenistan
-        planet: earth
-    }
-    {
-        identifier: chardzhou
-        color:
-        [
-            56
-            225
-            55
-        ]
-        country: turkmenistan
-        planet: earth
-    }
-    {
-        identifier: mary
-        color:
-        [
-            57
-            12
-            0
-        ]
-        country: turkmenistan
-        planet: earth
-    }
-    {
-        identifier: tashauz
-        color:
-        [
-            78
-            169
-            140
-        ]
-        country: turkmenistan
-        planet: earth
-    }
+  {
+    identifier: chardzhou
+    color: 279dba
+    country: turkmenistan
+    planet: earth
+  }
+  {
+    identifier: mary
+    color: b0cee5
+    country: turkmenistan
+    planet: earth
+  }
+  {
+    identifier: ahal
+    color: 6fbc19
+    country: turkmenistan
+    planet: earth
+  }
+  {
+    identifier: balkan
+    color: fe3e15
+    country: turkmenistan
+    planet: earth
+  }
+  {
+    identifier: tashauz
+    color: cdb870
+    country: turkmenistan
+    planet: earth
+  }
 ]

@@ -1,145 +1,80 @@
 [
-    {
-        identifier: alberta
-        color:
-        [
-            72
-            65
-            115
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: british_columbia
-        color:
-        [
-            72
-            22
-            170
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: manitoba
-        color:
-        [
-            72
-            108
-            60
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: new_brunswick
-        color:
-        [
-            72
-            165
-            72
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: newfoundland_and_labrador
-        color:
-        [
-            120
-            242
-            49
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: northwest_territories
-        color:
-        [
-            131
-            178
-            180
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: nova_scotia
-        color:
-        [
-            121
-            0
-            116
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: nunavut
-        color:
-        [
-            120
-            227
-            238
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: ontario
-        color:
-        [
-            71
-            250
-            36
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: prince_edward_island
-        color:
-        [
-            172
-            36
-            182
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: quebec
-        color:
-        [
-            72
-            151
-            5
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: saskatchewan
-        color:
-        [
-            72
-            79
-            182
-        ]
-        country: canada
-        planet: earth
-    }
-    {
-        identifier: yukon
-        color:
-        [
-            92
-            193
-            195
-        ]
-        country: canada
-        planet: earth
-    }
+  {
+    identifier: british_columbia
+    color: 46a3a5
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: alberta
+    color: aa4fe5
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: saskatchewan
+    color: b06f6a
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: manitoba
+    color: 9f8d8e
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: ontario
+    color: 1e6ade
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: quebec
+    color: "256390"
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: new_brunswick
+    color: 794be5
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: yukon
+    color: 4c921e
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: nunavut
+    color: 0912c5
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: newfoundland_and_labrador
+    color: e73f5a
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: nova_scotia
+    color: ff6c9e
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: northwest_territories
+    color: fd8ff1
+    country: canada
+    planet: earth
+  }
+  {
+    identifier: prince_edward_island
+    color: 77d574
+    country: canada
+    planet: earth
+  }
 ]

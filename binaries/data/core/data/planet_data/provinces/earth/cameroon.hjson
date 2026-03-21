@@ -1,112 +1,44 @@
 [
-    {
-        identifier: adamaoua
-        color:
-        [
-            66
-            189
-            138
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: centre_cameroon
-        color:
-        [
-            212
-            22
-            93
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: est
-        color:
-        [
-            88
-            105
-            89
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: extreme-nord
-        color:
-        [
-            66
-            89
-            181
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: littoral_cameroon
-        color:
-        [
-            106
-            203
-            183
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: nord_cameroon
-        color:
-        [
-            66
-            161
-            4
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: nord-ouest_cameroon
-        color:
-        [
-            66
-            218
-            16
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: ouest_cameroon
-        color:
-        [
-            212
-            8
-            26
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: sud_cameroon
-        color:
-        [
-            65
-            188
-            212
-        ]
-        country: cameroon
-        planet: earth
-    }
-    {
-        identifier: sud-ouest
-        color:
-        [
-            66
-            232
-            83
-        ]
-        country: cameroon
-        planet: earth
-    }
+  {
+    identifier: sud
+    color: 6a6d3c
+    country: cameroon
+    planet: earth
+  }
+  {
+    identifier: extreme_nord
+    color: 4e8bc4
+    country: cameroon
+    planet: earth
+  }
+  {
+    identifier: benoue
+    color: 20f455
+    country: cameroon
+    planet: earth
+  }
+  {
+    identifier: adamaoua
+    color: fce0db
+    country: cameroon
+    planet: earth
+  }
+  {
+    identifier: nord_ouest
+    color: 854df1
+    country: cameroon
+    planet: earth
+  }
+  {
+    identifier: est
+    color: a46639
+    country: cameroon
+    planet: earth
+  }
+  {
+    identifier: yaounde
+    color: 8b4e78
+    country: cameroon
+    planet: earth
+  }
 ]

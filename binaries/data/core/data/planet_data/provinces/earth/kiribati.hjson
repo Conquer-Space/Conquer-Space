@@ -1,13 +1,8 @@
 [
-    {
-        identifier: kiribati
-        color:
-        [
-            142
-            86
-            177
-        ]
-        country: kiribati
-        planet: earth
-    }
+  {
+    identifier: kiribati
+    color: 2ebf64
+    country: kiribati
+    planet: earth
+  }
 ]

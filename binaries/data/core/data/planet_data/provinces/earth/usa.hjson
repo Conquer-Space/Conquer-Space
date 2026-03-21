@@ -2,35 +2,20 @@
     {
         identifier: alabama
         name: Alabama
-        color:
-        [
-            115
-            138
-            206
-        ]
+        color: cca96f
         country: usa
         planet: earth
     }
     {
         identifier: alaska
         name: Alaska
-        color:
-        [
-            92
-            179
-            128
-        ]
+        color: d2aa45
         country: usa
         planet: earth
     }
     {
         identifier: arizona
-        color:
-        [
-            72
-            250
-            218
-        ]
+        color: 6c84ba
         country: usa
         planet: earth
         population:
@@ -77,24 +62,14 @@
     }
     {
         identifier: arkansas
-        color:
-        [
-            242
-            157
-            201
-        ]
+        color: 64989e
         country: usa
         planet: earth
     }
     {
         identifier: california
         name: California
-        color:
-        [
-            73
-            37
-            163
-        ]
+        color: "938741"
         country: usa
         planet: earth
         population:
@@ -150,103 +125,58 @@
     {
         identifier: colorado
         name: Colorado
-        color:
-        [
-            182
-            143
-            167
-        ]
+        color: 63626e
         country: usa
         planet: earth
     }
     {
         identifier: connecticut
-        color:
-        [
-            116
-            25
-            108
-        ]
+        color: 55b5de
         country: usa
         planet: earth
     }
     {
         identifier: delaware
         name: Delaware
-        color:
-        [
-            115
-            252
-            230
-        ]
+        color: 6e44b0
         country: usa
         planet: earth
     }
     {
         identifier: district_of_columbia
-        color:
-        [
-            115
-            224
-            96
-        ]
+        color: d3526f
         country: usa
         planet: earth
     }
     {
-        identifier: florida_usa
+        identifier: florida
         name: Florida
-        color:
-        [
-            115
-            153
-            17
-        ]
+        color: 87d55f
         country: usa
         planet: earth
     }
     {
         identifier: georgia
-        color:
-        [
-            115
-            167
-            84
-        ]
+        color: 689f7c
         country: usa
         planet: earth
     }
     {
         identifier: guam
-        color:
-        [
-            171
-            21
-            189
-        ]
+        color: 77e5a4
         country: usa
         planet: earth
     }
     {
         identifier: idaho
-        color:
-        [
-            72
-            36
-            237
-        ]
+        color: 43d588
         country: usa
         planet: earth
     }
     {
         identifier: illinois
         name: Illinois
-        color:
-        [
-            242
-            129
-            67
-        ]
+        color: 020d3a
         country: usa
         planet: earth
         population:
@@ -351,133 +281,73 @@
     }
     {
         identifier: indiana
-        color:
-        [
-            242
-            200
-            146
-        ]
+        color: 4add0f
         country: usa
         planet: earth
     }
     {
         identifier: iowa
-        color:
-        [
-            182
-            214
-            246
-        ]
+        color: "0e9795"
         country: usa
         planet: earth
     }
     {
         identifier: kansas
-        color:
-        [
-            182
-            186
-            112
-        ]
+        color: 318eaf
         country: usa
         planet: earth
     }
     {
         identifier: kentucky
-        color:
-        [
-            242
-            143
-            134
-        ]
+        color: b9c1db
         country: usa
         planet: earth
     }
     {
         identifier: louisiana
-        color:
-        [
-            115
-            110
-            72
-        ]
+        color: 133f0b
         country: usa
         planet: earth
     }
     {
         identifier: maine
-        color:
-        [
-            72
-            136
-            194
-        ]
+        color: 37cb07
         country: usa
         planet: earth
     }
     {
         identifier: maryland
-        color:
-        [
-            115
-            238
-            163
-        ]
+        color: 35eaec
         country: usa
         planet: earth
     }
     {
         identifier: massachusetts
-        color:
-        [
-            116
-            53
-            242
-        ]
+        color: 4caf91
         country: usa
         planet: earth
     }
     {
         identifier: michigan
-        color:
-        [
-            72
-            122
-            127
-        ]
+        color: 0ab67b
         country: usa
         planet: earth
     }
     {
         identifier: minnesota
-        color:
-        [
-            71
-            235
-            225
-        ]
+        color: "789441"
         country: usa
         planet: earth
     }
     {
         identifier: mississippi
-        color:
-        [
-            115
-            124
-            139
-        ]
+        color: 420d58
         country: usa
         planet: earth
     }
     {
         identifier: missouri
-        color:
-        [
-            182
-            229
-            57
-        ]
+        color: 0c604a
         country: usa
         planet: earth
     }
@@ -494,79 +364,44 @@
     }
     {
         identifier: nebraska
-        color:
-        [
-            182
-            172
-            45
-        ]
+        color: 241dbd
         country: usa
         planet: earth
     }
     {
         identifier: nevada
-        color:
-        [
-            182
-            129
-            100
-        ]
+        color: b9281a
         country: usa
         planet: earth
     }
     {
         identifier: new_hampshire
-        color:
-        [
-            72
-            193
-            206
-        ]
+        color: be8124
         country: usa
         planet: earth
     }
     {
         identifier: hawaii
-        color:
-        [
-            162
-            58
-            32
-        ]
+        color: 9dcb0a
         country: usa
         planet: earth
     }
     {
         identifier: new_jersey
-        color:
-        [
-            116
-            11
-            41
-        ]
+        color: e57357
         country: usa
         planet: earth
     }
     {
         identifier: new_mexico
-        color:
-        [
-            73
-            51
-            230
-        ]
+        color: f90853
         country: usa
         planet: earth
     }
     {
         identifier: new_york
         name: New York
-        color:
-        [
-            72
-            208
-            17
-        ]
+        color: 9f2db1
         country: usa
         planet: earth
         population:
@@ -584,23 +419,13 @@
     }
     {
         identifier: north_carolina
-        color:
-        [
-            115
-            195
-            218
-        ]
+        color: 5df794
         country: usa
         planet: earth
     }
     {
         identifier: north_dakota
-        color:
-        [
-            72
-            93
-            249
-        ]
+        color: 2c4ae1
         country: usa
         planet: earth
     }
@@ -617,34 +442,19 @@
     }
     {
         identifier: ohio
-        color:
-        [
-            72
-            179
-            139
-        ]
+        color: 8d6345
         country: usa
         planet: earth
     }
     {
         identifier: oklahoma
-        color:
-        [
-            182
-            200
-            179
-        ]
+        color: 9d058e
         country: usa
         planet: earth
     }
     {
         identifier: oregon
-        color:
-        [
-            120
-            213
-            171
-        ]
+        color: 53faaa
         country: usa
         planet: earth
     }
@@ -661,34 +471,19 @@
     }
     {
         identifier: pennsylvania
-        color:
-        [
-            72
-            236
-            151
-        ]
+        color: "612876"
         country: usa
         planet: earth
     }
     {
         identifier: puerto_rico
-        color:
-        [
-            147
-            204
-            87
-        ]
+        color: 493a52
         country: usa
         planet: earth
     }
     {
         identifier: rhode_island
-        color:
-        [
-            116
-            39
-            175
-        ]
+        color: 7a42a4
         country: usa
         planet: earth
     }
@@ -715,57 +510,14 @@
         planet: earth
     }
     {
-        identifier: saint_john_usa
-        color:
-        [
-            148
-            148
-            1
-        ]
-        country: usa
-        planet: earth
-    }
-    {
-        identifier: saint_thomas_usa
-        color:
-        [
-            148
-            162
-            68
-        ]
-        country: usa
-        planet: earth
-    }
-    {
-        identifier: saipan
-        color:
-        [
-            171
-            64
-            134
-        ]
-        country: usa
-        planet: earth
-    }
-    {
         identifier: south_carolina
-        color:
-        [
-            115
-            181
-            151
-        ]
+        color: "8e4892"
         country: usa
         planet: earth
     }
     {
         identifier: south_dakota
-        color:
-        [
-            182
-            157
-            234
-        ]
+        color: c3e74a
         country: usa
         planet: earth
     }
@@ -782,23 +534,13 @@
     }
     {
         identifier: tennessee
-        color:
-        [
-            242
-            172
-            12
-        ]
+        color: 450f1f
         country: usa
         planet: earth
     }
     {
         identifier: texas
-        color:
-        [
-            73
-            80
-            108
-        ]
+        color: "84e145"
         country: usa
         planet: earth
     }
@@ -815,46 +557,26 @@
     }
     {
         identifier: utah
-        color:
-        [
-            182
-            100
-            222
-        ]
+        color: a24ccb
         country: usa
         planet: earth
     }
     {
         identifier: vermont
-        color:
-        [
-            72
-            222
-            84
-        ]
+        color: df5164
         country: usa
         planet: earth
     }
     {
         identifier: virginia
-        color:
-        [
-            115
-            210
-            29
-        ]
+        color: 82527a
         country: usa
         planet: earth
     }
     {
         identifier: washington
         name: Washington
-        color:
-        [
-            72
-            8
-            103
-        ]
+        color: c16993
         country: usa
         planet: earth
         population:
@@ -882,34 +604,19 @@
     {
         identifier: west_virginia
         name: West Virginia
-        color:
-        [
-            242
-            186
-            79
-        ]
+        color: 65d417
         country: usa
         planet: earth
     }
     {
         identifier: wisconsin
-        color:
-        [
-            242
-            115
-            0
-        ]
+        color: 0c0d26
         country: usa
         planet: earth
     }
     {
         identifier: wyoming
-        color:
-        [
-            182
-            115
-            33
-        ]
+        color: 84dfe4
         country: usa
         planet: earth
     }

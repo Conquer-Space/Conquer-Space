@@ -1,12 +1,7 @@
 [
     {
         identifier: western_sahara
-        color:
-        [
-            3
-            73
-            113
-        ]
+        color: 1802f3
         country: w__sahara
         planet: earth
     }
