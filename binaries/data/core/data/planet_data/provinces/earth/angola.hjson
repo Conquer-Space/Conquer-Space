@@ -12,6 +12,12 @@
     planet: earth
   }
   {
+    identifier: hulia
+    color: 46a64c
+    country: angola
+    planet: earth
+  }
+  {
     identifier: moxico
     color: 85b4ac
     country: angola

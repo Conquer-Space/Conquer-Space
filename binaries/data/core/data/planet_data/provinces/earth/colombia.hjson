@@ -6,6 +6,12 @@
     planet: earth
   }
   {
+    identifier: cordoba
+    color: 82a760
+    country: colombia
+    planet: earth
+  }
+  {
     identifier: choco
     color: fcd48a
     country: colombia

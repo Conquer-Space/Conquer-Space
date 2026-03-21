@@ -159,7 +159,6 @@ void main() {
     color = pow(color, vec3(1.0/2.5));
 
     FragColor = vec4(color, 1.0);
-    FragColor = vec4(albedo, 1.0);
 
     if (country) {
         // Then check if the color is the country color

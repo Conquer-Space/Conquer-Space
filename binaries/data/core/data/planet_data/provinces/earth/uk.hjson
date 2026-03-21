@@ -131,4 +131,10 @@
     country: uk
     planet: earth
   }
+  {
+    identifier: midlands
+    color: 6124bd
+    country: uk
+    planet: earth
+  }
 ]

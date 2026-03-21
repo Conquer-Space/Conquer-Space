@@ -138,7 +138,7 @@ void StarSystemController::MoveCamera(double delta_time) {
 }
 
 void StarSystemController::CalculateScroll() {
-    double min_scroll = 0.1;
+    double min_scroll = 0.01;
     if (m_viewing_entity != entt::null && universe.valid(m_viewing_entity) && universe.all_of<Body>(m_viewing_entity)) {
         const double planet_radius = universe.get<Body>(m_viewing_entity).radius;
         min_scroll = std::max(planet_radius * 1.1, 0.1);
@@ -497,7 +497,7 @@ glm::vec3 toHSL(const glm::vec3 rgb) {
     }
     H /= 6;
     float S = 0;
-    if (L != 0 || L != 1) {
+    if (L != 0.f && L != 1.f) {
         S = 2 * (V - L) / (1 - std::abs(2 * L - 1));
     }
     return glm::vec3(H, S, L);
@@ -587,6 +587,10 @@ void StarSystemController::HandleProvinceHoverColor() {
             const size_t planet_index = static_cast<size_t>(data.province_index_map.at(hovering_province));
             glm::vec4 original_color = data.province_colors[planet_index];
             glm::vec3 hsl_color = toHSL(glm::vec3(original_color.r, original_color.g, original_color.b));
+            if (original_color.a == 0) {
+                // Then we should ofc change our hover color, what if we changed it to something light?
+                hsl_color.z = 0.9;
+            }
             hsl_color.z = std::clamp(hsl_color.z + 0.1f, 0.f, 1.f);
             const glm::vec3 rgb = toRGB(hsl_color);
             // Then we can set the color
@@ -681,7 +685,8 @@ void StarSystemController::SeeEntity() {
 
     if (universe.all_of<Body>(m_viewing_entity)) {
         camera.scroll = universe.get<Body>(m_viewing_entity).radius * 2.5;
-        if (camera.scroll < 0.1) camera.scroll = 0.1;
+        const float max_scroll = 0.1f;
+        if (camera.scroll < max_scroll) camera.scroll = max_scroll;
     } else {
         camera.scroll = 5;
     }
@@ -716,6 +721,9 @@ void StarSystemController::FocusPlanetView() {
 }
 
 glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
+    if (province == entt::null) {
+        return glm::vec4(0);
+    }
     switch (universe.ctx().at<ctx::MapMode>()) {
         case ctx::MapMode::NoMapMode:
             return glm::vec4(0.f, 0.f, 0.f, 0.f);
@@ -787,6 +795,9 @@ glm::vec4 StarSystemController::ColonizationTargetProvinceColor(entt::entity pro
     return glm::vec4(0.f);
 }
 void StarSystemController::ResetProvinceColor(entt::entity province) {
+    if (province == entt::null) {
+        return;
+    }
     glm::vec4 color = GetCountryProvinceColor(province);
     renderer.UpdatePlanetProvinceColors(universe.view<systems::FocusedPlanet>().front(), province, color);
 }

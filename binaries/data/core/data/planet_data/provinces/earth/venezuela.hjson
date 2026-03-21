@@ -18,6 +18,18 @@
     planet: earth
   }
   {
+    identifier: roraima
+    color: f90f60
+    country: venezuela
+    planet: earth
+  }
+  {
+    identifier: bolivar
+    color: e17ebb
+    country: venezuela
+    planet: earth
+  }
+  {
     identifier: tachira
     color: 4ea178
     country: venezuela

@@ -353,7 +353,7 @@
     }
     {
         identifier: montana
-        color: 1ecea0ff
+        color: 1ecea0
         country: usa
         planet: earth
     }

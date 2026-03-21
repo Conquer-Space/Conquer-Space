@@ -12,6 +12,12 @@
     planet: earth
   }
   {
+    identifier: okavango_delta
+    color: d9bcc5
+    country: botswana
+    planet: earth
+  }
+  {
     identifier: kgalagadi
     color: 0233ed
     country: botswana
