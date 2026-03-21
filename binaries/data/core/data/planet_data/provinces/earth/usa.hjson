@@ -352,13 +352,8 @@
         planet: earth
     }
     {
-        identifier: montana_usa
-        color:
-        [
-            72
-            51
-            48
-        ]
+        identifier: montana
+        color: 1ecea0ff
         country: usa
         planet: earth
     }
