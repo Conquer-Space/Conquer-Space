@@ -17,7 +17,7 @@
         hints: {}
     }
     province_map: {
-        path: countryprovinces.png
+        path: countryprovinces2k.png
         type: binary
         hints: {}
     }
