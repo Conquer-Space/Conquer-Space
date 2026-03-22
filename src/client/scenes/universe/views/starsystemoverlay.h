@@ -16,17 +16,28 @@
  */
 #pragma once
 
-#include <string>
-#include <tuple>
+#include "core/universe.h"
+#include "engine/application.h"
+#include "engine/graphics/mesh.h"
+#include "engine/graphics/shader.h"
 
-#include <glm/glm.hpp>
+namespace cqsp::client::systems {
+class StarSystemOverlay {
+ public:
+    StarSystemOverlay(core::Universe &, engine::Application &);
 
-namespace cqsp::util {
-/**
- * Converts hex color string to rgb, scaled from 0 to 255.
- */
-std::tuple<int, int, int> HexToRgb(const std::string& str);
+    void Initialize();
+    void Ui();
+    void Update();
 
-glm::vec3 toHSL(const glm::vec3 rgb);
-glm::vec3 toRGB(const glm::vec3 hsl);
-}  // namespace cqsp::util
+    std::vector<glm::vec4> GeneratePoints(const std::vector<glm::vec2> &points);
+
+ private:
+    core::Universe &universe;
+    engine::Application &app;
+    engine::Mesh_t line_mesh;
+    asset::ShaderProgram_t line_shader;
+    float value1 = 2.0;
+    float value2 = 2.0;
+};
+}  // namespace cqsp::client::systems

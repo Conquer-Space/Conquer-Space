@@ -16,17 +16,26 @@
  */
 #pragma once
 
-#include <string>
-#include <tuple>
+#include "engine/graphics/texture.h"
 
-#include <glm/glm.hpp>
-
-namespace cqsp::util {
+namespace cqsp::engine {
 /**
- * Converts hex color string to rgb, scaled from 0 to 255.
+ * AA framebuffer -- we should probably allow non AA frambuffers just in case we
+ * need the performance but we don't really care right now
  */
-std::tuple<int, int, int> HexToRgb(const std::string& str);
+class FramebufferTexture : public asset::Texture {
+ public:
+    FramebufferTexture();
+    void InitTexture(int width, int height);
+    void BeginDraw();
+    void EndDraw();
+    void Resolve();
+    void FreeTextures();
+    ~FramebufferTexture();
 
-glm::vec3 toHSL(const glm::vec3 rgb);
-glm::vec3 toRGB(const glm::vec3 hsl);
-}  // namespace cqsp::util
+    unsigned int framebuffer = -1;
+    unsigned int intermediateFBO = -1;
+    unsigned int mscat = -1;
+    unsigned int rbo = -1;
+};
+}  // namespace cqsp::engine

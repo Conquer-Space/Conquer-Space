@@ -26,6 +26,8 @@
 #include "engine/window.h"
 
 namespace cqsp::engine {
+void GenerateFrameBuffer(unsigned int& framebuffer);
+
 /// <summary>
 /// Interface for framebuffer renderers.
 /// </summary>

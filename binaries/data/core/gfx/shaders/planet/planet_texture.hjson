@@ -10,6 +10,7 @@
         roughness_map: 2
         country_map: 3
         country_palette: 4
+        overlay_texture: 5
         C: 1
         far: 1e13
         offset: 1.0

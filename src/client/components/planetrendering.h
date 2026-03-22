@@ -24,6 +24,7 @@
 
 #include "engine/graphics/mesh.h"
 #include "engine/graphics/texture.h"
+#include "engine/renderer/framebuffertexture.h"
 
 namespace cqsp::client::components {
 struct PlanetTerrainRender {
@@ -54,6 +55,7 @@ struct PlanetTexture {
     asset::Texture* roughness = nullptr;
     asset::Texture* province_index_texture = nullptr;
     asset::Texture* province_color_map = nullptr;
+    engine::FramebufferTexture* overlay = nullptr;
     // province_map.size() == province_indices.size() == province_map width * province_map height
     std::vector<entt::entity> province_map;
     // Indices for the color on the map
@@ -73,8 +75,10 @@ struct PlanetTexture {
     bool has_provinces = false;
 
     ~PlanetTexture() {
+        // Delete all the textures that are not from the asset loader
         delete province_color_map;
         delete province_index_texture;
+        delete overlay;
     }
 };
 

@@ -22,6 +22,7 @@
 
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "client/scenes/universe/views/starsystemcontroller.h"
+#include "client/scenes/universe/views/starsystemoverlay.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "client/scenes/universe/views/starsystemviewui.h"
 #include "client/scenes/universe/views/sysorbitgeometry.h"
@@ -70,6 +71,7 @@ class SysStarSystemRenderer {
     StarSystemController controller;
     StarSystemViewUI user_interface;
     SysOrbitGeometry orbit_geometry;
+    StarSystemOverlay overlay;
 
     engine::Renderable textured_planet;
     engine::Renderable sky;
@@ -82,6 +84,7 @@ class SysStarSystemRenderer {
     asset::ShaderProgram_t near_shader;
     asset::ShaderProgram_t vis_shader;
     asset::ShaderProgram_t circle_shader;
+    asset::ShaderProgram_t circle_shader2;
     asset::ShaderProgram_t textured_planet_shader;
     asset::ShaderProgram_t sun_shader;
     asset::ShaderProgram_t skybox_shader;
@@ -121,8 +124,10 @@ class SysStarSystemRenderer {
     asset::ShaderProgram_t ConstructShader(const std::string &key);
 
     void LoadPlanetTextures();
+    void LoadPlanetProvinceMap(entt::entity body);
+    void GeneratePlanetOverlay(entt::entity body);
+
     void InitializeFramebuffers();
-    void LoadProvinceMap();
     void InitializeMeshes();
 
     void DrawOrbit(const entt::entity &entity);
@@ -179,6 +184,8 @@ class SysStarSystemRenderer {
     void ResetPlanetProvinceColors(entt::entity entity);
     void GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
                                    uint16_t province_count);
+    engine::Mesh_t mesh;
+    void ComputeOverlay();
     friend StarSystemViewUI;
     friend StarSystemController;
 };
