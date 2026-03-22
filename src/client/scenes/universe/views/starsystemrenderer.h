@@ -22,6 +22,7 @@
 
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "client/scenes/universe/views/starsystemcontroller.h"
+#include "client/scenes/universe/views/starsystemoverlay.h"
 #include "client/scenes/universe/views/starsystemview.h"
 #include "client/scenes/universe/views/starsystemviewui.h"
 #include "client/scenes/universe/views/sysorbitgeometry.h"
@@ -70,6 +71,7 @@ class SysStarSystemRenderer {
     StarSystemController controller;
     StarSystemViewUI user_interface;
     SysOrbitGeometry orbit_geometry;
+    StarSystemOverlay overlay;
 
     engine::Renderable textured_planet;
     engine::Renderable sky;

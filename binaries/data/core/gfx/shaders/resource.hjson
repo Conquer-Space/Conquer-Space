@@ -76,4 +76,9 @@
         type: shader_def
         hints: {}
     }
+    shader.line: {
+        path: line/line.hjson
+        type: shader_def
+        hints: {}
+    }
 }

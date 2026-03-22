@@ -77,6 +77,7 @@ SysStarSystemRenderer::SysStarSystemRenderer(core::Universe& _u, engine::Applica
       controller(universe, app, camera, *this),
       user_interface(universe, *this, controller, camera),
       orbit_geometry(universe),
+      overlay(universe, app),
       sun_color(glm::vec3(10, 10, 10)) {}
 
 void SysStarSystemRenderer::Initialize() {
@@ -91,7 +92,7 @@ void SysStarSystemRenderer::Initialize() {
         // Zoom into the thing
         universe.emplace_or_replace<FocusedCity>(player_capital);
     }
-    mesh = engine::primitive::CreateLineSequence({{0, 512, 0}, {2048, 512, 0}});
+    overlay.Initialize();
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -120,7 +121,7 @@ void SysStarSystemRenderer::Render(float delta_time) {
 
     camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight(), delta_time);
 
-    ComputeOverlay();
+    overlay.Update();
 
     // FIXME(EhWhoAmI): Fix log renderer so that objects that are close are rendered with a
     // "normal" depth buffer, and objects far away will be rendered with a log buffer.
@@ -558,11 +559,7 @@ bool SysStarSystemRenderer::CityIsVisible(glm::vec3 city_pos, glm::vec3 planet_p
 }
 
 void SysStarSystemRenderer::LoadPlanetTextures() {
-    for (auto body : universe.view<Orbit>()) {
-        if (!universe.all_of<bodies::TexturedTerrain>(body)) {
-            continue;
-        }
-        auto textures = universe.get<bodies::TexturedTerrain>(body);
+    for (auto&& [body, textures] : universe.view<bodies::TexturedTerrain>().each()) {
         auto& data = universe.get_or_emplace<PlanetTexture>(body);
         data.terrain = app.GetAssetManager().GetAsset<Texture>(textures.terrain_name);
         if (!textures.normal_name.empty()) {
@@ -573,7 +570,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         }
 
         LoadPlanetProvinceMap(body);
-        GeneratePlanetOverlay(body);
+        // GeneratePlanetOverlay(body);
     }
 }
 
