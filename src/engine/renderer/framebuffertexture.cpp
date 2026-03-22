@@ -60,6 +60,7 @@ void FramebufferTexture::InitTexture(int width, int height) {
 
 void FramebufferTexture::BeginDraw() {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    glViewport(0, 0, width, height);
     LogGlError("Error when binding framebuffer!");
 }
 

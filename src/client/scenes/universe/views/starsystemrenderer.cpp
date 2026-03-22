@@ -91,6 +91,7 @@ void SysStarSystemRenderer::Initialize() {
         // Zoom into the thing
         universe.emplace_or_replace<FocusedCity>(player_capital);
     }
+    mesh = engine::primitive::CreateLineSequence({{0, 512, 0}, {2048, 512, 0}});
 }
 
 void SysStarSystemRenderer::OnTick() {
@@ -109,7 +110,6 @@ void SysStarSystemRenderer::Render(float delta_time) {
     window_ratio = static_cast<float>(app.GetWindowWidth()) / static_cast<float>(app.GetWindowHeight());
 
     orbit_geometry.GenerateOrbitLines();
-    ComputeOverlay();
 
     renderer.NewFrame(*app.GetWindow());
 
@@ -120,11 +120,14 @@ void SysStarSystemRenderer::Render(float delta_time) {
 
     camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight(), delta_time);
 
+    ComputeOverlay();
+
     // FIXME(EhWhoAmI): Fix log renderer so that objects that are close are rendered with a
     // "normal" depth buffer, and objects far away will be rendered with a log buffer.
     // FIXME(EhWhoAmI): Unify all the rendering of planets and stars into one single loop
     // FIXME(EhWhoAmI): Orbit lines dissapear based on distance away from the planet.
     // make them dissapear if you're focused on the planet.
+
     DrawStars();
     DrawBodies();
     DrawShips();
@@ -407,13 +410,25 @@ void SysStarSystemRenderer::ComputeOverlay() {
         if (terrain_data.overlay == nullptr) {
             return;
         }
+        glm::mat4 transform = glm::mat4(1.f);
+        glm::mat4 two_dim_projection = glm::ortho(0.0f, static_cast<float>(terrain_data.overlay->width), 0.0f,
+                                                  static_cast<float>(terrain_data.overlay->height));
+        // Actually you just need to rotate the orbit
+        //transform *= glm::mat4(
+        //    glm::quat{{0.f, 0, (float)body.axial}});
+        // Draw orbit
+        circle_shader2->UseProgram();
+        circle_shader2->setMat4("model", transform);
+        circle_shader2->setMat4("projection", two_dim_projection);
+        circle_shader2->setVec4("color", 1, 0, 0, 1);
         terrain_data.overlay->BeginDraw();
         // Now we should
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        // Now we should...
-        app.DrawText("Some random text", 50, 60);
+        // Draw a line
+        mesh->Draw();
         terrain_data.overlay->EndDraw();
+        glViewport(0, 0, app.GetWindowWidth(), app.GetWindowHeight());
         terrain_data.overlay->Resolve();
     }
 }
@@ -685,6 +700,7 @@ void SysStarSystemRenderer::InitializeMeshes() {
 
     // Initialize shaders
     circle_shader = ConstructShader("core:shader.2dcolorshader");
+    circle_shader2 = ConstructShader("core:shader.2dcolorshader");
     textured_planet_shader = ConstructShader("core:shader.planet_textureshader");
     near_shader = ConstructShader("core:shader.neartexturedobject");
     orbit_shader = ConstructShader("core:shader.orbitshader");
@@ -938,7 +954,7 @@ void SysStarSystemRenderer::GeneratePlanetOverlay(entt::entity body) {
     auto& data = universe.get_or_emplace<PlanetTexture>(body);
     data.overlay = new cqsp::engine::FramebufferTexture();
     cqsp::engine::FramebufferTexture* overlay = data.overlay;
-    overlay->InitTexture(2048, 1024);
+    overlay->InitTexture(4096, 2048);
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
