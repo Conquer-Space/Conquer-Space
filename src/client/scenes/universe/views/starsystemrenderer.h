@@ -121,6 +121,7 @@ class SysStarSystemRenderer {
     asset::ShaderProgram_t ConstructShader(const std::string &key);
 
     void LoadPlanetTextures();
+    void LoadPlanetProvinceMap(entt::entity body);
     void InitializeFramebuffers();
     void InitializeMeshes();
 
