@@ -39,11 +39,8 @@ void StarSystemOverlay::Initialize() {
     // Now also initialize shaders
     line_shader = app.GetAssetManager().GetAsset<ShaderDefinition>("core:shader.line")->MakeShader();
     // Init line
-    std::vector<glm::vec4> varray;
-    varray.emplace_back(glm::vec4(-75.0060, 41.7128, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(-74.0060, 40.7128, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(-118.2426f, 34.0549, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(-119.2426f, 35.0549, 0.0f, 1.0f));
+    std::vector<glm::vec4> varray = GeneratePoints({{-74.0060, 40.7128}, {-118.2426f, 34.0549}});
+
     line_mesh = std::make_shared<engine::Mesh>();
     glGenBuffers(1, &line_mesh->VBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, line_mesh->VBO);
@@ -87,5 +84,22 @@ void StarSystemOverlay::Update() {
         overlay->Resolve();
     }
     glViewport(0, 0, app.GetWindowWidth(), app.GetWindowHeight());
+}
+
+std::vector<glm::vec4> StarSystemOverlay::GeneratePoints(const std::vector<glm::vec2>& points) {
+    // Get the front and back
+    if (points.empty()) {
+        return std::vector<glm::vec4>();
+    }
+    glm::vec2 front = points.front();
+    std::vector<glm::vec4> output_points;
+    output_points.reserve(points.size() + 2);
+    output_points.emplace_back(front - 1.f, 0.f, 1.f);
+    for (const glm::vec2& point : points) {
+        output_points.emplace_back(point, 0.f, 1.f);
+    }
+    glm::vec2 back = points.back();
+    output_points.emplace_back(back + 1.f, 0.f, 1.f);
+    return std::move(output_points);
 }
 }  // namespace cqsp::client::systems

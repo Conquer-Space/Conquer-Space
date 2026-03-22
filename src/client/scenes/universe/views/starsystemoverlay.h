@@ -30,6 +30,8 @@ class StarSystemOverlay {
     void Ui();
     void Update();
 
+    std::vector<glm::vec4> GeneratePoints(const std::vector<glm::vec2> &points);
+
  private:
     core::Universe &universe;
     engine::Application &app;
