@@ -29,6 +29,7 @@ class FramebufferTexture : public asset::Texture {
     void InitTexture(int width, int height);
     void BeginDraw();
     void EndDraw();
+    void Resolve();
     void FreeTextures();
     ~FramebufferTexture();
 

@@ -34,6 +34,7 @@
 #include "core/components/player.h"
 #include "core/components/ships.h"
 #include "core/components/surface.h"
+#include "core/util/color.h"
 #include "core/util/nameutil.h"
 #include "engine/glfwdebug.h"
 #include "engine/graphics/primitives/cube.h"
@@ -394,6 +395,13 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     }
 
     if (terrain_data.overlay != nullptr) {  // 5
+        terrain_data.overlay->BeginDraw();
+        // Now we should
+        glm::vec3 rgb_color = util::toRGB(glm::vec3(sin(app.GetTime()), 1.f, 0.5));
+        glClearColor(rgb_color.r, rgb_color.g, rgb_color.b, .5f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        terrain_data.overlay->EndDraw();
+        terrain_data.overlay->Resolve();
         textured_planet.textures.push_back(terrain_data.overlay);
     } else {
         textured_planet.textures.push_back(dummy_color_map);

@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "engine/enginelogger.h"
+#include "engine/glfwdebug.h"
 #include "engine/renderer/framebuffer.h"
 
 namespace cqsp::engine {
@@ -15,8 +16,8 @@ void FramebufferTexture::InitTexture(int width, int height) {
         return;
     }
 
-    width = width;
-    height = height;
+    this->width = width;
+    this->height = height;
     GenerateFrameBuffer(framebuffer);
 
     // create a multisampled color attachment texture
@@ -52,13 +53,24 @@ void FramebufferTexture::InitTexture(int width, int height) {
                          FramebufferStatusToString(framebuffer_status));
     }
     BeginDraw();
-    glClearColor(0.f, 0.f, 0.f, 0.f);
+    glClearColor(1.f, 0.f, 0.f, 0.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FramebufferTexture::BeginDraw() { glBindFramebuffer(GL_FRAMEBUFFER, framebuffer); }
+void FramebufferTexture::BeginDraw() {
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    LogGlError("Error when binding framebuffer!");
+}
+
 void FramebufferTexture::EndDraw() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+
+void FramebufferTexture::Resolve() {
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, framebuffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, intermediateFBO);
+    glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
 void FramebufferTexture::FreeTextures() {
     if (framebuffer != 0) glDeleteFramebuffers(1, &framebuffer);

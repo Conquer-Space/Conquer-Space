@@ -19,9 +19,14 @@
 #include <string>
 #include <tuple>
 
+#include <glm/glm.hpp>
+
 namespace cqsp::util {
 /**
  * Converts hex color string to rgb, scaled from 0 to 255.
  */
 std::tuple<int, int, int> HexToRgb(const std::string& str);
+
+glm::vec3 toHSL(const glm::vec3 rgb);
+glm::vec3 toRGB(const glm::vec3 hsl);
 }  // namespace cqsp::util
