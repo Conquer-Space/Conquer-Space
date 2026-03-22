@@ -392,6 +392,12 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     } else {
         textured_planet.textures.push_back(dummy_color_map);
     }
+
+    if (terrain_data.overlay != nullptr) {  // 5
+        textured_planet.textures.push_back(terrain_data.overlay);
+    } else {
+        textured_planet.textures.push_back(dummy_color_map);
+    }
 }
 
 void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
@@ -534,6 +540,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         }
 
         LoadPlanetProvinceMap(body);
+        GeneratePlanetOverlay(body);
     }
 }
 

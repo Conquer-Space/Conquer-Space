@@ -32,6 +32,7 @@ uniform sampler2D normal_tex;
 uniform sampler2D roughness_map;
 uniform usampler2D country_map;
 uniform samplerBuffer country_palette;
+uniform sampler2D overlay_texture;
 
 // If we are drawing provinces or not
 uniform bool country;
@@ -167,4 +168,7 @@ void main() {
         // Our alpha value is how much we should mix with the final frag color
         FragColor = mix(FragColor, color, texel_value.a);
     }
+    vec4 overlay_color = texture(overlay_texture, TexCoords).rgba;
+    vec4 overlay_vec = vec4(overlay_color.rgb, 1.0);
+    FragColor = mix(FragColor, overlay_vec, overlay_color.a);
 }

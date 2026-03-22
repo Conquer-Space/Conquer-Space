@@ -51,6 +51,9 @@ void FramebufferTexture::InitTexture(int width, int height) {
         ENGINE_LOG_ERROR("Incomplete framebuffer: 0x{:x} ({})!", framebuffer_status,
                          FramebufferStatusToString(framebuffer_status));
     }
+    BeginDraw();
+    glClearColor(0.f, 0.f, 0.f, 0.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
