@@ -582,7 +582,7 @@ bool Application::HoveringOnRmluiComponent() {
 
 Application::RmlFileInterface::RmlFileInterface() { root = core::util::GetCqspDataPath() + "/"; }
 
-Application::RmlFileInterface::~RmlFileInterface() {}
+Application::RmlFileInterface::~RmlFileInterface() = default;
 
 Rml::FileHandle Application::RmlFileInterface::Open(const Rml::String& path) {
     std::string path2 = path;
@@ -599,12 +599,12 @@ Rml::FileHandle Application::RmlFileInterface::Open(const Rml::String& path) {
     return (Rml::FileHandle)fp;
 }
 
-void Application::RmlFileInterface::Close(Rml::FileHandle file) { fclose((FILE*)file); }
+void Application::RmlFileInterface::Close(Rml::FileHandle file) { fclose(reinterpret_cast<FILE*>(file)); }
 size_t Application::RmlFileInterface::Read(void* buffer, size_t size, Rml::FileHandle file) {
-    return fread(buffer, 1, size, (FILE*)file);
+    return fread(buffer, 1, size, reinterpret_cast<FILE*>(file));
 }
 bool Application::RmlFileInterface::Seek(Rml::FileHandle file, long offset, int origin) {
-    return fseek((FILE*)file, offset, origin) == 0;
+    return fseek(reinterpret_cast<FILE*>(file), offset, origin) == 0;
 }
-size_t Application::RmlFileInterface::Tell(Rml::FileHandle file) { return ftell((FILE*)file); }
+size_t Application::RmlFileInterface::Tell(Rml::FileHandle file) { return ftell(reinterpret_cast<FILE*>(file)); }
 }  // namespace cqsp::engine

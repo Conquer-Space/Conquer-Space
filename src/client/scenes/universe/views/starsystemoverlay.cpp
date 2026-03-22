@@ -100,6 +100,6 @@ std::vector<glm::vec4> StarSystemOverlay::GeneratePoints(const std::vector<glm::
     }
     glm::vec2 back = points.back();
     output_points.emplace_back(back + 1.f, 0.f, 1.f);
-    return std::move(output_points);
+    return output_points;
 }
 }  // namespace cqsp::client::systems

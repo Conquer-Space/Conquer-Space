@@ -86,7 +86,8 @@ glm::vec3 toHSL(const glm::vec3 rgb) {
     }
     return glm::vec3(H, S, L);
 }
-glm::vec3 cqsp::util::toRGB(const glm::vec3 hsl) {
+
+glm::vec3 toRGB(const glm::vec3 hsl) {
     glm::vec3 result;
 
     if (0 == hsl.y) {

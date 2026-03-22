@@ -21,7 +21,7 @@
 
 // Helper function to get around sol's error
 #define SOL_PROPERTY(type, prop_type, name) \
-    sol::property([](type& self) { return self.name; }, [](type& self, prop_type name) { self.name = name; })
+    sol::property(([](type& self) { return self.name; }), ([](type& self, prop_type name) { self.name = name; }))
 namespace cqsp::core::scripting {
 
 namespace bodies = components::bodies;
