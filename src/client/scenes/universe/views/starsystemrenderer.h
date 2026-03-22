@@ -181,6 +181,7 @@ class SysStarSystemRenderer {
     void ResetPlanetProvinceColors(entt::entity entity);
     void GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
                                    uint16_t province_count);
+    void ComputeOverlay();
     friend StarSystemViewUI;
     friend StarSystemController;
 };

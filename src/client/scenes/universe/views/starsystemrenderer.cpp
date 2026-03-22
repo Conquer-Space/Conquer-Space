@@ -109,6 +109,7 @@ void SysStarSystemRenderer::Render(float delta_time) {
     window_ratio = static_cast<float>(app.GetWindowWidth()) / static_cast<float>(app.GetWindowHeight());
 
     orbit_geometry.GenerateOrbitLines();
+    ComputeOverlay();
 
     renderer.NewFrame(*app.GetWindow());
 
@@ -395,16 +396,25 @@ void SysStarSystemRenderer::GetPlanetTexture(const entt::entity entity, bool& ha
     }
 
     if (terrain_data.overlay != nullptr) {  // 5
-        terrain_data.overlay->BeginDraw();
-        // Now we should
-        glm::vec3 rgb_color = util::toRGB(glm::vec3(sin(app.GetTime()), 1.f, 0.5));
-        glClearColor(rgb_color.r, rgb_color.g, rgb_color.b, .5f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        terrain_data.overlay->EndDraw();
-        terrain_data.overlay->Resolve();
         textured_planet.textures.push_back(terrain_data.overlay);
     } else {
         textured_planet.textures.push_back(dummy_color_map);
+    }
+}
+
+void SysStarSystemRenderer::ComputeOverlay() {
+    for (auto&& [body, terrain_data] : universe.view<PlanetTexture>().each()) {
+        if (terrain_data.overlay == nullptr) {
+            return;
+        }
+        terrain_data.overlay->BeginDraw();
+        // Now we should
+        glClearColor(0.f, 0.f, 0.f, 0.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        // Now we should...
+        app.DrawText("Some random text", 50, 60);
+        terrain_data.overlay->EndDraw();
+        terrain_data.overlay->Resolve();
     }
 }
 
