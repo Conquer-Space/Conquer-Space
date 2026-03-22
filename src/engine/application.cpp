@@ -590,7 +590,7 @@ Rml::FileHandle Application::RmlFileInterface::Open(const Rml::String& path) {
         // Then replace it
         path2 = Rml::StringUtilities::Replace(path2, '|', ':');
     }
-    // TODO: also do relative path
+    // TODO(EhWhoAmI): also do relative path
     FILE* fp = fopen((path2).c_str(), "rb");
     if (fp != nullptr) return (Rml::FileHandle)fp;
 
@@ -599,12 +599,16 @@ Rml::FileHandle Application::RmlFileInterface::Open(const Rml::String& path) {
     return (Rml::FileHandle)fp;
 }
 
-void Application::RmlFileInterface::Close(Rml::FileHandle file) { fclose(reinterpret_cast<FILE*>(file)); }
+void Application::RmlFileInterface::Close(Rml::FileHandle file) {
+    fclose(reinterpret_cast<FILE*>(file));  // NOLINT(performance-no-int-to-ptr)
+}
 size_t Application::RmlFileInterface::Read(void* buffer, size_t size, Rml::FileHandle file) {
-    return fread(buffer, 1, size, reinterpret_cast<FILE*>(file));
+    return fread(buffer, 1, size, reinterpret_cast<FILE*>(file));  // NOLINT(performance-no-int-to-ptr)
 }
 bool Application::RmlFileInterface::Seek(Rml::FileHandle file, long offset, int origin) {
-    return fseek(reinterpret_cast<FILE*>(file), offset, origin) == 0;
+    return fseek(reinterpret_cast<FILE*>(file), offset, origin) == 0;  // NOLINT(performance-no-int-to-ptr)
 }
-size_t Application::RmlFileInterface::Tell(Rml::FileHandle file) { return ftell(reinterpret_cast<FILE*>(file)); }
+size_t Application::RmlFileInterface::Tell(Rml::FileHandle file) {
+    return ftell(reinterpret_cast<FILE*>(file));  // NOLINT(performance-no-int-to-ptr)
+}
 }  // namespace cqsp::engine
