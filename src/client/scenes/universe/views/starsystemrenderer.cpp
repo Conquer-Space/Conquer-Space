@@ -82,7 +82,6 @@ void SysStarSystemRenderer::Initialize() {
     InitializeMeshes();
     InitializeFramebuffers();
 
-    LoadProvinceMap();
     SetupDummyTextures();
     // Zoom into the player's capital city
     entt::entity player = universe.view<components::Player>().front();
@@ -544,6 +543,7 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
             continue;
         }
         // Then create vector
+        auto start = std::chrono::high_resolution_clock::now();
         uint64_t file_size = bin_asset->data.size();
         int comp = 0;
         stbi_set_flip_vertically_on_load(0);
@@ -602,6 +602,10 @@ void SysStarSystemRenderer::LoadPlanetTextures() {
         data.has_provinces = true;
         data.width = province_width;
         data.height = province_height;
+
+        auto end = std::chrono::high_resolution_clock::now();
+        int len = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        SPDLOG_INFO("Took {} ms to load province image", len);
     }
 }
 
@@ -721,8 +725,6 @@ void SysStarSystemRenderer::InitializeFramebuffers() {
     planet_icon_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *app.GetWindow());
     skybox_layer = renderer.AddLayer<engine::FramebufferRenderer>(buffer_shader, *app.GetWindow());
 }
-
-void SysStarSystemRenderer::LoadProvinceMap() {}
 
 void SysStarSystemRenderer::InitializeMeshes() {
     // Initialize meshes, etc

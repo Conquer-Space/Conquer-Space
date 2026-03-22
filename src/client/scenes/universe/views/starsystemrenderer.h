@@ -122,7 +122,6 @@ class SysStarSystemRenderer {
 
     void LoadPlanetTextures();
     void InitializeFramebuffers();
-    void LoadProvinceMap();
     void InitializeMeshes();
 
     void DrawOrbit(const entt::entity &entity);
