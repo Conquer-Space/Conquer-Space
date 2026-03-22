@@ -27,6 +27,7 @@ class StarSystemOverlay {
     StarSystemOverlay(core::Universe &, engine::Application &);
 
     void Initialize();
+    void Ui();
     void Update();
 
  private:
@@ -34,5 +35,7 @@ class StarSystemOverlay {
     engine::Application &app;
     engine::Mesh_t line_mesh;
     asset::ShaderProgram_t line_shader;
+    float value1 = 2.0;
+    float value2 = 2.0;
 };
 }  // namespace cqsp::client::systems

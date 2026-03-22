@@ -2,6 +2,6 @@
     vert: line.vert
     frag: line.frag
     uniforms: {
-        thickness: 20
+        thickness: 5
     }
 }

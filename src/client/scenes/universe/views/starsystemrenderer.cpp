@@ -155,7 +155,10 @@ void SysStarSystemRenderer::SeeStarSystem() {
 
 void SysStarSystemRenderer::Update(float delta_time) { controller.Update(delta_time); }
 
-void SysStarSystemRenderer::DoUI(float delta_time) { user_interface.DoUI(delta_time); }
+void SysStarSystemRenderer::DoUI(float delta_time) {
+    user_interface.DoUI(delta_time);
+    overlay.Ui();
+}
 
 void SysStarSystemRenderer::DrawStars() {
     ZoneScoped;

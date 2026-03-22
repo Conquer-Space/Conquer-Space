@@ -40,10 +40,10 @@ void StarSystemOverlay::Initialize() {
     line_shader = app.GetAssetManager().GetAsset<ShaderDefinition>("core:shader.line")->MakeShader();
     // Init line
     std::vector<glm::vec4> varray;
-    varray.emplace_back(glm::vec4(90.0f, 0.0f, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(-90.0f, 0.0f, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(90.0f, 0.0f, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(-90.0f, 0.0f, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(-75.0060, 41.7128, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(-74.0060, 40.7128, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(-118.2426f, 34.0549, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(-119.2426f, 35.0549, 0.0f, 1.0f));
     line_mesh = std::make_shared<engine::Mesh>();
     glGenBuffers(1, &line_mesh->VBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, line_mesh->VBO);
@@ -58,6 +58,13 @@ void StarSystemOverlay::Initialize() {
     line_mesh->buffer_type = engine::DrawType::ARRAYS;
 }
 
+void StarSystemOverlay::Ui() {
+    ImGui::Begin("window");
+    ImGui::SliderFloat("asdfcd", &value1, -10.f, 10.);
+    ImGui::SliderFloat("asdfcd2", &value2, -10.f, 10.);
+    ImGui::End();
+}
+
 void StarSystemOverlay::Update() {
     for (auto&& [body, texture] : universe.view<PlanetTexture>().each()) {
         if (texture.overlay == nullptr) {
@@ -68,14 +75,17 @@ void StarSystemOverlay::Update() {
         glm::mat4 project;
         glClearColor(0.f, 0.f, 0.f, 0.f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        float aspect = (float)overlay->width / overlay->height;
-        project = glm::ortho(-180.f, 180.f, 90.f, -90.f);
+        float aspect = (float)app.GetWindowWidth() / (float)app.GetWindowHeight();
+        project = glm::ortho(-180.f, 180.f, 90.0f, -90.0f);
+        //project = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -10.0f, 10.0f);
         line_shader->UseProgram();
         line_shader->setVec2("resolution", overlay->width, overlay->height);
         glm::mat4 modelview1(1.0f);
+        //modelview1 = glm::translate(modelview1, glm::vec3(value1, value2, 0.0f));
+        //modelview1 = glm::scale(modelview1, glm::vec3(0.5f, 0.5f, 1.0f));
         glm::mat4 mvp1 = project * modelview1;
         line_shader->setMat4("mvp", mvp1);
-        glBindBuffer(GL_SHADER_STORAGE_BUFFER, line_mesh->VBO);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, line_mesh->VBO);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         line_mesh->Draw();
         overlay->EndDraw();
