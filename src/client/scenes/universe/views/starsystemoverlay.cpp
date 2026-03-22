@@ -16,6 +16,8 @@
  */
 #include "client/scenes/universe/views/starsystemoverlay.h"
 
+#include <glm/gtc/matrix_transform.hpp>
+
 #include "client/components/planetrendering.h"
 #include "core/components/bodies.h"
 
@@ -38,21 +40,10 @@ void StarSystemOverlay::Initialize() {
     line_shader = app.GetAssetManager().GetAsset<ShaderDefinition>("core:shader.line")->MakeShader();
     // Init line
     std::vector<glm::vec4> varray;
-    varray.emplace_back(glm::vec4(0.0f, -1.0f, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(1.0f, -1.0f, 0.0f, 1.0f));
-    for (int u = 0; u <= 90; u += 10) {
-        double a = u * 3.1415926535 / 180.0;
-        double c = cos(a), s = sin(a);
-        varray.emplace_back(glm::vec4((float)c, (float)s, 0.0f, 1.0f));
-    }
-    varray.emplace_back(glm::vec4(-1.0f, 1.0f, 0.0f, 1.0f));
-    for (int u = 90; u >= 0; u -= 10) {
-        double a = u * 3.1415926535 / 180.0;
-        double c = cos(a), s = sin(a);
-        varray.emplace_back(glm::vec4((float)c - 1.0f, (float)s - 1.0f, 0.0f, 1.0f));
-    }
-    varray.emplace_back(glm::vec4(1.0f, -1.0f, 0.0f, 1.0f));
-    varray.emplace_back(glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(90.0f, 0.0f, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(-90.0f, 0.0f, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(90.0f, 0.0f, 0.0f, 1.0f));
+    varray.emplace_back(glm::vec4(-90.0f, 0.0f, 0.0f, 1.0f));
     line_mesh = std::make_shared<engine::Mesh>();
     glGenBuffers(1, &line_mesh->VBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, line_mesh->VBO);
@@ -64,9 +55,32 @@ void StarSystemOverlay::Initialize() {
 
     GLsizei N = (GLsizei)varray.size() - 2;
     line_mesh->indicies = 6 * (N - 1);
+    line_mesh->buffer_type = engine::DrawType::ARRAYS;
 }
 
 void StarSystemOverlay::Update() {
-    // Then we should draw it?
+    for (auto&& [body, texture] : universe.view<PlanetTexture>().each()) {
+        if (texture.overlay == nullptr) {
+            continue;
+        }
+        cqsp::engine::FramebufferTexture* overlay = texture.overlay;
+        overlay->BeginDraw();
+        glm::mat4 project;
+        glClearColor(0.f, 0.f, 0.f, 0.f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        float aspect = (float)overlay->width / overlay->height;
+        project = glm::ortho(-180.f, 180.f, 90.f, -90.f);
+        line_shader->UseProgram();
+        line_shader->setVec2("resolution", overlay->width, overlay->height);
+        glm::mat4 modelview1(1.0f);
+        glm::mat4 mvp1 = project * modelview1;
+        line_shader->setMat4("mvp", mvp1);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, line_mesh->VBO);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        line_mesh->Draw();
+        overlay->EndDraw();
+        overlay->Resolve();
+    }
+    glViewport(0, 0, app.GetWindowWidth(), app.GetWindowHeight());
 }
 }  // namespace cqsp::client::systems

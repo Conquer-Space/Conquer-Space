@@ -414,10 +414,7 @@ void SysStarSystemRenderer::ComputeOverlay() {
         glm::mat4 transform = glm::mat4(1.f);
         glm::mat4 two_dim_projection = glm::ortho(0.0f, static_cast<float>(terrain_data.overlay->width), 0.0f,
                                                   static_cast<float>(terrain_data.overlay->height));
-        // Actually you just need to rotate the orbit
-        //transform *= glm::mat4(
-        //    glm::quat{{0.f, 0, (float)body.axial}});
-        // Draw orbit
+
         circle_shader2->UseProgram();
         circle_shader2->setMat4("model", transform);
         circle_shader2->setMat4("projection", two_dim_projection);
