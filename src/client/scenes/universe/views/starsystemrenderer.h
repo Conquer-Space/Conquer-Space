@@ -122,6 +122,8 @@ class SysStarSystemRenderer {
 
     void LoadPlanetTextures();
     void LoadPlanetProvinceMap(entt::entity body);
+    void GeneratePlanetOverlay(entt::entity body);
+
     void InitializeFramebuffers();
     void InitializeMeshes();
 

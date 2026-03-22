@@ -43,6 +43,9 @@ class Texture : public Asset {
     AssetType GetAssetType() override { return AssetType::TEXTURE; }
 };
 
+/**
+ * Texture buffer object texture
+ */
 class TBOTexture : public Texture {
  public:
     unsigned int buffer_id;

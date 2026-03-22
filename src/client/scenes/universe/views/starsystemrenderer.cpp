@@ -909,6 +909,13 @@ void SysStarSystemRenderer::LoadPlanetProvinceMap(entt::entity body) {
     SPDLOG_INFO("Took {} ms to load province image", len);
 }
 
+void SysStarSystemRenderer::GeneratePlanetOverlay(entt::entity body) {
+    auto& data = universe.get_or_emplace<PlanetTexture>(body);
+    data.overlay = new cqsp::engine::FramebufferTexture();
+    cqsp::engine::FramebufferTexture* overlay = data.overlay;
+    overlay->InitTexture(2048, 1024);
+}
+
 SysStarSystemRenderer::~SysStarSystemRenderer() {
     delete dummy_index_texture;
     delete dummy_color_map;
