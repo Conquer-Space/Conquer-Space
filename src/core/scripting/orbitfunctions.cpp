@@ -20,8 +20,11 @@
 #include "core/scripting/functionreg.h"
 
 // Helper function to get around sol's error
+// NOLINTBEGIN: We are supposed to add parentheses around the macro parameters but it's not possible because
+// the macro won't work
 #define SOL_PROPERTY(type, prop_type, name) \
     sol::property(([](type& self) { return self.name; }), ([](type& self, prop_type name) { self.name = name; }))
+// NOLINTEND
 namespace cqsp::core::scripting {
 
 namespace bodies = components::bodies;
