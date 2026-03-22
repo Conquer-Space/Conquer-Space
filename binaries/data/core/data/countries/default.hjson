@@ -415,6 +415,16 @@
     identifier: palau
   }
   {
+    name: The State of Palestine
+    common: Palestine
+    identifier: palestine
+  }
+    {
+    name: The Vatican
+    common: Vatican
+    identifier: vatican
+  }
+  {
     name: Islamic Republic of Pakistan
     common: Pakistan
     identifier: pakistan

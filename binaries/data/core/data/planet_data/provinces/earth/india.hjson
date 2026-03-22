@@ -1,365 +1,176 @@
 [
-    {
-        identifier: andaman_and_nicobar
-        color:
-        [
-            143
-            215
-            194
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: andhra_pradesh
-        color:
-        [
-            106
-            103
-            226
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: arunachal_pradesh
-        color:
-        [
-            2
-            158
-            77
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: assam
-        color:
-        [
-            32
-            37
-            3
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: bihar
-        color:
-        [
-            59
-            84
-            187
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: chandigarh
-        color:
-        [
-            182
-            72
-            88
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: chhattisgarh
-        color:
-        [
-            238
-            169
-            52
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: dadra_and_nagar_haveli
-        color:
-        [
-            182
-            58
-            21
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: delhi
-        color:
-        [
-            182
-            43
-            210
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: goa
-        color:
-        [
-            124
-            145
-            52
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: gujarat
-        color:
-        [
-            0
-            42
-            201
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: haryana
-        color:
-        [
-            238
-            183
-            119
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: himachal_pradesh
-        color:
-        [
-            93
-            94
-            164
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: jammu_and_kashmir
-        color:
-        [
-            0
-            228
-            48
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: jharkhand
-        color:
-        [
-            182
-            29
-            143
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: karnataka
-        color:
-        [
-            124
-            159
-            119
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: kerala
-        color:
-        [
-            124
-            173
-            186
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: madhya_pradesh
-        color:
-        [
-            182
-            86
-            155
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: maharashtra
-        color:
-        [
-            124
-            130
-            241
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: manipur
-        color:
-        [
-            59
-            170
-            77
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: meghalaya
-        color:
-        [
-            71
-            93
-            67
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: mizoram
-        color:
-        [
-            59
-            184
-            144
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: nagaland
-        color:
-        [
-            59
-            156
-            10
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: orissa
-        color:
-        [
-            121
-            57
-            128
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: puducherry
-        color:
-        [
-            124
-            187
-            253
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: punjab_india
-        color:
-        [
-            92
-            150
-            250
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: rajasthan
-        color:
-        [
-            92
-            165
-            61
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: sikkim
-        color:
-        [
-            32
-            65
-            137
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: tamil_nadu
-        color:
-        [
-            124
-            202
-            64
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: tripura
-        color:
-        [
-            71
-            64
-            189
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: uttar_pradesh
-        color:
-        [
-            59
-            41
-            242
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: uttaranchal
-        color:
-        [
-            40
-            228
-            26
-        ]
-        country: india
-        planet: earth
-    }
-    {
-        identifier: west_bengal
-        color:
-        [
-            32
-            108
-            82
-        ]
-        country: india
-        planet: earth
-    }
+  {
+    identifier: ladakh
+    color: "926e34"
+    country: india
+    planet: earth
+  }
+  {
+    identifier: arunachal_pradesh
+    color: "355132"
+    country: india
+    planet: earth
+  }
+  {
+    identifier: sikkim
+    color: 5c97a5
+    country: india
+    planet: earth
+  }
+  {
+    identifier: west_bengal
+    color: 9a2401
+    country: india
+    planet: earth
+  }
+  {
+    identifier: uttarakhand
+    color: 721d1f
+    country: india
+    planet: earth
+  }
+  {
+    identifier: haryana
+    color: b217ec
+    country: india
+    planet: earth
+  }
+  {
+    identifier: rajasthan
+    color: 38714f
+    country: india
+    planet: earth
+  }
+  {
+    identifier: gujarat
+    color: "456109"
+    country: india
+    planet: earth
+  }
+  {
+    identifier: himachal_pradesh
+    color: c56c43
+    country: india
+    planet: earth
+  }
+  {
+    identifier: kashmir
+    color: 82adb3
+    country: india
+    planet: earth
+  }
+  {
+    identifier: jammu_and_kashmir
+    color: 056c7e
+    country: india
+    planet: earth
+  }
+  {
+    identifier: bihar
+    color: 7071a6
+    country: india
+    planet: earth
+  }
+  {
+    identifier: uttar_pradesh
+    color: f44e1e
+    country: india
+    planet: earth
+  }
+  {
+    identifier: andhra_pradesh
+    color: 199ff2
+    country: india
+    planet: earth
+  }
+  {
+    identifier: odisha
+    color: ce2cab
+    country: india
+    planet: earth
+  }
+  {
+    identifier: dadra_and_nagar_haveli_and_daman_and_diu
+    color: f4f793
+    country: india
+    planet: earth
+  }
+  {
+    identifier: maharashtra
+    color: ce982d
+    country: india
+    planet: earth
+  }
+  {
+    identifier: goa
+    color: acb887
+    country: india
+    planet: earth
+  }
+  {
+    identifier: karnataka
+    color: 18fb9a
+    country: india
+    planet: earth
+  }
+  {
+    identifier: kerala
+    color: 0d7d43
+    country: india
+    planet: earth
+  }
+  {
+    identifier: puducherry
+    color: def203
+    country: india
+    planet: earth
+  }
+  {
+    identifier: tamil_nadu
+    color: 96710a
+    country: india
+    planet: earth
+  }
+  {
+    identifier: lakshadweep
+    color: a5b65b
+    country: india
+    planet: earth
+  }
+  {
+    identifier: andaman_and_nicobar
+    color: 4cf717
+    country: india
+    planet: earth
+  }
+  {
+    identifier: jharkhand
+    color: 74de09
+    country: india
+    planet: earth
+  }
+  {
+    identifier: delhi
+    color: c22f90
+    country: india
+    planet: earth
+  }
+  {
+    identifier: madhya_pradesh
+    color: 709c4b
+    country: india
+    planet: earth
+  }
+  {
+    identifier: chhattisgarh
+    color: 1307f8
+    country: india
+    planet: earth
+  }
+  {
+    identifier: telangana
+    color: e18c91
+    country: india
+    planet: earth
+  }
 ]

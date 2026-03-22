@@ -1,13 +1,8 @@
 [
-    {
-        identifier: saint_john_capesterre
-        color:
-        [
-            147
-            133
-            8
-        ]
-        country: st__kitts_and_nevis
-        planet: earth
-    }
+  {
+    identifier: st_kitts_&_nevis
+    color: 81f59c
+    country: st__kitts_and_nevis
+    planet: earth
+  }
 ]

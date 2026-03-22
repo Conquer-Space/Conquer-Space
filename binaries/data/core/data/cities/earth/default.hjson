@@ -285,7 +285,7 @@
                 size: 8390000
             }
         ]
-        province: jakarta_raya
+        province: jawa_barat
         industry: [
             {
                 type: Farms

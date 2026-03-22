@@ -1,13 +1,8 @@
 [
-    {
-        identifier: ratak_chain
-        color:
-        [
-            142
-            115
-            55
-        ]
-        country: marshall_is_
-        planet: earth
-    }
+  {
+    identifier: railik_chain
+    color: 4170d6
+    country: marshall_is_
+    planet: earth
+  }
 ]

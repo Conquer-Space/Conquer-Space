@@ -1,46 +1,8 @@
 [
-    {
-        identifier: belait
-        color:
-        [
-            71
-            50
-            122
-        ]
-        country: brunei
-        planet: earth
-    }
-    {
-        identifier: brunei_and_muara
-        color:
-        [
-            71
-            21
-            244
-        ]
-        country: brunei
-        planet: earth
-    }
-    {
-        identifier: temburong
-        color:
-        [
-            34
-            252
-            92
-        ]
-        country: brunei
-        planet: earth
-    }
-    {
-        identifier: tutong
-        color:
-        [
-            71
-            36
-            55
-        ]
-        country: brunei
-        planet: earth
-    }
+  {
+    identifier: brunei
+    color: 18a194
+    country: brunei
+    planet: earth
+  }
 ]

@@ -159,6 +159,7 @@ void main() {
     color = pow(color, vec3(1.0/2.5));
 
     FragColor = vec4(color, 1.0);
+
     if (country) {
         // Then check if the color is the country color
         vec4 texel_value = texelFetch(country_palette, int(texture(country_map, TexCoords).r)).rgba;

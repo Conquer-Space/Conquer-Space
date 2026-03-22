@@ -1,79 +1,38 @@
 [
-    {
-        identifier: brest
-        color:
-        [
-            4
-            159
-            185
-        ]
-        country: belarus
-        planet: earth
-    }
-    {
-        identifier: city_of_minsk
-        color:
-        [
-            243
-            1
-            158
-        ]
-        country: belarus
-        planet: earth
-    }
-    {
-        identifier: gomel
-        color:
-        [
-            4
-            131
-            51
-        ]
-        country: belarus
-        planet: earth
-    }
-    {
-        identifier: grodno
-        color:
-        [
-            6
-            4
-            68
-        ]
-        country: belarus
-        planet: earth
-    }
-    {
-        identifier: minsk
-        color:
-        [
-            213
-            51
-            153
-        ]
-        country: belarus
-        planet: earth
-    }
-    {
-        identifier: mogilev
-        color:
-        [
-            53
-            208
-            210
-        ]
-        country: belarus
-        planet: earth
-    }
-    {
-        identifier: vitebsk
-        color:
-        [
-            5
-            217
-            123
-        ]
-        country: belarus
-        planet: earth
-    }
+  {
+    identifier: gomel
+    color: 654f78
+    country: belarus
+    planet: earth
+  }
+  {
+    identifier: brest
+    color: dad12b
+    country: belarus
+    planet: earth
+  }
+  {
+    identifier: vitebsk
+    color: 276d4e
+    country: belarus
+    planet: earth
+  }
+  {
+    identifier: grodno
+    color: f6f6eb
+    country: belarus
+    planet: earth
+  }
+  {
+    identifier: mogilev
+    color: c8e26e
+    country: belarus
+    planet: earth
+  }
+  {
+    identifier: minsk
+    color: "8e0511"
+    country: belarus
+    planet: earth
+  }
 ]

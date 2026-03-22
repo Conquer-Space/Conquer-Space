@@ -611,7 +611,7 @@ void SysStarSystemRenderer::UpdatePlanetProvinceColors(entt::entity body, entt::
         return;
     }
     auto& data = universe.get<PlanetTexture>(body);
-    if (!data.province_index_map.contains(province)) {
+    if (!data.province_index_map.contains(province) || province == entt::null) {
         return;
     }
     uint16_t province_idx = data.province_index_map[province];

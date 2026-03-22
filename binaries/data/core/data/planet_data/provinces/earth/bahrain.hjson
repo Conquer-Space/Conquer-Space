@@ -1,57 +1,8 @@
 [
-    {
-        identifier: al_janubiyah
-        color:
-        [
-            172
-            8
-            48
-        ]
-        country: bahrain
-        planet: earth
-    }
-    {
-        identifier: al_manamah
-        color:
-        [
-            171
-            235
-            170
-        ]
-        country: bahrain
-        planet: earth
-    }
-    {
-        identifier: al_muharraq
-        color:
-        [
-            177
-            11
-            190
-        ]
-        country: bahrain
-        planet: earth
-    }
-    {
-        identifier: al_wusta_bahrain
-        color:
-        [
-            172
-            22
-            115
-        ]
-        country: bahrain
-        planet: earth
-    }
-    {
-        identifier: ash_shamaliyah
-        color:
-        [
-            171
-            249
-            237
-        ]
-        country: bahrain
-        planet: earth
-    }
+  {
+    identifier: bahrain
+    color: a88b3d
+    country: bahrain
+    planet: earth
+  }
 ]

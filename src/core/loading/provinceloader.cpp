@@ -28,6 +28,7 @@
 #include "core/components/population.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
+#include "core/util/color.h"
 #include "core/util/nameutil.h"
 
 namespace cqsp::core::loading {
@@ -36,8 +37,18 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     Node planet_node = GetPlanet(values["planet"].to_string(), identifier);
     Node country_node = GetCountry(values["country"].to_string(), identifier);
     node.emplace<components::Province>(country_node, planet_node);
-    auto& color = node.emplace<components::ProvinceColor>(values["color"][0].to_int64(), values["color"][1].to_int64(),
-                                                          values["color"][2].to_int64());
+
+    std::tuple<int, int, int> color_value;
+    if (values["color"].type() == Hjson::Type::Vector) {
+        color_value = std::make_tuple(static_cast<int>(values["color"][0].to_int64()),
+                                      static_cast<int>(values["color"][1].to_int64()),
+                                      static_cast<int>(values["color"][2].to_int64()));
+    } else {
+        // Then it's probably a string
+        color_value = cqsp::util::HexToRgb(values["color"].to_string());
+    }
+    auto& color = node.emplace<components::ProvinceColor>(std::get<0>(color_value), std::get<1>(color_value),
+                                                          std::get<2>(color_value));
     if (universe.provinces.find(identifier) == universe.provinces.end()) {
         universe.provinces[identifier] = node;
     } else {

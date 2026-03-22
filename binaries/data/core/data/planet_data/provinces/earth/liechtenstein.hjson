@@ -1,24 +1,8 @@
 [
-    {
-        identifier: triesen
-        color:
-        [
-            23
-            187
-            126
-        ]
-        country: liechtenstein
-        planet: earth
-    }
-    {
-        identifier: vaduz
-        color:
-        [
-            45
-            89
-            10
-        ]
-        country: liechtenstein
-        planet: earth
-    }
+  {
+    identifier: liechtenstein
+    color: fcbe61
+    country: liechtenstein
+    planet: earth
+  }
 ]

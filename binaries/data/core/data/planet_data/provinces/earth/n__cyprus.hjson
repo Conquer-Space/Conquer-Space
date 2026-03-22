@@ -1,13 +1,8 @@
 [
-    {
-        identifier: northern_cyprus
-        color:
-        [
-            93
-            108
-            231
-        ]
-        country: n__cyprus
-        planet: earth
-    }
+  {
+    identifier: northern_cyprus
+    color: 6786fa
+    country: n__cyprus
+    planet: earth
+  }
 ]

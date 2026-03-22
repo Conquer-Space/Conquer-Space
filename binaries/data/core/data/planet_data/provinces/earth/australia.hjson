@@ -1,134 +1,62 @@
 [
-    {
-        identifier: ashmore_and_cartier_islands
-        color:
-        [
-            176
-            167
-            233
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: australian_capital_territory
-        color:
-        [
-            214
-            66
-            146
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: christmas_island
-        color:
-        [
-            172
-            150
-            206
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: heard_island_and_mcdonald_islands
-        color:
-        [
-            153
-            123
-            9
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: macquarie_island
-        color:
-        [
-            162
-            215
-            1
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: new_south_wales
-        color:
-        [
-            98
-            41
-            38
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: northern_territory
-        color:
-        [
-            97
-            68
-            246
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: queensland
-        color:
-        [
-            98
-            26
-            227
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: south_australia
-        color:
-        [
-            98
-            12
-            160
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: tasmania
-        color:
-        [
-            161
-            157
-            63
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: victoria
-        color:
-        [
-            98
-            69
-            172
-        ]
-        country: australia
-        planet: earth
-    }
-    {
-        identifier: western_australia
-        color:
-        [
-            97
-            54
-            179
-        ]
-        country: australia
-        planet: earth
-    }
+  {
+    identifier: western_australia
+    color: ac7f21
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: northern_territory
+    color: 45dd99
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: south_australia
+    color: 2586f7
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: queensland
+    color: bfe934
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: new_south_wales
+    color: c35a8e
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: jervis_bay_territory
+    color: a614b6
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: victoria
+    color: 56a7a0
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: heard_island_and_mcdonald_islands
+    color: 4ebbc0
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: tasmania
+    color: 6b76f9
+    country: australia
+    planet: earth
+  }
+  {
+    identifier: coral_sea_islands
+    color: 87a95e
+    country: australia
+    planet: earth
+  }
 ]
