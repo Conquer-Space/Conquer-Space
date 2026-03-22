@@ -58,14 +58,10 @@ void StarSystemOverlay::Initialize() {
     line_mesh->buffer_type = engine::DrawType::ARRAYS;
 }
 
-void StarSystemOverlay::Ui() {
-    ImGui::Begin("window");
-    ImGui::SliderFloat("asdfcd", &value1, -10.f, 10.);
-    ImGui::SliderFloat("asdfcd2", &value2, -10.f, 10.);
-    ImGui::End();
-}
+void StarSystemOverlay::Ui() {}
 
 void StarSystemOverlay::Update() {
+    return;
     for (auto&& [body, texture] : universe.view<PlanetTexture>().each()) {
         if (texture.overlay == nullptr) {
             continue;
@@ -77,12 +73,11 @@ void StarSystemOverlay::Update() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         float aspect = (float)app.GetWindowWidth() / (float)app.GetWindowHeight();
         project = glm::ortho(-180.f, 180.f, 90.0f, -90.0f);
-        //project = glm::ortho(-aspect, aspect, -1.0f, 1.0f, -10.0f, 10.0f);
+
         line_shader->UseProgram();
         line_shader->setVec2("resolution", overlay->width, overlay->height);
         glm::mat4 modelview1(1.0f);
-        //modelview1 = glm::translate(modelview1, glm::vec3(value1, value2, 0.0f));
-        //modelview1 = glm::scale(modelview1, glm::vec3(0.5f, 0.5f, 1.0f));
+
         glm::mat4 mvp1 = project * modelview1;
         line_shader->setMat4("mvp", mvp1);
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, line_mesh->VBO);
