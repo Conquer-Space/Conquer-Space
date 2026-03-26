@@ -115,6 +115,7 @@ bool ToolTipWindow::SetEntityTooltip(entt::entity entity) {
     }
     return true;
 }
+
 void ToolTipWindow::OpenDocument() {
     document = GetApp().LoadDocument(file_name);
     SetupContent();

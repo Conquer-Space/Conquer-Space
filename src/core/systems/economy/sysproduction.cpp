@@ -204,6 +204,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     costs.profit = costs.revenue - costs.maintenance - costs.material_costs - costs.wages - costs.transport;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += costs.profit;
+    market.GDP += costs.revenue - costs.material_costs;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
@@ -326,6 +327,7 @@ void SysProduction::ProcessIndustries(Node& node) {
         return;
     }
     auto& market = node.get<components::Market>();
+    market.GDP = 0;
     auto& production_config = GetUniverse().economy_config.production_config;
 
     auto& industries = node.get<components::IndustrialZone>();

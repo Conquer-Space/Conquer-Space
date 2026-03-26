@@ -27,7 +27,9 @@ function civinfopanel:planetmarketinfopanel()
     local markets = core.get_planetary_markets()
     for _, market in pairs(markets) do
         if ImGui.BeginTabItem(core.get_name(market)) then
+            local market_comp = core.get_market(market)
             ImGui.Text(core.get_name(market))
+            ImGui.Text("Market GDP:".. core.to_human_string(market_comp.GDP))
             client.MarketInformationTable(market)
             ImGui.EndTabItem()
         end
