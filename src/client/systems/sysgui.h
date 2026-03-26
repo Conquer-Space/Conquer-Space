@@ -27,6 +27,7 @@ class SysUserInterface {
     virtual void Init() = 0;
     virtual void DoUI(int delta_time) = 0;
     virtual void DoUpdate(int delta_time) = 0;
+    virtual void OnTick() {}
 
     engine::Application &GetApp() { return m_app; }
     core::Universe &GetUniverse() { return dynamic_cast<ConquerSpace *>(GetApp().GetGame())->m_universe; }

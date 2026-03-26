@@ -11,6 +11,11 @@
                 background-color: aqua;
                 border-radius: 5px;
             }
+
+            #tooltip_content {
+                display: flex;
+                flex-direction: column;
+            }
         </style>
     </head>
     <body>

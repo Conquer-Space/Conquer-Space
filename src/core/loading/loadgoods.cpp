@@ -85,7 +85,8 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
 
-    node.emplace<components::Price>(values["price"].to_double());
+    double price = values["price"].to_double();
+    node.emplace<components::Price>(price);
 
     if (values["unit"].type() == Hjson::Type::String) {
         node.emplace<components::Unit>(values["unit"].to_string());
@@ -93,6 +94,7 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     // Basically if it fails at any point, we'll remove the component
     universe.goods[identifier] = node;
+    universe.good_prices[node] = price;
     universe.good_vector.push_back(node);
     universe.good_map[node] = static_cast<components::GoodEntity>(index);
     index++;

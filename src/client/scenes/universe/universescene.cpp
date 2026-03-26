@@ -224,6 +224,10 @@ void UniverseScene::ManageTick() {
         }
         system_renderer->OnTick();
 
+        for (auto& ui : user_interfaces) {
+            ui->OnTick();
+        }
+
         for (auto& ui : documents) {
             ui->OnTick();
         }

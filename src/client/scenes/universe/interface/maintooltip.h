@@ -32,6 +32,8 @@ class ToolTipWindow : public SysRmlUiInterface {
     void SetupContent();
 
  private:
+    void ProvinceTooltipProvider(entt::entity entity);
+    bool SetEntityTooltip(entt::entity entity);
     std::string file_name = "../data/core/gui/mainscene/tooltipwindow.rml";
     double last_tooltip_change = 0;
     double itemX;

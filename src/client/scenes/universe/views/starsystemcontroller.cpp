@@ -186,11 +186,14 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }
 
 void StarSystemController::UpdateMapMode() {
-    auto current_map_mode = universe.ctx().at<ctx::MapMode>();
+    ZoneScoped;
+    auto& current_map_mode = universe.ctx().at<ctx::MapMode>();
+    auto& map_mode_data = universe.ctx().at<ctx::MapModeCtx>();
 
-    if (focused_planet == last_focused_planet && last_map_mode == current_map_mode) {
+    if (focused_planet == last_focused_planet && last_map_mode == current_map_mode && !map_mode_data.reset_map_mode) {
         return;
     }
+    map_mode_data.reset_map_mode = false;
     if (!universe.valid(focused_planet) || !universe.all_of<Settlements, PlanetTexture>(focused_planet)) {
         return;
     }
@@ -284,6 +287,7 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
  * Selects a province. Triggers when mouse clicks on a province/focus on entity is activated.
  */
 void StarSystemController::SelectProvince() {
+    ZoneScoped;
     // Unset previous province color
     entt::entity province_to_reset = entt::null;
     if (universe.valid(selected_province)) {
@@ -463,6 +467,7 @@ void StarSystemController::SetCountryProvincesColor(entt::entity country) {
 }
 
 void StarSystemController::SetCountryProvincesToProvinceColor(entt::entity country) {
+    ZoneScoped;
     auto& country_list = universe.get<components::CountryCityList>(country);
     auto& country_comp = universe.get<components::Country>(country);
     glm::vec4 color =
@@ -509,6 +514,7 @@ glm::vec3 HexToRgb(const std::string& str) {
  * This would be making the province color lighter compared to the original color, especially if it has a color.
  */
 void StarSystemController::HandleProvinceHoverColor() {
+    ZoneScoped;
     if (hovering_province == last_hovered_province) {
         return;
     }
@@ -556,6 +562,7 @@ glm::vec3 StarSystemController::CalculateMouseRay(const glm::vec3& ray_nds) {
 
 /// Calculate offset for all cities on planet if they exist
 void StarSystemController::CalculateCityPositions(entt::entity entity) {
+    ZoneScoped;
     using client::components::PlanetCityOffsets;
     if (!universe.valid(entity)) {
         return;
@@ -592,6 +599,7 @@ glm::vec3 StarSystemController::GetMouseInScreenSpace(int mouse_x, int mouse_y) 
  * Computes a ray sphere intersection to verify which objects the mouse is currently on
  */
 entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
+    ZoneScoped;
     // Loop through objects
     // Maybe increase size based off distance on the planet and stuff
     glm::vec3 ray_wor = CalculateMouseRay(GetMouseInScreenSpace(mouse_x, mouse_y));
@@ -663,6 +671,7 @@ void StarSystemController::FocusPlanetView() {
 }
 
 glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
+    ZoneScoped;
     if (province == entt::null) {
         return glm::vec4(0);
     }
@@ -719,6 +728,18 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
             return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), amenability.science / 10.f),
                              DEFAULT_PROVINCE_APLHA);
         } break;
+        case ctx::MapMode::GoodPriceMapMode: {
+            // Now get province market
+            entt::entity selected_good = universe.ctx().at<ctx::MapModeCtx>().selected_good_price;
+            auto& market = universe.get<components::Market>(province);
+            // Get the max price of this specific good
+
+            double max_price =
+                universe.good_prices[selected_good] * (1 + universe.economy_config.market_config.base_price_deviation);
+            double difference = market.price[universe.good_map[selected_good]] / max_price;
+
+            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), difference), DEFAULT_PROVINCE_APLHA);
+        }
         default:
         case ctx::MapMode::InvalidMapMode:
             break;

@@ -28,11 +28,15 @@ h3
     margin: .83em 0;
 }
 
-h4, p
+h4
 {
     margin: 1.12em 0;
 }
 
+p
+{
+    margin: 0.05em 0;
+}
 h5
 {
     font-size: .83em;
