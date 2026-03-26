@@ -16,9 +16,9 @@
  */
 #include "core/loading/economyloader.h"
 
-#define SET_ECONOMY_CONFIG(config_class, hjson_name, config_type)                                \
-    do {                                                                                         \
-        universe.economy_config.config_class.config_type = hjson_name[#config_type].to_double(); \
+#define SET_ECONOMY_CONFIG(config_class, hjson_name, config_type)                                  \
+    do {                                                                                           \
+        universe.economy_config.config_class.config_type = (hjson_name)[#config_type].to_double(); \
     } while (0)
 
 namespace cqsp::core::loading {
