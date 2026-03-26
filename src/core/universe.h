@@ -82,6 +82,7 @@ class Universe : public entt::registry {
     entt::entity sun;
 
     std::vector<entt::entity> good_vector;
+    std::unordered_map<entt::entity, double> good_prices;
     std::unordered_map<entt::entity, components::GoodEntity> good_map;
 
     entt::entity GetGood(const components::GoodEntity entity) const { return good_vector[static_cast<int>(entity)]; }

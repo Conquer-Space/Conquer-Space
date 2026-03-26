@@ -17,9 +17,21 @@
 #include "client/scenes/universe/interface/mapmodewindow.h"
 
 #include "client/components/clientctx.h"
+#include "core/components/resource.h"
+#include "core/util/nameutil.h"
 
 namespace cqsp::client::systems {
-void MapModeWindow::Init() {}
+void MapModeWindow::Init() {
+    selected_good = GetUniverse().view<core::components::Good>().front();
+    GetUniverse().ctx().emplace<ctx::SelectedGoodPrice>(selected_good);
+}
+
+// If the last frame had a tick
+void MapModeWindow::OnTick() {
+    if (GetMapMode() == ctx::MapMode::GoodPriceMapMode) {
+        GetUniverse().ctx().at<ctx::SelectedGoodPrice>().reset_map_mode = true;
+    }
+}
 
 void MapModeWindow::DoUI(int delta_time) {
     // Place on bottom right
@@ -32,6 +44,24 @@ void MapModeWindow::DoUI(int delta_time) {
     MapModeButton("Province Map Mode", ctx::MapMode::ProvinceMapMode);
     MapModeButton("Resource Map Mode", ctx::MapMode::ResourceMapMode);
     MapModeButton("Science Map Mode", ctx::MapMode::ScienceMapMode);
+    MapModeButton("Good Price Map Mode", ctx::MapMode::GoodPriceMapMode);
+    // then we have a checkbox
+    if (ImGui::BeginCombo("##combo",
+                          core::util::GetName(GetUniverse(),
+                                              selected_good)
+                              .c_str()))  // The second parameter is the label previewed before opening the combo.
+    {
+        auto view = GetUniverse().view<core::components::Good>();
+        for (entt::entity good : view) {
+            bool is_selected = selected_good == good;
+            if (ImGui::Selectable(core::util::GetName(GetUniverse(), good).c_str(), is_selected)) {
+                selected_good = good;
+                GetUniverse().ctx().at<ctx::SelectedGoodPrice>().selected_good_price = selected_good;
+                GetUniverse().ctx().at<ctx::SelectedGoodPrice>().reset_map_mode = true;
+            }
+        }
+        ImGui::EndCombo();
+    }
 
     ImGui::End();
 }

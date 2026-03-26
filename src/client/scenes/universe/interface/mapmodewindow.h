@@ -16,6 +16,9 @@
  */
 #pragma once
 
+#include <string>
+#include <vector>
+
 #include "client/components/clientctx.h"
 #include "client/systems/sysgui.h"
 
@@ -26,6 +29,7 @@ class MapModeWindow : public SysUserInterface {
     void Init();
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
+    void OnTick();
 
  private:
     inline void SetMapMode(ctx::MapMode map_mode);
@@ -33,5 +37,7 @@ class MapModeWindow : public SysUserInterface {
 
     void MapModeButton(const char* string, ctx::MapMode map_mode);
     void MapModeButton(const char* string, ctx::MapMode map_mode, ctx::MapMode map_mode2);
+
+    entt::entity selected_good = entt::null;
 };
 }  // namespace cqsp::client::systems

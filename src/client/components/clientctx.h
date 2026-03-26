@@ -63,6 +63,12 @@ enum class MapMode {
     InvalidMapMode,
     ResourceMapMode,
     ScienceMapMode,
+    GoodPriceMapMode,
+};
+
+struct SelectedGoodPrice {
+    entt::entity selected_good_price;
+    bool reset_map_mode = false;
 };
 
 enum class SelectedMenu {

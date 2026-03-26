@@ -106,13 +106,13 @@ void SysMarket::DeterminePrice(Market& market, components::GoodEntity good_entit
     const double sd_ratio = market.sd_ratio[good_entity];
     const double supply = market.supply[good_entity];
     const double demand = market.demand[good_entity];
-    double& price = market.price[good_entity];
     // Get parent market price
     // Now just adjust cost
     // Get parent market
-    price = base_prices[good_entity] *
-            (1. + GetUniverse().economy_config.market_config.base_price_deviation *
-                      std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
+    market.price[good_entity] =
+        base_prices[good_entity] *
+        (1. + GetUniverse().economy_config.market_config.base_price_deviation *
+                  std::clamp((demand - supply) / (std::max(0.001, std::min(demand, supply))), -1., 1.));
 }
 
 void SysMarket::DeterminePrices(components::Market& market) {
