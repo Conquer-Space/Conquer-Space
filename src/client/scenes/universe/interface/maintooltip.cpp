@@ -17,6 +17,8 @@
 #include "client/scenes/universe/interface/maintooltip.h"
 
 #include "client/components/clientctx.h"
+#include "core/components/market.h"
+#include "core/components/surface.h"
 #include "core/util/nameutil.h"
 
 namespace cqsp::client::systems::rmlui {
@@ -62,16 +64,7 @@ void ToolTipWindow::Update(double delta_time) {
     if (last_hover != selected_item) {
         last_tooltip_change = GetApp().GetTime();
         std::visit(overloaded {[&](std::monostate) { to_present = false; },
-                               [&](entt::entity entity) {
-                                   if (GetUniverse().valid(entity)) {
-                                       // Then we set it
-                                       tooltip_content->SetInnerRML(core::util::GetName(GetUniverse(), entity));
-                                       to_present = true;
-                                   } else {
-                                       // We show nothing
-                                       to_present = false;
-                                   }
-                               },
+                               [&](entt::entity entity) { to_present = SetEntityTooltip(entity); },
                                [&](const std::string& string) {
                                    tooltip_content->SetInnerRML(string);
                                    to_present = true;
@@ -96,6 +89,32 @@ void ToolTipWindow::Update(double delta_time) {
     last_hover = selected_item;
 }
 
+void ToolTipWindow::ProvinceTooltipProvider(entt::entity entity) {
+    // Let's just check map mode and if it's price map mode we output that
+    if (GetUniverse().ctx().at<ctx::MapMode>() != ctx::MapMode::GoodPriceMapMode) {
+        tooltip_content->SetInnerRML(fmt::format("<p>{}</p>", core::util::GetName(GetUniverse(), entity)));
+        return;
+    }
+    const auto& ctx = GetUniverse().ctx().at<ctx::MapModeCtx>();
+    // Get the market of the province
+    double price =
+        GetUniverse().get<core::components::Market>(entity).price[GetUniverse().good_map[ctx.selected_good_price]];
+    std::string name = core::util::GetName(GetUniverse(), entity);
+    tooltip_content->SetInnerRML(fmt::format("<p>{}</p><p>Price: {:.2f}</p>", name, price));
+}
+
+bool ToolTipWindow::SetEntityTooltip(entt::entity entity) {
+    if (!GetUniverse().valid(entity)) {
+        return false;
+    }
+    // Then we set it
+    if (GetUniverse().any_of<core::components::Province>(entity)) {
+        ProvinceTooltipProvider(entity);
+    } else {
+        tooltip_content->SetInnerRML(fmt::format("<p>{}</p>", core::util::GetName(GetUniverse(), entity)));
+    }
+    return true;
+}
 void ToolTipWindow::OpenDocument() {
     document = GetApp().LoadDocument(file_name);
     SetupContent();

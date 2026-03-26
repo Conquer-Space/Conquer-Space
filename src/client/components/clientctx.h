@@ -66,7 +66,7 @@ enum class MapMode {
     GoodPriceMapMode,
 };
 
-struct SelectedGoodPrice {
+struct MapModeCtx {
     entt::entity selected_good_price;
     bool reset_map_mode = false;
 };

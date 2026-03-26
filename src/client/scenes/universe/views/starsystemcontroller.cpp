@@ -188,7 +188,7 @@ bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding
 void StarSystemController::UpdateMapMode() {
     ZoneScoped;
     auto& current_map_mode = universe.ctx().at<ctx::MapMode>();
-    auto& map_mode_data = universe.ctx().at<ctx::SelectedGoodPrice>();
+    auto& map_mode_data = universe.ctx().at<ctx::MapModeCtx>();
 
     if (focused_planet == last_focused_planet && last_map_mode == current_map_mode && !map_mode_data.reset_map_mode) {
         return;
@@ -730,7 +730,7 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
         } break;
         case ctx::MapMode::GoodPriceMapMode: {
             // Now get province market
-            entt::entity selected_good = universe.ctx().at<ctx::SelectedGoodPrice>().selected_good_price;
+            entt::entity selected_good = universe.ctx().at<ctx::MapModeCtx>().selected_good_price;
             auto& market = universe.get<components::Market>(province);
             // Get the max price of this specific good
 

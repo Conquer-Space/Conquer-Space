@@ -23,13 +23,13 @@
 namespace cqsp::client::systems {
 void MapModeWindow::Init() {
     selected_good = GetUniverse().view<core::components::Good>().front();
-    GetUniverse().ctx().emplace<ctx::SelectedGoodPrice>(selected_good);
+    GetUniverse().ctx().emplace<ctx::MapModeCtx>(selected_good);
 }
 
 // If the last frame had a tick
 void MapModeWindow::OnTick() {
     if (GetMapMode() == ctx::MapMode::GoodPriceMapMode) {
-        GetUniverse().ctx().at<ctx::SelectedGoodPrice>().reset_map_mode = true;
+        GetUniverse().ctx().at<ctx::MapModeCtx>().reset_map_mode = true;
     }
 }
 
@@ -56,8 +56,8 @@ void MapModeWindow::DoUI(int delta_time) {
             bool is_selected = selected_good == good;
             if (ImGui::Selectable(core::util::GetName(GetUniverse(), good).c_str(), is_selected)) {
                 selected_good = good;
-                GetUniverse().ctx().at<ctx::SelectedGoodPrice>().selected_good_price = selected_good;
-                GetUniverse().ctx().at<ctx::SelectedGoodPrice>().reset_map_mode = true;
+                GetUniverse().ctx().at<ctx::MapModeCtx>().selected_good_price = selected_good;
+                GetUniverse().ctx().at<ctx::MapModeCtx>().reset_map_mode = true;
             }
         }
         ImGui::EndCombo();
