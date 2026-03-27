@@ -16,4 +16,18 @@
  */
 #pragma once
 
-namespace cqsp::core::systems {}  // namespace cqsp::core::systems
+#include "core/systems/isimulationsystem.h"
+
+namespace cqsp::core::systems {
+class SysMarketCsvHistory : public ISimulationSystem {
+ public:
+    explicit SysMarketCsvHistory(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+    void Init();
+    ~SysMarketCsvHistory() = default;
+
+    void WriteCsvHeader(const entt::entity entity);
+
+    int Interval() override { return ECONOMIC_TICK; }
+};
+}  // namespace cqsp::core::systems
