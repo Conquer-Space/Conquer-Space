@@ -16,8 +16,40 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 --]]
 local civinfopanel = {
-    open = false
+    open = false,
+    selected_price_good = core.GoodEntity.null,
+    selected_market = 0,
 }
+
+function civinfopanel:goodcostpanel()
+    if ImGui.Button("<") then
+        self.selected_price_good = core.GoodEntity.null
+    end
+
+    if self.selected_price_good == core.GoodEntity.null then
+        return
+    end
+    
+    -- Then show the good information
+    local good_entity = core.good_entity_to_entity(self.selected_price_good)
+    ImGui.Text(core.get_name(good_entity))
+    print(tostring(self.selected_price_good))
+    local market_history = core.get_market_history(self.selected_market)
+    ImPlot.SetNextAxesToFit()
+    if ImPlot.BeginPlot("Good Price") then
+        ImPlot.SetupAxes("Tick", "Price")
+        ImPlot.PlotLine("Price", market_history.price_history[self.selected_price_good])
+        ImPlot.EndPlot()
+    end
+
+    ImPlot.SetNextAxesToFit()
+    if ImPlot.BeginPlot("Good Supply and Demand") then
+        ImPlot.SetupAxes("Tick", "Supply")
+        ImPlot.PlotLine("Supply", market_history.supply[self.selected_price_good])
+        ImPlot.PlotLine("Demand", market_history.demand[self.selected_price_good])
+        ImPlot.EndPlot()
+    end
+end
 
 function civinfopanel:planetmarketinfopanel()
     if not ImGui.BeginTabBar("market_info_panel") then
@@ -41,7 +73,9 @@ function civinfopanel:planetmarketinfopanel()
             end
             local selected = client.SelectableMarketInformationTable(market)
             if selected ~= core.GoodEntity.null then
-                print("Selected!")
+                self.selected_price_good = selected
+                self.selected_market = market
+                -- now display path or something
             end
             ImGui.EndTabItem()
         end
@@ -99,16 +133,16 @@ function civinfopanel:civinfopanel()
             end
             ImGui.EndTabItem()
         end
-        if ImGui.BeginTabItem("Market Information") then
-            client.MarketInformationTable(player)
-            ImGui.EndTabItem()
-        end
         if ImGui.BeginTabItem("Budget") then
             ImGui.Text("Budget breakdown ToDo!")
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Markets") then
-            self:planetmarketinfopanel()
+            if self.selected_price_good == core.GoodEntity.null then
+                self:planetmarketinfopanel()
+            else
+                self:goodcostpanel()
+            end
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Mission Queue") then
@@ -119,8 +153,6 @@ function civinfopanel:civinfopanel()
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Research") then
-            local research = core.get_scientific_research(player)
-            ImGui.Text(tostring(research.research))
             ImGui.EndTabItem()
         end
         ImGui.EndTabBar()

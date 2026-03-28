@@ -30,28 +30,37 @@ namespace cqsp::core::scripting {
 void LoadMarketFunctions(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
     lua_namespace.new_enum("GoodEntity", "null", components::GoodEntity::null);
-    // Register orbit data
+    REGISTER_FUNCTION("good_entity_to_entity", [&](components::GoodEntity entity) { return universe.GetGood(entity); });
+
     lua_namespace.new_usertype<components::Market>("Market", sol::constructors<components::Market(size_t)>(), "GDP",
-                                                   SOL_PROPERTY(components::Market, double, GDP));
+                                                   SOL_PROPERTY(components::Market, double, GDP), "price",
+                                                   SOL_PROPERTY(components::Market, components::ResourceLedger, price));
     REGISTER_FUNCTION("get_market", [&](entt::entity entity) { return universe.get<components::Market>(entity); });
 
-    // std::vector<double> usertype for indexing from Lua (1-based)
+    // std::vector<double> usertype for indexing from Lua
     script_engine.new_usertype<std::vector<double>>(
         "DoubleVector", sol::no_constructor, sol::meta_function::index,
         [](const std::vector<double>& v, int i) -> sol::optional<double> {
-            if (i < 1 || i > static_cast<int>(v.size())) return sol::nullopt;
-            return v[i - 1];
+            if (i < 0 || i >= static_cast<int>(v.size())) return sol::nullopt;
+            return v[i];
         },
         sol::meta_function::length, [](const std::vector<double>& v) { return v.size(); });
 
-    // std::vector<std::vector<double>> usertype — indexed by good index (1-based), returns DoubleVector
+    // std::vector<std::vector<double>> usertype — indexed by good index, returns DoubleVector
     script_engine.new_usertype<std::vector<std::vector<double>>>(
         "DoubleVectorVector", sol::no_constructor, sol::meta_function::index,
         [](std::vector<std::vector<double>>& v, int i) -> sol::optional<std::vector<double>*> {
-            if (i < 1 || i > static_cast<int>(v.size())) return sol::nullopt;
-            return &v[i - 1];
+            if (i < 0 || i > static_cast<int>(v.size())) return sol::nullopt;
+            return &v[i];
         },
         sol::meta_function::length, [](const std::vector<std::vector<double>>& v) { return v.size(); });
+
+    script_engine.new_usertype<components::ResourceLedger>(
+        "ResourceLedger", sol::no_constructor, sol::meta_function::index,
+        [](components::ResourceLedger& self, components::GoodEntity good) { return self[good]; }, "get_sum",
+        &components::ResourceLedger::GetSum, "average", &components::ResourceLedger::Average, "min",
+        &components::ResourceLedger::Min, "max", &components::ResourceLedger::Max, "size",
+        &components::ResourceLedger::size);
 
     script_engine.new_usertype<components::MarketHistory>(
         "MarketHistory", sol::no_constructor, "price_history",
