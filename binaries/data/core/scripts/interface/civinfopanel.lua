@@ -25,11 +25,9 @@ function civinfopanel:goodcostpanel()
     if ImGui.Button("<") then
         self.selected_price_good = core.GoodEntity.null
     end
-
     if self.selected_price_good == core.GoodEntity.null then
         return
-    end
-    
+    end    
     -- Then show the good information
     local good_entity = core.good_entity_to_entity(self.selected_price_good)
     ImGui.Text(core.get_name(good_entity))

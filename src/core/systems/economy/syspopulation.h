@@ -32,10 +32,15 @@ class SysPopulationConsumption : public ISimulationSystem {
  public:
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
+    void Init() override;
     int Interval() override { return ECONOMIC_TICK; }
 
  private:
     void ProcessSettlement(Node& settlement, const components::ResourceConsumption& marginal_propensity_base,
                            const components::ResourceConsumption& autonomous_consumption_base, const float savings);
+
+    components::ResourceConsumption marginal_propensity_base;
+    components::ResourceConsumption autonomous_consumption_base;
+    float savings = 0;
 };
 }  // namespace cqsp::core::systems

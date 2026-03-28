@@ -169,19 +169,16 @@ void SysPopulationConsumption::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
 
-    ResourceConsumption marginal_propensity_base;
-    ResourceConsumption autonomous_consumption_base;
-    float savings = 1;  // We calculate how much is saved since it is simpler
-                        // than calculating spending
-    for (entt::entity cgentity : universe.consumergoods) {
-        const components::ConsumerGood& good = universe.get<components::ConsumerGood>(cgentity);
-        marginal_propensity_base[universe.good_map[cgentity]] = good.marginal_propensity * Interval();
-        autonomous_consumption_base[universe.good_map[cgentity]] = good.autonomous_consumption * Interval();
-        savings -= good.marginal_propensity;
-    }  // These tables technically never need to be recalculated
-
     for (Node settlement : universe.nodes<components::Settlement>()) {
         ProcessSettlement(settlement, marginal_propensity_base, autonomous_consumption_base, savings);
     }
+}
+void SysPopulationConsumption::Init() {
+    for (entt::entity cgentity : GetUniverse().consumergoods) {
+        const components::ConsumerGood& good = GetUniverse().get<components::ConsumerGood>(cgentity);
+        marginal_propensity_base[GetUniverse().good_map[cgentity]] = good.marginal_propensity * Interval();
+        autonomous_consumption_base[GetUniverse().good_map[cgentity]] = good.autonomous_consumption * Interval();
+        savings -= good.marginal_propensity;
+    }  // These tables technically never need to be recalculated
 }
 }  // namespace cqsp::core::systems

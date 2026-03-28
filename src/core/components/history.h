@@ -32,6 +32,7 @@ class MarketHistory {
     std::vector<std::vector<double>> supply;
     std::vector<std::vector<double>> demand;
     std::vector<double> gdp;
+    std::vector<double> sol;
 
     MarketHistory() {}
     MarketHistory(size_t good_count)
