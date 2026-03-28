@@ -36,8 +36,6 @@ void SysPlanetaryTrade::DoSystem() {
     auto planetary_markets =
         GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Settlements>();
 
-    auto goodsview = GetUniverse().nodes<components::Price>();
-
     for (Node market_node : planetary_markets) {
         ZoneScoped;
         auto& p_market = market_node.get<components::Market>();

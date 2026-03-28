@@ -44,6 +44,7 @@
 #include "core/systems/economy/sysproduction.h"
 #include "core/systems/economy/sysspaceport.h"
 #include "core/systems/history/sysmarketcsvlogger.h"
+#include "core/systems/history/sysmarkethistory.h"
 #include "core/systems/movement/sysorbit.h"
 #include "core/systems/scriptrunner.h"
 
@@ -73,6 +74,7 @@ void Simulation::CreateSystems() {
     AddSystem<SysPlanetaryTrade>();
     AddSystem<SysInterplanetaryTrade>();
     AddSystem<history::SysMarketCsvHistory>();
+    AddSystem<history::SysMarketHistory>();
 
     // Movement
     AddSystem<SysOrbit>();

@@ -16,6 +16,7 @@
  */
 #include "core/scripting/marketfunctions.h"
 
+#include "core/components/history.h"
 #include "core/components/market.h"
 #include "core/scripting/functionreg.h"
 
@@ -33,5 +34,32 @@ void LoadMarketFunctions(Universe& universe, sol::state_view& script_engine) {
     lua_namespace.new_usertype<components::Market>("Market", sol::constructors<components::Market(size_t)>(), "GDP",
                                                    SOL_PROPERTY(components::Market, double, GDP));
     REGISTER_FUNCTION("get_market", [&](entt::entity entity) { return universe.get<components::Market>(entity); });
+
+    // std::vector<double> usertype for indexing from Lua (1-based)
+    script_engine.new_usertype<std::vector<double>>(
+        "DoubleVector", sol::no_constructor, sol::meta_function::index,
+        [](const std::vector<double>& v, int i) -> sol::optional<double> {
+            if (i < 1 || i > static_cast<int>(v.size())) return sol::nullopt;
+            return v[i - 1];
+        },
+        sol::meta_function::length, [](const std::vector<double>& v) { return v.size(); });
+
+    // std::vector<std::vector<double>> usertype — indexed by good index (1-based), returns DoubleVector
+    script_engine.new_usertype<std::vector<std::vector<double>>>(
+        "DoubleVectorVector", sol::no_constructor, sol::meta_function::index,
+        [](std::vector<std::vector<double>>& v, int i) -> sol::optional<std::vector<double>*> {
+            if (i < 1 || i > static_cast<int>(v.size())) return sol::nullopt;
+            return &v[i - 1];
+        },
+        sol::meta_function::length, [](const std::vector<std::vector<double>>& v) { return v.size(); });
+
+    script_engine.new_usertype<components::MarketHistory>(
+        "MarketHistory", sol::no_constructor, "price_history", &components::MarketHistory::price_history, "sd_ratio",
+        &components::MarketHistory::sd_ratio, "supply", &components::MarketHistory::supply, "demand",
+        &components::MarketHistory::demand, "gdp", &components::MarketHistory::gdp);
+
+    REGISTER_FUNCTION("get_market_history", [&](entt::entity entity) -> components::MarketHistory& {
+        return universe.get<components::MarketHistory>(entity);
+    });
 }
 }  // namespace cqsp::core::scripting

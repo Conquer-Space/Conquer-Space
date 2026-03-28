@@ -28,8 +28,17 @@ function civinfopanel:planetmarketinfopanel()
     for _, market in pairs(markets) do
         if ImGui.BeginTabItem(core.get_name(market)) then
             local market_comp = core.get_market(market)
+            local market_history = core.get_market_history(market)
             ImGui.Text(core.get_name(market))
             ImGui.Text("Market GDP:".. core.to_human_string(market_comp.GDP))
+            if ImGui.CollapsingHeader("Market GDP") then
+                ImPlot.SetNextAxesToFit()
+                if ImPlot.BeginPlot("Market GDP") then
+                    ImPlot.SetupAxes("Tick", "GDP")
+                    ImPlot.PlotLine("GDP", market_history.gdp)
+                    ImPlot.EndPlot()
+                end
+            end
             client.MarketInformationTable(market)
             ImGui.EndTabItem()
         end

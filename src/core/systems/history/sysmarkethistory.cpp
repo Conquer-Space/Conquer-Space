@@ -15,3 +15,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #include "core/systems/history/sysmarkethistory.h"
+
+#include "core/components/history.h"
+
+namespace cqsp::core::systems::history {
+void SysMarketHistory::DoSystem() {
+    auto planetary_markets =
+        GetUniverse().view<components::Market, components::PlanetaryMarket, components::MarketHistory>();
+
+    for (auto&& [entity, market, planetary_market, history] : planetary_markets.each()) {
+        // Now let's get or emplace our market history?
+        // then add to the market history
+        history.gdp.push_back(market.GDP);
+        for (auto good : GetUniverse().GoodIterator()) {
+            history.price_history[static_cast<int>(good)].push_back(market.price[good]);
+            history.sd_ratio[static_cast<int>(good)].push_back(market.sd_ratio[good]);
+            history.supply[static_cast<int>(good)].push_back(market.supply[good]);
+            history.demand[static_cast<int>(good)].push_back(market.demand[good]);
+        }
+    }
+}
+void SysMarketHistory::Init() {}
+}  // namespace cqsp::core::systems::history

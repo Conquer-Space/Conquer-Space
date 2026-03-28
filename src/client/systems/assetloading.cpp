@@ -23,6 +23,7 @@
 #include "client/scripting/clientscripting.h"
 #include "client/scripting/clientuielements.h"
 #include "client/scripting/imguifunctions.h"
+#include "client/scripting/implotfunctions.h"
 #include "core/components/surface.h"
 #include "core/loading/economyloader.h"
 #include "core/loading/fields.h"
@@ -116,6 +117,7 @@ void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) 
     // Load lua functions
     core::scripting::LoadFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::LoadImGuiFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
+    scripting::LoadImPlotFunctions(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::ClientFunctions(asset_manager, conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
     scripting::InitClientElements(conquer_space.GetUniverse(), conquer_space.GetScriptInterface());
 

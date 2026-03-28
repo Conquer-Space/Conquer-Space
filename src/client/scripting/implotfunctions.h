@@ -16,27 +16,9 @@
  */
 #pragma once
 
-#include <unordered_map>
-#include <vector>
+#include "core/scripting/scripting.h"
+#include "core/universe.h"
 
-#include <entt/entt.hpp>
-
-namespace cqsp::core::components {
-/// <summary>
-/// Records the history of market.
-/// </summary>
-class MarketHistory {
- public:
-    std::vector<std::vector<double>> price_history;
-    std::vector<std::vector<double>> sd_ratio;
-    std::vector<std::vector<double>> supply;
-    std::vector<std::vector<double>> demand;
-    std::vector<double> gdp;
-
-    MarketHistory() {}
-    MarketHistory(size_t good_count)
-        : price_history(good_count), sd_ratio(good_count), supply(good_count), demand(good_count) {}
-};
-
-class LogMarket {};
-}  // namespace cqsp::core::components
+namespace cqsp::client::scripting {
+void LoadImPlotFunctions(core::Universe& universe, core::scripting::ScriptInterface& script_engine);
+}  // namespace cqsp::client::scripting

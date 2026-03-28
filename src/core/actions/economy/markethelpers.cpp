@@ -20,7 +20,6 @@
 #include "core/components/market.h"
 
 namespace cqsp::core::actions {
-
 void AddParticipant(Node& market_node, Node& participant) {
     auto& market = market_node.get<components::Market>();
     participant.emplace<components::MarketAgent>(market_node);
@@ -30,7 +29,6 @@ void AddParticipant(Node& market_node, Node& participant) {
 Node CreateMarket(Universe& universe) {
     Node market(universe);
     static_cast<void>(market.get_or_emplace<components::Market>(universe.GoodCount()));
-    static_cast<void>(market.get_or_emplace<components::MarketHistory>());
     return market;
 }
 }  // namespace cqsp::core::actions
