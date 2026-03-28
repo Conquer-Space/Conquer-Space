@@ -39,7 +39,10 @@ function civinfopanel:planetmarketinfopanel()
                     ImPlot.EndPlot()
                 end
             end
-            client.MarketInformationTable(market)
+            local selected = client.SelectableMarketInformationTable(market)
+            if selected ~= core.GoodEntity.null then
+                print("Selected!")
+            end
             ImGui.EndTabItem()
         end
     end

@@ -29,7 +29,7 @@
 namespace cqsp::core::scripting {
 void LoadMarketFunctions(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
-
+    lua_namespace.new_enum("GoodEntity", "null", components::GoodEntity::null);
     // Register orbit data
     lua_namespace.new_usertype<components::Market>("Market", sol::constructors<components::Market(size_t)>(), "GDP",
                                                    SOL_PROPERTY(components::Market, double, GDP));
@@ -54,9 +54,12 @@ void LoadMarketFunctions(Universe& universe, sol::state_view& script_engine) {
         sol::meta_function::length, [](const std::vector<std::vector<double>>& v) { return v.size(); });
 
     script_engine.new_usertype<components::MarketHistory>(
-        "MarketHistory", sol::no_constructor, "price_history", &components::MarketHistory::price_history, "sd_ratio",
-        &components::MarketHistory::sd_ratio, "supply", &components::MarketHistory::supply, "demand",
-        &components::MarketHistory::demand, "gdp", &components::MarketHistory::gdp);
+        "MarketHistory", sol::no_constructor, "price_history",
+        SOL_PROPERTY(components::MarketHistory, std::vector<std::vector<double>>, price_history), "sd_ratio",
+        SOL_PROPERTY(components::MarketHistory, std::vector<std::vector<double>>, sd_ratio), "supply",
+        SOL_PROPERTY(components::MarketHistory, std::vector<std::vector<double>>, supply), "demand",
+        SOL_PROPERTY(components::MarketHistory, std::vector<std::vector<double>>, demand), "gdp",
+        SOL_PROPERTY(components::MarketHistory, std::vector<double>, gdp));
 
     REGISTER_FUNCTION("get_market_history", [&](entt::entity entity) -> components::MarketHistory& {
         return universe.get<components::MarketHistory>(entity);

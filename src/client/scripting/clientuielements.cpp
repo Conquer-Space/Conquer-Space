@@ -28,5 +28,9 @@ void InitClientElements(core::Universe& universe, core::scripting::ScriptInterfa
 
     REGISTER_FUNCTION("MarketInformationTable",
                       [&](entt::entity entity) { client::systems::MarketInformationTable(universe, entity); });
+
+    REGISTER_FUNCTION("SelectableMarketInformationTable", [&](entt::entity entity) {
+        return client::systems::SelectableMarketInformationTable(universe, entity);
+    });
 }
 }  // namespace cqsp::client::scripting

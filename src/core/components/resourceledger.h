@@ -25,7 +25,7 @@ namespace cqsp::core::components {
 /**
 * Class for goods to be accessed through an array
 */
-enum class GoodEntity : uint32_t {};
+enum class GoodEntity : uint32_t { null = -1 };
 
 class ResourceLedger;
 class ResourceVector;
