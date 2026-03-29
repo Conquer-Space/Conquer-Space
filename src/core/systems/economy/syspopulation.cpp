@@ -20,9 +20,9 @@
 
 #include <tracy/Tracy.hpp>
 
+#include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/market.h"
-#include "core/components/name.h"
 #include "core/components/population.h"
 #include "core/components/resource.h"
 #include "core/components/surface.h"
@@ -92,7 +92,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         ResourceConsumption& consumption = node_segment.get_or_emplace<ResourceConsumption>();
         // Reduce pop to some unreasonably low level so that the economy can
         // handle it
-        const uint64_t population = segment.population / 10;
+        const uint64_t population = segment.population;
 
         consumption = autonomous_consumption_base;
 
@@ -136,6 +136,8 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
         market.consumption += consumption;
+        total_sol += segment.standard_of_living * segment.population;
+        total_population += segment.population;
     }
 }
 
@@ -168,11 +170,18 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
 void SysPopulationConsumption::DoSystem() {
     ZoneScoped;
     Universe& universe = GetUniverse();
-
+    total_population = 0;
+    total_sol = 0;
     for (Node settlement : universe.nodes<components::Settlement>()) {
         ProcessSettlement(settlement, marginal_propensity_base, autonomous_consumption_base, savings);
     }
+    // Now compute our thing
+    auto& history = GetUniverse().ctx().at<components::PopulationHistory>();
+    history.population.push_back(total_population);
+    history.sol.push_back(total_sol / static_cast<double>(total_population));
+    SPDLOG_INFO("Average SOL: {}", total_sol / static_cast<double>(total_population));
 }
+
 void SysPopulationConsumption::Init() {
     for (entt::entity cgentity : GetUniverse().consumergoods) {
         const components::ConsumerGood& good = GetUniverse().get<components::ConsumerGood>(cgentity);
@@ -180,5 +189,6 @@ void SysPopulationConsumption::Init() {
         autonomous_consumption_base[GetUniverse().good_map[cgentity]] = good.autonomous_consumption * Interval();
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
+    GetUniverse().ctx().emplace<components::PopulationHistory>();
 }
 }  // namespace cqsp::core::systems

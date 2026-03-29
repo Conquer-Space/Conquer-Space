@@ -20,6 +20,7 @@
 
 using cqsp::core::components::GoodEntity;
 using cqsp::core::components::ResourceMap;
+using cqsp::core::components::ToGoodEntity;
 
 TEST(Core_ResourceMap, ResourceMapComparison) {
     ResourceMap first;
@@ -27,8 +28,8 @@ TEST(Core_ResourceMap, ResourceMapComparison) {
     // Set the stuff
     // Registry because it's demanding
 
-    GoodEntity good_one = static_cast<GoodEntity>(1);
-    GoodEntity good_two = static_cast<GoodEntity>(2);
+    GoodEntity good_one = ToGoodEntity(1);
+    GoodEntity good_two = ToGoodEntity(2);
     first[good_one] = 10;
     second[good_one] = 20;
     EXPECT_TRUE(first < second);
@@ -78,8 +79,8 @@ TEST(Core_ResourceMap, ResourceMapComparison) {
 TEST(Core_ResourceMap, ResourceMapDoubleComparison) {
     ResourceMap first;
 
-    GoodEntity good_one = static_cast<GoodEntity>(1);
-    GoodEntity good_two = static_cast<GoodEntity>(2);
+    GoodEntity good_one = ToGoodEntity(1);
+    GoodEntity good_two = ToGoodEntity(2);
 
     EXPECT_FALSE(first > 0);
     EXPECT_FALSE(first < 0);
@@ -110,9 +111,9 @@ TEST(Core_ResourceMap, HasAllResoourcesTest) {
     ResourceMap first;
     ResourceMap second;
 
-    GoodEntity good_one = static_cast<GoodEntity>(1);
-    GoodEntity good_two = static_cast<GoodEntity>(2);
-    GoodEntity good_three = static_cast<GoodEntity>(3);
+    GoodEntity good_one = ToGoodEntity(1);
+    GoodEntity good_two = ToGoodEntity(2);
+    GoodEntity good_three = ToGoodEntity(3);
 
     // Initialize the information
     first[good_one] = 10;
@@ -140,7 +141,7 @@ TEST(Core_ResourceMap, LedgerAdditionTest1) {
     ResourceMap first;
     ResourceMap second;
 
-    GoodEntity good_one = static_cast<GoodEntity>(1);
+    GoodEntity good_one = ToGoodEntity(1);
 
     first[good_one] = 20;
     second += first;
@@ -154,7 +155,7 @@ TEST(Core_ResourceMap, LedgerSubtractionTest1) {
     ResourceMap first;
     ResourceMap second;
 
-    GoodEntity good_one = static_cast<GoodEntity>(1);
+    GoodEntity good_one = ToGoodEntity(1);
 
     first[good_one] = 20;
     second[good_one] = 30;

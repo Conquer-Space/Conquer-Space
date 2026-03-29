@@ -42,5 +42,8 @@ class SysPopulationConsumption : public ISimulationSystem {
     components::ResourceConsumption marginal_propensity_base;
     components::ResourceConsumption autonomous_consumption_base;
     float savings = 0;
+
+    int total_population = 0;
+    double total_sol = 0;
 };
 }  // namespace cqsp::core::systems

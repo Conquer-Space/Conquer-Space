@@ -70,8 +70,17 @@ void LoadMarketFunctions(Universe& universe, sol::state_view& script_engine) {
         SOL_PROPERTY(components::MarketHistory, std::vector<std::vector<double>>, demand), "gdp",
         SOL_PROPERTY(components::MarketHistory, std::vector<double>, gdp));
 
+    script_engine.new_usertype<components::PopulationHistory>(
+        "PopulationHistory", sol::no_constructor, "population",
+        SOL_PROPERTY(components::PopulationHistory, std::vector<double>, population), "sol",
+        SOL_PROPERTY(components::PopulationHistory, std::vector<double>, sol));
+
     REGISTER_FUNCTION("get_market_history", [&](entt::entity entity) -> components::MarketHistory& {
         return universe.get<components::MarketHistory>(entity);
+    });
+
+    REGISTER_FUNCTION("get_population_history", [&]() -> components::PopulationHistory& {
+        return universe.ctx().at<components::PopulationHistory>();
     });
 }
 }  // namespace cqsp::core::scripting

@@ -32,7 +32,6 @@ class MarketHistory {
     std::vector<std::vector<double>> supply;
     std::vector<std::vector<double>> demand;
     std::vector<double> gdp;
-    std::vector<double> sol;
 
     MarketHistory() {}
     MarketHistory(size_t good_count)
@@ -40,4 +39,10 @@ class MarketHistory {
 };
 
 class LogMarket {};
+
+class PopulationHistory {
+ public:
+    std::vector<double> sol;
+    std::vector<double> population;
+};
 }  // namespace cqsp::core::components

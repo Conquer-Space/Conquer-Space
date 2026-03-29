@@ -27,6 +27,10 @@ namespace cqsp::core::components {
 */
 enum class GoodEntity : uint32_t { null = static_cast<uint32_t>(-1) };
 
+#pragma clang diagonistic push
+#pragma clang diagnostic ignored "-Wclang-analyzer-optin.core.EnumCastOutOfRange"
+constexpr GoodEntity ToGoodEntity(uint32_t val) { return static_cast<GoodEntity>(val); }
+#pragma clang diagonistic pop
 class ResourceLedger;
 class ResourceVector;
 

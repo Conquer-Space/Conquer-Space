@@ -27,11 +27,11 @@ function civinfopanel:goodcostpanel()
     end
     if self.selected_price_good == core.GoodEntity.null then
         return
-    end    
+    end
     -- Then show the good information
     local good_entity = core.good_entity_to_entity(self.selected_price_good)
     ImGui.Text(core.get_name(good_entity))
-    print(tostring(self.selected_price_good))
+
     local market_history = core.get_market_history(self.selected_market)
     ImPlot.SetNextAxesToFit()
     if ImPlot.BeginPlot("Good Price") then
@@ -133,6 +133,22 @@ function civinfopanel:civinfopanel()
         end
         if ImGui.BeginTabItem("Budget") then
             ImGui.Text("Budget breakdown ToDo!")
+            ImGui.EndTabItem()
+        end
+        if ImGui.BeginTabItem("Population") then
+            local population_history = core.get_population_history()
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Population") then
+                ImPlot.SetupAxes("Tick", "Population")
+                ImPlot.PlotLine("Population", population_history.population)
+                ImPlot.EndPlot()
+            end
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Standard of Living") then
+                ImPlot.SetupAxes("Tick", "Standard of Living")
+                ImPlot.PlotLine("Standard of Living", population_history.sol)
+                ImPlot.EndPlot()
+            end
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Markets") then
