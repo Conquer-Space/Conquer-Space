@@ -20,4 +20,6 @@
 
 namespace cqsp::client::systems {
 void MarketInformationTable(core::Universe& universe, const entt::entity& market_entity);
+core::components::GoodEntity SelectableMarketInformationTable(core::Universe& universe,
+                                                              const entt::entity& market_entity);
 }  // namespace cqsp::client::systems

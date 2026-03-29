@@ -16,7 +16,7 @@
  */
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 #include <entt/entt.hpp>
@@ -27,13 +27,24 @@ namespace cqsp::core::components {
 /// </summary>
 class MarketHistory {
  public:
-    std::map<entt::entity, std::vector<double>> price_history;
-    std::map<entt::entity, std::vector<double>> sd_ratio;
-    std::map<entt::entity, std::vector<double>> supply;
-    std::map<entt::entity, std::vector<double>> demand;
-    std::map<entt::entity, std::vector<double>> volume;
+    std::vector<std::vector<double>> price_history;
+    std::vector<std::vector<double>> sd_ratio;
+    std::vector<std::vector<double>> supply;
+    std::vector<std::vector<double>> demand;
     std::vector<double> gdp;
+
+    MarketHistory() {}
+    MarketHistory(size_t good_count)
+        : price_history(good_count), sd_ratio(good_count), supply(good_count), demand(good_count) {}
 };
 
 class LogMarket {};
+
+class PopulationHistory {
+ public:
+    std::vector<double> sol;
+    std::vector<double> population;
+    std::vector<double> employment;
+    std::vector<double> employment_rate;
+};
 }  // namespace cqsp::core::components

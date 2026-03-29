@@ -42,6 +42,7 @@ void LoadOrbitFunctions(Universe& universe, sol::state_view& script_engine) {
         SOL_PROPERTY(types::Orbit, double, semi_major_axis), "v", SOL_PROPERTY(types::Orbit, double, v), "GM",
         SOL_PROPERTY(types::Orbit, double, GM), "reference_body",
         SOL_PROPERTY(types::Orbit, entt::entity, reference_body));
-    REGISTER_FUNCTION("get_orbit", [&](entt::entity entity) { return universe.get<types::Orbit>(entity); });
+    REGISTER_FUNCTION("get_orbit",
+                      [&](entt::entity entity) -> types::Orbit& { return universe.get<types::Orbit>(entity); });
 }
 }  // namespace cqsp::core::scripting

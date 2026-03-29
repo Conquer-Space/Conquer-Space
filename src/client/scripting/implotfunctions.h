@@ -14,21 +14,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "core/actions/economy/markethelpers.h"
+#pragma once
 
-#include "core/components/history.h"
-#include "core/components/market.h"
+#include "core/scripting/scripting.h"
+#include "core/universe.h"
 
-namespace cqsp::core::actions {
-void AddParticipant(Node& market_node, Node& participant) {
-    auto& market = market_node.get<components::Market>();
-    participant.emplace<components::MarketAgent>(market_node);
-    static_cast<void>(participant.get_or_emplace<components::Wallet>());
-}
-
-Node CreateMarket(Universe& universe) {
-    Node market(universe);
-    static_cast<void>(market.get_or_emplace<components::Market>(universe.GoodCount()));
-    return market;
-}
-}  // namespace cqsp::core::actions
+namespace cqsp::client::scripting {
+void LoadImPlotFunctions(core::Universe& universe, core::scripting::ScriptInterface& script_engine);
+}  // namespace cqsp::client::scripting

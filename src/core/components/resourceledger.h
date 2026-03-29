@@ -25,8 +25,13 @@ namespace cqsp::core::components {
 /**
 * Class for goods to be accessed through an array
 */
-enum class GoodEntity : uint32_t {};
+enum class GoodEntity : uint32_t { null = static_cast<uint32_t>(-1) };
 
+#pragma clang diagonistic push
+#pragma clang diagnostic ignored "-Wclang-analyzer-optin.core.EnumCastOutOfRange"
+// NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange)
+constexpr GoodEntity ToGoodEntity(uint32_t val) { return static_cast<GoodEntity>(val); }
+#pragma clang diagonistic pop
 class ResourceLedger;
 class ResourceVector;
 

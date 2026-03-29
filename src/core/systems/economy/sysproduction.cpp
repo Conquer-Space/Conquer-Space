@@ -23,6 +23,7 @@
 #include <tracy/Tracy.hpp>
 
 #include "core/components/area.h"
+#include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
@@ -136,6 +137,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         size.continuous_gains = 0;
     }
     employer.population_change = original_workers - employer.population_fufilled;
+    employed += employer.population_fufilled;
 }
 
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
@@ -204,6 +206,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     costs.profit = costs.revenue - costs.maintenance - costs.material_costs - costs.wages - costs.transport;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += costs.profit;
+    market.GDP += costs.revenue - costs.material_costs;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
@@ -326,6 +329,7 @@ void SysProduction::ProcessIndustries(Node& node) {
         return;
     }
     auto& market = node.get<components::Market>();
+    market.GDP = 0;
     auto& production_config = GetUniverse().economy_config.production_config;
 
     auto& industries = node.get<components::IndustrialZone>();
@@ -346,12 +350,16 @@ void SysProduction::DoSystem() {
     Universe& universe = GetUniverse();
     // Each industrial zone is a a market
     int factories = 0;
+    employed = 0;
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
     }
+    auto& population_history = universe.ctx().at<components::PopulationHistory>();
+    population_history.employment.push_back(employed);
+    population_history.employment_rate.push_back(employed / population_history.population.back() * 100.);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
 }
 }  // namespace cqsp::core::systems

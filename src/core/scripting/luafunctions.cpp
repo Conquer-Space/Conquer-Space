@@ -43,6 +43,7 @@
 #include "core/components/surface.h"
 #include "core/loading/technology.h"
 #include "core/scripting/functionreg.h"
+#include "core/scripting/marketfunctions.h"
 #include "core/scripting/orbitfunctions.h"
 #include "core/util/nameutil.h"
 #include "core/util/random/stdrandom.h"
@@ -423,6 +424,7 @@ void LoadAllFunctions(Universe& universe, sol::state_view& script_engine) {
     FunctionScience(universe, script_engine);
     FunctionTrade(universe, script_engine);
     LoadOrbitFunctions(universe, script_engine);
+    LoadMarketFunctions(universe, script_engine);
 }
 
 void LoadFunctions(Universe& universe, ScriptInterface& script_engine) { LoadAllFunctions(universe, script_engine); }

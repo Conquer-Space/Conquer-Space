@@ -16,8 +16,38 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 --]]
 local civinfopanel = {
-    open = false
+    open = false,
+    selected_price_good = core.GoodEntity.null,
+    selected_market = 0,
 }
+
+function civinfopanel:goodcostpanel()
+    if ImGui.Button("<") then
+        self.selected_price_good = core.GoodEntity.null
+    end
+    if self.selected_price_good == core.GoodEntity.null then
+        return
+    end
+    -- Then show the good information
+    local good_entity = core.good_entity_to_entity(self.selected_price_good)
+    ImGui.Text(core.get_name(good_entity))
+
+    local market_history = core.get_market_history(self.selected_market)
+    ImPlot.SetNextAxesToFit()
+    if ImPlot.BeginPlot("Good Price") then
+        ImPlot.SetupAxes("Tick", "Price")
+        ImPlot.PlotLine("Price", market_history.price_history[self.selected_price_good])
+        ImPlot.EndPlot()
+    end
+
+    ImPlot.SetNextAxesToFit()
+    if ImPlot.BeginPlot("Good Supply and Demand") then
+        ImPlot.SetupAxes("Tick", "Supply")
+        ImPlot.PlotLine("Supply", market_history.supply[self.selected_price_good])
+        ImPlot.PlotLine("Demand", market_history.demand[self.selected_price_good])
+        ImPlot.EndPlot()
+    end
+end
 
 function civinfopanel:planetmarketinfopanel()
     if not ImGui.BeginTabBar("market_info_panel") then
@@ -27,8 +57,24 @@ function civinfopanel:planetmarketinfopanel()
     local markets = core.get_planetary_markets()
     for _, market in pairs(markets) do
         if ImGui.BeginTabItem(core.get_name(market)) then
+            local market_comp = core.get_market(market)
+            local market_history = core.get_market_history(market)
             ImGui.Text(core.get_name(market))
-            client.MarketInformationTable(market)
+            ImGui.Text("Market GDP:".. core.to_human_string(market_comp.GDP))
+            if ImGui.CollapsingHeader("Market GDP") then
+                ImPlot.SetNextAxesToFit()
+                if ImPlot.BeginPlot("Market GDP") then
+                    ImPlot.SetupAxes("Tick", "GDP")
+                    ImPlot.PlotLine("GDP", market_history.gdp)
+                    ImPlot.EndPlot()
+                end
+            end
+            local selected = client.SelectableMarketInformationTable(market)
+            if selected ~= core.GoodEntity.null then
+                self.selected_price_good = selected
+                self.selected_market = market
+                -- now display path or something
+            end
             ImGui.EndTabItem()
         end
     end
@@ -85,16 +131,44 @@ function civinfopanel:civinfopanel()
             end
             ImGui.EndTabItem()
         end
-        if ImGui.BeginTabItem("Market Information") then
-            client.MarketInformationTable(player)
-            ImGui.EndTabItem()
-        end
         if ImGui.BeginTabItem("Budget") then
             ImGui.Text("Budget breakdown ToDo!")
             ImGui.EndTabItem()
         end
+        if ImGui.BeginTabItem("Population") then
+            local population_history = core.get_population_history()
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Population") then
+                ImPlot.SetupAxes("Tick", "Population")
+                ImPlot.PlotLine("Population", population_history.population)
+                ImPlot.EndPlot()
+            end
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Standard of Living") then
+                ImPlot.SetupAxes("Tick", "Standard of Living")
+                ImPlot.PlotLine("Standard of Living", population_history.sol)
+                ImPlot.EndPlot()
+            end
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Employment Rate") then
+                ImPlot.SetupAxes("Tick", "Employment Rate")
+                ImPlot.PlotLine("Employment Rate", population_history.employment_rate)
+                ImPlot.EndPlot()
+            end
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Employment") then
+                ImPlot.SetupAxes("Tick", "Employment")
+                ImPlot.PlotLine("Employment", population_history.employment)
+                ImPlot.EndPlot()
+            end
+            ImGui.EndTabItem()
+        end
         if ImGui.BeginTabItem("Markets") then
-            self:planetmarketinfopanel()
+            if self.selected_price_good == core.GoodEntity.null then
+                self:planetmarketinfopanel()
+            else
+                self:goodcostpanel()
+            end
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Mission Queue") then
@@ -105,8 +179,6 @@ function civinfopanel:civinfopanel()
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Research") then
-            local research = core.get_scientific_research(player)
-            ImGui.Text(tostring(research.research))
             ImGui.EndTabItem()
         end
         ImGui.EndTabBar()

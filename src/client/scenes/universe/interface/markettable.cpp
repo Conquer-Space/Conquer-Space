@@ -25,6 +25,7 @@
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
 #include "engine/gui.h"
+#include "markettable.h"
 
 namespace cqsp::client::systems {
 namespace bodies = cqsp::core::components::bodies;
@@ -61,6 +62,7 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
     for (auto good_entity : universe.GoodIterator()) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
+
         if (universe.any_of<components::CapitalGood>(good_entity)) {
             ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, good_entity));
         } else {
@@ -97,5 +99,79 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
         ImGui::TextFmt("{}", (market.resource_fulfilled[good_entity]));
     }
     ImGui::EndTable();
+}
+
+core::components::GoodEntity SelectableMarketInformationTable(core::Universe& universe,
+                                                              const entt::entity& market_entity) {
+    if (!universe.any_of<components::Market>(market_entity)) {
+        ImGui::TextFmt("Market is not a market");
+        return core::components::GoodEntity::null;
+    }
+
+    components::Market& market = universe.get<components::Market>(market_entity);
+    // Get resource stockpile
+    if (!ImGui::BeginTable("marketinfotable", 11, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        return core::components::GoodEntity::null;
+    }
+    ImGui::TableSetupColumn("Good");
+    ImGui::TableSetupColumn("Price");
+    ImGui::TableSetupColumn("Supply");
+    ImGui::TableSetupColumn("Demand");
+    ImGui::TableSetupColumn("S/D ratio");
+    ImGui::TableSetupColumn("Production");
+    ImGui::TableSetupColumn("Consumption");
+    ImGui::TableSetupColumn("Trade");
+    ImGui::TableSetupColumn("Market Access");
+    ImGui::TableSetupColumn("Chronic Shortages");
+    ImGui::TableSetupColumn("Resource Fulfilled");
+
+    ImGui::TableHeadersRow();
+
+    core::components::GoodEntity selected_value = core::components::GoodEntity::null;
+    for (auto good_entity : universe.GoodIterator()) {
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        if (ImGui::Selectable(GetName(universe, good_entity).c_str(), true, ImGuiSelectableFlags_SpanAllColumns,
+                              ImVec2(0, 0))) {
+            selected_value = good_entity;
+        }
+
+        // if (universe.any_of<components::CapitalGood>(good_entity)) {
+        //     ImGui::TextFmtColored(ImColor(1.f, 1.f, 0.f), "{}", GetName(universe, good_entity));
+        // } else {
+        //     ImGui::TextFmt("{}", GetName(universe, good_entity));
+        // }
+        if (ImGui::IsItemHovered()) {
+            gui::EntityTooltip(universe, good_entity);
+        }
+        ImGui::TableSetColumnIndex(1);
+        // Mark the cell as red if the thing is not valid
+        ImGui::TextFmt("{}", market.price[good_entity]);
+        ImGui::TableSetColumnIndex(2);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.supply[good_entity]));
+        ImGui::TableSetColumnIndex(3);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.demand[good_entity]));
+        ImGui::TableSetColumnIndex(4);
+        double sd_ratio = market.sd_ratio[good_entity];
+        if (sd_ratio == std::numeric_limits<double>::infinity()) {
+            ImGui::TextFmt("inf");
+        } else {
+            ImGui::TextFmt("{}", sd_ratio);
+        }
+        ImGui::TableSetColumnIndex(5);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.production[good_entity]));
+        ImGui::TableSetColumnIndex(6);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.consumption[good_entity]));
+        ImGui::TableSetColumnIndex(7);
+        ImGui::TextFmt("{}", cqsp::util::NumberToHumanString(market.trade[good_entity]));
+        ImGui::TableSetColumnIndex(8);
+        ImGui::TextFmt("{}", (market.market_access[good_entity]));
+        ImGui::TableSetColumnIndex(9);
+        ImGui::TextFmt("{}", (market.chronic_shortages[good_entity]));
+        ImGui::TableSetColumnIndex(10);
+        ImGui::TextFmt("{}", (market.resource_fulfilled[good_entity]));
+    }
+    ImGui::EndTable();
+    return selected_value;
 }
 }  // namespace cqsp::client::systems

@@ -28,6 +28,7 @@
 #include "core/components/area.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
+#include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
@@ -60,6 +61,7 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Node& node) {
     auto& body_comp = node.emplace<Body>();
     node.emplace<components::Market>(universe.GoodCount());
     node.emplace<components::PlanetaryMarket>(universe.GoodCount());
+    node.emplace<components::MarketHistory>(universe.GoodCount());
     node.emplace<bodies::OrbitalSystem>();
     node.emplace<types::Kinematics>();
 

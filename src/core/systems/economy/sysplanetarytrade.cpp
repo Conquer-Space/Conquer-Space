@@ -36,14 +36,12 @@ void SysPlanetaryTrade::DoSystem() {
     auto planetary_markets =
         GetUniverse().nodes<components::Market, components::PlanetaryMarket, components::Settlements>();
 
-    auto goodsview = GetUniverse().nodes<components::Price>();
-
     for (Node market_node : planetary_markets) {
         ZoneScoped;
         auto& p_market = market_node.get<components::Market>();
         auto& habitation = market_node.get<components::Settlements>();
         auto& wallet = market_node.get_or_emplace<components::Wallet>();
-
+        p_market.GDP = 0;
         p_market.trade.clear();
 
         ConsolidateConsumption(p_market, habitation);
@@ -90,6 +88,7 @@ void SysPlanetaryTrade::ConsolidateConsumption(components::Market& p_market, com
             p_market.supply += space_port.output_resources_rate;
             p_market.demand += space_port.demanded_resources_rate;
         }
+        p_market.GDP += market.GDP;
     }
 }
 void SysPlanetaryTrade::DetermineMarketTrade(components::Market& p_market, components::Settlements& settlements) {

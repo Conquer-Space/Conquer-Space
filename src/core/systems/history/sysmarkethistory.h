@@ -16,23 +16,16 @@
  */
 #pragma once
 
-#include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 
-namespace cqsp::core::systems {
-class SysProduction : public ISimulationSystem {
+namespace cqsp::core::systems::history {
+class SysMarketHistory : public ISimulationSystem {
  public:
-    explicit SysProduction(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
+    explicit SysMarketHistory(Game& game) : ISimulationSystem(game) {}
+    void DoSystem();
+    void Init();
+    SysMarketHistory() = default;
+
     int Interval() override { return ECONOMIC_TICK; }
-
- private:
-    void ProcessIndustries(Node& node);
-    void ScaleIndustry(Node& industry_node, components::Market& market);
-    void ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node, double infra_cost);
-    void ScaleConstruction(Node& industry_node, double pl_ratio);
-    bool HandleConstruction(Node& industry_node, components::Market& market);
-
-    double employed = 0;
 };
-}  // namespace cqsp::core::systems
+}  // namespace cqsp::core::systems::history
