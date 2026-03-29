@@ -44,5 +44,7 @@ class PopulationHistory {
  public:
     std::vector<double> sol;
     std::vector<double> population;
+    std::vector<double> employment;
+    std::vector<double> employment_rate;
 };
 }  // namespace cqsp::core::components

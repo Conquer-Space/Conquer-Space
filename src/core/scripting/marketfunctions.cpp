@@ -73,7 +73,9 @@ void LoadMarketFunctions(Universe& universe, sol::state_view& script_engine) {
     script_engine.new_usertype<components::PopulationHistory>(
         "PopulationHistory", sol::no_constructor, "population",
         SOL_PROPERTY(components::PopulationHistory, std::vector<double>, population), "sol",
-        SOL_PROPERTY(components::PopulationHistory, std::vector<double>, sol));
+        SOL_PROPERTY(components::PopulationHistory, std::vector<double>, sol), "employment_rate",
+        SOL_PROPERTY(components::PopulationHistory, std::vector<double>, employment_rate), "employment",
+        SOL_PROPERTY(components::PopulationHistory, std::vector<double>, employment));
 
     REGISTER_FUNCTION("get_market_history", [&](entt::entity entity) -> components::MarketHistory& {
         return universe.get<components::MarketHistory>(entity);

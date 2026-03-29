@@ -149,6 +149,18 @@ function civinfopanel:civinfopanel()
                 ImPlot.PlotLine("Standard of Living", population_history.sol)
                 ImPlot.EndPlot()
             end
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Employment Rate") then
+                ImPlot.SetupAxes("Tick", "Employment Rate")
+                ImPlot.PlotLine("Employment Rate", population_history.employment_rate)
+                ImPlot.EndPlot()
+            end
+            ImPlot.SetNextAxesToFit()
+            if ImPlot.BeginPlot("Employment") then
+                ImPlot.SetupAxes("Tick", "Employment")
+                ImPlot.PlotLine("Employment", population_history.employment)
+                ImPlot.EndPlot()
+            end
             ImGui.EndTabItem()
         end
         if ImGui.BeginTabItem("Markets") then
