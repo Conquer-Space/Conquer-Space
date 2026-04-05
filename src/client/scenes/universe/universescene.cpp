@@ -117,6 +117,11 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
+
+    // Init ui systems
+    for (auto& ui : user_interfaces) {
+        ui->Init();
+    }
 }
 
 void UniverseScene::Update(float deltaTime) {

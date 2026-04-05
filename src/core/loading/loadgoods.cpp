@@ -80,7 +80,10 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
     for (int i = 0; i < values["tags"].size(); i++) {
         if (values["tags"][i] == "mineral") {
             node.get_or_emplace<components::Mineral>();
-        } else if (values["tags"][i] == "captialgood") {
+        }
+        if (values["tags"][i] == "raw") {
+            node.get_or_emplace<components::RawGood>();
+        } else if (values["tags"][i] == "capital") {
             node.get_or_emplace<components::CapitalGood>();
         }
     }

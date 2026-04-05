@@ -67,6 +67,8 @@ struct ConsumerGood {
 };
 
 struct Mineral {};
+struct RawGood {};
+
 // Good is for capital goods
 struct CapitalGood {};
 
