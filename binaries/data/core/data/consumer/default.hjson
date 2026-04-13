@@ -1,0 +1,20 @@
+[
+    {
+        // Consumption classes?
+        identifier: food
+        // then how do we determine how much we have
+        // We should have a curve to determine SOL
+        curve: [
+            // So each good provides some amount of points for each class and then we
+        ]
+    }
+    {
+        identifier: heating
+    }
+    {
+        identifier: household
+    }
+    {
+        identifier: entertainment
+    }
+]
