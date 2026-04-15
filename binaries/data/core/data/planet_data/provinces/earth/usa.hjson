@@ -95,7 +95,7 @@
             {
                 recipe: gasoline_production
                 size: 2371
-                utilization: 72.33671251311226
+                utilization: 40
                 workers: 0
                 wages: 2479.6523407231
                 continuous_losses: 0
@@ -139,7 +139,7 @@
                 profit: 452095.21231826395
             }
         ]
-        tag:
+        tags:
         [
             log_market
         ]

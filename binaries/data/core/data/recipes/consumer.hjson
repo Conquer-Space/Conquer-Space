@@ -9,11 +9,11 @@
             fruits_and_vegetables: 1000
         }
         output: {
-            groceries: 800
+            groceries: 1000
         }
         cost: {
             labor: {
-                worker: 1500
+                worker: 2000
             }
         }
         tags: [
@@ -62,8 +62,7 @@
             consumer
         ]
     }
-        {
-        // This is literally just so that we have enough jobs to feed people
+    {
         name: Household Product Production
         identifier: household_chemical_production
         input: {

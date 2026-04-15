@@ -20,8 +20,8 @@
         ]
     }
     {
-        name: Chemical Manufacturing
-        identifier: chemical_processing
+        name: Plastic Manufacturing
+        identifier: plastic_processing
         input: {
             crude_oil: 1000
         }
@@ -189,6 +189,25 @@
         cost: {
             labor: {
                 worker: 150
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+        {
+        name: Chemical Manufacturing
+        identifier: chemical_processing
+        input: {
+            crude_oil: 1000
+        }
+        output: {
+            chemicals: 2000
+        }
+        cost: {
+            labor: {
+                worker: 1000
             }
         }
         tags: [

@@ -33,7 +33,7 @@
         identifier: household_products
         volume: 1 m3
         mass: 700 kg
-        price: 300
+        price: 600
         description: Household supplies for cleaning and maintainence of a household
         consumption: {
             autonomous_consumption: 10
