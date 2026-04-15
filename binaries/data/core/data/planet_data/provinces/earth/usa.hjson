@@ -116,6 +116,28 @@
                 material_costs: 451743.4955988297
                 profit: 452095.21231826395
             }
+            {
+                recipe: cotton_farming
+                size: 2000
+                utilization: 75.29058259980495
+                wages: 8396.982955720408
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 7529058.259980495
+                material_costs: 451743.4955988297
+                profit: 452095.21231826395
+            }
+            {
+                recipe: chemical_processing
+                size: 2000
+                utilization: 75.29058259980495
+                wages: 8396.982955720408
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 7529058.259980495
+                material_costs: 451743.4955988297
+                profit: 452095.21231826395
+            }
         ]
         tag:
         [
@@ -265,6 +287,30 @@
                 recipe: machinery_production
                 size: 47
                 utilization: 1.9747082498995803
+                workers: 0
+                wages: 81.49666932873309
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 592412.474969874
+                material_costs: 27645.915498594124
+                profit: 57857.27624656004
+            }
+            {
+                recipe: textile_sweatshop
+                size: 47
+                utilization: 30
+                workers: 0
+                wages: 81.49666932873309
+                continuous_losses: 0
+                continuous_gains: 165
+                revenue: 592412.474969874
+                material_costs: 27645.915498594124
+                profit: 57857.27624656004
+            }
+            {
+                recipe: household_chemical_production
+                size: 47
+                utilization: 30
                 workers: 0
                 wages: 81.49666932873309
                 continuous_losses: 0

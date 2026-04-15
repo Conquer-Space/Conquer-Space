@@ -61,7 +61,7 @@ void GLWindow::FrameBufferSizeCallback(GLFWwindow* window, int width, int height
     RmlGLFW::ProcessFramebufferSizeCallback(app->GetRmlUiContext(), width, height);
     for (int i = 0; i < app->GetRmlUiContext()->GetNumDocuments(); i++) {
         Rml::ElementDocument* doc = app->GetRmlUiContext()->GetDocument(i);
-        if (doc->GetSourceURL() != ".") {
+        if (!doc->GetSourceURL().empty()) {
             doc->ReloadStyleSheet();
         }
     }

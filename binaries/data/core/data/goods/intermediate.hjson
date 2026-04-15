@@ -21,4 +21,15 @@
             intermediate
         ]
     }
+    {
+        name: Chemicals
+        identifier: chemicals
+        volume: 1 m3
+        mass: 7850 kg
+        price: 700
+        desc: Chemicals for processing and other stuff
+        tags: [
+            intermediate
+        ]
+    }
 ]

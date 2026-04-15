@@ -42,4 +42,44 @@
             raw
         ]
     }
+    {
+        // This is literally just so that we have enough jobs to feed people
+        name: Textile Sweatshops
+        identifier: textile_sweatshop
+        input: {
+            fabric: 1000
+        }
+        output: {
+            textile_goods: 800
+        }
+        cost: {
+            labor: {
+                worker: 3000
+            }
+        }
+        tags: [
+            ratio
+            consumer
+        ]
+    }
+        {
+        // This is literally just so that we have enough jobs to feed people
+        name: Household Product Production
+        identifier: household_chemical_production
+        input: {
+            chemicals: 1000
+        }
+        output: {
+            household_products: 800
+        }
+        cost: {
+            labor: {
+                worker: 3000
+            }
+        }
+        tags: [
+            ratio
+            consumer
+        ]
+    }
 ]
