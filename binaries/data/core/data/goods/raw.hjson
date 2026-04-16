@@ -157,10 +157,9 @@
         identifier: rare_earth_elements
         volume: 1 m3
         mass: 1000 kg
-        price: 10
+        price: 3000
         tags: [
             raw
-            radioactive
         ]
     }
     {
@@ -168,10 +167,9 @@
         identifier: titanium
         volume: 1 m3
         mass: 1000 kg
-        price: 10
+        price: 5000
         tags: [
             raw
-            radioactive
         ]
     }
 ]

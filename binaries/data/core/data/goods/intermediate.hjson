@@ -27,7 +27,7 @@
         volume: 1 m3
         mass: 7850 kg
         price: 300
-        desc: Chemicals for processing and other stuff
+        desc: Chemicals that are used for reactions or as a catalyst for other production methods
         tags: [
             intermediate
         ]
@@ -36,8 +36,8 @@
         name: Microprocessors
         identifier: microprocessors
         volume: 1 m3
-        mass: 7850 kg
-        price: 300
+        mass: 300 kg
+        price: 3000
         desc: Compute for small devices
         tags: [
             intermediate
@@ -48,7 +48,7 @@
         identifier: glass
         volume: 1 m3
         mass: 7850 kg
-        price: 300
+        price: 400
         desc: Compute for small devices
         tags: [
             intermediate
@@ -58,8 +58,8 @@
         name: Composites
         identifier: composites
         volume: 1 m3
-        mass: 7850 kg
-        price: 300
+        mass: 700 kg
+        price: 900
         tags: [
             intermediate
         ]
@@ -68,8 +68,8 @@
         name: Electric Motors
         identifier: electric_motors
         volume: 1 m3
-        mass: 7850 kg
-        price: 300
+        mass: 1200 kg
+        price: 1200
         tags: [
             intermediate
         ]
@@ -78,8 +78,8 @@
         name: Precision Components
         identifier: precision_components
         volume: 1 m3
-        mass: 7850 kg
-        price: 300
+        mass: 3000 kg
+        price: 1500
         tags: [
             intermediate
         ]
@@ -89,7 +89,7 @@
         identifier: magnets
         volume: 1 m3
         mass: 7850 kg
-        price: 300
+        price: 2000
         tags: [
             intermediate
         ]
@@ -98,8 +98,18 @@
         name: Pesticides
         identifier: pesticides
         volume: 1 m3
-        mass: 7850 kg
-        price: 300
+        mass: 1000 kg
+        price: 600
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Alloys
+        identifier: alloys
+        volume: 1 m3
+        mass: 3000 kg
+        price: 6000
         tags: [
             intermediate
         ]

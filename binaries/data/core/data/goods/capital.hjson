@@ -50,4 +50,24 @@
             capital
         ]
     }
+    {
+        name: CNC Machines
+        identifier: cnc_machines
+        volume: 200 m3
+        mass: 4000 kg
+        price: 40000
+        tags: [
+            capital
+        ]
+    }
+    {
+        name: Lab Equipment
+        identifier: lab_equipment
+        volume: 200 m3
+        mass: 4000 kg
+        price: 120000
+        tags: [
+            capital
+        ]
+    }
 ]
