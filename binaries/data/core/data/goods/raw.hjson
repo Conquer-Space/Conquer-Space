@@ -32,6 +32,16 @@
         ]
     }
     {
+        name: Lithium
+        identifier: lithium
+        volume: 1 m3
+        mass: 534 kg
+        price: 6000
+        tags: [
+            raw
+        ]
+    }
+    {
         name: Copper
         identifier: copper
         volume: 1 m3
@@ -69,6 +79,99 @@
         price: 20
         tags: [
             raw
+        ]
+    }
+    {
+        name: Natural Gas
+        identifier: natural_gas
+        volume: 1 m3
+        mass: 185 kg
+        price: 50
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Noble Gases
+        identifier: noble_gas
+        volume: 1 m3
+        mass: 185 kg
+        price: 8000
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Gold
+        identifier: gold
+        volume: 1 m3
+        mass: 19300 kg
+        price: 8000
+        tags: [
+            raw
+        ] 
+    }
+    {
+        name: Aluminium
+        identifier: aluminium
+        volume: 1 m3
+        mass: 19300 kg
+        price: 8000
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Phospates
+        identifier: phospates
+        volume: 1 m3
+        mass: 19300 kg
+        price: 8000
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Water
+        identifier: water
+        volume: 1 m3
+        mass: 1000 kg
+        price: 10
+        tags: [
+            raw
+        ]
+    }
+    {
+        name: Uranium
+        identifier: uranium
+        volume: 1 m3
+        mass: 1000 kg
+        price: 10
+        tags: [
+            raw
+            radioactive
+        ]
+    }
+    {
+        name: Rare Earth Elements
+        identifier: rare_earth_elements
+        volume: 1 m3
+        mass: 1000 kg
+        price: 10
+        tags: [
+            raw
+            radioactive
+        ]
+    }
+    {
+        name: Titanium
+        identifier: titanium
+        volume: 1 m3
+        mass: 1000 kg
+        price: 10
+        tags: [
+            raw
+            radioactive
         ]
     }
 ]

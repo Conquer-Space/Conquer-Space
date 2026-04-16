@@ -32,4 +32,76 @@
             intermediate
         ]
     }
+    {
+        name: Microprocessors
+        identifier: microprocessors
+        volume: 1 m3
+        mass: 7850 kg
+        price: 300
+        desc: Compute for small devices
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Glass
+        identifier: glass
+        volume: 1 m3
+        mass: 7850 kg
+        price: 300
+        desc: Compute for small devices
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Composites
+        identifier: composites
+        volume: 1 m3
+        mass: 7850 kg
+        price: 300
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Electric Motors
+        identifier: electric_motors
+        volume: 1 m3
+        mass: 7850 kg
+        price: 300
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Precision Components
+        identifier: precision_components
+        volume: 1 m3
+        mass: 7850 kg
+        price: 300
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Magnets
+        identifier: magnets
+        volume: 1 m3
+        mass: 7850 kg
+        price: 300
+        tags: [
+            intermediate
+        ]
+    }
+    {
+        name: Pesticides
+        identifier: pesticides
+        volume: 1 m3
+        mass: 7850 kg
+        price: 300
+        tags: [
+            intermediate
+        ]
+    }
 ]
