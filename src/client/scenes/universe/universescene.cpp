@@ -32,6 +32,7 @@
 #include "client/scenes/universe/interface/maintooltip.h"
 #include "client/scenes/universe/interface/mapmodewindow.h"
 #include "client/scenes/universe/interface/orbitfilter.h"
+#include "client/scenes/universe/interface/productionsummary.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/rightclickwindow.h"
 #include "client/scenes/universe/interface/sidemenu.h"
@@ -108,6 +109,7 @@ void UniverseScene::Init() {
     AddUISystem<systems::ImGuiInterface>();
     AddUISystem<systems::MapModeWindow>();
     AddUISystem<systems::LaunchVehicleWindow>();
+    AddUISystem<systems::ProductionSummary>();
 
     AddUISystem<systems::gui::SysEvent>();
     simulation->Init();
