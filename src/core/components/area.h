@@ -54,7 +54,8 @@ enum struct IndustryState {
     Construction,
     Demolishing,
     Shrinking,
-    Expanding
+    Expanding,
+    Shortage
 };
 
 // Factory size
@@ -77,7 +78,7 @@ struct ProductionUnit {
     ProductionType type;
     entt::entity recipe;
 
-    IndustryState state;
+    IndustryState state = IndustryState::SteadyState;
 
     double revenue;
     // How much it paid in materials to produce goods
@@ -101,5 +102,11 @@ struct ProductionUnit {
         amount_sold = 0;
         transport = 0;
     }
+
+    /**
+     * Profit / revenue ratio, to see how profitable the company is
+     * Anything above 0 is profitable, and anything above 1 is like insanely profitable
+     */
+    double PrRatio() { return profit / revenue; }
 };
 }  // namespace cqsp::core::components

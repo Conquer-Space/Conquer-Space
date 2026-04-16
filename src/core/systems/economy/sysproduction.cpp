@@ -361,6 +361,88 @@ void SysProduction::DoSystem() {
 
 void SysProduction::IndustryFsm() {
     for (auto&& [industry, production] : GetUniverse().view<components::ProductionUnit>().each()) {
+        switch (production.state) {
+            case components::IndustryState::SteadyState:
+                production.state = SteadyState(industry, production);
+                break;
+            case components::IndustryState::MaximumProduction:
+                production.state = MaximumProduction(industry, production);
+                break;
+            case components::IndustryState::MinimumProduction:
+                production.state = MinimumProduction(industry, production);
+                break;
+            case components::IndustryState::Construction:
+                production.state = Construction(industry, production);
+                break;
+            case components::IndustryState::Demolishing:
+                production.state = Demolishing(industry, production);
+                break;
+            case components::IndustryState::Shrinking:
+                production.state = Shrinking(industry, production);
+                break;
+            case components::IndustryState::Expanding:
+                production.state = Expanding(industry, production);
+                break;
+            case components::IndustryState::Shortage:
+                production.state = Shortage(industry, production);
+                break;
+        }
     }
+}
+
+components::IndustryState SysProduction::SteadyState(entt::entity industry, components::ProductionUnit& production) {
+    // Check if we need to reduce production, or else just fluctuate kind of randomly
+    production.continuous_losses += production.PrRatio();
+    // Then if we get a large negative value we are hemmoraging money and if we get a large positive value we are stonks?
+    // We should have a way to balance this though
+    return components::IndustryState::SteadyState;
+}
+components::IndustryState SysProduction::MaximumProduction(entt::entity industry,
+                                                           components::ProductionUnit& production) {
+    if (production.PrRatio() <= 0.1 || production.continuous_gains <= production_config.construction_limit ||
+        production_unit.utilization < production_unit.size) {
+        return;
+    }
+    return components::IndustryState::MaximumProduction;
+}
+
+components::IndustryState SysProduction::MinimumProduction(entt::entity industry,
+                                                           components::ProductionUnit& production) {
+    return components::IndustryState::MinimumProduction;
+}
+
+components::IndustryState SysProduction::Construction(entt::entity industry, components::ProductionUnit& production) {
+    // If construction is done, we should continue
+    auto& construction = GetUniverse().get<components::Construction>(industry);
+    // Otherwise we should delete the cost
+    auto recipe_node = GetUniverse()(production.recipe);
+    if (recipe_node.all_of<components::ConstructionCost>()) {
+        // Compute construction cost
+        // TODO since we do have to talk to the market...
+    }
+
+    construction.progress += Interval();
+    if (construction.progress >= construction.maximum) {
+        GetUniverse().remove<components::Construction>(industry);
+        return components::IndustryState::SteadyState;
+    }
+
+    return components::IndustryState::Construction;
+}
+
+components::IndustryState SysProduction::Demolishing(entt::entity industry, components::ProductionUnit& production) {
+    return components::IndustryState::Demolishing;
+}
+
+components::IndustryState SysProduction::Shrinking(entt::entity industry, components::ProductionUnit& production) {
+    return components::IndustryState::Shrinking;
+}
+
+components::IndustryState SysProduction::Expanding(entt::entity industry, components::ProductionUnit& production) {
+    return components::IndustryState::Expanding;
+}
+
+components::IndustryState SysProduction::Shortage(entt::entity industry, components::ProductionUnit& production) {
+    return components::IndustryState::Shortage;
 }
 }  // namespace cqsp::core::systems

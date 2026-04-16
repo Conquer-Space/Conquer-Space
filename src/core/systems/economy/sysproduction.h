@@ -33,6 +33,14 @@ class SysProduction : public ISimulationSystem {
     void ScaleConstruction(Node& industry_node, double pl_ratio);
     bool HandleConstruction(Node& industry_node, components::Market& market);
     void IndustryFsm();
+    components::IndustryState SteadyState(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState MaximumProduction(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState MinimumProduction(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Construction(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Demolishing(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Shrinking(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Expanding(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Shortage(entt::entity industry, components::ProductionUnit& production);
 
     double employed = 0;
 };
