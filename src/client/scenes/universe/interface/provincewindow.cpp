@@ -486,9 +486,9 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
     double GDP_calculation = 0;
     int count = 0;
     for (auto industry : city_industry.industries) {
-        if (GetUniverse().all_of<components::Production, T>(industry)) {
+        if (GetUniverse().all_of<components::ProductionUnit, T>(industry)) {
             count++;
-            const components::Production& generator = GetUniverse().get<components::Production>(industry);
+            const components::ProductionUnit& generator = GetUniverse().get<components::ProductionUnit>(industry);
             const components::Recipe& recipe = GetUniverse().get<components::Recipe>(generator.recipe);
             const components::ProductionUnit& ratio = GetUniverse().get<components::ProductionUnit>(industry);
 

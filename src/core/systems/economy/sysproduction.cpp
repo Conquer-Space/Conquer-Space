@@ -34,9 +34,8 @@
 namespace cqsp::core::systems {
 void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {
     ZoneScoped;
-    Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
-    components::Recipe recipe = recipenode.get<components::Recipe>();
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
+    components::Recipe& recipe = GetUniverse().get<components::Recipe>(size.recipe);
     const auto& production_config = GetUniverse().economy_config.production_config;
     auto& employer = industry_node.get<components::Employer>();
 
@@ -150,12 +149,12 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
-    if (!industry_node.all_of<components::Production>()) return;
+    if (!industry_node.all_of<components::ProductionUnit>()) return;
     ScaleIndustry(industry_node, market);
 
-    Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
-    components::Recipe recipe = recipenode.get<components::Recipe>();
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
+    Node recipenode = industry_node.Convert(size.recipe);
+    components::Recipe recipe = recipenode.get<components::Recipe>();
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
@@ -249,15 +248,15 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
     ZoneScoped;
-    Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
-    components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
+    components::ProductionUnit& production_unit = industry_node.get<components::ProductionUnit>();
+    Node recipenode = industry_node.Convert(production_unit.recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
     const auto& production_config = GetUniverse().economy_config.production_config;
-    if (pl_ratio <= 0.1 || size.continuous_gains <= production_config.construction_limit ||
-        size.utilization < size.size || industry_node.all_of<components::Construction>()) {
+    if (pl_ratio <= 0.1 || production_unit.continuous_gains <= production_config.construction_limit ||
+        production_unit.utilization < production_unit.size || industry_node.all_of<components::Construction>()) {
         return;
     }
-    // what's the ratio we should expand the factory at lol
+    // what's the ratio we should expand the factory at lolsize
     // Now we should expand it...
     // pl_ratio should be maybe
     // Set our construction costs
@@ -265,10 +264,10 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
         const auto& construction_cost = recipenode.get<components::ConstructionCost>();
         // Let's assign construction costs
         auto& construction = industry_node.emplace<components::Construction>(
-            0, construction_cost.time, static_cast<int>(0.25 * size.size * pl_ratio));
+            0, construction_cost.time, static_cast<int>(0.25 * production_unit.size * pl_ratio));
     } else {
-        auto& construction =
-            industry_node.emplace<components::Construction>(0, 20, static_cast<int>(0.25 * size.size * pl_ratio));
+        auto& construction = industry_node.emplace<components::Construction>(
+            0, 20, static_cast<int>(0.25 * production_unit.size * pl_ratio));
     }
 }
 
@@ -283,7 +282,7 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
 
     // Then progress construction
     auto& construction_progress = industry_node.get<components::Construction>();
-    const auto& recipe_node = industry_node.Convert(industry_node.get<components::Production>().recipe);
+    const auto& recipe_node = industry_node.Convert(industry_node.get<components::ProductionUnit>().recipe);
     // Now we should get our value...
     // Process construction costs
     // Add to market demand and cost

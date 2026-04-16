@@ -39,8 +39,7 @@ void SaveUniverseMarketState(Universe& universe, const std::string& output_file_
             auto& size = industry_node.get<components::ProductionUnit>();
 
             // Also get the identifier for the good
-            auto& factory = industry_node.get<components::Production>();
-            industry_hjson["recipe"] = universe.get<components::Identifier>(factory.recipe).identifier;
+            industry_hjson["recipe"] = universe.get<components::Identifier>(size.recipe).identifier;
 
             industry_hjson["size"] = size.size;
             industry_hjson["utilization"] = size.utilization;

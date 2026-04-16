@@ -50,9 +50,6 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages, doubl
 
     Node factory = universe();
 
-    auto& production = factory.emplace<components::Production>();
-    // Add recipes and stuff
-    production.recipe = recipe;
     city.get_or_emplace<components::IndustrialZone>().industries.push_back(factory);
 
     auto& wallet = factory.emplace<components::Wallet>();
@@ -61,6 +58,7 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages, doubl
     // Add capacity
     // Add producivity
     auto& prod = factory.emplace<components::ProductionUnit>();
+    prod.recipe = recipe;
     prod.size = productivity;
     prod.utilization = productivity;
     prod.wages = wages;
