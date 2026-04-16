@@ -222,7 +222,7 @@ void MainMenuScene::ShuffleFileList() {
 
 void MainMenuScene::SetMainMenuImage(const std::string& file) {
     main_menu->GetElementById("main_window")
-        ->SetProperty("decorator", fmt::format("image(\"{}\" flip-vertical cover center bottom)", file));
+        ->SetProperty("decorator", fmt::format("image(\"{}\" cover center bottom)", file));
 }
 
 void MainMenuScene::NextImage() {

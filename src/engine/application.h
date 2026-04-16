@@ -302,5 +302,7 @@ class Application {
     Rml::DataViewInstancerDefault<ui::DataViewNumber> instancer;
 
     bool draw_fps = false;
+
+    ax::NodeEditor::Config node_editor_config;
 };
 }  // namespace cqsp::engine

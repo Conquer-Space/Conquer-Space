@@ -20,6 +20,25 @@
         ]
     }
     {
+        name: Plastic Manufacturing
+        identifier: plastic_processing
+        input: {
+            crude_oil: 1000
+        }
+        output: {
+            plastic: 5000
+        }
+        cost: {
+            labor: {
+                worker: 1000
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
         name: Concrete Manufacturing
         identifier: concrete_manufacturing
         input: {
@@ -127,11 +146,11 @@
             heavy_machinery: 0.1
         }
         output: {
-            crude_oil: 1000
+            crude_oil: 4000
         }
         cost: {
             labor: {
-                worker: 100
+                worker: 1000
             }
         }
         tags: [
@@ -151,6 +170,44 @@
         cost: {
             labor: {
                 worker: 150
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+    {
+        name: Cotton Farming
+        identifier: cotton_farming
+        input: {
+            heavy_machinery: 0.1
+        }
+        output: {
+            fabric: 1000
+        }
+        cost: {
+            labor: {
+                worker: 150
+            }
+        }
+        tags: [
+            ratio
+            raw
+        ]
+    }
+        {
+        name: Chemical Manufacturing
+        identifier: chemical_processing
+        input: {
+            crude_oil: 1000
+        }
+        output: {
+            chemicals: 2000
+        }
+        cost: {
+            labor: {
+                worker: 1000
             }
         }
         tags: [

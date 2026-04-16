@@ -179,7 +179,6 @@ void SysPopulationConsumption::DoSystem() {
     auto& history = GetUniverse().ctx().at<components::PopulationHistory>();
     history.population.push_back(total_population);
     history.sol.push_back(total_sol / static_cast<double>(total_population));
-    SPDLOG_INFO("Average SOL: {}", total_sol / static_cast<double>(total_population));
 }
 
 void SysPopulationConsumption::Init() {

@@ -59,6 +59,12 @@ void GLWindow::FrameBufferSizeCallback(GLFWwindow* window, int width, int height
     m_window_height = height;
     window_size_changed = true;
     RmlGLFW::ProcessFramebufferSizeCallback(app->GetRmlUiContext(), width, height);
+    for (int i = 0; i < app->GetRmlUiContext()->GetNumDocuments(); i++) {
+        Rml::ElementDocument* doc = app->GetRmlUiContext()->GetDocument(i);
+        if (!doc->GetSourceURL().empty()) {
+            doc->ReloadStyleSheet();
+        }
+    }
 }
 
 void GLWindow::SetCallbacks() {

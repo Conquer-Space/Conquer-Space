@@ -9,11 +9,11 @@
             fruits_and_vegetables: 1000
         }
         output: {
-            groceries: 800
+            groceries: 1000
         }
         cost: {
             labor: {
-                worker: 1500
+                worker: 2000
             }
         }
         tags: [
@@ -40,6 +40,45 @@
         tags: [
             ratio
             raw
+        ]
+    }
+    {
+        // This is literally just so that we have enough jobs to feed people
+        name: Textile Sweatshops
+        identifier: textile_sweatshop
+        input: {
+            fabric: 1000
+        }
+        output: {
+            textile_goods: 800
+        }
+        cost: {
+            labor: {
+                worker: 3000
+            }
+        }
+        tags: [
+            ratio
+            consumer
+        ]
+    }
+    {
+        name: Household Product Production
+        identifier: household_chemical_production
+        input: {
+            chemicals: 1000
+        }
+        output: {
+            household_products: 800
+        }
+        cost: {
+            labor: {
+                worker: 3000
+            }
+        }
+        tags: [
+            ratio
+            consumer
         ]
     }
 ]

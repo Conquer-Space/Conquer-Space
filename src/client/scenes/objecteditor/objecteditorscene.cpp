@@ -17,6 +17,7 @@
 #include "objecteditorscene.h"
 
 #include "client/scenes/objecteditor/imguidebugger.h"
+#include "client/scenes/objecteditor/recipenodeviewer.h"
 #include "client/scenes/objecteditor/recipeviewer.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/objecteditor/sysgoodviewer.h"
@@ -25,10 +26,11 @@
 
 namespace cqsp::client::scene {
 ObjectEditorScene::ObjectEditorScene(engine::Application& app) : ClientScene(app) {
-    AddUISystem<systems::SysFieldNodeViewer>("Node Viewer");
+    AddUISystem<systems::SysFieldNodeViewer>("Research Field Node Viewer");
     AddUISystem<systems::SysGoodViewer>("Good Viewer");
     AddUISystem<systems::SysRecipeViewer>("Recipe Viewer");
     AddUISystem<systems::AssetWindow>("Asset Window");
+    AddUISystem<systems::RecipeNodeViewer>("Recipe Node Viewer");
     AddUISystem<systems::ImGuiDebugger>("ImGui Debugger Window");
 }
 
@@ -37,6 +39,10 @@ ObjectEditorScene::~ObjectEditorScene() = default;
 void ObjectEditorScene::Init() {
     // Sorta need to initialize everything
     systems::LoadAllResources(GetApp().GetAssetManager(), *dynamic_cast<client::ConquerSpace*>(GetApp().GetGame()));
+    // Init systems
+    for (auto& [name, ui] : user_interfaces) {
+        ui.second->Init();
+    }
 }
 
 void ObjectEditorScene::Update(float deltaTime) {}
