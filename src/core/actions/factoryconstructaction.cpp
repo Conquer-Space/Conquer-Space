@@ -60,7 +60,7 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages, doubl
 
     // Add capacity
     // Add producivity
-    auto& prod = factory.emplace<components::IndustrySize>();
+    auto& prod = factory.emplace<components::ProductionUnit>();
     prod.size = productivity;
     prod.utilization = productivity;
     prod.wages = wages;

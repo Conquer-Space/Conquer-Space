@@ -382,8 +382,8 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
         systems::gui::EntityTooltip(GetUniverse(), industry);
     }
 
-    if (GetUniverse().all_of<components::IndustrySize>(industry)) {
-        auto& industry_component = GetUniverse().get<components::IndustrySize>(industry);
+    if (GetUniverse().all_of<components::ProductionUnit>(industry)) {
+        auto& industry_component = GetUniverse().get<components::ProductionUnit>(industry);
 
         ImGui::TableSetColumnIndex(1);
         if (!industry_component.shortage) {
@@ -428,8 +428,8 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
                        NumberToHumanString(static_cast<int64_t>(employer.population_fufilled)));
     }
 
-    if (GetUniverse().all_of<components::IndustrySize>(industry)) {
-        auto& industry_component = GetUniverse().get<components::IndustrySize>(industry);
+    if (GetUniverse().all_of<components::ProductionUnit>(industry)) {
+        auto& industry_component = GetUniverse().get<components::ProductionUnit>(industry);
 
         ImGui::TableSetColumnIndex(6);
         ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wages)));
@@ -493,7 +493,7 @@ void SysProvinceInformation::IndustryTabGenericChild(const std::string& tabname,
             count++;
             const components::Production& generator = GetUniverse().get<components::Production>(industry);
             const components::Recipe& recipe = GetUniverse().get<components::Recipe>(generator.recipe);
-            const components::IndustrySize& ratio = GetUniverse().get<components::IndustrySize>(industry);
+            const components::ProductionUnit& ratio = GetUniverse().get<components::ProductionUnit>(industry);
 
             input_resources += (recipe.input * ratio.utilization) + (recipe.capitalcost * ratio.size);
             output_resources[recipe.output.entity] += recipe.output.amount * ratio.utilization;

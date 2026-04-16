@@ -32,11 +32,11 @@ void SaveUniverseMarketState(Universe& universe, const std::string& output_file_
         auto industries = universe.get<components::IndustrialZone>(zone);
         Hjson::Value city_hjson;
         for (Node industry_node : universe.Convert(industries.industries)) {
-            if (!industry_node.all_of<components::IndustrySize, components::CostBreakdown>()) {
+            if (!industry_node.all_of<components::ProductionUnit, components::CostBreakdown>()) {
                 continue;
             }
             Hjson::Value industry_hjson;
-            auto& size = industry_node.get<components::IndustrySize>();
+            auto& size = industry_node.get<components::ProductionUnit>();
             auto& costs = industry_node.get<components::CostBreakdown>();
 
             // Also get the identifier for the good

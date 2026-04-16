@@ -53,8 +53,18 @@ struct Farm {
 
 struct RawResourceGen {};
 
+enum struct IndustryState {
+    SteadyState,
+    MaximumProduction,
+    MinimumProduction,
+    Construction,
+    Demolishing,
+    Shrinking,
+    Expanding
+};
+
 // Factory size
-struct IndustrySize {
+struct ProductionUnit {
     // The size of the factory.
     // the maximum output of the factory is
     double size;
@@ -69,6 +79,8 @@ struct IndustrySize {
     int continuous_losses = 0;
     int continuous_gains = 0;
     double underutilization = 0;
+
+    IndustryState state;
 };
 
 struct CostBreakdown {

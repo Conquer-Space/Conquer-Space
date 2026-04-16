@@ -237,7 +237,7 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
             cost.profit = ind_val["profit"].to_double();
         }
 
-        auto& size_comp = factory.get_or_emplace<components::IndustrySize>();
+        auto& size_comp = factory.get_or_emplace<components::ProductionUnit>();
 
         if (!ind_val["wages"].empty()) {
             size_comp.wages = ind_val["wages"].to_double();

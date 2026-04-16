@@ -36,7 +36,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     ZoneScoped;
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
-    components::IndustrySize& size = industry_node.get<components::IndustrySize>();
+    components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     const auto& production_config = GetUniverse().economy_config.production_config;
     components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
     auto& employer = industry_node.get<components::Employer>();
@@ -158,7 +158,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
-    components::IndustrySize& size = industry_node.get<components::IndustrySize>();
+    components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
@@ -253,7 +253,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
     ZoneScoped;
     Node recipenode = industry_node.Convert(industry_node.get<components::Production>().recipe);
-    components::IndustrySize& size = industry_node.get<components::IndustrySize>();
+    components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     components::Recipe recipe = recipenode.get<components::Recipe>();
     const auto& production_config = GetUniverse().economy_config.production_config;
     if (pl_ratio <= 0.1 || size.continuous_gains <= production_config.construction_limit ||
@@ -305,7 +305,7 @@ bool SysProduction::HandleConstruction(Node& industry_node, components::Market& 
     construction_progress.progress++;
     int size = construction_progress.levels;
     if (construction_progress.progress >= construction_progress.maximum) {
-        industry_node.get<components::IndustrySize>().size += construction_progress.levels;
+        industry_node.get<components::ProductionUnit>().size += construction_progress.levels;
         industry_node.remove<components::Construction>();
     }
     // We don't have any construction?

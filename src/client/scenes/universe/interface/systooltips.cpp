@@ -77,10 +77,10 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::Text("Producing next tick");
     }
 
-    if (universe.all_of<components::IndustrySize>(entity)) {
-        ImGui::TextFmt("Size: {}", universe.get<components::IndustrySize>(entity).size);
-        ImGui::TextFmt("Utilization: {}", universe.get<components::IndustrySize>(entity).utilization);
-        ImGui::TextFmt("Last Tick Difference: {}", universe.get<components::IndustrySize>(entity).diff);
+    if (universe.all_of<components::ProductionUnit>(entity)) {
+        ImGui::TextFmt("Size: {}", universe.get<components::ProductionUnit>(entity).size);
+        ImGui::TextFmt("Utilization: {}", universe.get<components::ProductionUnit>(entity).utilization);
+        ImGui::TextFmt("Last Tick Difference: {}", universe.get<components::ProductionUnit>(entity).diff);
     }
 
     if (universe.all_of<components::infrastructure::PowerConsumption>(entity)) {
