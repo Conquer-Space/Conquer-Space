@@ -38,7 +38,6 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     components::Recipe recipe = recipenode.get<components::Recipe>();
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     const auto& production_config = GetUniverse().economy_config.production_config;
-    components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
     auto& employer = industry_node.get<components::Employer>();
 
     bool shortage = false;
@@ -55,8 +54,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
     // So we will add a random chance to increase or decrease profit
     // As we get more profit we should increase profit, as we get less profit we should reduce the size of the factory
     double diff =
-        1 +
-        production_config.max_factory_delta / (1 + std::exp(-(costs.profit * production_config.profit_multiplier))) -
+        1 + production_config.max_factory_delta / (1 + std::exp(-(size.profit * production_config.profit_multiplier))) -
         production_config.max_factory_delta / 2;
     diff += GetUniverse().random->GetRandomNormal(0, 0.001);
     if (shortage) {
@@ -79,7 +77,7 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
 
     // If we have left over income we should improve the wages a little bit
     // There should also have a bank to reinvest into the company
-    double pl_ratio = costs.profit / costs.revenue;
+    double pl_ratio = size.profit / size.revenue;
     if (pl_ratio > 0.1) {
         // Now we can expand it and improve our wages as well
         size.wages *= 1.05;
@@ -126,12 +124,12 @@ void SysProduction::ScaleIndustry(Node& industry_node, components::Market& marke
         // We should still minimize
         size.utilization = std::max(1., size.utilization);
     }
-    if (costs.profit < 0) {
+    if (size.profit < 0) {
         size.continuous_losses++;
     } else {
         size.continuous_losses = 0;
     }
-    if (costs.profit > 0) {
+    if (size.profit > 0) {
         size.continuous_gains++;
     } else {
         size.continuous_gains = 0;
@@ -149,7 +147,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     auto& production_config = GetUniverse().economy_config.production_config;
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
     auto& employer = industry_node.get<components::Employer>();
-    components::CostBreakdown& costs = industry_node.get_or_emplace<components::CostBreakdown>();
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
@@ -187,7 +184,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     market.consumption += input;
     market.production += output;
-    costs.amount_sold = recipe.output.amount * size.utilization;
+    size.amount_sold = recipe.output.amount * size.utilization;
 
     double output_transport_cost = output.GetSum() * infra_cost;
     double input_transport_cost = input.GetSum() * infra_cost;
@@ -198,15 +195,15 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
     // the production
-    costs.material_costs = input.MultiplyAndGetSum(market.price);
-    costs.wages = employer.population_fufilled * size.wages;
-    costs.transport = 0;  //output_transport_cost + input_transport_cost;
+    size.material_costs = input.MultiplyAndGetSum(market.price);
+    size.wage_cost = employer.population_fufilled * size.wages;
+    size.transport = 0;  //output_transport_cost + input_transport_cost;
 
-    costs.revenue = output.MultiplyAndGetSum(market.price);
-    costs.profit = costs.revenue - costs.maintenance - costs.material_costs - costs.wages - costs.transport;
+    size.revenue = output.MultiplyAndGetSum(market.price);
+    size.profit = size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport;
     auto& wallet = industry_node.get<components::Wallet>();
-    wallet += costs.profit;
-    market.GDP += costs.revenue - costs.material_costs;
+    wallet += size.profit;
+    market.GDP += size.revenue - size.material_costs;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
@@ -245,9 +242,9 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Let the minimum the factory can produce be like 10% of the
     // Pay the workers
     auto& population_segment = population_node.get<components::PopulationSegment>();
-    population_segment.income += costs.wages;
+    population_segment.income += size.wage_cost;
     population_segment.employed_amount += employer.population_fufilled;
-    population_wallet += costs.wages;
+    population_wallet += size.wage_cost;
 }
 
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
@@ -361,5 +358,10 @@ void SysProduction::DoSystem() {
     population_history.employment.push_back(employed);
     population_history.employment_rate.push_back(employed / population_history.population.back() * 100.);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
+}
+
+void SysProduction::IndustryFsm() {
+    for (auto&& [industry, production] : GetUniverse().view<components::ProductionUnit>().each()) {
+    }
 }
 }  // namespace cqsp::core::systems

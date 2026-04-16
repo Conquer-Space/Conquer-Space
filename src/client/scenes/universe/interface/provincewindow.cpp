@@ -267,8 +267,8 @@ void SysProvinceInformation::IndustryTab() {
     double wage = 0;
     double people = 0;
     for (entt::entity industry : city_industry.industries) {
-        if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
-            auto& industry_component = GetUniverse().get<components::CostBreakdown>(industry);
+        if (GetUniverse().all_of<components::ProductionUnit>(industry)) {
+            auto& industry_component = GetUniverse().get<components::ProductionUnit>(industry);
             wage += industry_component.wages;
         }
 
@@ -433,19 +433,16 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
 
         ImGui::TableSetColumnIndex(6);
         ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wages)));
-    }
-    if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
-        auto& income_component = GetUniverse().get<components::CostBreakdown>(industry);
 
         ImGui::TableSetColumnIndex(7);
-        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.revenue)));
+        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.revenue)));
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
-            ImGui::TextFmt("Items sold: {}", income_component.amount_sold);
+            ImGui::TextFmt("Items sold: {}", industry_component.amount_sold);
             ImGui::EndTooltip();
         }
         ImGui::TableSetColumnIndex(8);
-        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.profit)));
+        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.profit)));
     }
 }
 

@@ -80,17 +80,18 @@ struct ProductionUnit {
     int continuous_gains = 0;
     double underutilization = 0;
 
-    IndustryState state;
-};
+    ProductionType type;
+    entt::entity recipe;
 
-struct CostBreakdown {
+    IndustryState state;
+
     double revenue;
     // How much it paid in materials to produce goods
     double material_costs;
     // How much cash it took to maintain the factory
     double maintenance;
     // How much it paid to people
-    double wages;
+    double wage_cost;
     double profit;
     // How much it paid in transport fees
     double transport;
