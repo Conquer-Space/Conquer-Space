@@ -71,8 +71,9 @@ struct ProductionUnit {
     int workers;
     bool shortage = false;
     double wages = 25;
-    int continuous_losses = 0;
+    double cumulative_pr = 0;
     int continuous_gains = 0;
+    int stability = 0;
     double underutilization = 0;
 
     ProductionType type;
@@ -106,7 +107,9 @@ struct ProductionUnit {
     /**
      * Profit / revenue ratio, to see how profitable the company is
      * Anything above 0 is profitable, and anything above 1 is like insanely profitable
+     * 
+     * Surely profit will always be greater than revenue
      */
-    double PrRatio() { return profit / revenue; }
+    double ProfitMargin() { return profit / (revenue + 0.0001); }
 };
 }  // namespace cqsp::core::components

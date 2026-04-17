@@ -41,6 +41,7 @@ class SysProduction : public ISimulationSystem {
     components::IndustryState Shrinking(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState Expanding(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState Shortage(entt::entity industry, components::ProductionUnit& production);
+    void ProductionPreprocessing(entt::entity industry, components::ProductionUnit& production);
 
     double employed = 0;
 };
