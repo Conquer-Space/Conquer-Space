@@ -86,6 +86,8 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Wage Cost: {}", NumberToHumanString(production.wage_cost));
         ImGui::TextFmt("Maintenance Cost: {}", NumberToHumanString(production.maintenance));
         ImGui::TextFmt("Transport Costs: {}", NumberToHumanString(production.transport));
+        ImGui::TextFmt("State: {}", components::IndustryStateToString(production.state));
+        ImGui::TextFmt("Continous Gains: {}", production.continuous_gains);
         ImGui::Separator();
         ImGui::TextFmt("Profit: {}", NumberToHumanString(production.profit));
         ImGui::TextFmt("Revenue: {}", NumberToHumanString(production.revenue));

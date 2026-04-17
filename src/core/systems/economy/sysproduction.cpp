@@ -32,110 +32,7 @@
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
-void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {
-    ZoneScoped;
-    components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
-    components::Recipe& recipe = GetUniverse().get<components::Recipe>(size.recipe);
-    const auto& production_config = GetUniverse().economy_config.production_config;
-    auto& employer = industry_node.get<components::Employer>();
-
-    bool shortage = false;
-    double prod_sum = recipe.input.GetSum();
-    for (auto& [good, amount] : recipe.input) {
-        if (market.chronic_shortages[good] > 5) {
-            // Reduce the amount based off the weighted average of the input?
-            // Then reduce production over time or something
-            shortage = true;
-            break;
-        }
-    }
-
-    // So we will add a random chance to increase or decrease profit
-    // As we get more profit we should increase profit, as we get less profit we should reduce the size of the factory
-    double diff =
-        1 + production_config.max_factory_delta / (1 + std::exp(-(size.profit * production_config.profit_multiplier))) -
-        production_config.max_factory_delta / 2;
-    diff += GetUniverse().random->GetRandomNormal(0, 0.001);
-    if (shortage) {
-        diff -= std::max(GetUniverse().random->GetRandomNormal(0.1, 0.1), 0.02);
-    }
-    size.diff = diff;
-    size.shortage = shortage;
-
-    int original_workers = employer.population_fufilled;
-    double past_util = size.utilization;
-    size.utilization =
-        std::clamp(size.utilization * diff, production_config.factory_min_utilization * size.size, size.size);
-    size.utilization = std::max(1., size.utilization);
-    // Check if it's clamped and then check for the thing
-    size.diff_delta = size.utilization - past_util;
-
-    // Start hiring more when the utilization goes up
-    double expected_workers = size.utilization * recipe.workers;
-    employer.population_fufilled = static_cast<int>(expected_workers);
-
-    // If we have left over income we should improve the wages a little bit
-    // There should also have a bank to reinvest into the company
-    double pl_ratio = size.profit / size.revenue;
-    if (pl_ratio > 0.1) {
-        // Now we can expand it and improve our wages as well
-        size.wages *= 1.05;
-    } else if (pl_ratio < -0.1) {
-        size.wages *= 0.95;
-    }
-    double utilization_ratio = size.utilization / size.size;
-    // Now we should compute if we are constructing or not and if we aren't then we should reduce if the ratio is below
-    // a certain ratio
-    double factor = (0.4 - utilization_ratio);
-    if (factor < 0) {
-        factor = 0;
-        size.underutilization = 0;
-    }
-    // Normalize
-    factor /= 0.4;
-    size.underutilization += factor;
-
-    ScaleConstruction(industry_node, pl_ratio);
-
-    if (size.underutilization > production_config.underutilization_limit &&
-        !industry_node.all_of<components::Construction>()) {
-        // Then we should shrink the size of the factory by a certain factor since we have been not using the factory
-        size.size *= 0.9;
-        // Reset our underutilization so that we don't immediately kill our production
-        size.underutilization = 0;
-    }
-
-    // Let's start laying off people too if we have too much of a cut
-    if (size.continuous_losses > 5) {
-        employer.population_fufilled *= 0.95;
-        // Also scale the scale with this
-        double workers_count = std::floor(employer.population_fufilled / recipe.workers);
-        size.utilization = std::min(workers_count, size.utilization);
-        // We should still minimize
-        size.utilization = std::max(1., size.utilization);
-    }
-
-    if (size.continuous_gains > 5) {
-        employer.population_fufilled *= 1.05;
-        // Also scale the scale with this
-        double workers_count = std::floor(employer.population_fufilled / recipe.workers);
-        size.utilization = std::min(workers_count, size.utilization);
-        // We should still minimize
-        size.utilization = std::max(1., size.utilization);
-    }
-    if (size.profit < 0) {
-        size.continuous_losses++;
-    } else {
-        size.continuous_losses = 0;
-    }
-    if (size.profit > 0) {
-        size.continuous_gains++;
-    } else {
-        size.continuous_gains = 0;
-    }
-    employer.population_change = original_workers - employer.population_fufilled;
-    employed += employer.population_fufilled;
-}
+void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {}
 
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
                                     double infra_cost) {
@@ -350,6 +247,7 @@ void SysProduction::DoSystem() {
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
+    IndustryFsm();
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
     }
@@ -362,38 +260,45 @@ void SysProduction::DoSystem() {
 void SysProduction::IndustryFsm() {
     for (auto&& [industry, production] : GetUniverse().view<components::ProductionUnit>().each()) {
         ProductionPreprocessing(industry, production);
+        components::IndustryState new_state;
         switch (production.state) {
             case components::IndustryState::SteadyState:
-                production.state = SteadyState(industry, production);
+                new_state = SteadyState(industry, production);
                 break;
             case components::IndustryState::MaximumProduction:
-                production.state = MaximumProduction(industry, production);
+                new_state = MaximumProduction(industry, production);
                 break;
             case components::IndustryState::MinimumProduction:
-                production.state = MinimumProduction(industry, production);
+                new_state = MinimumProduction(industry, production);
                 break;
             case components::IndustryState::Construction:
-                production.state = Construction(industry, production);
+                new_state = Construction(industry, production);
                 break;
             case components::IndustryState::Demolishing:
-                production.state = Demolishing(industry, production);
+                new_state = Demolishing(industry, production);
                 break;
             case components::IndustryState::Shrinking:
-                production.state = Shrinking(industry, production);
+                new_state = Shrinking(industry, production);
                 break;
             case components::IndustryState::Expanding:
-                production.state = Expanding(industry, production);
+                new_state = Expanding(industry, production);
                 break;
             case components::IndustryState::Shortage:
-                production.state = Shortage(industry, production);
+                new_state = Shortage(industry, production);
                 break;
         }
+        if (new_state != production.state) {
+            // Reset some values
+            production.continuous_gains = 0;
+            production.stability = 0;
+        }
+        production.state = new_state;
     }
 }
 
 components::IndustryState SysProduction::SteadyState(entt::entity industry, components::ProductionUnit& production) {
     // Then if our gains are more we should do stuff
-    if (production.continuous_gains > 30 * components::StarDate::DAY) {
+    if (production.continuous_gains < -30 * components::StarDate::DAY) {
         production.continuous_gains = 0;
         return components::IndustryState::Shrinking;
     } else if (production.continuous_gains > 30 * components::StarDate::DAY) {
@@ -457,46 +362,80 @@ components::IndustryState SysProduction::Construction(entt::entity industry, com
 }
 
 components::IndustryState SysProduction::Demolishing(entt::entity industry, components::ProductionUnit& production) {
+    // Delete more stuff...
     return components::IndustryState::Demolishing;
 }
 
 components::IndustryState SysProduction::Shrinking(entt::entity industry, components::ProductionUnit& production) {
-    if (production.continuous_gains > 30 * components::StarDate::DAY) {
-        production.continuous_gains = 0;
-        return components::IndustryState::Demolishing;
-    } else if (production.continuous_gains < -30 * components::StarDate::DAY) {
+    if (production.continuous_gains < -30 * components::StarDate::DAY) {
         production.continuous_gains = 0;
         return components::IndustryState::Expanding;
+    } else if (production.stability > 5 * components::StarDate::DAY) {
+        // Then we should check for stability
+        // We move to be steady much faster
+        return components::IndustryState::SteadyState;
     }
+    // Otherwise we should do something
+    double diff = 1 +
+                  economy_config.production_config.max_factory_delta /
+                      (1 + std::exp(-(production.profit * economy_config.production_config.profit_multiplier))) -
+                  economy_config.production_config.max_factory_delta / 2;
+
+    diff += GetUniverse().random->GetRandomNormal(0, 0.0005);
+    production.diff = diff;
+    production.utilization *= production.diff;
+    production.utilization = std::clamp(
+        production.utilization * production.diff,
+        GetUniverse().economy_config.production_config.factory_min_utilization * production.size, production.size);
+    production.utilization = std::max(1., production.utilization);
     return components::IndustryState::Shrinking;
 }
 
 components::IndustryState SysProduction::Expanding(entt::entity industry, components::ProductionUnit& production) {
-    if (production.continuous_gains > 30 * components::StarDate::DAY) {
-        return components::IndustryState::Demolishing;
-    } else if (production.continuous_gains < -30 * components::StarDate::DAY) {
+    if (production.continuous_gains < -30 * components::StarDate::DAY) {
         return components::IndustryState::Shrinking;
-    } else if () {
+    } else if (production.stability > 5 * components::StarDate::DAY) {
         // Then we should check for stability
+        // We move to be steady much faster...
+        return components::IndustryState::SteadyState;
     }
-    return components::IndustryState::Expanding;
+    // Otherwise we should do something
+    double diff = 1 +
+                  economy_config.production_config.max_factory_delta /
+                      (1 + std::exp(-(production.profit * economy_config.production_config.profit_multiplier))) -
+                  economy_config.production_config.max_factory_delta / 2;
+
+    diff += GetUniverse().random->GetRandomNormal(0, 0.0005);
+    production.diff = diff;
+    production.utilization *= production.diff;
+    production.utilization = std::clamp(
+        production.utilization * production.diff,
+        GetUniverse().economy_config.production_config.factory_min_utilization * production.size, production.size);
+    production.utilization = std::max(1., production.utilization);
+    return components::IndustryState::Expanding;  // No change
 }
 
 components::IndustryState SysProduction::Shortage(entt::entity industry, components::ProductionUnit& production) {
     // Cut production by like 10% lol
-    // Also cut efficiency
+    // Also cut efficiency and stuff lol
     return components::IndustryState::Shortage;
 }
 
 void SysProduction::ProductionPreprocessing(entt::entity industry, components::ProductionUnit& production) {
     production.cumulative_pr += production.ProfitMargin();
 
+    // How long we have continous gains and stuff?
     if (production.cumulative_pr > 5) {
         production.continuous_gains += Interval();
     } else if (production.cumulative_pr < -5) {
         production.continuous_gains -= Interval();
     } else {
+        // How long we have a stable profit margin
         production.stability += Interval();
+        production.continuous_gains = 0;
     }
+
+    // Also check out underutilization and we can demolish things
+    // Decomissioning stuff should be easier...
 }
 }  // namespace cqsp::core::systems

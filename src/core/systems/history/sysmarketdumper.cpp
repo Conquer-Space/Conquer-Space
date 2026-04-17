@@ -45,7 +45,6 @@ void SaveUniverseMarketState(Universe& universe, const std::string& output_file_
             industry_hjson["utilization"] = size.utilization;
             industry_hjson["workers"] = size.workers;
             industry_hjson["wages"] = size.wages;
-            industry_hjson["continuous_losses"] = size.continuous_losses;
             industry_hjson["continuous_gains"] = size.continuous_gains;
 
             industry_hjson["revenue"] = size.revenue;

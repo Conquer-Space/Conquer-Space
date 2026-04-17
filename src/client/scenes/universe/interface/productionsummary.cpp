@@ -27,7 +27,9 @@ void ProductionSummary::Init() {}
 
 void ProductionSummary::DoUI(int delta_time) {
     ImGui::Begin("Production Summary");
-
+    std::vector<ImVec4> colors = {ImVec4(1, 0, 0, 1), ImVec4(0, 1, 0, 1),   ImVec4(0, 0, 1, 1),
+                                  ImVec4(1, 1, 0, 1), ImVec4(1, 0, 1, 1),   ImVec4(0, 1, 1, 1),
+                                  ImVec4(1, 1, 1, 1), ImVec4(1, 0.5, 0, 1), ImVec4(1, 1, 0.5, 1)};
     if (ImGui::BeginTable("industry_list_table", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Production Type");
         ImGui::TableSetupColumn("Size");
@@ -43,7 +45,9 @@ void ProductionSummary::DoUI(int delta_time) {
             ImGui::TableNextRow();
             // Then now we should show a row or something
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), industry));
+            // Fix this so that this doesn't die lol
+            ImGui::TextFmtColored(colors[static_cast<uint32_t>(industry_component.state)], "{}",
+                                  core::util::GetName(GetUniverse(), industry));
             if (ImGui::IsItemHovered()) {
                 systems::gui::EntityTooltip(GetUniverse(), industry);
             }

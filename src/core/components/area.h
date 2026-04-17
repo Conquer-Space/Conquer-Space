@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include <entt/entt.hpp>
@@ -57,6 +58,27 @@ enum struct IndustryState {
     Expanding,
     Shortage
 };
+
+inline std::string IndustryStateToString(IndustryState state) {
+    switch (state) {
+        case IndustryState::SteadyState:
+            return "Steady State";
+        case IndustryState::MaximumProduction:
+            return "Maximum Production";
+        case IndustryState::MinimumProduction:
+            return "Minimum Production";
+        case IndustryState::Construction:
+            return "Construction";
+        case IndustryState::Demolishing:
+            return "Demolishing";
+        case IndustryState::Shrinking:
+            return "Shrinking";
+        case IndustryState::Expanding:
+            return "Expanding";
+        case IndustryState::Shortage:
+            return "Shortage";
+    }
+}
 
 // Factory size
 struct ProductionUnit {
