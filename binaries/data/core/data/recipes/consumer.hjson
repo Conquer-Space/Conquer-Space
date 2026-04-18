@@ -50,7 +50,7 @@
             fabric: 1000
         }
         output: {
-            textile_goods: 800
+            textile_goods: 500
         }
         cost: {
             labor: {

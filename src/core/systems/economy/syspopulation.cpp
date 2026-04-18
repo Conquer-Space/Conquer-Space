@@ -121,15 +121,14 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             cost += extra_cost;
         }
 
-        double spending_ratio = (segment.income - segment.spending) / segment.income;
-        // Let's PID our standard of living, and only our standard of living to change by like a max of 10%
-        if (spending_ratio > 0.1) {
-            // Then we can increase SOL by 0.1
-            segment.standard_of_living += 0.1 + segment.standard_of_living * 0.25;
-        } else if (spending_ratio < 0.1) {
-            segment.standard_of_living -= 0.1 + segment.standard_of_living * 0.25;
-            segment.standard_of_living = std::max(segment.standard_of_living, 1.);
-        }
+        // Our income should be equal to our spending...
+        double spending_ratio = (segment.income > 0) ? (segment.income - segment.spending) / segment.income : -1.0;
+
+        segment.sol_pid.Update(spending_ratio);
+
+        double sol_delta = 200 * segment.sol_pid.GetValue(components::PIDConfig {0.1, 0.05, 0.01});
+        sol_delta = std::clamp(sol_delta, -segment.standard_of_living * 0.1, segment.standard_of_living * 0.1);
+        segment.standard_of_living = std::max(segment.standard_of_living + sol_delta, 1.);
 
         segment.spending = cost;
         segment.income = 0;

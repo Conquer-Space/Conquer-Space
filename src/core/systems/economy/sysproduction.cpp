@@ -163,10 +163,10 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
         const auto& construction_cost = recipenode.get<components::ConstructionCost>();
         // Let's assign construction costs
         auto& construction = industry_node.emplace<components::Construction>(
-            0, construction_cost.time, static_cast<int>(0.25 * production_unit.size * pl_ratio));
+            0, construction_cost.time, static_cast<int>(production_unit.size * pl_ratio));
     } else {
-        auto& construction = industry_node.emplace<components::Construction>(
-            0, 20, static_cast<int>(0.25 * production_unit.size * pl_ratio));
+        auto& construction =
+            industry_node.emplace<components::Construction>(0, 20, static_cast<int>(production_unit.size * pl_ratio));
     }
 }
 

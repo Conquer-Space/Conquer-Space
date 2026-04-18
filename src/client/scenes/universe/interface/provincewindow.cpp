@@ -214,31 +214,31 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
 void SysProvinceInformation::DemographicsTab() {
     auto& settlement = GetUniverse().get<Settlement>(current_province);
     for (auto& seg_entity : settlement.population) {
-        auto& pop_segement = GetUniverse().get<PopulationSegment>(seg_entity);
-        ImGui::TextFmt("Population: {}", NumberToHumanString(pop_segement.population));
+        auto& pop_segment = GetUniverse().get<PopulationSegment>(seg_entity);
+        ImGui::TextFmt("Population: {}", NumberToHumanString(pop_segment.population));
 
         gui::EntityTooltip(GetUniverse(), seg_entity);
         if (GetUniverse().all_of<components::Hunger>(seg_entity)) {
             ImGui::TextFmt("Hungry");
         }
 
-        ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segement.spending)));
-        ImGui::TextFmt("Spending per capita: {}", NumberToHumanString(pop_segement.spending / pop_segement.population));
-        ImGui::TextFmt("Income: {} (per capita: {})", NumberToHumanString(static_cast<uint64_t>(pop_segement.income)),
-                       NumberToHumanString(pop_segement.income / pop_segement.population));
+        ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segment.spending)));
+        ImGui::TextFmt("Spending per capita: {}", NumberToHumanString(pop_segment.spending / pop_segment.population));
+        ImGui::TextFmt("Income: {} (per capita: {})", NumberToHumanString(static_cast<uint64_t>(pop_segment.income)),
+                       NumberToHumanString(pop_segment.income / pop_segment.population));
 
-        ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segement.labor_force));
-        ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segement.employed_amount));
-        ImGui::TextFmt("Unemployment Rate: {:.2f}%", (1. - static_cast<double>(pop_segement.employed_amount) /
-                                                               static_cast<double>(pop_segement.labor_force)) *
+        ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segment.labor_force));
+        ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segment.employed_amount));
+        ImGui::TextFmt("Unemployment Rate: {:.2f}%", (1. - static_cast<double>(pop_segment.employed_amount) /
+                                                               static_cast<double>(pop_segment.labor_force)) *
                                                          100.);
-        ImGui::TextFmt("Standard of Living: {}", NumberToHumanString(pop_segement.standard_of_living));
+        ImGui::TextFmt("Standard of Living: {}", NumberToHumanString(pop_segment.standard_of_living));
 
         // Get spending for population
         DisplayWallet(seg_entity);
         if (GetUniverse().all_of<Wallet>(seg_entity)) {
             Wallet& wallet = GetUniverse().get<Wallet>(seg_entity);
-            ImGui::TextFmt("GDP per capita: {}", wallet.GetGDPChange() / pop_segement.population);
+            ImGui::TextFmt("GDP per capita: {}", wallet.GetGDPChange() / pop_segment.population);
         }
 
         if (ImGui::CollapsingHeader("Resource Consumption")) {
@@ -254,6 +254,9 @@ void SysProvinceInformation::DemographicsTab() {
                                   segment_prices);
             }
         }
+
+        ImGui::TextFmt("PID: {} {} {}", pop_segment.sol_pid.proportional, pop_segment.sol_pid.integral,
+                       pop_segment.sol_pid.derivative);
         // Display the data
         ImGui::Separator();
     }

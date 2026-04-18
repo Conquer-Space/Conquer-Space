@@ -15,6 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #pragma once
+#include "core/components/pid.h"
 #include "core/components/resource.h"
 
 namespace cqsp::core::components {
@@ -28,6 +29,7 @@ struct PopulationSegment {
     uint64_t employed_amount = 0;
     // Just an index for the amount of marginal propensity that we want to consume...
     double standard_of_living = 0;
+    PID sol_pid;
 
     // Spending last tick
     double spending;
