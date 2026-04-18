@@ -52,6 +52,8 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
+    double expected_workers = size.utilization * recipe.workers;
+    employer.population_fufilled = static_cast<int>(expected_workers);
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
@@ -290,6 +292,7 @@ void SysProduction::IndustryFsm() {
         if (new_state != production.state) {
             // Reset some values
             production.continuous_gains = 0;
+            production.cumulative_pr = 0;
             production.stability = 0;
         }
         production.state = new_state;
@@ -319,12 +322,21 @@ components::IndustryState SysProduction::SteadyState(entt::entity industry, comp
 components::IndustryState SysProduction::MaximumProduction(entt::entity industry,
                                                            components::ProductionUnit& production) {
     if (production.continuous_gains > 30 * components::StarDate::DAY) {
-        production.continuous_gains = 0;
         // We should set how much we want to construct
         // Actually we should let the FSM handle this
+        if (GetUniverse().all_of<components::ConstructionCost>(production.recipe)) {
+            const auto& construction_cost = GetUniverse().get<components::ConstructionCost>(production.recipe);
+            // Let's assign construction costs
+            auto& construction = GetUniverse().emplace<components::Construction>(
+                industry, 0, construction_cost.time * components::StarDate::DAY,
+                static_cast<int>(0.25 * production.size * production.ProfitMargin()));
+        } else {
+            auto& construction = GetUniverse().emplace<components::Construction>(
+                industry, 0, 20 * components::StarDate::DAY,
+                static_cast<int>(0.25 * production.size * production.ProfitMargin()));
+        }
         return components::IndustryState::Construction;
     } else if (production.continuous_gains < -30 * components::StarDate::DAY) {
-        production.continuous_gains = 0;
         return components::IndustryState::Shrinking;
     }
     return components::IndustryState::MaximumProduction;
@@ -354,6 +366,7 @@ components::IndustryState SysProduction::Construction(entt::entity industry, com
 
     construction.progress += Interval();
     if (construction.progress >= construction.maximum) {
+        production.size += construction.levels;
         GetUniverse().remove<components::Construction>(industry);
         return components::IndustryState::SteadyState;
     }
@@ -397,8 +410,14 @@ components::IndustryState SysProduction::Expanding(entt::entity industry, compon
     } else if (production.stability > 5 * components::StarDate::DAY) {
         // Then we should check for stability
         // We move to be steady much faster...
+        if (production.utilization == production.size) {
+            return components::IndustryState::MaximumProduction;
+        }
         return components::IndustryState::SteadyState;
     }
+
+    // If we are at the max production we should probably
+
     // Otherwise we should do something
     double diff = 1 +
                   economy_config.production_config.max_factory_delta /
