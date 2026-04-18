@@ -122,6 +122,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         }
 
         double spending_ratio = (segment.income - segment.spending) / segment.income;
+        // Let's PID our standard of living, and only our standard of living to change by like a max of 10%
         if (spending_ratio > 0.1) {
             // Then we can increase SOL by 0.1
             segment.standard_of_living += 0.1 + segment.standard_of_living * 0.25;

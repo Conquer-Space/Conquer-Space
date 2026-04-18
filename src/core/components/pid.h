@@ -15,26 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #pragma once
-#include "core/components/resource.h"
 
 namespace cqsp::core::components {
-struct PopulationSegment {
-    uint64_t population;
-    /// The total potential workers
-    /// Everyone from the minimum working age (18) to the maximum age (65)
-    /// The labor force must always be less than the population
-    /// population - labor_force = dependents
-    uint64_t labor_force;
-    uint64_t employed_amount = 0;
-    // Just an index for the amount of marginal propensity that we want to consume...
-    double standard_of_living = 0;
+struct PIDConfig {
+    double Kp;
+    double Ki;
+    double Kd;
 
-    // Spending last tick
-    double spending;
-    double income;
-    // How much percent of their income they will will put towards savings
-    double saving_ratio = 0.1;
+    PIDConfig(double Kp, double Ki, double Kd) : Kp(Kp), Ki(Ki), Kd(Kd) {}
 };
 
-struct Hunger {};
+struct PID {
+    PID() : proportional(0), integral(0), derivative(0) {}
+    double proportional;
+    double integral;
+    double derivative;
+
+    void Update(double value);
+    double GetValue(const PIDConfig& conf);
+};
 }  // namespace cqsp::core::components
