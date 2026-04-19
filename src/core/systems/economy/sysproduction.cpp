@@ -456,7 +456,7 @@ components::IndustryState SysProduction::Shortage(entt::entity industry, compone
     }
     production.diff = std::max(GetUniverse().random->GetRandomNormal(0.1, 0.1), 0.02);
 
-    // Shortages have no limit for how little we can go?
+    // Shortages have no limit for how little we can go
     production.utilization = std::clamp(production.utilization * production.diff, 1., production.size);
     return components::IndustryState::Shortage;
 }
