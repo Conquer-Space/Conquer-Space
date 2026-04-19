@@ -22,7 +22,8 @@
 namespace cqsp::core::systems {
 class SysProduction : public ISimulationSystem {
  public:
-    explicit SysProduction(Game& game) : ISimulationSystem(game) {}
+    explicit SysProduction(Game& game)
+        : ISimulationSystem(game), production_config(GetUniverse().economy_config.production_config) {}
     void DoSystem() override;
     int Interval() override { return ECONOMIC_TICK; }
 
@@ -32,7 +33,19 @@ class SysProduction : public ISimulationSystem {
     void ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node, double infra_cost);
     void ScaleConstruction(Node& industry_node, double pl_ratio);
     bool HandleConstruction(Node& industry_node, components::Market& market);
+    void IndustryFsm();
+    components::IndustryState SteadyState(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState MaximumProduction(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState MinimumProduction(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Construction(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Demolishing(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Shrinking(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Expanding(entt::entity industry, components::ProductionUnit& production);
+    components::IndustryState Shortage(entt::entity industry, components::ProductionUnit& production);
+    void ProductionPreprocessing(entt::entity industry, components::ProductionUnit& production);
 
     double employed = 0;
+
+    const EconomyConfig::ProductionConfig& production_config;
 };
 }  // namespace cqsp::core::systems

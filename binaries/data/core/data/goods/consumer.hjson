@@ -21,8 +21,8 @@
         mass: 500 kg
         price: 300
         consumption: {
-            autonomous_consumption: 5
-            marginal_propensity: 1
+            autonomous_consumption: 1
+            marginal_propensity: 0.2
         }
         tags: [
             consumer
@@ -36,8 +36,8 @@
         price: 600
         description: Household supplies for cleaning and maintainence of a household
         consumption: {
-            autonomous_consumption: 10
-            marginal_propensity: 5
+            autonomous_consumption: 0.1
+            marginal_propensity: 0.5
         }
         tags: [
             consumer
@@ -50,8 +50,8 @@
         mass: 850 kg
         price: 500
         consumption: {
-            autonomous_consumption: 50
-            marginal_propensity: 10
+            autonomous_consumption: 1
+            marginal_propensity: 0.2
         }
         tags: [
             consumer
@@ -64,7 +64,7 @@
         mass: 136 kg
         price: 400
         consumption: {
-            autonomous_consumption: 20
+            autonomous_consumption: 1
             marginal_propensity: 2
         }
         tags: [
@@ -79,7 +79,7 @@
         mass: 136 kg
         price: 30000
         consumption: {
-            autonomous_consumption: 0.1
+            autonomous_consumption: 0.01
             marginal_propensity: 0.05
         }
         tags: [

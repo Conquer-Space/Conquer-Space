@@ -41,7 +41,7 @@ struct EconomyConfig {
         double default_market_access = 0.8;
     } market_config;
 
-    struct {
+    struct ProductionConfig {
         /**
          * Multiplier for how much we should increase or decrease production based off profit
          */
@@ -64,6 +64,10 @@ struct EconomyConfig {
          * What factor our factory is underutilized by before we start reducing production
          */
         double underutilization_limit = 30;
+
+        double GetFactoryMinUtilization(double factory_size) const;
+
+        double GetFactoryUtilizationDiff(double profit) const;
     } production_config;
 };
 }  // namespace cqsp::core::systems

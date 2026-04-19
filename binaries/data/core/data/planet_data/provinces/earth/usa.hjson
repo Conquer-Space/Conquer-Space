@@ -106,10 +106,10 @@
             }
             {
                 recipe: oil_drilling
-                size: 2000
+                size: 120
                 utilization: 75.29058259980495
                 workers: 0
-                wages: 8396.982955720408
+                wages: 10
                 continuous_losses: 0
                 continuous_gains: 165
                 revenue: 7529058.259980495
@@ -118,9 +118,9 @@
             }
             {
                 recipe: cotton_farming
-                size: 2000
+                size: 300
                 utilization: 75.29058259980495
-                wages: 8396.982955720408
+                wages: 10
                 continuous_losses: 0
                 continuous_gains: 165
                 revenue: 7529058.259980495
@@ -129,7 +129,7 @@
             }
             {
                 recipe: chemical_processing
-                size: 2000
+                size: 150
                 utilization: 75.29058259980495
                 wages: 8396.982955720408
                 continuous_losses: 0

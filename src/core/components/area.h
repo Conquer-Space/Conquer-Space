@@ -16,6 +16,7 @@
  */
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include <entt/entt.hpp>
@@ -33,12 +34,6 @@ struct Construction {
 
 enum class ProductionType { factory, mine, service };
 
-struct Production {
-    //TODO(AGM) This is a hardcoded enum, move to a hjson
-    ProductionType type;
-    entt::entity recipe;
-};
-
 struct Factory {};
 
 struct Mine {};
@@ -53,8 +48,40 @@ struct Farm {
 
 struct RawResourceGen {};
 
+enum struct IndustryState {
+    SteadyState,
+    MaximumProduction,
+    MinimumProduction,
+    Construction,
+    Demolishing,
+    Shrinking,
+    Expanding,
+    Shortage
+};
+
+inline std::string IndustryStateToString(IndustryState state) {
+    switch (state) {
+        case IndustryState::SteadyState:
+            return "Steady State";
+        case IndustryState::MaximumProduction:
+            return "Maximum Production";
+        case IndustryState::MinimumProduction:
+            return "Minimum Production";
+        case IndustryState::Construction:
+            return "Construction";
+        case IndustryState::Demolishing:
+            return "Demolishing";
+        case IndustryState::Shrinking:
+            return "Shrinking";
+        case IndustryState::Expanding:
+            return "Expanding";
+        case IndustryState::Shortage:
+            return "Shortage";
+    }
+}
+
 // Factory size
-struct IndustrySize {
+struct ProductionUnit {
     // The size of the factory.
     // the maximum output of the factory is
     double size;
@@ -66,19 +93,22 @@ struct IndustrySize {
     int workers;
     bool shortage = false;
     double wages = 25;
-    int continuous_losses = 0;
+    double cumulative_pr = 0;
     int continuous_gains = 0;
-    double underutilization = 0;
-};
+    int stability = 0;
 
-struct CostBreakdown {
+    ProductionType type;
+    entt::entity recipe;
+
+    IndustryState state = IndustryState::SteadyState;
+
     double revenue;
     // How much it paid in materials to produce goods
     double material_costs;
     // How much cash it took to maintain the factory
     double maintenance;
     // How much it paid to people
-    double wages;
+    double wage_cost;
     double profit;
     // How much it paid in transport fees
     double transport;
@@ -94,5 +124,13 @@ struct CostBreakdown {
         amount_sold = 0;
         transport = 0;
     }
+
+    /**
+     * Profit / revenue ratio, to see how profitable the company is
+     * Anything above 0 is profitable, and anything above 1 is like insanely profitable
+     * 
+     * Surely profit will always be greater than revenue
+     */
+    double ProfitMargin() { return profit / (revenue + 0.0001); }
 };
 }  // namespace cqsp::core::components

@@ -27,7 +27,9 @@ void ProductionSummary::Init() {}
 
 void ProductionSummary::DoUI(int delta_time) {
     ImGui::Begin("Production Summary");
-
+    std::vector<ImVec4> colors = {ImVec4(1, 0, 0, 1), ImVec4(0, 1, 0, 1),   ImVec4(0, 0, 1, 1),
+                                  ImVec4(1, 1, 0, 1), ImVec4(1, 0, 1, 1),   ImVec4(0, 1, 1, 1),
+                                  ImVec4(1, 1, 1, 1), ImVec4(1, 0.5, 0, 1), ImVec4(1, 1, 0.5, 1)};
     if (ImGui::BeginTable("industry_list_table", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Production Type");
         ImGui::TableSetupColumn("Size");
@@ -39,11 +41,13 @@ void ProductionSummary::DoUI(int delta_time) {
         ImGui::TableSetupColumn("Revenue");
         ImGui::TableSetupColumn("Profit");
         ImGui::TableHeadersRow();
-        for (auto&& [industry, industry_component] : GetUniverse().view<core::components::IndustrySize>().each()) {
+        for (auto&& [industry, industry_component] : GetUniverse().view<core::components::ProductionUnit>().each()) {
             ImGui::TableNextRow();
             // Then now we should show a row or something
             ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), industry));
+            // Fix this so that this doesn't die lol
+            ImGui::TextFmtColored(colors[static_cast<uint32_t>(industry_component.state)], "{}",
+                                  core::util::GetName(GetUniverse(), industry));
             if (ImGui::IsItemHovered()) {
                 systems::gui::EntityTooltip(GetUniverse(), industry);
             }
@@ -94,19 +98,16 @@ void ProductionSummary::DoUI(int delta_time) {
 
             ImGui::TableSetColumnIndex(6);
             ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wages)));
-            if (GetUniverse().all_of<components::CostBreakdown>(industry)) {
-                auto& income_component = GetUniverse().get<components::CostBreakdown>(industry);
 
-                ImGui::TableSetColumnIndex(7);
-                ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.revenue)));
-                if (ImGui::IsItemHovered()) {
-                    ImGui::BeginTooltip();
-                    ImGui::TextFmt("Items sold: {}", income_component.amount_sold);
-                    ImGui::EndTooltip();
-                }
-                ImGui::TableSetColumnIndex(8);
-                ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(income_component.profit)));
+            ImGui::TableSetColumnIndex(7);
+            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.revenue)));
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextFmt("Items sold: {}", industry_component.amount_sold);
+                ImGui::EndTooltip();
             }
+            ImGui::TableSetColumnIndex(8);
+            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.profit)));
         }
         ImGui::EndTable();
     }

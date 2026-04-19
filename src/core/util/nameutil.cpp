@@ -69,8 +69,8 @@ std::string GetEntityType(const Universe& universe, entt::entity entity) {
         return "Planet";
     } else if (universe.any_of<components::Settlement, components::Settlements>(entity)) {
         return "City";
-    } else if (universe.any_of<components::Production>(entity)) {
-        auto& generator = universe.get<components::Production>(entity);
+    } else if (universe.any_of<components::ProductionUnit>(entity)) {
+        auto& generator = universe.get<components::ProductionUnit>(entity);
         return fmt::format("{} Factory", GetName(universe, generator.recipe));
     } else if (universe.any_of<components::Mine>(entity)) {
         /*

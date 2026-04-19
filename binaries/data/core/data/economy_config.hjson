@@ -17,12 +17,13 @@
     production_config: {
         /**
          * Multiplier for how much we should increase or decrease production based off profit
+         * A lower value counterintuitively gives a higher difference (because the formula is like exp(-x * const)
          */
-        profit_multiplier: 0.001
+        profit_multiplier: 0.0005
         /**
          * The maximum percentage change per economic tick we should modify our economy.
          */
-        max_factory_delta: 0.01
+        max_factory_delta: 0.05
         /**
          * The percentage of a factory that has to be in use
          */

@@ -77,10 +77,20 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::Text("Producing next tick");
     }
 
-    if (universe.all_of<components::IndustrySize>(entity)) {
-        ImGui::TextFmt("Size: {}", universe.get<components::IndustrySize>(entity).size);
-        ImGui::TextFmt("Utilization: {}", universe.get<components::IndustrySize>(entity).utilization);
-        ImGui::TextFmt("Last Tick Difference: {}", universe.get<components::IndustrySize>(entity).diff);
+    if (universe.all_of<components::ProductionUnit>(entity)) {
+        const auto& production = universe.get<components::ProductionUnit>(entity);
+        ImGui::TextFmt("Size: {}", production.size);
+        ImGui::TextFmt("Utilization: {}", production.utilization);
+        ImGui::TextFmt("Last Tick Difference: {}", production.diff);
+        ImGui::TextFmt("Material Cost: {}", NumberToHumanString(production.material_costs));
+        ImGui::TextFmt("Wage Cost: {}", NumberToHumanString(production.wage_cost));
+        ImGui::TextFmt("Maintenance Cost: {}", NumberToHumanString(production.maintenance));
+        ImGui::TextFmt("Transport Costs: {}", NumberToHumanString(production.transport));
+        ImGui::TextFmt("State: {}", components::IndustryStateToString(production.state));
+        ImGui::TextFmt("Continous Gains: {}", production.continuous_gains);
+        ImGui::Separator();
+        ImGui::TextFmt("Profit: {}", NumberToHumanString(production.profit));
+        ImGui::TextFmt("Revenue: {}", NumberToHumanString(production.revenue));
     }
 
     if (universe.all_of<components::infrastructure::PowerConsumption>(entity)) {
@@ -89,16 +99,6 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Power: {}", consumption.current);
         ImGui::TextFmt("Max Power: {}", consumption.max);
         ImGui::TextFmt("Min Power: {}", consumption.min);
-    }
-    if (universe.all_of<components::CostBreakdown>(entity)) {
-        components::CostBreakdown costs = universe.get<components::CostBreakdown>(entity);
-        ImGui::TextFmt("Material Cost: {}", NumberToHumanString(costs.material_costs));
-        ImGui::TextFmt("Wage Cost: {}", NumberToHumanString(costs.wages));
-        ImGui::TextFmt("Maintenance Cost: {}", NumberToHumanString(costs.maintenance));
-        ImGui::TextFmt("Transport Costs: {}", NumberToHumanString(costs.transport));
-        ImGui::Separator();
-        ImGui::TextFmt("Profit: {}", NumberToHumanString(costs.profit));
-        ImGui::TextFmt("Revenue: {}", NumberToHumanString(costs.revenue));
     }
     if (universe.all_of<components::Price>(entity)) {
         ImGui::TextFmt("Default Price: {}", universe.get<components::Price>(entity).price);

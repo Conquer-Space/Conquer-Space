@@ -223,21 +223,19 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
         Node rec_ent(universe, universe.recipes[recipe]);
 
         Node factory = actions::CreateFactory(node, rec_ent, size);
-        auto& cost = factory.get_or_emplace<components::CostBreakdown>();
+        auto& size_comp = factory.get_or_emplace<components::ProductionUnit>();
 
         if (!ind_val["revenue"].empty()) {
-            cost.revenue = ind_val["revenue"].to_double();
+            size_comp.revenue = ind_val["revenue"].to_double();
         }
 
         if (!ind_val["material_costs"].empty()) {
-            cost.material_costs = ind_val["material_costs"].to_double();
+            size_comp.material_costs = ind_val["material_costs"].to_double();
         }
 
         if (!ind_val["profit"].empty()) {
-            cost.profit = ind_val["profit"].to_double();
+            size_comp.profit = ind_val["profit"].to_double();
         }
-
-        auto& size_comp = factory.get_or_emplace<components::IndustrySize>();
 
         if (!ind_val["wages"].empty()) {
             size_comp.wages = ind_val["wages"].to_double();
@@ -249,10 +247,6 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
 
         if (!ind_val["workers"].empty()) {
             size_comp.workers = ind_val["workers"].to_double();
-        }
-
-        if (!ind_val["continuous_losses"].empty()) {
-            size_comp.continuous_losses = ind_val["continuous_losses"].to_double();
         }
 
         if (!ind_val["continuous_gains"].empty()) {
