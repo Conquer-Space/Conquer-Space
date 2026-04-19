@@ -22,7 +22,8 @@
 namespace cqsp::core::systems {
 class SysProduction : public ISimulationSystem {
  public:
-    explicit SysProduction(Game& game) : ISimulationSystem(game), economy_config(GetUniverse().economy_config) {}
+    explicit SysProduction(Game& game)
+        : ISimulationSystem(game), production_config(GetUniverse().economy_config.production_config) {}
     void DoSystem() override;
     int Interval() override { return ECONOMIC_TICK; }
 
@@ -45,6 +46,6 @@ class SysProduction : public ISimulationSystem {
 
     double employed = 0;
 
-    const EconomyConfig& economy_config;
+    const EconomyConfig::ProductionConfig& production_config;
 };
 }  // namespace cqsp::core::systems
