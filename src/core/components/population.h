@@ -36,6 +36,8 @@ struct PopulationSegment {
     double income;
     // How much percent of their income they will will put towards savings
     double saving_ratio = 0.1;
+
+    double average_wage = 0;
 };
 
 struct Hunger {};

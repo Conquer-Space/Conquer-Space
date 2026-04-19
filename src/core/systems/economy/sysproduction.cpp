@@ -32,22 +32,17 @@
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
-void SysProduction::ScaleIndustry(Node& industry_node, components::Market& market) {}
-
 void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
                                     double infra_cost) {
     ZoneScoped;
-    if (!HandleConstruction(industry_node, market)) {
-        return;
-    }
     auto& production_config = GetUniverse().economy_config.production_config;
     auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
     auto& employer = industry_node.get<components::Employer>();
+    auto& population_segment = population_node.get<components::PopulationSegment>();
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
     if (!industry_node.all_of<components::ProductionUnit>()) return;
-    ScaleIndustry(industry_node, market);
 
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
@@ -80,6 +75,13 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
 
     // Get the input goods and compare the
 
+    // We should also drift wages towards the average wage of the pop node or something
+    double delta = size.wages * size.ProfitMargin() * 0.1;
+    delta = std::clamp(delta, -size.wages * 0.05, size.wages * 0.05);
+    size.wages += delta;
+    // Also pull our wage to the average
+    size.wages = size.wages * 0.9 + population_segment.average_wage * 0.1;
+    size.wages = std::max(1.0, size.wages);
     market.consumption += input;
     market.production += output;
     size.amount_sold = recipe.output.amount * size.utilization;
@@ -139,7 +141,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Now diff it by that much
     // Let the minimum the factory can produce be like 10% of the
     // Pay the workers
-    auto& population_segment = population_node.get<components::PopulationSegment>();
+
     population_segment.income += size.wage_cost;
     population_segment.employed_amount += employer.population_fufilled;
     population_wallet += size.wage_cost;
@@ -163,10 +165,10 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
         const auto& construction_cost = recipenode.get<components::ConstructionCost>();
         // Let's assign construction costs
         auto& construction = industry_node.emplace<components::Construction>(
-            0, construction_cost.time, static_cast<int>(production_unit.size * pl_ratio));
+            0, construction_cost.time, static_cast<int>(production_unit.size * pl_ratio * 5));
     } else {
-        auto& construction =
-            industry_node.emplace<components::Construction>(0, 20, static_cast<int>(production_unit.size * pl_ratio));
+        auto& construction = industry_node.emplace<components::Construction>(
+            0, 20, static_cast<int>(production_unit.size * pl_ratio * 5));
     }
 }
 
@@ -368,7 +370,7 @@ components::IndustryState SysProduction::Construction(entt::entity industry, com
     if (construction.progress >= construction.maximum) {
         production.size += construction.levels;
         GetUniverse().remove<components::Construction>(industry);
-        return components::IndustryState::SteadyState;
+        return components::IndustryState::Expanding;
     }
 
     return components::IndustryState::Construction;
