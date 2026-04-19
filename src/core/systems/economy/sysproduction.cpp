@@ -369,7 +369,7 @@ components::IndustryState SysProduction::Construction(entt::entity industry, com
     auto recipe_node = GetUniverse()(production.recipe);
     if (recipe_node.all_of<components::ConstructionCost>()) {
         // Compute construction cost
-        // TODO since we do have to talk to the market...
+        // TODO(EhWhoAmI): since we do have to talk to the market...
     }
 
     construction.progress += Interval();
