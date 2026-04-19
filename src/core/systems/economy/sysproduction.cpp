@@ -68,6 +68,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
             break;
         }
     }
+    size.shortage = shortage;
 
     // Figure out what's throttling production and maintenance
     // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
@@ -410,6 +411,9 @@ components::IndustryState SysProduction::Shrinking(entt::entity industry, compon
     double diff = production_config.GetFactoryUtilizationDiff(production.profit);
 
     diff += GetUniverse().random->GetRandomNormal(0, 0.0005);
+    // Make sure we don't increase in size
+    diff = std::min(diff, 1.);
+
     production.diff = diff;
     production.utilization *= production.diff;
     production.utilization = std::clamp(production.utilization * production.diff,
@@ -432,13 +436,12 @@ components::IndustryState SysProduction::Expanding(entt::entity industry, compon
             return components::IndustryState::MaximumProduction;
         }
     }
-
-    // If we are at the max production we should probably
-
     // Otherwise we should do something
     double diff = production_config.GetFactoryUtilizationDiff(production.profit);
 
     diff += GetUniverse().random->GetRandomNormal(0, 0.0005);
+    // Ensure we actually expand
+    diff = std::max(diff, 1.);
     production.diff = diff;
     production.utilization *= production.diff;
     production.utilization = std::clamp(production.utilization * production.diff,
@@ -447,8 +450,14 @@ components::IndustryState SysProduction::Expanding(entt::entity industry, compon
 }
 
 components::IndustryState SysProduction::Shortage(entt::entity industry, components::ProductionUnit& production) {
-    // Cut production by like 10% lol
-    // Also cut efficiency and stuff lol
+    // This cuts production by more
+    if (!production.shortage) {
+        return components::IndustryState::SteadyState;
+    }
+    production.diff = std::max(GetUniverse().random->GetRandomNormal(0.1, 0.1), 0.02);
+
+    // Shortages have no limit for how little we can go?
+    production.utilization = std::clamp(production.utilization * production.diff, 1., production.size);
     return components::IndustryState::Shortage;
 }
 
@@ -466,7 +475,9 @@ void SysProduction::ProductionPreprocessing(entt::entity industry, components::P
         production.continuous_gains = 0;
     }
 
-    // Also check out underutilization and we can demolish things
-    // Decomissioning stuff should be easier...
+    // Force shortage
+    if (production.shortage) {
+        production.state = components::IndustryState::Shortage;
+    }
 }
 }  // namespace cqsp::core::systems

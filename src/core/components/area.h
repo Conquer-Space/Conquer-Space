@@ -96,7 +96,6 @@ struct ProductionUnit {
     double cumulative_pr = 0;
     int continuous_gains = 0;
     int stability = 0;
-    double underutilization = 0;
 
     ProductionType type;
     entt::entity recipe;
