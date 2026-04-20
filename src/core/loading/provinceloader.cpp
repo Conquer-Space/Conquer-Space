@@ -221,10 +221,13 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
         }
     }
 }
+
 Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
     Node pop_node(universe);
 
     auto size = population_hjson["size"].to_int64();
+    auto& segment = pop_node.emplace<components::PopulationSegment>();
+
     double standard_of_living = 0;
     if (!population_hjson["sol"].empty()) {
         standard_of_living = population_hjson["sol"].to_double();
@@ -244,13 +247,12 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
         const auto& distribution = population_hjson["job_distribution"];
         // Then load stuff
         for (const auto& job : distribution) {
-            SPDLOG_INFO("{}", universe.jobs[job.first]);
+            segment.labor.labor_distribution.emplace_back(universe.jobs[job.first], job.second);
         }
     } else {
         SPDLOG_WARN("Pop doesn't have a job distribution");
     }
 
-    auto& segment = pop_node.emplace<components::PopulationSegment>();
     segment.population = size;
     segment.labor_force = labor_force;
     segment.standard_of_living = standard_of_living;

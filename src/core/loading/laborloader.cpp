@@ -42,7 +42,7 @@ bool LaborLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Now just load the good
     // This expects the goods to have been loaded too lol
     const std::string& good_name = values["good"];
-    node.emplace<components::Labor>(universe.goods[good_name]);
+    node.emplace<components::Labor>(universe.good_map[universe.goods[good_name]]);
 
     if (!values["tags"].empty()) {
         tag_loader.ParseTags(values["tags"], node);

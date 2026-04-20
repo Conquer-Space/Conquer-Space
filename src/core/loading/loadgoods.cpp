@@ -34,6 +34,10 @@ namespace types = components::types;
 GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["price"] = 1.f;
     default_val["tags"] = Hjson::Type::Vector;
+    tag_loader.Register<components::Mineral>("mineral");
+    tag_loader.Register<components::RawGood>("raw");
+    tag_loader.Register<components::CapitalGood>("capital");
+    tag_loader.Register<components::LaborGood>("labor");
 }
 
 bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
@@ -76,16 +80,7 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
         universe.consumergoods.push_back(node);
     }
 
-    for (int i = 0; i < values["tags"].size(); i++) {
-        if (values["tags"][i] == "mineral") {
-            node.get_or_emplace<components::Mineral>();
-        }
-        if (values["tags"][i] == "raw") {
-            node.get_or_emplace<components::RawGood>();
-        } else if (values["tags"][i] == "capital") {
-            node.get_or_emplace<components::CapitalGood>();
-        }
-    }
+    tag_loader.ParseTags(values["tags"], node);
 
     double price = values["price"].to_double();
     node.emplace<components::Price>(price);
