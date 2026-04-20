@@ -224,8 +224,10 @@ void SysProvinceInformation::DemographicsTab() {
 
         ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segment.spending)));
         ImGui::TextFmt("Spending per capita: {}", NumberToHumanString(pop_segment.spending / pop_segment.population));
-        ImGui::TextFmt("Income: {} (per capita: {})", NumberToHumanString(static_cast<uint64_t>(pop_segment.income)),
-                       NumberToHumanString(pop_segment.income / pop_segment.population));
+        ImGui::TextFmt("Income: {} (per capita: {} ({} a year))",
+                       NumberToHumanString(static_cast<uint64_t>(pop_segment.income)),
+                       NumberToHumanString(pop_segment.income / pop_segment.population),
+                       NumberToHumanString(pop_segment.income / pop_segment.population * 365));
 
         ImGui::TextFmt("Employed / Labor Force: {}/{}", NumberToHumanString(pop_segment.employed_amount),
                        NumberToHumanString(pop_segment.labor_force));
@@ -255,8 +257,6 @@ void SysProvinceInformation::DemographicsTab() {
             }
         }
 
-        ImGui::TextFmt("PID: {} {} {}", pop_segment.sol_pid.proportional, pop_segment.sol_pid.integral,
-                       pop_segment.sol_pid.derivative);
         // Display the data
         ImGui::Separator();
     }

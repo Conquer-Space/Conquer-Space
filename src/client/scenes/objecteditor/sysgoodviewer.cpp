@@ -85,8 +85,8 @@ void SysGoodViewer::GoodViewerRight() {
         ImGui::TextColored(ImVec4(0.921568627, 0.392156863, 0.203921569, 1), "Click to copy identifier");
         ImGui::EndTooltip();
     }
-    if (GetUniverse().any_of<components::Matter>(selected_good)) {
-        auto& good_comp = GetUniverse().get<components::Matter>(selected_good);
+    if (GetUniverse().any_of<components::Good>(selected_good)) {
+        auto& good_comp = GetUniverse().get<components::Good>(selected_good);
         ImGui::TextFmt("Mass: {} kg", good_comp.mass);
         ImGui::TextFmt("Volume: {} m3", good_comp.volume);
     }

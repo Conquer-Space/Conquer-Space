@@ -31,10 +31,6 @@ namespace cqsp::core::components {
 /// <summary>
 /// Something that has a mass.
 /// </summary>
-struct Matter {
-    types::meter_cube volume;
-    types::kilogram mass;
-};
 
 struct Energy {
     // Energy per unit
@@ -48,7 +44,10 @@ struct Unit {
     std::string unit_name;
 };
 
-struct Good {};
+struct Good {
+    types::meter_cube volume;
+    types::kilogram mass;
+};
 
 /// <summary>
 /// See SysPopulationConsumption for an explanation of these values

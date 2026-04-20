@@ -85,6 +85,8 @@ class Universe : public entt::registry {
     std::unordered_map<entt::entity, double> good_prices;
     std::unordered_map<entt::entity, components::GoodEntity> good_map;
 
+    entt::entity default_job = entt::null;
+
     entt::entity GetGood(const components::GoodEntity entity) const { return good_vector[static_cast<int>(entity)]; }
 
     auto GoodIterator() const {

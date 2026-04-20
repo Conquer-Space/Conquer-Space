@@ -37,21 +37,20 @@ GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
 }
 
 bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    node.emplace<components::Good>();
+    auto& good = node.emplace<components::Good>();
 
     std::string identifier = values["identifier"].to_string();
     if (values["mass"].defined() && values["volume"].defined()) {
         // Then it's matter and physical
-        auto& matter = node.emplace<components::Matter>();
         bool mass_correct;
-        matter.mass = ReadUnit(values["mass"].to_string(), types::Mass, &mass_correct);
+        good.mass = ReadUnit(values["mass"].to_string(), types::Mass, &mass_correct);
         if (!mass_correct) {
             SPDLOG_WARN("Mass is formatted incorrectly for {}: {}", identifier, values["mass"].to_string());
             return false;
         }
 
         bool volume_correct;
-        matter.volume = ReadUnit(values["volume"].to_string(), types::Volume, &volume_correct);
+        good.volume = ReadUnit(values["volume"].to_string(), types::Volume, &volume_correct);
         if (!volume_correct) {
             SPDLOG_WARN("Volume is formatted incorrectly for {}: {}", identifier, values["volume"].to_string());
             return false;

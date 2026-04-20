@@ -1,0 +1,11 @@
+[
+    {
+        // Unskilled labor
+        identifier: laborer
+        name: Laborer
+        good: basic_labor
+        tags: {
+            default // this is the default job for people
+        }
+    }
+]

@@ -16,30 +16,10 @@
  */
 #pragma once
 
-#include "core/components/pid.h"
-#include "core/components/resource.h"
+#include <entt/entity/entity.hpp>
 
 namespace cqsp::core::components {
-struct PopulationSegment {
-    uint64_t population;
-    /// The total potential workers
-    /// Everyone from the minimum working age (18) to the maximum age (65)
-    /// The labor force must always be less than the population
-    /// population - labor_force = dependents
-    uint64_t labor_force;
-    uint64_t employed_amount = 0;
-    // Just an index for the amount of marginal propensity that we want to consume...
-    double standard_of_living = 0;
-    PID sol_pid;
-
-    // Spending last tick
-    double spending;
-    double income;
-    // How much percent of their income they will will put towards savings
-    double saving_ratio = 0.1;
-
-    double average_wage = 0;
+struct Labor {
+    entt::entity good;
 };
-
-struct Hunger {};
 }  // namespace cqsp::core::components

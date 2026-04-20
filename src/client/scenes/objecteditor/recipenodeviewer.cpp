@@ -43,11 +43,9 @@ void RecipeNodeViewer::Init() {
         if (GetUniverse().any_of<components::RawGood>(recipe_comp.output.entity)) {
             // Now then we set it's level to 0 ig
             // If it contains then we should
-            SPDLOG_INFO("Log");
             recipe_tier[entity] = 0;
         } else if (GetUniverse().any_of<components::CapitalGood>(recipe_comp.output.entity)) {
             recipe_tier[entity] = 1;
-            SPDLOG_INFO("Lo2");
         } else {
             recipe_tier[entity] = 2;
         }

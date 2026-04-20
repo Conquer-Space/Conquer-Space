@@ -70,22 +70,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     }
     size.shortage = shortage;
 
-    // Figure out what's throttling production and maintenance
-    // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
-    // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
-
-    // // Log how much manufacturing is being throttled by input
-    // market[recipe.output.entity].inputratio = limitedinput;
-
-    // if (market.sd_ratio[recipe.output.entity] < 1.1) {
-    //     size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
-    // } else {
-    //     size.utilization *= 0.99;
-    // }
-    // size.utilization = std::clamp(size.utilization, 0., size.size);
-
-    // Get the input goods and compare the
-
     // We should also drift wages towards the average wage of the pop node or something
     double delta = size.wages * size.ProfitMargin() * 0.1;
     delta = std::clamp(delta, -size.wages * 0.05, size.wages * 0.05);
