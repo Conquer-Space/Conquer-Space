@@ -88,7 +88,6 @@ struct ProductionUnit {
     // The utilization of the factory.
     double utilization;
     double diff;
-    double diff_delta;
 
     int workers;
     bool shortage = false;

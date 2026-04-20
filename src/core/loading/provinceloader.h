@@ -40,6 +40,8 @@ class ProvinceLoader : public HjsonLoader {
     Node GetCountry(const std::string& country_identifier, const std::string& identifier);
     Node GetPlanet(const std::string& planet_identifier, const std::string& identifier);
 
+    Node ParsePopulation(const Hjson::Value& population_hjson);
+
     std::random_device rd;
     std::mt19937 gen;
     std::uniform_int_distribution<> distrib;

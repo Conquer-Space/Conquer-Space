@@ -19,6 +19,7 @@
 #include "client/scenes/universe/interface/systooltips.h"
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
+
 namespace cqsp::client::systems {
 namespace components = cqsp::core::components;
 using util::NumberToHumanString;

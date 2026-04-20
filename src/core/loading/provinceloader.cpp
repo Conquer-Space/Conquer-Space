@@ -75,33 +75,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     if (!values["population"].empty()) {
         const Hjson::Value& population = values["population"];
         for (int i = 0; i < population.size(); i++) {
-            const Hjson::Value& population_seg = population[i];
-            Node pop_node(universe);
-
-            auto size = population_seg["size"].to_int64();
-            double standard_of_living = 0;
-            if (!population_seg["sol"].empty()) {
-                standard_of_living = population_seg["sol"].to_double();
-            }
-
-            double balance = 0;
-            if (!population_seg["balance"].empty()) {
-                balance = population_seg["balance"].to_double();
-            }
-
-            int64_t labor_force = size / 2;
-            if (!population_seg["labor_force"].empty()) {
-                labor_force = population_seg["labor_force"].to_int64();
-            }
-
-            auto& segment = pop_node.emplace<components::PopulationSegment>();
-            segment.population = size;
-            segment.labor_force = labor_force;
-            segment.standard_of_living = standard_of_living;
-            pop_node.emplace<components::LaborInformation>();
-            auto& wallet = pop_node.emplace<components::Wallet>();
-            wallet = balance;
-            settlement.population.push_back(pop_node);
+            settlement.population.push_back(ParsePopulation(population[i]));
         }
     }
     //SPDLOG_INFO("Load Industry");
@@ -112,13 +86,6 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     auto& market = node.emplace<components::Market>(universe.GoodCount());
     market.parent_market = planet_node;
     planet_node.get_or_emplace<components::Settlements>().provinces.push_back(node.entity());
-    // Commercial area
-    Node commercial_node(universe);
-
-    commercial_node.emplace<components::Employer>();
-    commercial_node.emplace<components::Commercial>(node, 0);
-
-    industry.industries.push_back(commercial_node);
 
     if (!values["industry"].empty()) {
         const Hjson::Value& industry_hjson = values["industry"];
@@ -133,11 +100,10 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             // Now add self to province
             country_node.get<components::Province>().cities.push_back(node);
         } else {
-            // SPDLOG_WARN("Province {} has province {}, but it's undefined", identifier, values["province"].to_string());
+            SPDLOG_WARN("Province {} has province {}, but it's undefined", identifier, values["province"].to_string());
         }
     }
 
-    //SPDLOG_INFO("Add infrastructure to city");
     auto& infrastructure = node.emplace<components::infrastructure::CityInfrastructure>();
     if (!values["transport"].empty()) {
         infrastructure.default_purchase_cost = values["transport"].to_double();
@@ -253,5 +219,33 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
             size_comp.continuous_gains = ind_val["continuous_gains"].to_double();
         }
     }
+}
+Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
+    Node pop_node(universe);
+
+    auto size = population_hjson["size"].to_int64();
+    double standard_of_living = 0;
+    if (!population_hjson["sol"].empty()) {
+        standard_of_living = population_hjson["sol"].to_double();
+    }
+
+    double balance = 0;
+    if (!population_hjson["balance"].empty()) {
+        balance = population_hjson["balance"].to_double();
+    }
+
+    int64_t labor_force = size / 2;
+    if (!population_hjson["labor_force"].empty()) {
+        labor_force = population_hjson["labor_force"].to_int64();
+    }
+
+    auto& segment = pop_node.emplace<components::PopulationSegment>();
+    segment.population = size;
+    segment.labor_force = labor_force;
+    segment.standard_of_living = standard_of_living;
+    pop_node.emplace<components::LaborInformation>();
+    auto& wallet = pop_node.emplace<components::Wallet>();
+    wallet = balance;
+    return pop_node;
 }
 }  // namespace cqsp::core::loading
