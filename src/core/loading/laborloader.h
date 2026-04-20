@@ -27,7 +27,7 @@ namespace cqsp::core::loading {
 /// </summary>
 class LaborLoader : public HjsonLoader {
  public:
-    explicit LaborLoader(Universe& universe) : HjsonLoader(universe) {}
+    explicit LaborLoader(Universe& universe);
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Node& node) override;
@@ -35,5 +35,6 @@ class LaborLoader : public HjsonLoader {
 
  private:
     Hjson::Value default_val;
+    TagLoader tag_loader;
 };
 }  // namespace cqsp::core::loading

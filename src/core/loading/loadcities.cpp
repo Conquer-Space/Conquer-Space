@@ -34,6 +34,29 @@
 #include "core/util/nameutil.h"
 
 namespace cqsp::core::loading {
+CityLoader::CityLoader(Universe& universe) : HjsonLoader(universe) {
+    tag_loader.Register("capital", [](Node& node) {
+        Universe& universe = node.universe();
+        // Then it's a capital city of whatever country it's in
+        node.emplace<components::CapitalCity>();
+        // Add to parent country
+        if (!node.any_of<components::Governed>()) {
+            return;
+        }
+        Node governor_node = universe(node.get<components::Governed>().governor);
+        auto& country_comp = universe.get<components::Country>(governor_node);
+        if (country_comp.capital_city != entt::null) {
+            // Get name
+            SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
+                        util::GetName(universe, governor_node), util::GetName(universe, country_comp.capital_city),
+                        util::GetName(universe, node));
+            // Remove capital tag on the other capital city
+            universe(country_comp.capital_city).remove<components::CapitalCity>();
+        }
+        country_comp.capital_city = node;
+    });
+}
+
 namespace {
 struct ConnectedCities {
     // Holder class for the names of all the cities connected to this particular city
@@ -129,7 +152,7 @@ bool CityLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
     }
     if (!values["tags"].empty()) {
-        LoadTags(values["tags"], node);
+        tag_loader.ParseTags(values["tags"], node);
     }
     //SPDLOG_INFO("Save City");
     universe.cities[identifier] = node;
@@ -155,28 +178,5 @@ void CityLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& node, s
     }
 }
 
-void CityLoader::LoadTags(const Hjson::Value& tags, Node& node) {
-    for (int i = 0; i < tags.size(); i++) {
-        if (tags[i].to_string() == "capital") {
-            // Then it's a capital city of whatever country it's in
-            node.emplace<components::CapitalCity>();
-            // Add to parent country
-            if (!node.any_of<components::Governed>()) {
-                continue;
-            }
-            Node governor_node = universe(node.get<components::Governed>().governor);
-            auto& country_comp = universe.get<components::Country>(governor_node);
-            if (country_comp.capital_city != entt::null) {
-                // Get name
-                SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
-                            util::GetName(universe, governor_node), util::GetName(universe, country_comp.capital_city),
-                            util::GetName(universe, node));
-                // Remove capital tag on the other capital city
-                universe(country_comp.capital_city).remove<components::CapitalCity>();
-            }
-            country_comp.capital_city = node;
-        }
-    }
-}
 void CityLoader::PostLoad(const Node& node) {}
 }  // namespace cqsp::core::loading

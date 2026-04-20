@@ -27,16 +27,16 @@ namespace cqsp::core::loading {
 /// </summary>
 class CityLoader : public HjsonLoader {
  public:
-    explicit CityLoader(Universe& universe) : HjsonLoader(universe) {}
+    explicit CityLoader(Universe& universe);
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Node& node) override;
     void PostLoad(const Node& node) override;
 
     void ParseIndustry(const Hjson::Value& industry_hjson, Node& node, std::string_view identifier);
-    void LoadTags(const Hjson::Value& tags, Node& node);
 
  private:
     Hjson::Value default_val;
+    TagLoader tag_loader;
 };
 }  // namespace cqsp::core::loading

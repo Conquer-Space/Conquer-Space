@@ -22,6 +22,22 @@
 #include "core/components/name.h"
 
 namespace cqsp::core::loading {
+LaborLoader::LaborLoader(Universe& universe) : HjsonLoader(universe) {
+    tag_loader.Register("default", [](Node& node) {
+        Universe& universe = node.universe();
+        // Then we should set the default job???
+        if (universe.default_job == entt::null) {
+            universe.default_job = node;
+        } else {
+            SPDLOG_WARN(
+                "Job {} is the currently default job, which conflicts with {}. It will remain as that, we will "
+                "not be overwriting it",
+                universe.get<components::Identifier>(universe.default_job).identifier,
+                node.get<components::Identifier>().identifier);
+        }
+    });
+}
+
 bool LaborLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Now just load the good
     // This expects the goods to have been loaded too lol
@@ -29,22 +45,7 @@ bool LaborLoader::LoadValue(const Hjson::Value& values, Node& node) {
     node.emplace<components::Labor>(universe.goods[good_name]);
 
     if (!values["tags"].empty()) {
-        const auto& tags = values["tags"];
-        for (int i = 0; i < tags.size(); i++) {
-            const std::string& tag = tags[i].to_string();
-            if (tag == "default") {
-                // Then we should set the default job???
-                if (universe.default_job == entt::null) {
-                    universe.default_job = node;
-                } else {
-                    SPDLOG_WARN(
-                        "Job {} is the currently default job, which conflicts with {}. It will remain as that, we will "
-                        "not be overwriting it",
-                        universe.get<components::Identifier>(universe.default_job).identifier,
-                        node.get<components::Identifier>().identifier);
-                }
-            }
-        }
+        tag_loader.ParseTags(values["tags"], node);
     }
 
     universe.jobs[node.get<components::Identifier>().identifier] = node;
