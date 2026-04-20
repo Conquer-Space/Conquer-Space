@@ -130,7 +130,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         sol_delta = std::clamp(sol_delta, -segment.standard_of_living * 0.1, segment.standard_of_living * 0.1);
         segment.standard_of_living = std::max(segment.standard_of_living + sol_delta, 1.);
 
-        segment.average_wage = segment.income / segment.employed_amount;
+        segment.average_wage = segment.income / (segment.employed_amount + 1);
         segment.spending = cost;
         segment.income = 0;
         segment.employed_amount = 0;

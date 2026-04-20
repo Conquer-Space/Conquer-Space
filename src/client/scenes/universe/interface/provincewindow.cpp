@@ -227,8 +227,8 @@ void SysProvinceInformation::DemographicsTab() {
         ImGui::TextFmt("Income: {} (per capita: {})", NumberToHumanString(static_cast<uint64_t>(pop_segment.income)),
                        NumberToHumanString(pop_segment.income / pop_segment.population));
 
-        ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segment.labor_force));
-        ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segment.employed_amount));
+        ImGui::TextFmt("Employed / Labor Force: {}/{}", NumberToHumanString(pop_segment.employed_amount),
+                       NumberToHumanString(pop_segment.labor_force));
         ImGui::TextFmt("Unemployment Rate: {:.2f}%", (1. - static_cast<double>(pop_segment.employed_amount) /
                                                                static_cast<double>(pop_segment.labor_force)) *
                                                          100.);

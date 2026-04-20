@@ -119,7 +119,7 @@ struct ProductionUnit {
         revenue = 0;
         material_costs = 0;
         maintenance = 0;
-        wages = 0;
+        wage_cost = 0;
         profit = 0;
         amount_sold = 0;
         transport = 0;
