@@ -76,30 +76,9 @@ class UniverseScene : public ClientScene {
     void CheckUiReload();
     void ManageTick();
 
-    engine::Renderable sphere;
-    engine::Renderable sky;
-    engine::Renderable planetDisp;
-    engine::Renderable sun;
-
-    float x = 0, y = 0;
-
-    double previous_mouseX;
-    double previous_mouseY;
-
-    entt::entity player;
-    entt::entity selected_planet = entt::null;
-
     std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
-
     std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation;
-
-    bool to_show_planet_window = false;
-
-    // False is galaxy view, true is star system view
-    bool view_mode = true;
-
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
-
     std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
 
     double last_tick = 0;

@@ -46,6 +46,8 @@ bool LaborLoader::LoadValue(const Hjson::Value& values, Node& node) {
             }
         }
     }
+
+    universe.jobs[node.get<components::Identifier>().identifier] = node;
     return true;
 }
 

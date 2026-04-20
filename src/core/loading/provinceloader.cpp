@@ -32,6 +32,30 @@
 #include "core/util/nameutil.h"
 
 namespace cqsp::core::loading {
+ProvinceLoader::ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(rd()), distrib(1, 10) {
+    loader.Register("capital", [](Node& node) {
+        Universe& universe = node.universe();
+        // Then it's a capital city of whatever country it's in
+        node.emplace<components::CapitalCity>();
+        // Add to parent country
+        if (node.any_of<components::Governed>()) {
+            Node governor_node(universe, node.get<components::Governed>().governor);
+            auto& country_comp = universe.get<components::Country>(governor_node);
+            country_comp.capital_city = node;
+            if (country_comp.capital_city == entt::null) {
+                return;
+            }
+            // Get name
+            SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
+                        util::GetName(universe, governor_node), util::GetName(universe, country_comp.capital_city),
+                        util::GetName(universe, node));
+            // Remove capital tag on the other capital city
+            Node(universe, country_comp.capital_city).remove<components::CapitalCity>();
+        }
+    });
+    loader.Register<components::LogMarket>("log_market");
+}
+
 bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     const auto& identifier = node.get<components::Identifier>().identifier;
     Node planet_node = GetPlanet(values["planet"].to_string(), identifier);
@@ -124,30 +148,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     //SPDLOG_INFO("Load Tags");
     const Hjson::Value& tags_value = values["tags"];
     if (!tags_value.empty()) {
-        for (int i = 0; i < tags_value.size(); i++) {
-            if (tags_value[i].to_string() == "capital") {
-                // Then it's a capital city of whatever country it's in
-                node.emplace<components::CapitalCity>();
-                // Add to parent country
-                if (node.any_of<components::Governed>()) {
-                    Node governor_node(universe, node.get<components::Governed>().governor);
-                    auto& country_comp = universe.get<components::Country>(governor_node);
-                    country_comp.capital_city = node;
-                    if (country_comp.capital_city == entt::null) {
-                        continue;
-                    }
-                    // Get name
-                    SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
-                                util::GetName(universe, governor_node),
-                                util::GetName(universe, country_comp.capital_city), util::GetName(universe, node));
-                    // Remove capital tag on the other capital city
-                    Node(universe, country_comp.capital_city).remove<components::CapitalCity>();
-                }
-            }
-            if (tags_value[i].to_string() == "log_market") {
-                node.emplace<components::LogMarket>();
-            }
-        }
+        loader.ParseTags(tags_value, node);
     }
     // Just fill in random values for now
     // TODO(EhWhoAmI): Fix
@@ -237,6 +238,16 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
     int64_t labor_force = size / 2;
     if (!population_hjson["labor_force"].empty()) {
         labor_force = population_hjson["labor_force"].to_int64();
+    }
+
+    if (!population_hjson["job_distribution"].empty()) {
+        const auto& distribution = population_hjson["job_distribution"];
+        // Then load stuff
+        for (const auto& job : distribution) {
+            SPDLOG_INFO("{}", universe.jobs[job.first]);
+        }
+    } else {
+        SPDLOG_WARN("Pop doesn't have a job distribution");
     }
 
     auto& segment = pop_node.emplace<components::PopulationSegment>();
