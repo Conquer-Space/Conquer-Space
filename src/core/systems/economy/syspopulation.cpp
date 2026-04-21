@@ -126,7 +126,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         int work_force = 0;
         double hours_sum = 0;
         for (auto& [labor, workers] : segment.labor.labor_distribution) {
-            // TODO also redistribute people but we don't need to care about it when we have one job
+            // TODO(EhWhoAmI): also redistribute people but we don't need to care about it when we have one job
             auto& labor_comp = GetUniverse().get<components::Labor>(labor);
             // 40 hours a week and then we multiply it by our interval
             double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
