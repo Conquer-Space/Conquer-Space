@@ -30,7 +30,7 @@ TEST(FactoryConstuctTest, ConstructTest) {
     cqsp::core::Node recipe(universe);
     city.emplace<cqsp::core::components::IndustrialZone>();
     auto& recipe_comp = recipe.emplace<cqsp::core::components::Recipe>();
-    recipe_comp.workers = 10;
+    //recipe_comp.workers = 10;
     recipe_comp.type = cqsp::core::components::ProductionType::factory;
     cqsp::core::Node factory = cqsp::core::actions::CreateFactory(city, recipe, 10);
     // Ensure that it has everything

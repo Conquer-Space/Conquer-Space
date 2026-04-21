@@ -100,7 +100,7 @@ void SysRecipeViewer::RecipeViewerRight() {
     }
     // Get inputs and outputs
     auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
-    ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
+    ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers.GetSum());
     ImGui::Text("Input");
     ImGui::TextFmt("Input Default Cost: {}", GetLedgerCost(GetUniverse(), recipe_comp.input));
     ResourceMapTable(GetUniverse(), recipe_comp.input, "input_table");

@@ -98,7 +98,7 @@ void ProductionSummary::DoUI(int delta_time) {
             }
 
             ImGui::TableSetColumnIndex(6);
-            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wages)));
+            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wage_cost)));
 
             ImGui::TableSetColumnIndex(7);
             ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.revenue)));

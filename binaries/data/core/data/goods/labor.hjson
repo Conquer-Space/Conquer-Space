@@ -4,9 +4,10 @@
         identifier: basic_labor
         volume: 0 m3
         mass: 0 kg
-        price: 30
+        price: 1
         tags: [
             labor
+            default
         ]
     }
 ]

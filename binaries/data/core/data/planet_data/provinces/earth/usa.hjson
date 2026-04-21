@@ -209,7 +209,9 @@
             {
                 size: 2896016
                 sol: 10
-                balance: 10000000
+                job_distribution: {
+                    laborer: 1448008
+                }
             }
         ]
         industry:

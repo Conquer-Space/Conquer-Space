@@ -46,8 +46,8 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
-    double expected_workers = size.utilization * recipe.workers;
-    employer.population_fufilled = static_cast<int>(expected_workers);
+    //double expected_workers = size.utilization * recipe.workers;
+    //employer.population_fufilled = static_cast<int>(expected_workers);
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
@@ -70,15 +70,22 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     }
     size.shortage = shortage;
 
+    // Configure how many hours we should hire...
     // We should also drift wages towards the average wage of the pop node or something
-    double delta = size.wages * size.ProfitMargin() * 0.1;
-    delta = std::clamp(delta, -size.wages * 0.05, size.wages * 0.05);
-    size.wages += delta;
-    // Also pull our wage to the average
-    size.wages = size.wages * 0.9 + population_segment.average_wage * 0.1;
-    size.wages = std::max(1.0, size.wages);
+    // double delta = size.wages * size.ProfitMargin() * 0.1;
+    // delta = std::clamp(delta, -size.wages * 0.05, size.wages * 0.05);
+    // size.wages += delta;
+    // // Also pull our wage to the average
+    // size.wages = size.wages * 0.9 + population_segment.average_wage * 0.1;
+    // size.wages = std::max(1.0, size.wages);
+    // Just set our factory hiring?
+    size.workers.clear();
+    for (const auto& [job, workers] : recipe.workers.workers) {
+        size.workers.emplace_back(GetUniverse().get<components::Labor>(job).good, workers * size.utilization);
+    }
     market.consumption += input;
     market.production += output;
+    market.consumption += size.workers;
     size.amount_sold = recipe.output.amount * size.utilization;
 
     double output_transport_cost = output.GetSum() * infra_cost;
@@ -91,7 +98,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // there isnt any resources to upkeep the place, then stop
     // the production
     size.material_costs = input.MultiplyAndGetSum(market.price);
-    size.wage_cost = employer.population_fufilled * size.wages;
+    size.wage_cost = size.workers.MultiplyAndGetSum(market.price);
     size.transport = 0;  //output_transport_cost + input_transport_cost;
 
     size.revenue = output.MultiplyAndGetSum(market.price);

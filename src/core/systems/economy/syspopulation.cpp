@@ -123,10 +123,16 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
 
         // Compute labor hours
         segment.labor.labor_hours.clear();
-        for (auto& [labor, amount] : segment.labor.labor_distribution) {
+        int work_force = 0;
+        double hours_sum = 0;
+        for (auto& [labor, workers] : segment.labor.labor_distribution) {
             // TODO also redistribute people but we don't need to care about it when we have one job
             auto& labor_comp = GetUniverse().get<components::Labor>(labor);
-            segment.labor.labor_hours.emplace_back(labor_comp.good, 40. * amount);
+            // 40 hours a week and then we multiply it by our interval
+            double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
+            segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
+            work_force += workers;
+            hours_sum += tick_hours * workers;
         }
 
         // Our income should be equal to our spending...

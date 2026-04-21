@@ -79,7 +79,14 @@ struct RecipeOutput {
 };
 
 struct RecipeWorkers {
-    std::vector<entt::entity, uint32_t> workers;
+    std::vector<std::pair<entt::entity, uint32_t>> workers;
+    uint32_t GetSum() {
+        uint32_t sum = 0;
+        for (const auto& w : workers) {
+            sum += w.second;
+        }
+        return sum;
+    }
 };
 
 struct Recipe {

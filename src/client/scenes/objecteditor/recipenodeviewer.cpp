@@ -70,7 +70,7 @@ void RecipeNodeViewer::DoUI(int delta_time) {
         ed::BeginNode(node_id);
         ImGui::TextFmt("{}", GetUniverse().get<components::Name>(entity).name);
         // Get the other stuff
-        ImGui::TextFmt("Workers: {}", recipe_comp.workers);
+        ImGui::TextFmt("Workers: {}", recipe_comp.workers.GetSum());
         for (auto& [input, amount] : recipe_comp.input) {
             input_map[input].push_back(unique_id);
             ed::BeginPin(unique_id++, ed::PinKind::Input);
