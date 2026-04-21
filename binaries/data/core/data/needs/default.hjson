@@ -1,0 +1,17 @@
+[
+    {
+        identifier: food
+    }
+    {
+        identifier: water
+    }
+    {
+        identifier: heating
+    }
+    {
+        identifier: household
+    }
+    {
+        identifier: entertainment
+    }
+]

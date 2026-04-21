@@ -21,6 +21,8 @@
 
 #include <entt/entt.hpp>
 
+#include "core/components/resourceledger.h"
+
 namespace cqsp::core::components {
 struct IndustrialZone {
     std::vector<entt::entity> industries;
@@ -86,13 +88,11 @@ struct ProductionUnit {
     // the maximum output of the factory is
     double size;
     // The utilization of the factory.
-    double utilization;
-    double diff;
-    double diff_delta;
+    double utilization = 0;
+    double diff = 0;
 
-    int workers;
+    ResourceVector workers;
     bool shortage = false;
-    double wages = 25;
     double cumulative_pr = 0;
     int continuous_gains = 0;
     int stability = 0;
@@ -119,7 +119,7 @@ struct ProductionUnit {
         revenue = 0;
         material_costs = 0;
         maintenance = 0;
-        wages = 0;
+        wage_cost = 0;
         profit = 0;
         amount_sold = 0;
         transport = 0;

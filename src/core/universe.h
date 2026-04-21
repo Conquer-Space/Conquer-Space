@@ -75,6 +75,8 @@ class Universe : public entt::registry {
     std::map<std::string, entt::entity> countries;
     std::map<std::string, entt::entity> provinces;
     std::map<std::string, entt::entity> cities;
+    std::map<std::string, entt::entity> jobs;
+
     // color -> province map
     std::map<entt::entity, std::map<int, entt::entity>> province_colors;
     // province -> color
@@ -84,6 +86,8 @@ class Universe : public entt::registry {
     std::vector<entt::entity> good_vector;
     std::unordered_map<entt::entity, double> good_prices;
     std::unordered_map<entt::entity, components::GoodEntity> good_map;
+
+    entt::entity default_job = entt::null;
 
     entt::entity GetGood(const components::GoodEntity entity) const { return good_vector[static_cast<int>(entity)]; }
 

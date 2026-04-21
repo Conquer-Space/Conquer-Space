@@ -145,7 +145,12 @@ void SysMarket::Init() {
             // now
             market.supply[good_node] = 1;
             market.demand[good_node] = 1;
-            market.market_access[good_node] = GetUniverse().economy_config.market_config.default_market_access;
+            if (GetUniverse().all_of<components::LaborGood>(good_node)) {
+                // Make labor goods untradable
+                market.market_access[good_node] = 0;
+            } else {
+                market.market_access[good_node] = GetUniverse().economy_config.market_config.default_market_access;
+            }
         }
         market.sd_ratio = market.supply.SafeDivision(market.demand);
     }

@@ -16,21 +16,25 @@
  */
 #pragma once
 
-#include <hjson.h>
+#include <string_view>
 
 #include "core/loading/hjsonloader.h"
-#include "core/universe.h"
 
 namespace cqsp::core::loading {
-class GoodLoader : public HjsonLoader {
+/// <summary>
+/// This loader has to be loaded after \ref PlanetLoader because it adds the cities to the
+/// respectve planets
+/// </summary>
+class LaborLoader : public HjsonLoader {
  public:
-    explicit GoodLoader(Universe& universe);
+    explicit LaborLoader(Universe& universe);
+
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Node& node) override;
+    void PostLoad(const Node& node) override;
 
  private:
     Hjson::Value default_val;
-    size_t index = 0;
     TagLoader tag_loader;
 };
 }  // namespace cqsp::core::loading

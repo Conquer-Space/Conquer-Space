@@ -166,14 +166,6 @@ bool PlanetLoader::LoadValue(const Hjson::Value& values, Node& node) {
     } else {
         return false;
     }
-
-    std::vector<std::string> tags;
-    if (values["tags"].defined()) {
-        // Add the tags
-        for (int i = 0; i < values["tags"].size(); i++) {
-            tags.push_back(values["tags"][i].to_string());
-        }
-    }
     return true;
 }
 

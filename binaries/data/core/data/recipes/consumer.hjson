@@ -13,7 +13,7 @@
         }
         cost: {
             labor: {
-                worker: 2000
+                laborer: 20000
             }
         }
         tags: [
@@ -34,7 +34,7 @@
         }
         cost: {
             labor: {
-                worker: 1500
+                laborer: 15000
             }
         }
         tags: [
@@ -54,7 +54,7 @@
         }
         cost: {
             labor: {
-                worker: 3000
+                laborer: 30000
             }
         }
         tags: [
@@ -73,7 +73,7 @@
         }
         cost: {
             labor: {
-                worker: 3000
+                laborer: 30000
             }
         }
         tags: [

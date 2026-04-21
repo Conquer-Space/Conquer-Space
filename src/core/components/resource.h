@@ -31,10 +31,6 @@ namespace cqsp::core::components {
 /// <summary>
 /// Something that has a mass.
 /// </summary>
-struct Matter {
-    types::meter_cube volume;
-    types::kilogram mass;
-};
 
 struct Energy {
     // Energy per unit
@@ -48,7 +44,10 @@ struct Unit {
     std::string unit_name;
 };
 
-struct Good {};
+struct Good {
+    types::meter_cube volume;
+    types::kilogram mass;
+};
 
 /// <summary>
 /// See SysPopulationConsumption for an explanation of these values
@@ -68,7 +67,7 @@ struct ConsumerGood {
 
 struct Mineral {};
 struct RawGood {};
-
+struct LaborGood {};
 // Good is for capital goods
 struct CapitalGood {};
 
@@ -79,13 +78,25 @@ struct RecipeOutput {
     ResourceMap operator*(ResourceMap&) const;
 };
 
+struct RecipeWorkers {
+    std::vector<std::pair<entt::entity, uint32_t>> workers;
+    uint32_t GetSum() {
+        uint32_t sum = 0;
+        for (const auto& w : workers) {
+            sum += w.second;
+        }
+        return sum;
+    }
+};
+
 struct Recipe {
     ResourceVector input;
     RecipeOutput output;
     ProductionType type;
     float interval;
     // The actual factory worker amount is workers * productivity
-    double workers;
+    RecipeWorkers workers;
+    // double workers;
 
     ResourceVector capitalcost;
 };

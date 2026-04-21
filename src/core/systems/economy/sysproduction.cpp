@@ -46,8 +46,8 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
-    double expected_workers = size.utilization * recipe.workers;
-    employer.population_fufilled = static_cast<int>(expected_workers);
+    //double expected_workers = size.utilization * recipe.workers;
+    //employer.population_fufilled = static_cast<int>(expected_workers);
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
@@ -68,33 +68,23 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
             break;
         }
     }
-    size.shortage = shortage;
 
-    // Figure out what's throttling production and maintenance
-    // double limitedinput = CopyVals(input, market.history.back().sd_ratio).Min();
-    // double limitedcapitalinput = CopyVals(capitalinput, market.history.back().sd_ratio).Min();
-
-    // // Log how much manufacturing is being throttled by input
-    // market[recipe.output.entity].inputratio = limitedinput;
-
-    // if (market.sd_ratio[recipe.output.entity] < 1.1) {
-    //     size.utilization *= 1 + (0.01) * std::fmin(limitedcapitalinput, 1);
-    // } else {
-    //     size.utilization *= 0.99;
-    // }
-    // size.utilization = std::clamp(size.utilization, 0., size.size);
-
-    // Get the input goods and compare the
-
+    // Configure how many hours we should hire...
     // We should also drift wages towards the average wage of the pop node or something
-    double delta = size.wages * size.ProfitMargin() * 0.1;
-    delta = std::clamp(delta, -size.wages * 0.05, size.wages * 0.05);
-    size.wages += delta;
-    // Also pull our wage to the average
-    size.wages = size.wages * 0.9 + population_segment.average_wage * 0.1;
-    size.wages = std::max(1.0, size.wages);
+    // Just set our factory hiring?
+    size.workers.clear();
+    for (const auto& [job, workers] : recipe.workers.workers) {
+        auto& labor = GetUniverse().get<components::Labor>(job);
+        size.workers.emplace_back(labor.good, workers * size.utilization);
+        if (market.chronic_shortages[labor.good] > 5) {
+            SPDLOG_INFO("Shortage in labor!");
+            shortage = true;
+        }
+    }
+    size.shortage = shortage;
     market.consumption += input;
     market.production += output;
+    market.consumption += size.workers;
     size.amount_sold = recipe.output.amount * size.utilization;
 
     double output_transport_cost = output.GetSum() * infra_cost;
@@ -107,7 +97,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // there isnt any resources to upkeep the place, then stop
     // the production
     size.material_costs = input.MultiplyAndGetSum(market.price);
-    size.wage_cost = employer.population_fufilled * size.wages;
+    size.wage_cost = size.workers.MultiplyAndGetSum(market.price);
     size.transport = 0;  //output_transport_cost + input_transport_cost;
 
     size.revenue = output.MultiplyAndGetSum(market.price);

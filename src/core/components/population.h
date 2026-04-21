@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 #pragma once
+
+#include "core/components/labor.h"
 #include "core/components/pid.h"
 #include "core/components/resource.h"
 
@@ -30,6 +32,7 @@ struct PopulationSegment {
     // Just an index for the amount of marginal propensity that we want to consume...
     double standard_of_living = 0;
     PID sol_pid;
+    PopulationLabor labor;
 
     // Spending last tick
     double spending;

@@ -16,21 +16,23 @@
  */
 #pragma once
 
-#include <hjson.h>
+#include <utility>
+#include <vector>
 
-#include "core/loading/hjsonloader.h"
-#include "core/universe.h"
+#include <entt/entity/entity.hpp>
 
-namespace cqsp::core::loading {
-class GoodLoader : public HjsonLoader {
- public:
-    explicit GoodLoader(Universe& universe);
-    const Hjson::Value& GetDefaultValues() override { return default_val; }
-    bool LoadValue(const Hjson::Value& values, Node& node) override;
+#include "core/components/resourceledger.h"
 
- private:
-    Hjson::Value default_val;
-    size_t index = 0;
-    TagLoader tag_loader;
+namespace cqsp::core::components {
+struct Labor {
+    GoodEntity good;
+    // Then some other stats like uh things
 };
-}  // namespace cqsp::core::loading
+
+struct PopulationLabor {
+    // This will be updated less regularly
+    std::vector<std::pair<entt::entity, uint64_t>> labor_distribution;
+    // A pop sells its labor hours on the market
+    ResourceVector labor_hours;
+};
+}  // namespace cqsp::core::components

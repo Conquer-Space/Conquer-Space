@@ -120,7 +120,7 @@ void SysPlanetaryTrade::DetermineTrade(components::Market& p_market, Node settle
         double export_amount = std::max(
             (market.production[good] / p_market.supply[good] * p_market.demand[good]) - market.consumption[good], 0.);
         export_amount *= change;
-        market.trade[good] -= export_amount;
+        market.trade[good] -= export_amount * market.market_access[good];
     }
 
     // Imports
@@ -134,7 +134,7 @@ void SysPlanetaryTrade::DetermineTrade(components::Market& p_market, Node settle
         double import_amount = std::max(
             (market.consumption[good] / p_market.demand[good] * p_market.supply[good]) - market.production[good], 0.);
         import_amount *= change;
-        market.trade[good] += import_amount;
+        market.trade[good] += import_amount * market.market_access[good];
     }
     // Let's get trade deficit
     // A positve trade value means that it's importing goods, a negative value means that it's exporting goods

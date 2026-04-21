@@ -34,24 +34,27 @@ namespace types = components::types;
 GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
     default_val["price"] = 1.f;
     default_val["tags"] = Hjson::Type::Vector;
+    tag_loader.Register<components::Mineral>("mineral");
+    tag_loader.Register<components::RawGood>("raw");
+    tag_loader.Register<components::CapitalGood>("capital");
+    tag_loader.Register<components::LaborGood>("labor");
 }
 
 bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    node.emplace<components::Good>();
+    auto& good = node.emplace<components::Good>();
 
     std::string identifier = values["identifier"].to_string();
     if (values["mass"].defined() && values["volume"].defined()) {
         // Then it's matter and physical
-        auto& matter = node.emplace<components::Matter>();
         bool mass_correct;
-        matter.mass = ReadUnit(values["mass"].to_string(), types::Mass, &mass_correct);
+        good.mass = ReadUnit(values["mass"].to_string(), types::Mass, &mass_correct);
         if (!mass_correct) {
             SPDLOG_WARN("Mass is formatted incorrectly for {}: {}", identifier, values["mass"].to_string());
             return false;
         }
 
         bool volume_correct;
-        matter.volume = ReadUnit(values["volume"].to_string(), types::Volume, &volume_correct);
+        good.volume = ReadUnit(values["volume"].to_string(), types::Volume, &volume_correct);
         if (!volume_correct) {
             SPDLOG_WARN("Volume is formatted incorrectly for {}: {}", identifier, values["volume"].to_string());
             return false;
@@ -77,16 +80,7 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
         universe.consumergoods.push_back(node);
     }
 
-    for (int i = 0; i < values["tags"].size(); i++) {
-        if (values["tags"][i] == "mineral") {
-            node.get_or_emplace<components::Mineral>();
-        }
-        if (values["tags"][i] == "raw") {
-            node.get_or_emplace<components::RawGood>();
-        } else if (values["tags"][i] == "capital") {
-            node.get_or_emplace<components::CapitalGood>();
-        }
-    }
+    tag_loader.ParseTags(values["tags"], node);
 
     double price = values["price"].to_double();
     node.emplace<components::Price>(price);

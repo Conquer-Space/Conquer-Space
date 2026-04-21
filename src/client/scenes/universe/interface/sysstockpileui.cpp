@@ -82,9 +82,12 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
             ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(iterator->second)));
             if (ImGui::IsItemHovered()) {
                 ImGui::BeginTooltip();
+                auto &good_comp = universe.get<core::components::Good>(iterator->first);
                 ImGui::TextFmt("Good Price: {}", market.price[iterator->first]);
                 ImGui::TextFmt("Combined Price: {}",
                                NumberToHumanString(market.price[iterator->first] * iterator->second));
+                ImGui::TextFmt("Total Mass: {} kg", good_comp.mass * iterator->second);
+                ImGui::TextFmt("Total Volume: {} m3", good_comp.volume * iterator->second);
                 ImGui::EndTooltip();
             }
         }

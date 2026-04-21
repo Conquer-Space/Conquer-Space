@@ -28,7 +28,7 @@ namespace cqsp::core::loading {
 /// </summary>
 class ProvinceLoader : public HjsonLoader {
  public:
-    explicit ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(rd()), distrib(1, 10) {}
+    explicit ProvinceLoader(Universe& universe);
 
     const Hjson::Value& GetDefaultValues() override { return default_val; }
     bool LoadValue(const Hjson::Value& values, Node& node) override;
@@ -40,8 +40,11 @@ class ProvinceLoader : public HjsonLoader {
     Node GetCountry(const std::string& country_identifier, const std::string& identifier);
     Node GetPlanet(const std::string& planet_identifier, const std::string& identifier);
 
+    Node ParsePopulation(const Hjson::Value& population_hjson);
+
     std::random_device rd;
     std::mt19937 gen;
     std::uniform_int_distribution<> distrib;
+    TagLoader loader;
 };
 }  // namespace cqsp::core::loading

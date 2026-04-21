@@ -85,6 +85,7 @@ struct Market {
     ResourceLedger resource_fulfilled;
     ResourceLedger production;
     ResourceLedger consumption;
+    ResourceLedger market_access;
 
     void ResetLedgers() {
         // Reset the ledger values
@@ -93,8 +94,6 @@ struct Market {
     }
 
     std::vector<entt::entity> connected_markets;
-
-    ResourceLedger market_access;
 
     entt::entity parent_market = entt::null;
 

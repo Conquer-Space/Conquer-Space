@@ -121,6 +121,20 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             cost += extra_cost;
         }
 
+        // Compute labor hours
+        segment.labor.labor_hours.clear();
+        int work_force = 0;
+        double hours_sum = 0;
+        for (auto& [labor, workers] : segment.labor.labor_distribution) {
+            // TODO(EhWhoAmI): also redistribute people but we don't need to care about it when we have one job
+            auto& labor_comp = GetUniverse().get<components::Labor>(labor);
+            // 40 hours a week and then we multiply it by our interval
+            double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
+            segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
+            work_force += workers;
+            hours_sum += tick_hours * workers;
+        }
+
         // Our income should be equal to our spending...
         double spending_ratio = (segment.income > 0) ? (segment.income - segment.spending) / segment.income : -1.0;
 
@@ -130,12 +144,13 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         sol_delta = std::clamp(sol_delta, -segment.standard_of_living * 0.1, segment.standard_of_living * 0.1);
         segment.standard_of_living = std::max(segment.standard_of_living + sol_delta, 1.);
 
-        segment.average_wage = segment.income / segment.employed_amount;
+        segment.average_wage = segment.income / (segment.employed_amount + 1);
         segment.spending = cost;
-        segment.income = 0;
+        segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
         segment.employed_amount = 0;
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
+        market.production += segment.labor.labor_hours;
         market.consumption += consumption;
         total_sol += segment.standard_of_living * segment.population;
         total_population += segment.population;

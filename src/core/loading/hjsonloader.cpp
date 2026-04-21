@@ -73,4 +73,19 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
 
     return assets;
 }
+
+void TagLoader::ParseTags(const Hjson::Value& tags, Node& node) const {
+    for (int i = 0; i < tags.size(); i++) {
+        Apply(tags[i].to_string(), node);
+    }
+}
+
+void TagLoader::Apply(std::string_view tag, Node& node) const {
+    auto it = handles.find(std::string(tag));
+    if (it != handles.end()) {
+        it->second(node);
+    } else {
+        SPDLOG_WARN("Unknown tag: {}", tag);
+    }
+}
 }  // namespace cqsp::core::loading

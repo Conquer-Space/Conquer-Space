@@ -32,6 +32,30 @@
 #include "core/util/nameutil.h"
 
 namespace cqsp::core::loading {
+ProvinceLoader::ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(rd()), distrib(1, 10) {
+    loader.Register("capital", [](Node& node) {
+        Universe& universe = node.universe();
+        // Then it's a capital city of whatever country it's in
+        node.emplace<components::CapitalCity>();
+        // Add to parent country
+        if (node.any_of<components::Governed>()) {
+            Node governor_node(universe, node.get<components::Governed>().governor);
+            auto& country_comp = universe.get<components::Country>(governor_node);
+            country_comp.capital_city = node;
+            if (country_comp.capital_city == entt::null) {
+                return;
+            }
+            // Get name
+            SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
+                        util::GetName(universe, governor_node), util::GetName(universe, country_comp.capital_city),
+                        util::GetName(universe, node));
+            // Remove capital tag on the other capital city
+            Node(universe, country_comp.capital_city).remove<components::CapitalCity>();
+        }
+    });
+    loader.Register<components::LogMarket>("log_market");
+}
+
 bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     const auto& identifier = node.get<components::Identifier>().identifier;
     Node planet_node = GetPlanet(values["planet"].to_string(), identifier);
@@ -75,33 +99,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     if (!values["population"].empty()) {
         const Hjson::Value& population = values["population"];
         for (int i = 0; i < population.size(); i++) {
-            const Hjson::Value& population_seg = population[i];
-            Node pop_node(universe);
-
-            auto size = population_seg["size"].to_int64();
-            double standard_of_living = 0;
-            if (!population_seg["sol"].empty()) {
-                standard_of_living = population_seg["sol"].to_double();
-            }
-
-            double balance = 0;
-            if (!population_seg["balance"].empty()) {
-                balance = population_seg["balance"].to_double();
-            }
-
-            int64_t labor_force = size / 2;
-            if (!population_seg["labor_force"].empty()) {
-                labor_force = population_seg["labor_force"].to_int64();
-            }
-
-            auto& segment = pop_node.emplace<components::PopulationSegment>();
-            segment.population = size;
-            segment.labor_force = labor_force;
-            segment.standard_of_living = standard_of_living;
-            pop_node.emplace<components::LaborInformation>();
-            auto& wallet = pop_node.emplace<components::Wallet>();
-            wallet = balance;
-            settlement.population.push_back(pop_node);
+            settlement.population.push_back(ParsePopulation(population[i]));
         }
     }
     //SPDLOG_INFO("Load Industry");
@@ -112,13 +110,6 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     auto& market = node.emplace<components::Market>(universe.GoodCount());
     market.parent_market = planet_node;
     planet_node.get_or_emplace<components::Settlements>().provinces.push_back(node.entity());
-    // Commercial area
-    Node commercial_node(universe);
-
-    commercial_node.emplace<components::Employer>();
-    commercial_node.emplace<components::Commercial>(node, 0);
-
-    industry.industries.push_back(commercial_node);
 
     if (!values["industry"].empty()) {
         const Hjson::Value& industry_hjson = values["industry"];
@@ -133,11 +124,10 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             // Now add self to province
             country_node.get<components::Province>().cities.push_back(node);
         } else {
-            // SPDLOG_WARN("Province {} has province {}, but it's undefined", identifier, values["province"].to_string());
+            SPDLOG_WARN("Province {} has province {}, but it's undefined", identifier, values["province"].to_string());
         }
     }
 
-    //SPDLOG_INFO("Add infrastructure to city");
     auto& infrastructure = node.emplace<components::infrastructure::CityInfrastructure>();
     if (!values["transport"].empty()) {
         infrastructure.default_purchase_cost = values["transport"].to_double();
@@ -158,30 +148,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     //SPDLOG_INFO("Load Tags");
     const Hjson::Value& tags_value = values["tags"];
     if (!tags_value.empty()) {
-        for (int i = 0; i < tags_value.size(); i++) {
-            if (tags_value[i].to_string() == "capital") {
-                // Then it's a capital city of whatever country it's in
-                node.emplace<components::CapitalCity>();
-                // Add to parent country
-                if (node.any_of<components::Governed>()) {
-                    Node governor_node(universe, node.get<components::Governed>().governor);
-                    auto& country_comp = universe.get<components::Country>(governor_node);
-                    country_comp.capital_city = node;
-                    if (country_comp.capital_city == entt::null) {
-                        continue;
-                    }
-                    // Get name
-                    SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
-                                util::GetName(universe, governor_node),
-                                util::GetName(universe, country_comp.capital_city), util::GetName(universe, node));
-                    // Remove capital tag on the other capital city
-                    Node(universe, country_comp.capital_city).remove<components::CapitalCity>();
-                }
-            }
-            if (tags_value[i].to_string() == "log_market") {
-                node.emplace<components::LogMarket>();
-            }
-        }
+        loader.ParseTags(tags_value, node);
     }
     // Just fill in random values for now
     // TODO(EhWhoAmI): Fix
@@ -237,21 +204,53 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
             size_comp.profit = ind_val["profit"].to_double();
         }
 
-        if (!ind_val["wages"].empty()) {
-            size_comp.wages = ind_val["wages"].to_double();
-        }
-
         if (!ind_val["utilization"].empty()) {
             size_comp.utilization = ind_val["utilization"].to_double();
-        }
-
-        if (!ind_val["workers"].empty()) {
-            size_comp.workers = ind_val["workers"].to_double();
         }
 
         if (!ind_val["continuous_gains"].empty()) {
             size_comp.continuous_gains = ind_val["continuous_gains"].to_double();
         }
     }
+}
+
+Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
+    Node pop_node(universe);
+
+    auto size = population_hjson["size"].to_int64();
+    auto& segment = pop_node.emplace<components::PopulationSegment>();
+
+    double standard_of_living = 0;
+    if (!population_hjson["sol"].empty()) {
+        standard_of_living = population_hjson["sol"].to_double();
+    }
+
+    double balance = 0;
+    if (!population_hjson["balance"].empty()) {
+        balance = population_hjson["balance"].to_double();
+    }
+
+    int64_t labor_force = size / 2;
+    if (!population_hjson["labor_force"].empty()) {
+        labor_force = population_hjson["labor_force"].to_int64();
+    }
+
+    if (!population_hjson["job_distribution"].empty()) {
+        const auto& distribution = population_hjson["job_distribution"];
+        // Then load stuff
+        for (const auto& job : distribution) {
+            segment.labor.labor_distribution.emplace_back(universe.jobs[job.first], job.second);
+        }
+    } else {
+        SPDLOG_WARN("Pop doesn't have a job distribution");
+    }
+
+    segment.population = size;
+    segment.labor_force = labor_force;
+    segment.standard_of_living = standard_of_living;
+    pop_node.emplace<components::LaborInformation>();
+    auto& wallet = pop_node.emplace<components::Wallet>();
+    wallet = balance;
+    return pop_node;
 }
 }  // namespace cqsp::core::loading

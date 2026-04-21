@@ -18,6 +18,9 @@
 
 #include <hjson.h>
 
+#include <map>
+#include <string_view>
+
 #include "core/universe.h"
 
 namespace cqsp::core::loading {
@@ -33,5 +36,26 @@ class HjsonLoader {
 
  protected:
     Universe& universe;
+};
+
+class TagLoader {
+ public:
+    using Handler = std::function<void(Node&)>;
+    void Register(std::string_view tag, Handler handler) { handles.emplace(std::string(tag), handler); }
+
+    /**
+      * Helper function to just emplace a component
+      */
+    template <typename Comp>
+    void Register(std::string_view tag) {
+        handles.emplace(std::string(tag), [](Node& node) { node.emplace<Comp>(); });
+    }
+
+    void Apply(std::string_view tag, Node& node) const;
+
+    void ParseTags(const Hjson::Value& tags, Node& node) const;
+
+ private:
+    std::map<std::string, Handler> handles;
 };
 }  // namespace cqsp::core::loading

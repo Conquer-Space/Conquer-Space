@@ -39,4 +39,9 @@
         type: hjson
         hints: {}
     }
+    labor: {
+        path: labor
+        type: hjson
+        hints: {}
+    }
 }

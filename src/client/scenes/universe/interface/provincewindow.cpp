@@ -224,11 +224,13 @@ void SysProvinceInformation::DemographicsTab() {
 
         ImGui::TextFmt("Spending: {}", NumberToHumanString(static_cast<uint64_t>(pop_segment.spending)));
         ImGui::TextFmt("Spending per capita: {}", NumberToHumanString(pop_segment.spending / pop_segment.population));
-        ImGui::TextFmt("Income: {} (per capita: {})", NumberToHumanString(static_cast<uint64_t>(pop_segment.income)),
-                       NumberToHumanString(pop_segment.income / pop_segment.population));
+        ImGui::TextFmt("Income: {} (per capita: {} ({} a year))",
+                       NumberToHumanString(static_cast<uint64_t>(pop_segment.income)),
+                       NumberToHumanString(pop_segment.income / pop_segment.population),
+                       NumberToHumanString(pop_segment.income / pop_segment.population * 365));
 
-        ImGui::TextFmt("Labor Force: {}", NumberToHumanString(pop_segment.labor_force));
-        ImGui::TextFmt("Employed: {}", NumberToHumanString(pop_segment.employed_amount));
+        ImGui::TextFmt("Employed / Labor Force: {}/{}", NumberToHumanString(pop_segment.employed_amount),
+                       NumberToHumanString(pop_segment.labor_force));
         ImGui::TextFmt("Unemployment Rate: {:.2f}%", (1. - static_cast<double>(pop_segment.employed_amount) /
                                                                static_cast<double>(pop_segment.labor_force)) *
                                                          100.);
@@ -255,8 +257,6 @@ void SysProvinceInformation::DemographicsTab() {
             }
         }
 
-        ImGui::TextFmt("PID: {} {} {}", pop_segment.sol_pid.proportional, pop_segment.sol_pid.integral,
-                       pop_segment.sol_pid.derivative);
         // Display the data
         ImGui::Separator();
     }
@@ -272,7 +272,7 @@ void SysProvinceInformation::IndustryTab() {
     for (entt::entity industry : city_industry.industries) {
         if (GetUniverse().all_of<components::ProductionUnit>(industry)) {
             auto& industry_component = GetUniverse().get<components::ProductionUnit>(industry);
-            wage += industry_component.wages;
+            wage += industry_component.wage_cost;
         }
 
         if (GetUniverse().all_of<components::Employer>(industry)) {
@@ -435,7 +435,7 @@ void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry
         auto& industry_component = GetUniverse().get<components::ProductionUnit>(industry);
 
         ImGui::TableSetColumnIndex(6);
-        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wages)));
+        ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.wage_cost)));
 
         ImGui::TableSetColumnIndex(7);
         ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(industry_component.revenue)));
@@ -745,7 +745,7 @@ void SysProvinceInformation::ConstructionTab() {
     if (GetUniverse().valid(selected_recipe)) {
         const components::Market& market = GetUniverse().get<components::Market>(current_province);
         auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
-        ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers);
+        ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers.GetSum());
         ImGui::Text("Input");
         double input_cost = recipe_comp.input.MultiplyAndGetSum(market.price);
         ImGui::TextFmt("Input Default Cost: {}", util::NumberToHumanString(input_cost));

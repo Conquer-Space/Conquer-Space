@@ -28,6 +28,7 @@
 #include "core/loading/economyloader.h"
 #include "core/loading/fields.h"
 #include "core/loading/hjsonloader.h"
+#include "core/loading/laborloader.h"
 #include "core/loading/loadcities.h"
 #include "core/loading/loadcountries.h"
 #include "core/loading/loadgoods.h"
@@ -96,13 +97,13 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
 
 void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     LoadResource<loading::GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
+    LoadResource<loading::LaborLoader>(asset_manager, conquer_space.GetUniverse(), "labor");
     LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");
     LoadResource<loading::PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
     LoadResource<loading::TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
     LoadResource<loading::CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
     LoadResource<loading::ProjectLoader>(asset_manager, conquer_space.GetUniverse(), "projects");
 
-    // LoadPlanetProvinces(asset_manager, conquer_space);
     LoadResource<loading::ProvinceLoader>(asset_manager, conquer_space.GetUniverse(), "provinces");
     LoadResource<loading::CityLoader>(asset_manager, conquer_space.GetUniverse(), "cities");
     LoadResource<loading::SatelliteLoader>(asset_manager, conquer_space.GetUniverse(), "satellites");
