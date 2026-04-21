@@ -78,13 +78,18 @@ struct RecipeOutput {
     ResourceMap operator*(ResourceMap&) const;
 };
 
+struct RecipeWorkers {
+    std::vector<entt::entity, uint32_t> workers;
+};
+
 struct Recipe {
     ResourceVector input;
     RecipeOutput output;
     ProductionType type;
     float interval;
     // The actual factory worker amount is workers * productivity
-    double workers;
+    RecipeWorkers workers;
+    // double workers;
 
     ResourceVector capitalcost;
 };

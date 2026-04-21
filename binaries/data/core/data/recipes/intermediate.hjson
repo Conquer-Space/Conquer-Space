@@ -12,7 +12,7 @@
         }
         cost: {
             labor: {
-                worker: 1500
+                laborer: 1500
             }
         }
         construction: {

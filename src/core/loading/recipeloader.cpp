@@ -64,9 +64,11 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
 
         if (cost_map["labor"].defined()) {
-            Hjson::Value labor = cost_map["labor"];
-            // TODO(EhWhoAmI): Add different types of labor that is needed for this
-            recipe_component.workers = labor["worker"].to_double();
+            Hjson::Value& labor = cost_map["labor"];
+            for (auto& [identifier, amount] : labor) {
+                recipe_component.workers.workers.emplace_back(universe.jobs[identifier],
+                                                              static_cast<uint32_t>(amount.to_int64()));
+            }
         }
 
         if (cost_map["fixed"].defined()) {

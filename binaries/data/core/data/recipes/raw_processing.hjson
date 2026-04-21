@@ -11,7 +11,7 @@
         }
         cost: {
             labor: {
-                worker: 50
+                laborer: 50
             }
         }
         tags: [
@@ -30,7 +30,7 @@
         }
         cost: {
             labor: {
-                worker: 1000
+                laborer: 1000
             }
         }
         tags: [
@@ -49,7 +49,7 @@
         }
         cost: {
             labor: {
-                worker: 100
+                laborer: 100
             }
         }
         construction: {
@@ -74,7 +74,7 @@
         }
         cost: {
             labor: {
-                worker: 100
+                laborer: 100
             }
         }
         tags: [
@@ -93,7 +93,7 @@
         }
         cost: {
             labor: {
-                worker: 100
+                laborer: 100
             }
         }
         tags: [
@@ -112,7 +112,7 @@
         }
         cost: {
             labor: {
-                worker: 100
+                laborer: 100
             }
         }
         tags: [
@@ -131,7 +131,7 @@
         }
         cost: {
             labor: {
-                worker: 400
+                laborer: 400
             }
         }
         tags: [
@@ -150,7 +150,7 @@
         }
         cost: {
             labor: {
-                worker: 1000
+                laborer: 1000
             }
         }
         tags: [
@@ -169,7 +169,7 @@
         }
         cost: {
             labor: {
-                worker: 150
+                laborer: 150
             }
         }
         tags: [
@@ -188,7 +188,7 @@
         }
         cost: {
             labor: {
-                worker: 150
+                laborer: 150
             }
         }
         tags: [
@@ -207,7 +207,7 @@
         }
         cost: {
             labor: {
-                worker: 1000
+                laborer: 1000
             }
         }
         tags: [

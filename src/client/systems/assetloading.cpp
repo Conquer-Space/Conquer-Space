@@ -97,8 +97,8 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
 
 void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     LoadResource<loading::GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
-    LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");
     LoadResource<loading::LaborLoader>(asset_manager, conquer_space.GetUniverse(), "labor");
+    LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");
     LoadResource<loading::PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
     LoadResource<loading::TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");
     LoadResource<loading::CountryLoader>(asset_manager, conquer_space.GetUniverse(), "countries");
