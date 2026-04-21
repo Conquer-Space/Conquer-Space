@@ -68,21 +68,20 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
             break;
         }
     }
-    size.shortage = shortage;
 
     // Configure how many hours we should hire...
     // We should also drift wages towards the average wage of the pop node or something
-    // double delta = size.wages * size.ProfitMargin() * 0.1;
-    // delta = std::clamp(delta, -size.wages * 0.05, size.wages * 0.05);
-    // size.wages += delta;
-    // // Also pull our wage to the average
-    // size.wages = size.wages * 0.9 + population_segment.average_wage * 0.1;
-    // size.wages = std::max(1.0, size.wages);
     // Just set our factory hiring?
     size.workers.clear();
     for (const auto& [job, workers] : recipe.workers.workers) {
-        size.workers.emplace_back(GetUniverse().get<components::Labor>(job).good, workers * size.utilization);
+        auto& labor = GetUniverse().get<components::Labor>(job);
+        size.workers.emplace_back(labor.good, workers * size.utilization);
+        if (market.chronic_shortages[labor.good] > 5) {
+            SPDLOG_INFO("Shortage in labor!");
+            shortage = true;
+        }
     }
+    size.shortage = shortage;
     market.consumption += input;
     market.production += output;
     market.consumption += size.workers;

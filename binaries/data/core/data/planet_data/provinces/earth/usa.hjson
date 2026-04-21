@@ -22,6 +22,9 @@
         [
             {
                 size: 3251876
+                job_distribution: {
+                    laborer: 1625938
+                }
             }
         ]
         industry:
@@ -454,7 +457,9 @@
         [
             {
                 size: 8000000
-                labor_force: 4000000
+                job_distribution: {
+                    laborer: 8000000
+                }
             }
         ]
         transport: 0.05
@@ -629,6 +634,9 @@
         [
             {
                 size: 563374
+                job_distribution: {
+                    laborer: 233374
+                }
             }
         ]
         industry:

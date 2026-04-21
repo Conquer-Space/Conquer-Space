@@ -30,7 +30,7 @@
         }
         cost: {
             labor: {
-                laborer: 1000
+                laborer: 10000
             }
         }
         tags: [
@@ -49,7 +49,7 @@
         }
         cost: {
             labor: {
-                laborer: 100
+                laborer: 1000
             }
         }
         construction: {
@@ -74,7 +74,7 @@
         }
         cost: {
             labor: {
-                laborer: 100
+                laborer: 1000
             }
         }
         tags: [
@@ -93,7 +93,7 @@
         }
         cost: {
             labor: {
-                laborer: 100
+                laborer: 1000
             }
         }
         tags: [
@@ -112,7 +112,7 @@
         }
         cost: {
             labor: {
-                laborer: 100
+                laborer: 1000
             }
         }
         tags: [
@@ -131,7 +131,7 @@
         }
         cost: {
             labor: {
-                laborer: 400
+                laborer: 4000
             }
         }
         tags: [
@@ -150,7 +150,7 @@
         }
         cost: {
             labor: {
-                laborer: 1000
+                laborer: 10000
             }
         }
         tags: [
@@ -165,7 +165,7 @@
             heavy_machinery: 0.1
         }
         output: {
-            silicates: 1000
+            silicates: 10000
         }
         cost: {
             labor: {
@@ -188,7 +188,7 @@
         }
         cost: {
             labor: {
-                laborer: 150
+                laborer: 1500
             }
         }
         tags: [
@@ -207,7 +207,7 @@
         }
         cost: {
             labor: {
-                laborer: 1000
+                laborer: 10000
             }
         }
         tags: [
