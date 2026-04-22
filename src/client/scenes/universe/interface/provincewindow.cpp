@@ -245,11 +245,11 @@ void SysProvinceInformation::DemographicsTab() {
         }
 
         if (ImGui::CollapsingHeader("Resource Consumption")) {
-            if (ImGui::SmallButton("Toggle Individual cost")) {
+            if (ImGui::SmallButton((individual_prices) ? "Toggle Individual cost" : "Toggle Overall Cost")) {
                 individual_prices = !individual_prices;
             }
             ImGui::SameLine();
-            if (ImGui::SmallButton("Toggle Price/Count")) {
+            if (ImGui::SmallButton((segment_prices) ? "Toggle Price" : "Toggle Count")) {
                 segment_prices = !segment_prices;
             }
             if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {

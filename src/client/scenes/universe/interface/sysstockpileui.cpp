@@ -106,7 +106,7 @@ bool DrawLedgerPiePlot(const std::string &name, const core::Universe &universe,
         // If it's by price or by something else
         std::vector<const char *> labels;
         std::vector<std::string> label_strings;
-        std::vector<int> values;
+        std::vector<float> values;
         for (auto iterator = ledger.begin(); iterator != ledger.end(); iterator++) {
             label_strings.push_back(core::util::GetName(universe, iterator->first));
             if (price) {
