@@ -79,7 +79,7 @@ bool DrawLedgerTable(const std::string &name, const Universe &universe, const Re
                 ImGui::EndTooltip();
             }
             ImGui::TableSetColumnIndex(1);
-            ImGui::TextFmt("{}", NumberToHumanString(static_cast<int64_t>(iterator->second)));
+            ImGui::TextFmt("{}", NumberToHumanString(iterator->second));
             if (ImGui::IsItemHovered()) {
                 ImGui::BeginTooltip();
                 auto &good_comp = universe.get<core::components::Good>(iterator->first);

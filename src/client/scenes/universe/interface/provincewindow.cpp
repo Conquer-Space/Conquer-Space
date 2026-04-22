@@ -231,6 +231,7 @@ void SysProvinceInformation::DemographicsTab() {
 
         ImGui::TextFmt("Employed / Labor Force: {}/{}", NumberToHumanString(pop_segment.employed_amount),
                        NumberToHumanString(pop_segment.labor_force));
+        // Set our colors
         ImGui::TextFmt("Unemployment Rate: {:.2f}%", (1. - static_cast<double>(pop_segment.employed_amount) /
                                                                static_cast<double>(pop_segment.labor_force)) *
                                                          100.);
@@ -244,16 +245,27 @@ void SysProvinceInformation::DemographicsTab() {
         }
 
         if (ImGui::CollapsingHeader("Resource Consumption")) {
+            if (ImGui::SmallButton("Toggle Individual cost")) {
+                individual_prices = !individual_prices;
+            }
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Toggle Price/Count")) {
+                segment_prices = !segment_prices;
+            }
             if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {
                 const auto& market = GetUniverse().get<components::Market>(current_province);
                 auto& res_consumption = GetUniverse().get<components::ResourceConsumption>(seg_entity);
-                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption, market);
-
-                if (ImGui::SmallButton("Toggle Price/Count")) {
-                    segment_prices = !segment_prices;
+                if (individual_prices) {
+                    DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption, market);
+                    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(), res_consumption, market,
+                                      segment_prices);
+                } else {
+                    DrawLedgerTable("Resource consumption", GetUniverse(),
+                                    res_consumption / static_cast<double>(pop_segment.population), market);
+                    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(),
+                                      res_consumption / static_cast<double>(pop_segment.population), market,
+                                      segment_prices);
                 }
-                DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(), res_consumption, market,
-                                  segment_prices);
             }
         }
 
