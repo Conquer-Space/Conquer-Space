@@ -29,6 +29,7 @@ struct PopulationSegment {
     /// population - labor_force = dependents
     uint64_t labor_force;
     uint64_t employed_amount = 0;
+    uint64_t unemployment_rate = 0;
     // Just an index for the amount of marginal propensity that we want to consume...
     double standard_of_living = 0;
     PID sol_pid;

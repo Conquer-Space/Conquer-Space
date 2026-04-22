@@ -44,6 +44,7 @@ class SysPopulationConsumption : public ISimulationSystem {
     float savings = 0;
 
     int total_population = 0;
+    int total_employed = 0;
     double total_sol = 0;
 };
 }  // namespace cqsp::core::systems

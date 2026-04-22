@@ -32,12 +32,9 @@
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
-void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node,
-                                    double infra_cost) {
+void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost) {
     ZoneScoped;
-    auto& population_wallet = population_node.get_or_emplace<components::Wallet>();
     auto& employer = industry_node.get<components::Employer>();
-    auto& population_segment = population_node.get<components::PopulationSegment>();
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
@@ -46,8 +43,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
-    //double expected_workers = size.utilization * recipe.workers;
-    //employer.population_fufilled = static_cast<int>(expected_workers);
 
     // Let's calculate the size from previous input
     // Calculate resource consumption
@@ -138,14 +133,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
         The more profit we have the less we increase until some level
         Let's just make it a log level
         */
-
-    // Now diff it by that much
-    // Let the minimum the factory can produce be like 10% of the
-    // Pay the workers
-
-    population_segment.income += size.wage_cost;
-    population_segment.employed_amount += employer.population_fufilled;
-    population_wallet += size.wage_cost;
 }
 
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
@@ -229,7 +216,6 @@ void SysProduction::ProcessIndustries(Node& node) {
     market.GDP = 0;
 
     auto& industries = node.get<components::IndustrialZone>();
-    Node population_node = node.Convert(settlement.population.front());
 
     // Get the transport cost
     auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
@@ -237,7 +223,7 @@ void SysProduction::ProcessIndustries(Node& node) {
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
     for (Node industry_node : node.Convert(industries.industries)) {
         // We should also check for industries we want to construct
-        ProcessIndustry(industry_node, market, population_node, infra_cost);
+        ProcessIndustry(industry_node, market, infra_cost);
     }
 }
 
@@ -246,7 +232,6 @@ void SysProduction::DoSystem() {
     Universe& universe = GetUniverse();
     // Each industrial zone is a a market
     int factories = 0;
-    employed = 0;
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
@@ -254,9 +239,6 @@ void SysProduction::DoSystem() {
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
     }
-    auto& population_history = universe.ctx().at<components::PopulationHistory>();
-    population_history.employment.push_back(employed);
-    population_history.employment_rate.push_back(employed / population_history.population.back() * 100.);
     SPDLOG_TRACE("Updated {} factories, {} industries", factories, view.size());
 }
 

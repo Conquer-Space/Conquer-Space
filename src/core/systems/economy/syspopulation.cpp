@@ -123,17 +123,25 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
 
         // Compute labor hours
         segment.labor.labor_hours.clear();
-        int work_force = 0;
+        int workforce = 0;
         double hours_sum = 0;
+        double employment_rate_sum = 0;
         for (auto& [labor, workers] : segment.labor.labor_distribution) {
             // TODO(EhWhoAmI): also redistribute people but we don't need to care about it when we have one job
             auto& labor_comp = GetUniverse().get<components::Labor>(labor);
             // 40 hours a week and then we multiply it by our interval
             double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
             segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
-            work_force += workers;
+            workforce += workers;
             hours_sum += tick_hours * workers;
+            double unemployment_rate = 1 / market.sd_ratio[labor_comp.good];
+            // Then we should do something about it
+            // If we are way over we are also overemployed...
+            employment_rate_sum += workers * unemployment_rate;
         }
+
+        segment.employed_amount = employment_rate_sum;
+        segment.unemployment_rate = (1 - employment_rate_sum) / workforce;
 
         // Our income should be equal to our spending...
         double spending_ratio = (segment.income > 0) ? (segment.income - segment.spending) / segment.income : -1.0;
@@ -147,13 +155,13 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         segment.average_wage = segment.income / (segment.employed_amount + 1);
         segment.spending = cost;
         segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
-        segment.employed_amount = 0;
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
         market.production += segment.labor.labor_hours;
         market.consumption += consumption;
         total_sol += segment.standard_of_living * segment.population;
         total_population += segment.population;
+        total_employed += segment.employed_amount;
     }
 }
 
@@ -188,6 +196,7 @@ void SysPopulationConsumption::DoSystem() {
     Universe& universe = GetUniverse();
     total_population = 0;
     total_sol = 0;
+    total_employed = 0;
     for (Node settlement : universe.nodes<components::Settlement>()) {
         ProcessSettlement(settlement, marginal_propensity_base, autonomous_consumption_base, savings);
     }
@@ -195,6 +204,9 @@ void SysPopulationConsumption::DoSystem() {
     auto& history = GetUniverse().ctx().at<components::PopulationHistory>();
     history.population.push_back(total_population);
     history.sol.push_back(total_sol / static_cast<double>(total_population));
+    history.employment.push_back(total_employed);
+    history.employment_rate.push_back(static_cast<double>(total_employed) / static_cast<double>(total_population) *
+                                      100.);
 }
 
 void SysPopulationConsumption::Init() {
