@@ -34,7 +34,8 @@
         }
         cost: {
             labor: {
-                laborer: 15000
+                laborer: 10000
+                technician: 5000
             }
         }
         tags: [

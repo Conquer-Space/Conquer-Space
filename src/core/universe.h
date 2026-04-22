@@ -83,8 +83,17 @@ class Universe : public entt::registry {
     std::map<entt::entity, std::map<entt::entity, int>> colors_province;
     entt::entity sun;
 
+    /**
+     * List of all goods
+     */
     std::vector<entt::entity> good_vector;
+    /**
+     * Default prices for a good
+     */
     std::unordered_map<entt::entity, double> good_prices;
+    /**
+     * Maps good entt entity to GoodEntity
+     */
     std::unordered_map<entt::entity, components::GoodEntity> good_map;
 
     entt::entity default_job = entt::null;

@@ -26,6 +26,7 @@
 namespace cqsp::core::components {
 struct IndustrialZone {
     std::vector<entt::entity> industries;
+    std::vector<std::pair<entt::entity, double>> job_demands;
 };
 
 struct Construction {

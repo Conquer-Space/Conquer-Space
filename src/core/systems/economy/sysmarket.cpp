@@ -28,15 +28,11 @@
 #include "core/components/spaceport.h"
 
 namespace cqsp::core::systems {
-
 using components::Market;
 
 void SysMarket::DoSystem() {
     ZoneScoped;
     auto marketview = GetUniverse().view<Market>(entt::exclude<components::PlanetaryMarket>);
-
-    auto goodsview = GetUniverse().nodes<components::Price>();
-
     for (auto&& [entity, market] : marketview.each()) {
         ProcessMarket(GetUniverse()(entity), market);
     }

@@ -293,6 +293,20 @@ void SysProvinceInformation::IndustryTab() {
         }
     }
     ImGui::TextFmt("Average wage: ${:.2f} over {} people", wage / people, people);
+    if (ImGui::BeginTable("joblist", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Job");
+        ImGui::TableSetupColumn("Oversupply");
+        ImGui::TableHeadersRow();
+        for (auto& [job, amount] : city_industry.job_demands) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", GetName(GetUniverse(), job));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", amount);
+        }
+        ImGui::EndTable();
+    }
+
     if (ImGui::SmallButton("Factory list")) {
         // Put all the economy window information
         city_factory_info = true;
