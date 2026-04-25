@@ -31,7 +31,7 @@ class SysPlanetaryTrade : public ISimulationSystem {
     explicit SysPlanetaryTrade(Game& game)
         : ISimulationSystem(game), initial_tick(true), base_prices(GetUniverse().GoodCount()) {}
     void DoSystem() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
     void Init() override;
 
     void DeterminePrice(components::Market& market, components::GoodEntity good_entity);

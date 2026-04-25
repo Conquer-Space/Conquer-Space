@@ -46,6 +46,7 @@ struct ProvincedPlanet {
 /// </summary>
 struct Settlement {
     std::vector<entt::entity> population;
+    std::vector<std::pair<entt::entity, double>> job_demands;
     // Infrastructure and other things
     // we might need air supply and other things like that
 };

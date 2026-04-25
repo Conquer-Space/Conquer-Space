@@ -81,10 +81,13 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
     if (!settlement.any_of<components::infrastructure::CityInfrastructure>()) {
         return;
     }
+    // Also get our job stuff...
     auto& infrastructure = settlement.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
     auto& market = settlement.get<components::Market>();
+    double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
+    // Anything positive is a job that we want to shift away from, anything negative is something we want to shift to
     // Loop through the population segments through the settlements
     for (Node node_segment : settlement.Convert(settlement_comp.population)) {
         // Compute things
@@ -126,19 +129,32 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         int workforce = 0;
         double hours_sum = 0;
         double employment_rate_sum = 0;
+
         for (auto& [labor, workers] : segment.labor.labor_distribution) {
-            // TODO(EhWhoAmI): also redistribute people but we don't need to care about it when we have one job
+            // Get the jobs that we are over and then figure out why
             auto& labor_comp = GetUniverse().get<components::Labor>(labor);
-            // 40 hours a week and then we multiply it by our interval
-            double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
+            // Shift our jobs a little towards jobs that need it and pay more...
+            for (auto& demand : settlement_comp.job_demands) {
+                if (demand.first == labor) {
+                    // Then ignore or something ig
+                    continue;
+                }
+                // Then otherwise distribute stuff
+            }
+
             segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
             workforce += workers;
             hours_sum += tick_hours * workers;
             double unemployment_rate = 1 / market.sd_ratio[labor_comp.good];
+
             // Then we should do something about it
             // If we are way over we are also overemployed...
+            // Check if we are way over and if we are way over we should dump jobs
+            // Also check job drift to higher paying jobs
             employment_rate_sum += workers * unemployment_rate;
         }
+
+        // Now redistribute our workers
 
         segment.employed_amount = employment_rate_sum;
         segment.unemployment_rate = (1 - employment_rate_sum) / workforce;
@@ -217,5 +233,10 @@ void SysPopulationConsumption::Init() {
         savings -= good.marginal_propensity;
     }  // These tables technically never need to be recalculated
     GetUniverse().ctx().emplace<components::PopulationHistory>();
+
+    auto labor_view = GetUniverse().view<components::LaborGood>();
+    for (entt::entity entity : labor_view) {
+        labor_goods.push_back(GetUniverse().good_map[entity]);
+    }
 }
 }  // namespace cqsp::core::systems

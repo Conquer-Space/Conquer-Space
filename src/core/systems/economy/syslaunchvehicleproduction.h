@@ -24,6 +24,6 @@ class SysLaunchVehicleProduction : public ISimulationSystem {
  public:
     explicit SysLaunchVehicleProduction(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 };
 }  // namespace cqsp::core::systems

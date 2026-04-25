@@ -27,7 +27,7 @@ class SysOrbit : public ISimulationSystem {
  public:
     explicit SysOrbit(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return 1; }
+    int Interval() const override { return 1; }
     void Init() override;
 
  private:

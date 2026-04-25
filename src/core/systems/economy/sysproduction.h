@@ -25,7 +25,7 @@ class SysProduction : public ISimulationSystem {
     explicit SysProduction(Game& game)
         : ISimulationSystem(game), production_config(GetUniverse().economy_config.production_config) {}
     void DoSystem() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 
  private:
     void ProcessIndustries(Node& node);

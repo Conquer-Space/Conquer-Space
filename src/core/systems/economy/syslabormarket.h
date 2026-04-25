@@ -31,7 +31,7 @@ class SysLaborMarket : public ISimulationSystem {
     explicit SysLaborMarket(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     void Init() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 
  private:
     std::vector<components::GoodEntity> labor_goods;

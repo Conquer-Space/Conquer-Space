@@ -26,6 +26,6 @@ class SysMarketHistory : public ISimulationSystem {
     void Init();
     SysMarketHistory() = default;
 
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 };
 }  // namespace cqsp::core::systems::history

@@ -276,6 +276,7 @@ void SysProvinceInformation::DemographicsTab() {
 
 void SysProvinceInformation::IndustryTab() {
     auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_province);
+    auto& city_settlement = GetUniverse().get<components::Settlement>(current_province);
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
     // Now add the wage and number of people it employs
@@ -297,7 +298,7 @@ void SysProvinceInformation::IndustryTab() {
         ImGui::TableSetupColumn("Job");
         ImGui::TableSetupColumn("Oversupply");
         ImGui::TableHeadersRow();
-        for (auto& [job, amount] : city_industry.job_demands) {
+        for (auto& [job, amount] : city_settlement.job_demands) {
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::TextFmt("{}", GetName(GetUniverse(), job));

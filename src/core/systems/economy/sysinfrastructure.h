@@ -24,6 +24,6 @@ class InfrastructureSim : public ISimulationSystem {
  public:
     explicit InfrastructureSim(Game& game) : ISimulationSystem(game) {}
     void DoSystem();
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 };
 }  // namespace cqsp::core::systems

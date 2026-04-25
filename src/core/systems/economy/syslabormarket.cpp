@@ -20,27 +20,27 @@
 
 #include "core/components/labor.h"
 #include "core/components/market.h"
+#include "core/components/surface.h"
 
 namespace cqsp::core::systems {
 using components::Market;
 
 void SysLaborMarket::DoSystem() {
     ZoneScoped;
-    auto market_view =
-        GetUniverse().view<Market, components::IndustrialZone>(entt::exclude<components::PlanetaryMarket>);
-
-    for (const auto&& [entity, market, industrial_zone] : market_view.each()) {
+    auto market_view = GetUniverse().view<Market, components::Settlement>(entt::exclude<components::PlanetaryMarket>);
+    const double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
+    for (const auto&& [entity, market, settlement] : market_view.each()) {
         // Then do some processing or something
         // So we should weight our goods and see if we're lacking our production to come up with
         // a push and pull thing
         // Then we need an inverse way
-        industrial_zone.job_demands.clear();
-        industrial_zone.job_demands.reserve(labor_goods.size());
+        settlement.job_demands.clear();
+        settlement.job_demands.reserve(labor_goods.size());
         for (const components::GoodEntity good : labor_goods) {
             // If this is positive
             // So anything positive are the jobs that we want to get rid of?
-            industrial_zone.job_demands.emplace_back(good_to_labor_map[good],
-                                                     market.supply[good] - 2 * market.demand[good]);
+            settlement.job_demands.emplace_back(good_to_labor_map[good],
+                                                (market.supply[good] - 2 * market.demand[good]) / tick_hours);
         }
     }
 }
