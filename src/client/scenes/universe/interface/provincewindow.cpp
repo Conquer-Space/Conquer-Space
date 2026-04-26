@@ -237,6 +237,19 @@ void SysProvinceInformation::DemographicsTab() {
                                                          100.);
         ImGui::TextFmt("Standard of Living: {}", NumberToHumanString(pop_segment.standard_of_living));
 
+        if (ImGui::BeginTable("joblist2", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("Job");
+            ImGui::TableSetupColumn("Amount");
+            ImGui::TableHeadersRow();
+            for (auto& [job, amount] : pop_segment.labor.labor_distribution) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::TextFmt("{}", GetName(GetUniverse(), job));
+                ImGui::TableSetColumnIndex(1);
+                ImGui::TextFmt("{}", amount);
+            }
+            ImGui::EndTable();
+        }
         // Get spending for population
         DisplayWallet(seg_entity);
         if (GetUniverse().all_of<Wallet>(seg_entity)) {

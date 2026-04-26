@@ -129,7 +129,8 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         int workforce = 0;
         double hours_sum = 0;
         double employment_rate_sum = 0;
-
+        int free_people = 0;
+        std::map<entt::entity, int> target_jobs;
         for (auto& [labor, workers] : segment.labor.labor_distribution) {
             // Get the jobs that we are over and then figure out why
             auto& labor_comp = GetUniverse().get<components::Labor>(labor);
@@ -137,9 +138,32 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             for (auto& demand : settlement_comp.job_demands) {
                 if (demand.first == labor) {
                     // Then ignore or something ig
+                    // Then otherwise distribute stuff
+                    if (demand.second > 0) {
+                        // Then this has jobs that are way over so we need to cut
+                        int worker_diff = workers * 0.01;
+                        workers -= worker_diff;
+                        // Add to default jobs
+                        free_people += worker_diff;
+                    }
                     continue;
+                } else {
+                    // Otherwise we should check if the job is better or not...
+                    // Check if we have more better paying jobs we can bounce to...
+                    // Then we should account for the other thing
+                    // Check if job is better paying
+                    auto& current_labor = GetUniverse().get<components::Labor>(demand.first);
+                    // Then we redistribute the jobs We should also add some inertia
+                    if (market.price[current_labor.good] > market.price[labor_comp.good])
+                        ;
+                    {
+                        // We add this to jobs
+                        int worker_diff = workers * 0.01;
+                        target_jobs[demand.first] += worker_diff;
+                        // Then also decrease our workers...
+                        workers -= worker_diff;
+                    }
                 }
-                // Then otherwise distribute stuff
             }
 
             segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
@@ -152,6 +176,13 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             // Check if we are way over and if we are way over we should dump jobs
             // Also check job drift to higher paying jobs
             employment_rate_sum += workers * unemployment_rate;
+        }
+
+        for (auto& [labor, workers] : segment.labor.labor_distribution) {
+            if (labor == GetUniverse().default_job) {
+                workers += free_people;
+            }
+            // Check if we have to distribute people to jobs that are like not great or something
         }
 
         // Now redistribute our workers
