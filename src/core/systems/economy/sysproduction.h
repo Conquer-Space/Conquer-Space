@@ -25,12 +25,11 @@ class SysProduction : public ISimulationSystem {
     explicit SysProduction(Game& game)
         : ISimulationSystem(game), production_config(GetUniverse().economy_config.production_config) {}
     void DoSystem() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 
  private:
     void ProcessIndustries(Node& node);
-    void ScaleIndustry(Node& industry_node, components::Market& market);
-    void ProcessIndustry(Node& industry_node, components::Market& market, Node& population_node, double infra_cost);
+    void ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost);
     void ScaleConstruction(Node& industry_node, double pl_ratio);
     bool HandleConstruction(Node& industry_node, components::Market& market);
     void IndustryFsm();

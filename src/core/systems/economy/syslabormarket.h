@@ -1,5 +1,5 @@
 /* Conquer Space
- * Copyright (C) 2021-2025 Conquer Space
+ * Copyright (C) 2021-2026 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,18 +16,25 @@
  */
 #pragma once
 
+#include <unordered_map>
+#include <vector>
+
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
-#include "core/universe.h"
 
 namespace cqsp::core::systems {
-class SysInterplanetaryTrade : public ISimulationSystem {
+/**
+ * Determines how to allocate labor within a province.
+ */
+class SysLaborMarket : public ISimulationSystem {
  public:
-    explicit SysInterplanetaryTrade(Game& game) : ISimulationSystem(game) {}
+    explicit SysLaborMarket(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
+    void Init() override;
     int Interval() const override { return ECONOMIC_TICK; }
 
  private:
-    void ResolveTrades();
+    std::vector<components::GoodEntity> labor_goods;
+    std::unordered_map<components::GoodEntity, entt::entity> good_to_labor_map;
 };
 }  // namespace cqsp::core::systems

@@ -26,7 +26,7 @@ class SysMarket : public ISimulationSystem {
  public:
     explicit SysMarket(Game& game) : ISimulationSystem(game), base_prices(GetUniverse().GoodCount()) {}
     void DoSystem() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 
     void Init() override;
 

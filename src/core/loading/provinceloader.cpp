@@ -239,7 +239,7 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
         const auto& distribution = population_hjson["job_distribution"];
         // Then load stuff
         for (const auto& job : distribution) {
-            segment.labor.labor_distribution.emplace_back(universe.jobs[job.first], job.second);
+            segment.labor.labor_distribution.insert(std::make_pair(universe.jobs[job.first], job.second));
         }
     } else {
         SPDLOG_WARN("Pop doesn't have a job distribution");

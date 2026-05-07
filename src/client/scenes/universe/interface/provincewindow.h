@@ -73,6 +73,7 @@ class SysProvinceInformation : public SysUserInterface {
     entt::entity selected_project = entt::null;
 
     bool segment_prices = true;
+    bool individual_prices = false;
     SearchableMenu launch_vehicle_menu;
     SearchableMenu docked_ships_tab;
 

@@ -91,6 +91,8 @@ struct Market {
         // Reset the ledger values
         demand.clear();
         supply.clear();
+        production.clear();
+        consumption.clear();
     }
 
     std::vector<entt::entity> connected_markets;

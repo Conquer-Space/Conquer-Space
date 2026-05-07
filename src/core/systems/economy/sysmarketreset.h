@@ -29,6 +29,6 @@ class SysMarketReset : public ISimulationSystem {
  public:
     explicit SysMarketReset(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 };
 }  // namespace cqsp::core::systems

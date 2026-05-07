@@ -231,11 +231,25 @@ void SysProvinceInformation::DemographicsTab() {
 
         ImGui::TextFmt("Employed / Labor Force: {}/{}", NumberToHumanString(pop_segment.employed_amount),
                        NumberToHumanString(pop_segment.labor_force));
+        // Set our colors
         ImGui::TextFmt("Unemployment Rate: {:.2f}%", (1. - static_cast<double>(pop_segment.employed_amount) /
                                                                static_cast<double>(pop_segment.labor_force)) *
                                                          100.);
         ImGui::TextFmt("Standard of Living: {}", NumberToHumanString(pop_segment.standard_of_living));
 
+        if (ImGui::BeginTable("joblist2", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+            ImGui::TableSetupColumn("Job");
+            ImGui::TableSetupColumn("Amount");
+            ImGui::TableHeadersRow();
+            for (auto& [job, amount] : pop_segment.labor.labor_distribution) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::TextFmt("{}", GetName(GetUniverse(), job));
+                ImGui::TableSetColumnIndex(1);
+                ImGui::TextFmt("{}", amount);
+            }
+            ImGui::EndTable();
+        }
         // Get spending for population
         DisplayWallet(seg_entity);
         if (GetUniverse().all_of<Wallet>(seg_entity)) {
@@ -244,16 +258,27 @@ void SysProvinceInformation::DemographicsTab() {
         }
 
         if (ImGui::CollapsingHeader("Resource Consumption")) {
+            if (ImGui::SmallButton((individual_prices) ? "Toggle Individual cost" : "Toggle Overall Cost")) {
+                individual_prices = !individual_prices;
+            }
+            ImGui::SameLine();
+            if (ImGui::SmallButton((segment_prices) ? "Toggle Price" : "Toggle Count")) {
+                segment_prices = !segment_prices;
+            }
             if (GetUniverse().all_of<components::ResourceConsumption>(seg_entity)) {
                 const auto& market = GetUniverse().get<components::Market>(current_province);
                 auto& res_consumption = GetUniverse().get<components::ResourceConsumption>(seg_entity);
-                DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption, market);
-
-                if (ImGui::SmallButton("Toggle Price/Count")) {
-                    segment_prices = !segment_prices;
+                if (individual_prices) {
+                    DrawLedgerTable("Resource consumption", GetUniverse(), res_consumption, market);
+                    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(), res_consumption, market,
+                                      segment_prices);
+                } else {
+                    DrawLedgerTable("Resource consumption", GetUniverse(),
+                                    res_consumption / static_cast<double>(pop_segment.population), market);
+                    DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(),
+                                      res_consumption / static_cast<double>(pop_segment.population), market,
+                                      segment_prices);
                 }
-                DrawLedgerPiePlot("Resource consumption pie chart", GetUniverse(), res_consumption, market,
-                                  segment_prices);
             }
         }
 
@@ -264,6 +289,7 @@ void SysProvinceInformation::DemographicsTab() {
 
 void SysProvinceInformation::IndustryTab() {
     auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_province);
+    auto& city_settlement = GetUniverse().get<components::Settlement>(current_province);
     int height = 300;
     ImGui::TextFmt("Factories: {}", city_industry.industries.size());
     // Now add the wage and number of people it employs
@@ -281,6 +307,20 @@ void SysProvinceInformation::IndustryTab() {
         }
     }
     ImGui::TextFmt("Average wage: ${:.2f} over {} people", wage / people, people);
+    if (ImGui::BeginTable("joblist", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Job");
+        ImGui::TableSetupColumn("Oversupply");
+        ImGui::TableHeadersRow();
+        for (auto& [job, amount] : city_settlement.job_demands) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", GetName(GetUniverse(), job));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", amount);
+        }
+        ImGui::EndTable();
+    }
+
     if (ImGui::SmallButton("Factory list")) {
         // Put all the economy window information
         city_factory_info = true;

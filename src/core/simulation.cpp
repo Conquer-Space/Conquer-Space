@@ -36,6 +36,7 @@
 #include "core/systems/economy/sysfinance.h"
 #include "core/systems/economy/sysinfrastructure.h"
 #include "core/systems/economy/sysinterplanetarytrade.h"
+#include "core/systems/economy/syslabormarket.h"
 #include "core/systems/economy/syslaunchvehicleproduction.h"
 #include "core/systems/economy/sysmarket.h"
 #include "core/systems/economy/sysmarketreset.h"
@@ -73,6 +74,7 @@ void Simulation::CreateSystems() {
     AddSystem<SysMarket>();
     AddSystem<SysPlanetaryTrade>();
     AddSystem<SysInterplanetaryTrade>();
+    AddSystem<SysLaborMarket>();
     AddSystem<history::SysMarketCsvHistory>();
     AddSystem<history::SysMarketHistory>();
 

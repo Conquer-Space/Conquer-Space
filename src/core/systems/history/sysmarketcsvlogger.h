@@ -34,7 +34,7 @@ class SysMarketCsvHistory : public ISimulationSystem {
 
     void WriteCsvHeader(const entt::entity entity);
 
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 
  private:
     std::map<entt::entity, std::ofstream> output_stream;

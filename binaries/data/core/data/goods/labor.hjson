@@ -7,7 +7,16 @@
         price: 1
         tags: [
             labor
-            default
+        ]
+    }
+    {
+        name: Technician
+        identifier: technician_labor
+        volume: 0 m3
+        mass: 0 kg
+        price: 10
+        tags: [
+            labor
         ]
     }
 ]

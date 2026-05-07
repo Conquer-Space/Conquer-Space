@@ -25,7 +25,7 @@ class SysPopulationGrowth : public ISimulationSystem {
  public:
     explicit SysPopulationGrowth(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return components::StarDate::WEEK * 4; }
+    int Interval() const override { return components::StarDate::WEEK * 4; }
 };
 
 class SysPopulationConsumption : public ISimulationSystem {
@@ -33,7 +33,7 @@ class SysPopulationConsumption : public ISimulationSystem {
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     void Init() override;
-    int Interval() override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK; }
 
  private:
     void ProcessSettlement(Node& settlement, const components::ResourceConsumption& marginal_propensity_base,
@@ -41,9 +41,12 @@ class SysPopulationConsumption : public ISimulationSystem {
 
     components::ResourceConsumption marginal_propensity_base;
     components::ResourceConsumption autonomous_consumption_base;
+    std::vector<components::GoodEntity> labor_goods;
+    std::unordered_map<components::GoodEntity, entt::entity> good_labors;
     float savings = 0;
 
     int total_population = 0;
+    int total_employed = 0;
     double total_sol = 0;
 };
 }  // namespace cqsp::core::systems

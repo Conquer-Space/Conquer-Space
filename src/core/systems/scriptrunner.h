@@ -48,7 +48,7 @@ class SysScript : public cqsp::core::systems::ISimulationSystem {
     explicit SysScript(Game& game);
     ~SysScript();
     void DoSystem();
-    int Interval() { return 1; }
+    int Interval() const override { return 1; }
 
  private:
     std::vector<sol::table> events;

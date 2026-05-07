@@ -24,7 +24,7 @@ class SysSpacePort : public ISimulationSystem {
  public:
     explicit SysSpacePort(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
-    int Interval() override { return components::StarDate::DAY; }
+    int Interval() const override { return components::StarDate::DAY; }
 
  private:
     void ProcessDockedShips(entt::entity space_port);
