@@ -80,7 +80,8 @@
             {
                 size: 3694820
                 job_distribution: {
-                    laborer: 1847410
+                    laborer: 1830410
+                    technician: 18000
                 }
             }
         ]

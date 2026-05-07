@@ -143,7 +143,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
                 // Then we should probably start cutting
                 // Find a ratio for amount we should cut...
                 double delta = std::min((market.sd_ratio[labor_comp.good] - 2), 10.);
-                double difference = workers * 0.1 * delta;
+                double difference = workers * 0.01 * delta;
                 job_drift[GetUniverse().default_job] += difference;
                 job_drift[labor] -= difference;
             }
@@ -155,8 +155,8 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
                     // Also cap by the amount of available good labors...
                     double delta = std::min(
                         (market.price[good] - market.price[labor_comp.good]) / market.price[labor_comp.good], 1.);
-                    double difference = workers * delta * 0.001;
-                    double max_diff = std::max(segment.labor.labor_distribution[good_labors[good]] * 0.01, 100.);
+                    double difference = workers * delta * 0.00001;
+                    double max_diff = std::max(segment.labor.labor_distribution[good_labors[good]] * 0.001, 100.);
                     difference = std::min(max_diff, difference);
                     job_drift[good_labors[good]] += difference;
                     job_drift[labor] -= difference;
