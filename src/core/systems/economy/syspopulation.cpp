@@ -130,42 +130,53 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         double hours_sum = 0;
         double employment_rate_sum = 0;
         int free_people = 0;
-        std::map<entt::entity, int> target_jobs;
+
+        std::map<entt::entity, int> job_drift;
+        // Compute job drift
+        for (auto& [labor, workers] : segment.labor.labor_distribution) {
+            // Now sort through
+            auto& labor_comp = GetUniverse().get<components::Labor>(labor);
+            // Check how much job we should cut and stuff
+            // So we need to loop through our market and see our possible jobs
+            // In the future we should make a graph or something so that we don't need to check everything
+            if (labor != GetUniverse().default_job && market.sd_ratio[labor_comp.good] > 2) {
+                // Then we should probably start cutting
+                // Find a ratio for amount we should cut...
+                double delta = std::min((market.sd_ratio[labor_comp.good] - 2), 10.);
+                double difference = workers * 0.1 * delta;
+                job_drift[GetUniverse().default_job] += difference;
+                job_drift[labor] -= difference;
+            }
+            // Also seek for more jobs
+            for (const auto good : labor_goods) {
+                if (market.price[good] - market.price[labor_comp.good] > market.price[labor_comp.good] * 0.1) {
+                    // It's enough money for the pop segment to want to shift their jobs
+                    // Like the thing is it has to be capped, it can't just swarm it...
+                    // Also cap by the amount of available good labors...
+                    double delta = std::min(
+                        (market.price[good] - market.price[labor_comp.good]) / market.price[labor_comp.good], 1.);
+                    double difference = workers * delta * 0.001;
+                    double max_diff = std::max(segment.labor.labor_distribution[good_labors[good]] * 0.01, 100.);
+                    difference = std::min(max_diff, difference);
+                    job_drift[good_labors[good]] += difference;
+                    job_drift[labor] -= difference;
+                }
+            }
+        }
+        // Add the job drift
+        for (auto& [labor, drift] : job_drift) {
+            auto labor_count =
+                std::max(static_cast<int>(1000), static_cast<int>(segment.labor.labor_distribution[labor] * 0.01));
+            int drift_delta = std::clamp(drift, static_cast<int>(-labor_count), static_cast<int>(labor_count));
+            segment.labor.labor_distribution[labor] += drift_delta;
+            // Cap our labor distribution as well...
+        }
+
         for (auto& [labor, workers] : segment.labor.labor_distribution) {
             // Get the jobs that we are over and then figure out why
             auto& labor_comp = GetUniverse().get<components::Labor>(labor);
+            // Check if we are over
             // Shift our jobs a little towards jobs that need it and pay more...
-            for (auto& demand : settlement_comp.job_demands) {
-                if (demand.first == labor) {
-                    // Then ignore or something ig
-                    // Then otherwise distribute stuff
-                    if (demand.second > 0) {
-                        // Then this has jobs that are way over so we need to cut
-                        int worker_diff = workers * 0.01;
-                        workers -= worker_diff;
-                        // Add to default jobs
-                        free_people += worker_diff;
-                    }
-                    continue;
-                } else {
-                    // Otherwise we should check if the job is better or not...
-                    // Check if we have more better paying jobs we can bounce to...
-                    // Then we should account for the other thing
-                    // Check if job is better paying
-                    auto& current_labor = GetUniverse().get<components::Labor>(demand.first);
-                    // Then we redistribute the jobs We should also add some inertia
-                    if (market.price[current_labor.good] > market.price[labor_comp.good])
-                        ;
-                    {
-                        // We add this to jobs
-                        int worker_diff = workers * 0.01;
-                        target_jobs[demand.first] += worker_diff;
-                        // Then also decrease our workers...
-                        workers -= worker_diff;
-                    }
-                }
-            }
-
             segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
             workforce += workers;
             hours_sum += tick_hours * workers;
@@ -265,9 +276,10 @@ void SysPopulationConsumption::Init() {
     }  // These tables technically never need to be recalculated
     GetUniverse().ctx().emplace<components::PopulationHistory>();
 
-    auto labor_view = GetUniverse().view<components::LaborGood>();
-    for (entt::entity entity : labor_view) {
-        labor_goods.push_back(GetUniverse().good_map[entity]);
+    auto labor_view = GetUniverse().view<components::Labor>();
+    for (auto&& [entity, comp] : labor_view.each()) {
+        labor_goods.push_back(comp.good);
+        good_labors[comp.good] = entity;
     }
 }
 }  // namespace cqsp::core::systems

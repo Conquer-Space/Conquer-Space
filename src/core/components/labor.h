@@ -16,8 +16,8 @@
  */
 #pragma once
 
+#include <unordered_map>
 #include <utility>
-#include <vector>
 
 #include <entt/entity/entity.hpp>
 
@@ -31,7 +31,8 @@ struct Labor {
 
 struct PopulationLabor {
     // This will be updated less regularly
-    std::vector<std::pair<entt::entity, uint64_t>> labor_distribution;
+    // TODO(EhWhoAmI): Fix this to a vector or something
+    std::unordered_map<entt::entity, uint64_t> labor_distribution;
     // A pop sells its labor hours on the market
     ResourceVector labor_hours;
 };

@@ -42,6 +42,7 @@ class SysPopulationConsumption : public ISimulationSystem {
     components::ResourceConsumption marginal_propensity_base;
     components::ResourceConsumption autonomous_consumption_base;
     std::vector<components::GoodEntity> labor_goods;
+    std::unordered_map<components::GoodEntity, entt::entity> good_labors;
     float savings = 0;
 
     int total_population = 0;
