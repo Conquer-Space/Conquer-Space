@@ -57,7 +57,7 @@ struct Market {
           price(good_count),
           chronic_shortages(good_count),
           trade(good_count),
-          resource_fulfilled(good_count),
+          taxation(good_count),
           production(good_count),
           consumption(good_count),
           market_access(good_count) {}
@@ -82,10 +82,10 @@ struct Market {
     ResourceLedger price;
     ResourceLedger chronic_shortages;
     ResourceLedger trade;
-    ResourceLedger resource_fulfilled;
     ResourceLedger production;
     ResourceLedger consumption;
     ResourceLedger market_access;
+    ResourceLedger taxation;
 
     void ResetLedgers() {
         // Reset the ledger values

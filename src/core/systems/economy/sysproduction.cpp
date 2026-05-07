@@ -92,11 +92,13 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // there isnt any resources to upkeep the place, then stop
     // the production
     size.material_costs = input.MultiplyAndGetSum(market.price);
+    size.tax_cost = input.MultiplyAndGetSum(market.taxation);
     size.wage_cost = size.workers.MultiplyAndGetSum(market.price);
     size.transport = 0;  //output_transport_cost + input_transport_cost;
 
     size.revenue = output.MultiplyAndGetSum(market.price);
-    size.profit = size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport;
+    size.profit =
+        size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport - size.tax_cost;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += size.profit;
     market.GDP += size.revenue - size.material_costs;
