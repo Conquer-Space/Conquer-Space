@@ -165,8 +165,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         }
         // Add the job drift
         for (auto& [labor, drift] : job_drift) {
-            auto labor_count =
-                std::max(static_cast<int>(1000), static_cast<int>(segment.labor.labor_distribution[labor] * 0.01));
+            auto labor_count = std::max(1000, static_cast<int>(segment.labor.labor_distribution[labor] * 0.01));
             int drift_delta = std::clamp(drift, static_cast<int>(-labor_count), static_cast<int>(labor_count));
             segment.labor.labor_distribution[labor] += drift_delta;
             // Cap our labor distribution as well...
