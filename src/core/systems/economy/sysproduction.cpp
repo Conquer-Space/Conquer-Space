@@ -77,7 +77,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
         }
     }
     size.shortage = shortage;
-    market.consumption += input;
     market.production += output;
     market.consumption += size.workers;
     size.amount_sold = recipe.output.amount * size.utilization;
@@ -91,9 +90,13 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
     // the production
-    size.material_costs = input.MultiplyAndGetSum(market.price);
-    size.tax_cost = input.MultiplyAndGetSum(market.taxation);
-    size.wage_cost = size.workers.MultiplyAndGetSum(market.price);
+    auto [material_costs, taxes] = market.PurchaseFromMarket(input);
+    size.material_costs = material_costs;
+
+    auto [wage_costs, income_taxes] = market.PurchaseFromMarket(input);
+
+    size.tax_cost = taxes + income_taxes;
+    size.wage_cost = wage_costs;
     size.transport = 0;  //output_transport_cost + input_transport_cost;
 
     size.revenue = output.MultiplyAndGetSum(market.price);

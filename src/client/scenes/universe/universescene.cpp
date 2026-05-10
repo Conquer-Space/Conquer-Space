@@ -41,6 +41,7 @@
 #include "client/scenes/universe/interface/syspausemenu.h"
 #include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
+#include "client/scenes/universe/interface/taxwindow.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
 #include "client/scenes/universe/lua/hovertext.h"
 #include "core/components/area.h"
@@ -110,6 +111,7 @@ void UniverseScene::Init() {
     AddUISystem<systems::MapModeWindow>();
     AddUISystem<systems::LaunchVehicleWindow>();
     AddUISystem<systems::ProductionSummary>();
+    AddUISystem<systems::TaxWindow>();
 
     AddUISystem<systems::gui::SysEvent>();
     simulation->Init();

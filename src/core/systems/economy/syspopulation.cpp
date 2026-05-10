@@ -129,7 +129,6 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         int workforce = 0;
         double hours_sum = 0;
         double employment_rate_sum = 0;
-        int free_people = 0;
 
         std::map<entt::entity, int> job_drift;
         // Compute job drift
@@ -188,13 +187,6 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             employment_rate_sum += workers * unemployment_rate;
         }
 
-        for (auto& [labor, workers] : segment.labor.labor_distribution) {
-            if (labor == GetUniverse().default_job) {
-                workers += free_people;
-            }
-            // Check if we have to distribute people to jobs that are like not great or something
-        }
-
         // Now redistribute our workers
 
         segment.employed_amount = employment_rate_sum;
@@ -211,6 +203,8 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
 
         segment.average_wage = segment.income / (segment.employed_amount + 1);
         segment.spending = cost;
+        // Add taxes to spending as well...
+        auto [consumption_cost, taxes] = market.PurchaseFromMarket(consumption);
         segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
         wallet -= cost;  // Spend, even if it puts the pop into debt
 

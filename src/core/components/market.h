@@ -108,6 +108,9 @@ struct Market {
 
     double trade_deficit = 0;
     double last_trade_deficit = 0;
+
+    std::pair<double, double> PurchaseFromMarket(const ResourceVector& input);
+    std::pair<double, double> PurchaseFromMarket(const ResourceConsumption& input);
 };
 
 /// <summary>
