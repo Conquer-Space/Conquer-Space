@@ -21,6 +21,7 @@
 #include "core/components/name.h"
 #include "core/components/organizations.h"
 #include "core/components/science.h"
+#include "core/util/color.h"
 #include "core/util/logging.h"
 
 namespace cqsp::core::loading {
@@ -40,6 +41,11 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
         country.color = glm::vec3(std::clamp(static_cast<float>(values["color"][0].to_double()) / 255.f, 0.f, 1.f),
                                   std::clamp(static_cast<float>(values["color"][1].to_double()) / 255.f, 0.f, 1.f),
                                   std::clamp(static_cast<float>(values["color"][2].to_double()) / 255.f, 0.f, 1.f));
+    } else if (values["color"].type() == Hjson::Type::String) {
+        auto rgb = cqsp::util::HexToRgb(values["color"].to_string());
+        country.color = glm::vec3(std::clamp(static_cast<float>(std::get<0>(rgb)) / 255.f, 0.f, 1.f),
+                                  std::clamp(static_cast<float>(std::get<1>(rgb)) / 255.f, 0.f, 1.f),
+                                  std::clamp(static_cast<float>(std::get<2>(rgb)) / 255.f, 0.f, 1.f));
     } else {
         // Compute string hash on identifier
         uint32_t value = StringHash(identifier);

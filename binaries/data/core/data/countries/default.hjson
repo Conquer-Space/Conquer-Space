@@ -365,9 +365,11 @@
     identifier: rwanda
   }
   {
-    name: Russian Federation
-    common: Russia
-    identifier: russia
+    name: Union of Soviet Socialist Republics
+    common: Soviet Union
+    identifier: soviet_union
+    Adjective: Soviet
+    color: CC0000
   }
   {
     name: Romania

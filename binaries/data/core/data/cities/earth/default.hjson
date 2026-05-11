@@ -175,7 +175,7 @@
         }
         planet: earth
         timezone: MSK
-        country: russia
+        country: soviet_union
         population: [
             {
                 size: 10000000
