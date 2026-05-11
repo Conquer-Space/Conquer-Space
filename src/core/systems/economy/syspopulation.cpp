@@ -206,6 +206,9 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         // Add taxes to spending as well...
         auto [consumption_cost, taxes] = market.PurchaseFromMarket(consumption);
         segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
+        // Also add income taxes based off a percentage
+        // We assume people's income is uniform across stuff...
+        // What about graduated income taxes lol
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
         market.production += segment.labor.labor_hours;

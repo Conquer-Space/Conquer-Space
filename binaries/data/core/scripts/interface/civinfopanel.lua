@@ -89,6 +89,8 @@ function civinfopanel:civinfopanel()
     ImGui.Text("Capital City: " ..core.get_name(core.get_capital_city(player)))
     client.EntityTooltip(core.get_capital_city(player))
     ImGui.Text("Currency Reserves: "..core.to_human_string(core.get_balance(player)))
+    local income = core.get_organization_income(player)
+    ImGui.Text("Tax Income: "..core.to_human_string(income.income_taxes + income.consumption_taxes))
     if ImGui.BeginTabBar("civ_info_window") then
         if ImGui.BeginTabItem("City Information") then
             ImGui.Text("Owned Cities")

@@ -60,6 +60,7 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
     node.emplace<components::MissionQueue>();
     node.emplace<components::science::ScientificResearch>();
+    node.emplace<components::OrganizationIncome>();
     return true;
 }
 

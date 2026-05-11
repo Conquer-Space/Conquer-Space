@@ -32,13 +32,14 @@
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
-void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost) {
+double SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost) {
     ZoneScoped;
+    double tax_income = 0;
     auto& employer = industry_node.get<components::Employer>();
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
-    if (!industry_node.all_of<components::ProductionUnit>()) return;
+    if (!industry_node.all_of<components::ProductionUnit>()) return 0.0;
 
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
@@ -105,6 +106,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += size.profit;
     market.GDP += size.revenue - size.material_costs;
+    tax_income = taxes + income_taxes;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
@@ -138,6 +140,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
         The more profit we have the less we increase until some level
         Let's just make it a log level
         */
+    return tax_income;
 }
 
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
@@ -226,10 +229,15 @@ void SysProduction::ProcessIndustries(Node& node) {
     auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
+    double total_taxes = 0;
     for (Node industry_node : node.Convert(industries.industries)) {
         // We should also check for industries we want to construct
-        ProcessIndustry(industry_node, market, infra_cost);
+        total_taxes += ProcessIndustry(industry_node, market, infra_cost);
     }
+    // Now get province and stuff
+    auto& province = node.get<components::Province>();
+    auto& income = GetUniverse().get<components::OrganizationIncome>(province.country);
+    income.income_taxes += total_taxes;
 }
 
 void SysProduction::DoSystem() {
@@ -306,6 +314,7 @@ components::IndustryState SysProduction::SteadyState(entt::entity industry, comp
 
     return components::IndustryState::SteadyState;
 }
+
 components::IndustryState SysProduction::MaximumProduction(entt::entity industry,
                                                            components::ProductionUnit& production) {
     if (production.continuous_gains > 30 * components::StarDate::DAY) {
