@@ -18,10 +18,12 @@
 
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
 #include <vector>
 
 #include "core/components/name.h"
 #include "core/loading/loadutil.h"
+#include "core/util/color.h"
 
 namespace cqsp::core::loading {
 /**
@@ -87,5 +89,44 @@ void TagLoader::Apply(std::string_view tag, Node& node) const {
     } else {
         SPDLOG_WARN("Unknown tag: {}", tag);
     }
+}
+
+uint32_t HjsonLoader::StringHash(std::string_view string) {
+    const int p = 31;
+    const int m = 0xffffff;
+    long long hash_value = 0;
+    long long p_pow = 1;
+    for (char c : string) {
+        hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
+        p_pow = (p_pow * p) % m;
+    }
+    return static_cast<uint32_t>(hash_value);
+}
+
+glm::vec3 HjsonLoader::LoadColor(const Hjson::Value& value, std::string_view identifier) {
+    if (value.empty() || (value.type() != Hjson::Type::String && value.type() != Hjson::Type::Vector)) {
+        uint32_t value = StringHash(identifier);
+        return glm::vec3(static_cast<float>(value & 0xFF) / 255.f, static_cast<float>((value >> 8) & 0xFF) / 255.f,
+                         static_cast<float>((value >> 16) & 0xFF) / 255.f);
+    } else {
+        return LoadColor(value);
+    }
+}
+
+glm::vec3 HjsonLoader::LoadColor(const Hjson::Value& value) {
+    std::tuple<int, int, int> color_value;
+    if (value.type() == Hjson::Type::Vector) {
+        if (value.size() == 3) {
+            color_value = std::make_tuple(static_cast<int>(value[0].to_int64()), static_cast<int>(value[1].to_int64()),
+                                          static_cast<int>(value[2].to_int64()));
+        }
+    } else {
+        // Then it's probably a string
+        color_value = cqsp::util::HexToRgb(value.to_string());
+    }
+
+    return glm::vec3(std::clamp(static_cast<float>(std::get<0>(color_value)) / 255.f, 0.f, 1.f),
+                     std::clamp(static_cast<float>(std::get<1>(color_value)) / 255.f, 0.f, 1.f),
+                     std::clamp(static_cast<float>(std::get<2>(color_value)) / 255.f, 0.f, 1.f));
 }
 }  // namespace cqsp::core::loading

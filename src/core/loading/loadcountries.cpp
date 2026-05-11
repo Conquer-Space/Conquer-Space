@@ -36,23 +36,7 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
         auto& wallet = node.emplace<components::Wallet>();
         wallet = values["wallet"];
     }
-
-    if (!values["color"].empty() && values["color"].type() == Hjson::Type::Vector && values["color"].size() == 3) {
-        country.color = glm::vec3(std::clamp(static_cast<float>(values["color"][0].to_double()) / 255.f, 0.f, 1.f),
-                                  std::clamp(static_cast<float>(values["color"][1].to_double()) / 255.f, 0.f, 1.f),
-                                  std::clamp(static_cast<float>(values["color"][2].to_double()) / 255.f, 0.f, 1.f));
-    } else if (values["color"].type() == Hjson::Type::String) {
-        auto rgb = cqsp::util::HexToRgb(values["color"].to_string());
-        country.color = glm::vec3(std::clamp(static_cast<float>(std::get<0>(rgb)) / 255.f, 0.f, 1.f),
-                                  std::clamp(static_cast<float>(std::get<1>(rgb)) / 255.f, 0.f, 1.f),
-                                  std::clamp(static_cast<float>(std::get<2>(rgb)) / 255.f, 0.f, 1.f));
-    } else {
-        // Compute string hash on identifier
-        uint32_t value = StringHash(identifier);
-        country.color =
-            glm::vec3(static_cast<float>(value & 0xFF) / 255.f, static_cast<float>((value >> 8) & 0xFF) / 255.f,
-                      static_cast<float>((value >> 16) & 0xFF) / 255.f);
-    }
+    country.color = LoadColor(values["color"], identifier);
 
     if (!values["tags"].empty() && values["tags"].type() == Hjson::Type::Vector) {
         auto& tags = values["tags"];
@@ -68,17 +52,5 @@ bool CountryLoader::LoadValue(const Hjson::Value& values, Node& node) {
     node.emplace<components::science::ScientificResearch>();
     node.emplace<components::OrganizationIncome>();
     return true;
-}
-
-uint32_t CountryLoader::StringHash(const std::string& string) {
-    const int p = 31;
-    const int m = 0xffffff;
-    long long hash_value = 0;
-    long long p_pow = 1;
-    for (char c : string) {
-        hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
-        p_pow = (p_pow * p) % m;
-    }
-    return static_cast<uint32_t>(hash_value);
 }
 }  // namespace cqsp::core::loading
