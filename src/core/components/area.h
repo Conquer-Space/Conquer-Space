@@ -109,6 +109,7 @@ struct ProductionUnit {
     double maintenance;
     // How much it paid to people
     double wage_cost;
+    double tax_cost;
     double profit;
     // How much it paid in transport fees
     double transport;

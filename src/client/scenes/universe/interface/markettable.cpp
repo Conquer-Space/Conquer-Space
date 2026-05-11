@@ -54,7 +54,7 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
     ImGui::TableSetupColumn("Trade");
     ImGui::TableSetupColumn("Market Access");
     ImGui::TableSetupColumn("Chronic Shortages");
-    ImGui::TableSetupColumn("Resource Fulfilled");
+    ImGui::TableSetupColumn("Taxation");
 
     ImGui::TableHeadersRow();
     //auto goodsview = universe.view<components::Price>();
@@ -96,7 +96,7 @@ void MarketInformationTable(core::Universe& universe, const entt::entity& market
         ImGui::TableSetColumnIndex(9);
         ImGui::TextFmt("{}", (market.chronic_shortages[good_entity]));
         ImGui::TableSetColumnIndex(10);
-        ImGui::TextFmt("{}", (market.resource_fulfilled[good_entity]));
+        ImGui::TextFmt("{}", (market.taxation[good_entity]));
     }
     ImGui::EndTable();
 }
@@ -169,7 +169,7 @@ core::components::GoodEntity SelectableMarketInformationTable(core::Universe& un
         ImGui::TableSetColumnIndex(9);
         ImGui::TextFmt("{}", (market.chronic_shortages[good_entity]));
         ImGui::TableSetColumnIndex(10);
-        ImGui::TextFmt("{}", (market.resource_fulfilled[good_entity]));
+        ImGui::TextFmt("{}", (market.taxation[good_entity]));
     }
     ImGui::EndTable();
     return selected_value;

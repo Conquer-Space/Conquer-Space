@@ -378,6 +378,14 @@ void FunctionCivilizations(Universe& universe, sol::state_view& script_engine) {
         auto& queue = universe.get<components::MissionQueue>(country);
         return sol::as_table(queue.list);
     });
+
+    lua_namespace.new_usertype<components::OrganizationIncome>(
+        "OrganizationIncome", "consumption_taxes",
+        SOL_PROPERTY(components::OrganizationIncome, double, consumption_taxes), "income_taxes",
+        SOL_PROPERTY(components::OrganizationIncome, double, income_taxes));
+
+    REGISTER_FUNCTION("get_organization_income",
+                      [&](entt::entity country) { return universe.get<components::OrganizationIncome>(country); });
 }
 
 void FunctionScience(Universe& universe, sol::state_view& script_engine) { CREATE_NAMESPACE(core); }

@@ -36,6 +36,12 @@ struct Country {
     glm::vec3 color;
 };
 
+// All the stats that a country needs or something?
+struct OrganizationIncome {
+    double consumption_taxes;
+    double income_taxes;
+};
+
 struct CountryCityList {
     std::vector<entt::entity> city_list;
     std::vector<entt::entity> province_list;

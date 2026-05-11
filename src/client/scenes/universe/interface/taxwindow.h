@@ -16,17 +16,18 @@
  */
 #pragma once
 
-#include <sol/sol.hpp>
+#include "client/systems/sysgui.h"
 
-// Definitions for the namespaces and functions
-// So that we can document in the future
-#define REGISTER_FUNCTION(name, lambda) lua_namespace.set_function(name, lambda)
+namespace cqsp::client::systems {
+class TaxWindow : public SysUserInterface {
+ public:
+    explicit TaxWindow(engine::Application& app) : SysUserInterface(app) {}
 
-#define CREATE_NAMESPACE(name) auto lua_namespace = script_engine[#name].get_or_create<sol::table>()
+    void Init();
+    void DoUI(int delta_time);
+    void DoUpdate(int delta_time);
 
-// Helper function to get around sol's error
-// NOLINTBEGIN: We are supposed to add parentheses around the macro parameters but it's not possible because
-// the macro won't work
-#define SOL_PROPERTY(type, prop_type, name) \
-    sol::property(([](type& self) { return self.name; }), ([](type& self, prop_type name) { self.name = name; }))
-// NOLINTEND
+ private:
+    std::vector<float> tax_rates;
+};
+}  // namespace cqsp::client::systems

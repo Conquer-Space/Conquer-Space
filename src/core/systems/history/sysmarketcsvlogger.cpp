@@ -53,8 +53,8 @@ void SysMarketCsvHistory::DoSystem() {
                 return std::to_string(market.supply[good]) + "," + std::to_string(market.demand[good]) + "," +
                        std::to_string(market.sd_ratio[good]) + "," + std::to_string(market.volume[good]) + "," +
                        std::to_string(market.price[good]) + "," + std::to_string(market.chronic_shortages[good]) + "," +
-                       std::to_string(market.trade[good]) + "," + std::to_string(market.resource_fulfilled[good]) +
-                       "," + std::to_string(market.production[good]) + "," + std::to_string(market.consumption[good]);
+                       std::to_string(market.trade[good]) + "," + std::to_string(market.taxation[good]) + "," +
+                       std::to_string(market.production[good]) + "," + std::to_string(market.consumption[good]);
             });
         stream << std::accumulate(double_list.begin(), double_list.end(), std::string(),
                                   [](const std::string& ss, const std::string& s) {
@@ -71,11 +71,9 @@ void SysMarketCsvHistory::WriteCsvHeader(const entt::entity entity) {
     auto row_list = (GetUniverse().GoodIterator() | std::views::transform([&](components::GoodEntity good) {
                          const std::string& name =
                              GetUniverse().get<components::Identifier>(GetUniverse().GetGood(good)).identifier;
-                         std::vector<std::string> col_names = {"supply",     "demand",
-                                                               "sd_ratio",   "volume",
-                                                               "price",      "chronic_shortages",
-                                                               "trade",      "resource_fufilled",
-                                                               "production", "consumption"};
+                         std::vector<std::string> col_names = {
+                             "supply", "demand",   "sd_ratio",   "volume",     "price", "chronic_shortages",
+                             "trade",  "taxation", "production", "consumption"};
 
                          auto view =
                              col_names | std::ranges::views::transform([name](const std::string& str) -> std::string {

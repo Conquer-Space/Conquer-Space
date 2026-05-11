@@ -32,13 +32,14 @@
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
-void SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost) {
+double SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost) {
     ZoneScoped;
+    double tax_income = 0;
     auto& employer = industry_node.get<components::Employer>();
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
-    if (!industry_node.all_of<components::ProductionUnit>()) return;
+    if (!industry_node.all_of<components::ProductionUnit>()) return 0.0;
 
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
@@ -77,7 +78,6 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
         }
     }
     size.shortage = shortage;
-    market.consumption += input;
     market.production += output;
     market.consumption += size.workers;
     size.amount_sold = recipe.output.amount * size.utilization;
@@ -91,15 +91,22 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
     // Maintenance costs will still have to be upkept, so if
     // there isnt any resources to upkeep the place, then stop
     // the production
-    size.material_costs = input.MultiplyAndGetSum(market.price);
-    size.wage_cost = size.workers.MultiplyAndGetSum(market.price);
+    auto [material_costs, taxes] = market.PurchaseFromMarket(input);
+    size.material_costs = material_costs;
+
+    auto [wage_costs, income_taxes] = market.PurchaseFromMarket(input);
+
+    size.tax_cost = taxes + income_taxes;
+    size.wage_cost = wage_costs;
     size.transport = 0;  //output_transport_cost + input_transport_cost;
 
     size.revenue = output.MultiplyAndGetSum(market.price);
-    size.profit = size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport;
+    size.profit =
+        size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport - size.tax_cost;
     auto& wallet = industry_node.get<components::Wallet>();
     wallet += size.profit;
     market.GDP += size.revenue - size.material_costs;
+    tax_income = taxes + income_taxes;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
@@ -133,6 +140,7 @@ void SysProduction::ProcessIndustry(Node& industry_node, components::Market& mar
         The more profit we have the less we increase until some level
         Let's just make it a log level
         */
+    return tax_income;
 }
 
 void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
@@ -221,10 +229,15 @@ void SysProduction::ProcessIndustries(Node& node) {
     auto& infrastructure = node.get<components::infrastructure::CityInfrastructure>();
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
+    double total_taxes = 0;
     for (Node industry_node : node.Convert(industries.industries)) {
         // We should also check for industries we want to construct
-        ProcessIndustry(industry_node, market, infra_cost);
+        total_taxes += ProcessIndustry(industry_node, market, infra_cost);
     }
+    // Now get province and stuff
+    auto& province = node.get<components::Province>();
+    auto& income = GetUniverse().get<components::OrganizationIncome>(province.country);
+    income.income_taxes += total_taxes;
 }
 
 void SysProduction::DoSystem() {
@@ -301,6 +314,7 @@ components::IndustryState SysProduction::SteadyState(entt::entity industry, comp
 
     return components::IndustryState::SteadyState;
 }
+
 components::IndustryState SysProduction::MaximumProduction(entt::entity industry,
                                                            components::ProductionUnit& production) {
     if (production.continuous_gains > 30 * components::StarDate::DAY) {

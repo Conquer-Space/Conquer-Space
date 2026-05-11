@@ -129,7 +129,6 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         int workforce = 0;
         double hours_sum = 0;
         double employment_rate_sum = 0;
-        int free_people = 0;
 
         std::map<entt::entity, int> job_drift;
         // Compute job drift
@@ -143,7 +142,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
                 // Then we should probably start cutting
                 // Find a ratio for amount we should cut...
                 double delta = std::min((market.sd_ratio[labor_comp.good] - 2), 10.);
-                double difference = workers * 0.1 * delta;
+                double difference = workers * 0.01 * delta;
                 job_drift[GetUniverse().default_job] += difference;
                 job_drift[labor] -= difference;
             }
@@ -155,8 +154,8 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
                     // Also cap by the amount of available good labors...
                     double delta = std::min(
                         (market.price[good] - market.price[labor_comp.good]) / market.price[labor_comp.good], 1.);
-                    double difference = workers * delta * 0.001;
-                    double max_diff = std::max(segment.labor.labor_distribution[good_labors[good]] * 0.01, 100.);
+                    double difference = workers * delta * 0.00001;
+                    double max_diff = std::max(segment.labor.labor_distribution[good_labors[good]] * 0.001, 100.);
                     difference = std::min(max_diff, difference);
                     job_drift[good_labors[good]] += difference;
                     job_drift[labor] -= difference;
@@ -188,13 +187,6 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             employment_rate_sum += workers * unemployment_rate;
         }
 
-        for (auto& [labor, workers] : segment.labor.labor_distribution) {
-            if (labor == GetUniverse().default_job) {
-                workers += free_people;
-            }
-            // Check if we have to distribute people to jobs that are like not great or something
-        }
-
         // Now redistribute our workers
 
         segment.employed_amount = employment_rate_sum;
@@ -211,7 +203,12 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
 
         segment.average_wage = segment.income / (segment.employed_amount + 1);
         segment.spending = cost;
+        // Add taxes to spending as well...
+        auto [consumption_cost, taxes] = market.PurchaseFromMarket(consumption);
         segment.income = segment.labor.labor_hours.MultiplyAndGetSum(market.price);
+        // Also add income taxes based off a percentage
+        // We assume people's income is uniform across stuff...
+        // What about graduated income taxes lol
         wallet -= cost;  // Spend, even if it puts the pop into debt
 
         market.production += segment.labor.labor_hours;
