@@ -680,7 +680,7 @@
     name: Islamic Republic of Iran
     common: Iran
     identifier: iran
-    color: [218, 0, 0]
+    color: 1DA03E
   }
   {
     name: Republic of Indonesia

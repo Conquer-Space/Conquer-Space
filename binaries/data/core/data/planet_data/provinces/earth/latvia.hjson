@@ -2,13 +2,13 @@
   {
     identifier: vidzemes
     color: b55aac
-    country: latvia
+    country: soviet_union
     planet: earth
   }
   {
     identifier: riga
     color: 59c393
-    country: latvia
+    country: soviet_union
     planet: earth
   }
 ]

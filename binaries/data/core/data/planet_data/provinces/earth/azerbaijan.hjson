@@ -2,13 +2,13 @@
   {
     identifier: azerbaijan
     color: 4b0cdf
-    country: azerbaijan
+    country: soviet_union
     planet: earth
   }
   {
     identifier: nakhchivan
     color: a9f1dc
-    country: azerbaijan
+    country: soviet_union
     planet: earth
   }
 ]
