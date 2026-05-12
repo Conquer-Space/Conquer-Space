@@ -94,7 +94,6 @@ void UniverseScene::Init() {
     GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
     GetUniverse().ctx().emplace<client::ctx::HoveringItem>();
     GetUniverse().ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
-    GetUniverse().ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::NoMapMode);
     GetUniverse().ctx().emplace<client::ctx::StarSystemViewDebug>();
     GetUniverse().ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::LocalSelectedMapMode);
 

@@ -1,0 +1,15 @@
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+        </style>
+    </head>
+    <body>
+        <div>
+            <div>Country holder</div>
+            <div>Country data...</div>
+        </div>
+        <div><p>Start Game!</p></div>
+    </body>
+</rml>

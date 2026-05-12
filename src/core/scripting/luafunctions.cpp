@@ -371,6 +371,12 @@ void FunctionCivilizations(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_player", [&]() { return universe.view<components::Player>().front(); });
+    REGISTER_FUNCTION("set_player", [&](entt::entity new_player) {
+        for (entt::entity entity : universe.view<components::Player>()) {
+            universe.remove<components::Player>(entity);
+        }
+        universe.emplace<components::Player>(new_player);
+    });
     REGISTER_FUNCTION("get_capital_city",
                       [&](entt::entity civ) { return universe.get<components::Country>(civ).capital_city; });
 
