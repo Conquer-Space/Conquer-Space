@@ -1,24 +1,52 @@
 [
   {
     identifier: northern_ireland
+    name: Northern Ireland
     color: f2b5b2
     country: uk
     planet: earth
+    population: [
+            {
+                size: 1377000
+                job_distribution: {
+                    laborer: 1625938
+                }
+            }
+        ]
   }
   {
     identifier: gibraltar
+    name: Gibraltar
     color: 7574c7
     country: uk
     planet: earth
+    population: [
+        {
+            size: 21656
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: wales
+    name: Wales
     color: "195e92"
     country: uk
     planet: earth
+    population: [
+        {
+            size: 2596850
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: west_country
+    name: West Country
     color: b9e681
     country: uk
     planet: earth
