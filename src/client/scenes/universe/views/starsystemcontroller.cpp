@@ -54,9 +54,7 @@ using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
                                            SysStarSystemRenderer& _r)
-    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {
-    universe.ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::LocalSelectedMapMode);
-}
+    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {}
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
@@ -312,7 +310,7 @@ void StarSystemController::SelectProvince() {
     // Check if it's the current player's country, and if it is, then we select the province
     // if it's not we select the country
     // check the owner
-    entt::entity player = universe.view<components::Player>().front();
+    entt::entity player = universe.GetPlayer();
     const auto& province = universe.get<components::Province>(selected_province);
 
     if (province_to_reset != entt::null && universe.valid(selected_province)) {
@@ -700,7 +698,7 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
         }
         case ctx::MapMode::LocalSelectedMapMode: {
             const auto& province_comp = universe.get<components::Province>(province);
-            if (province_comp.country == universe.view<components::Player>().front()) {
+            if (province_comp.country == universe.GetPlayer()) {
                 auto& planet_province_colors = universe.colors_province[focused_planet];
                 int color_int = planet_province_colors[province];
 

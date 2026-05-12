@@ -43,7 +43,7 @@ namespace bodies = components::bodies;
 namespace ships = components::ships;
 namespace types = components::types;
 
-void ScriptUniverseGenerator::Generate(Universe& universe) {
+void SysUniverseGenerator::Generate(Universe& universe) {
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
     script_engine["fields"] = universe.fields;

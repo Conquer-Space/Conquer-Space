@@ -86,12 +86,12 @@ void SysStarSystemRenderer::Initialize() {
 
     SetupDummyTextures();
     // Zoom into the player's capital city
-    entt::entity player = universe.view<components::Player>().front();
-    entt::entity player_capital = universe.get<components::Country>(player).capital_city;
-    if (player_capital != entt::null) {
-        // Zoom into the thing
-        universe.emplace_or_replace<FocusedCity>(player_capital);
-    }
+    //entt::entity player = universe.view<components::Player>().front();
+    //entt::entity player_capital = universe.get<components::Country>(player).capital_city;
+    //if (player_capital != entt::null) {
+    //    // Zoom into the thing
+    //    universe.emplace_or_replace<FocusedCity>(player_capital);
+    //}
     overlay.Initialize();
 }
 

@@ -95,6 +95,8 @@ void UniverseScene::Init() {
     GetUniverse().ctx().emplace<client::ctx::HoveringItem>();
     GetUniverse().ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
     GetUniverse().ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::NoMapMode);
+    GetUniverse().ctx().emplace<client::ctx::StarSystemViewDebug>();
+    GetUniverse().ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::LocalSelectedMapMode);
 
     system_renderer->SeeStarSystem();
 
@@ -114,13 +116,15 @@ void UniverseScene::Init() {
     AddUISystem<systems::TaxWindow>();
 
     AddUISystem<systems::gui::SysEvent>();
-    simulation->Init();
-    simulation->tick();  // Why do we tick the simulation once here? Idk
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
+
+    simulation->Init();
+    // Init simulation tick
+    simulation->tick();
 }
 
 void UniverseScene::Update(float deltaTime) {

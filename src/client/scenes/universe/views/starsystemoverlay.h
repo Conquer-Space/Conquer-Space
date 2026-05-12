@@ -22,6 +22,9 @@
 #include "engine/graphics/shader.h"
 
 namespace cqsp::client::systems {
+/**
+* Overlay over a planet surface
+*/
 class StarSystemOverlay {
  public:
     StarSystemOverlay(core::Universe &, engine::Application &);

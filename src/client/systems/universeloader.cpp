@@ -22,7 +22,7 @@
 
 namespace cqsp::client {
 
-using core::systems::universegenerator::ScriptUniverseGenerator;
+using core::systems::universegenerator::SysUniverseGenerator;
 
 void LoadUniverse(asset::AssetManager& asset_manager, ConquerSpace& conquer_space) {
     systems::LoadAllResources(asset_manager, conquer_space);
@@ -33,7 +33,7 @@ void LoadUniverse(asset::AssetManager& asset_manager, ConquerSpace& conquer_spac
     conquer_space.GetScriptInterface().RunScript(script_list->data);
     SPDLOG_INFO("Done loading scripts");
     // Load universe
-    ScriptUniverseGenerator script_generator(conquer_space.GetScriptInterface());
+    SysUniverseGenerator script_generator(conquer_space.GetScriptInterface());
 
     script_generator.Generate(conquer_space.GetUniverse());
 }
