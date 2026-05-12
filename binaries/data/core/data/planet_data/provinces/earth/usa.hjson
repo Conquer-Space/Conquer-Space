@@ -751,7 +751,7 @@
         population:
         [
             {
-                size: 8000000
+                size: 14830192 
                 job_distribution: {
                     laborer: 8000000
                 }
@@ -894,7 +894,7 @@
         population:
         [
             {
-                size: 14830192 
+                size: 10498012  
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -910,7 +910,7 @@
         population:
         [
             {
-                size: 14830192 
+                size: 2205398
                 job_distribution: {
                     laborer: 1625938
                 }
