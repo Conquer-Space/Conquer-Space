@@ -8,7 +8,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 20000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -24,7 +24,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1000000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -40,7 +40,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 3462499
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -56,7 +56,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 200000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -72,7 +72,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 359000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -88,7 +88,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 397000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -104,7 +104,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 65000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -120,7 +120,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 400000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -136,7 +136,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1000000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -152,7 +152,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 500000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -168,7 +168,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 550000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -184,7 +184,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1044991
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -200,7 +200,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 183570
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -216,7 +216,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1000969
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -232,7 +232,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1549945
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -248,7 +248,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1083305
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -264,7 +264,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1026328
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -280,7 +280,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2000000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -296,7 +296,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 3011747
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -312,7 +312,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 473326
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -328,7 +328,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 121928
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -344,7 +344,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1336387
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -360,7 +360,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 687514
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -376,7 +376,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 132856
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -392,7 +392,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 272744
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -408,7 +408,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1081018
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -424,7 +424,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 892126
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -440,7 +440,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 899170
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -456,7 +456,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1345017
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -472,7 +472,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2098481
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -488,7 +488,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2576625
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -504,7 +504,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2383265
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -520,7 +520,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1929481
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -529,7 +529,7 @@
   }
   {
     identifier: saratov
-    name: Saratov
+    name:   
     color: eb1a82
     country: soviet_union
     planet: earth
@@ -552,7 +552,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2562751
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -568,7 +568,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2053928
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -584,7 +584,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1001517
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -600,7 +600,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 173889
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -616,7 +616,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 499405
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -632,7 +632,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 35689
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -648,7 +648,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 56334
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -664,7 +664,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 40825
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -680,7 +680,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 437343
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -696,7 +696,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1030305
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -712,7 +712,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 206309
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -728,7 +728,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 134857
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -744,7 +744,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 200753
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -760,7 +760,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 3041609
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -776,7 +776,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 3644416
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -792,7 +792,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 103926
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -808,7 +808,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 991567
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -824,7 +824,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1249001
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -840,7 +840,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 706802
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -856,7 +856,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2450417
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -872,7 +872,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1217359
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -888,7 +888,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1807765
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -904,7 +904,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2485872
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -920,7 +920,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1329013
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -936,7 +936,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1576453
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -952,7 +952,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 341047
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -968,7 +968,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1101994
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -977,13 +977,14 @@
   }
   {
     identifier: kaluga
+    name: Kaluga
     color: 3c7490
     country: soviet_union
     planet: earth
     population:
         [
             {
-                size: 128643  
+                size: 985852
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -999,7 +1000,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 881945
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1015,7 +1016,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1365627
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1031,7 +1032,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1372910
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1047,7 +1048,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1944755
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1063,7 +1064,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 3500274
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1079,7 +1080,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1520308
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1095,7 +1096,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 897859
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1104,13 +1105,14 @@
   }
   {
     identifier: vologda
+    name: Vologda
     color: 1998c4
     country: soviet_union
     planet: earth
     population:
         [
             {
-                size: 128643  
+                size: 1007531
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1126,7 +1128,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 836529
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1142,7 +1144,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1306787
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1158,7 +1160,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 5063003
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1174,7 +1176,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1713600
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1190,7 +1192,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1036927
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1206,7 +1208,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 534000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1222,7 +1224,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 2392876
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1238,7 +1240,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1900000
                 job_distribution: {
                     laborer: 1625938
                 }
@@ -1254,7 +1256,7 @@
     population:
         [
             {
-                size: 128643  
+                size: 1282911
                 job_distribution: {
                     laborer: 1625938
                 }
