@@ -24,20 +24,8 @@
     planet: earth
   }
   {
-    identifier: parana_
-    color: c12eb4
-    country: brazil
-    planet: earth
-  }
-  {
     identifier: para
     color: 57c5e2
-    country: brazil
-    planet: earth
-  }
-  {
-    identifier: mato_grosso_do_sul
-    color: "8e4891"
     country: brazil
     planet: earth
   }

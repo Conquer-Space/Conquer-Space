@@ -1,45 +1,108 @@
 [
   {
     identifier: northern_ireland
+    name: Northern Ireland
     color: f2b5b2
     country: uk
     planet: earth
+    population: [
+        {
+            size: 1377000
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: gibraltar
+    name: Gibraltar
     color: 7574c7
     country: uk
     planet: earth
+    population: [
+        {
+            size: 21656
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: wales
+    name: Wales
     color: "195e92"
     country: uk
     planet: earth
+    population: [
+        {
+            size: 2596850
+            job_distribution: {
+                laborer: 1625938
+            }
+      }
+    ]
   }
   {
     identifier: west_country
+    name: West Country
     color: b9e681
     country: uk
     planet: earth
+    population: [
+        {
+            size: 1596850
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: lowlands
+    name: Scottish Lowlands
     color: 4c15ed
     country: uk
     planet: earth
+    population: [
+        {
+            size: 416499
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: yorkshire
+    name: Yorkshire
     color: f0d736
     country: uk
     planet: earth
+    population: [
+        {
+            size: 4000000
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: lancastershire
+    name: Lancastershire
     color: f25160
     country: uk
     planet: earth
+    population: [
+        {
+            size: 3000000
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: turks_and_caicos_islands
@@ -49,21 +112,48 @@
   }
   {
     identifier: east_anglica
+    name: East Anglica
     color: 800c74
     country: uk
     planet: earth
+    population: [
+        {
+            size: 2500000
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: home_counties
+    name: Home Counties
     color: c8c099
     country: uk
     planet: earth
+    population: [
+        {
+            size: 24500421
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: highlands
+    name: Scottish Highlands
     color: a5c070
     country: uk
     planet: earth
+    population: [
+        {
+            size: 109483
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
   {
     identifier: pitcairn_islands
@@ -133,8 +223,17 @@
   }
   {
     identifier: midlands
+    name: Midlands
     color: 6124bd
     country: uk
     planet: earth
+    population: [
+        {
+            size: 6000000
+            job_distribution: {
+                laborer: 1625938
+            }
+        }
+    ]
   }
 ]

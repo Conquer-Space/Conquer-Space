@@ -5,6 +5,16 @@
     identifier: zimbabwe
   }
   {
+    name: Yugoslavia
+    common: Yugoslavia
+    identifier: yugoslavia
+  }
+  {
+    name: Czechoslovakia
+    common: Czechoslovakia
+    identifier: czechoslovakia
+  }
+  {
     name: Republic of Zambia
     common: Zambia
     identifier: zambia
@@ -98,11 +108,6 @@
     name: Syrian Arab Republic
     common: Syria
     identifier: syria
-  }
-  {
-    name: Czech Republic
-    common: Czechia
-    identifier: czechia
   }
   {
     name: Republic of El Salvador
@@ -320,11 +325,6 @@
     identifier: somaliland
   }
   {
-    name: Slovak Republic
-    common: Slovakia
-    identifier: slovakia
-  }
-  {
     name: Republic of Slovenia
     common: Slovenia
     identifier: slovenia
@@ -365,9 +365,11 @@
     identifier: rwanda
   }
   {
-    name: Russian Federation
-    common: Russia
-    identifier: russia
+    name: Union of Soviet Socialist Republics
+    common: Soviet Union
+    identifier: soviet_union
+    Adjective: Soviet
+    color: CC0000
   }
   {
     name: Romania
@@ -639,11 +641,6 @@
     identifier: kenya
   }
   {
-    name: Republic of Kazakhstan
-    common: Kazakhstan
-    identifier: kazakhstan
-  }
-  {
     name: Hashemite Kingdom of Jordan
     common: Jordan
     identifier: jordan
@@ -678,7 +675,7 @@
     name: Islamic Republic of Iran
     common: Iran
     identifier: iran
-    color: [218, 0, 0]
+    color: 1DA03E
   }
   {
     name: Republic of Indonesia

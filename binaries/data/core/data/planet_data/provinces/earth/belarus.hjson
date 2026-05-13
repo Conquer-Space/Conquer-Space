@@ -2,37 +2,37 @@
   {
     identifier: gomel
     color: 654f78
-    country: belarus
+    country: soviet_union
     planet: earth
   }
   {
     identifier: brest
     color: dad12b
-    country: belarus
+    country: soviet_union
     planet: earth
   }
   {
     identifier: vitebsk
     color: 276d4e
-    country: belarus
+    country: soviet_union
     planet: earth
   }
   {
     identifier: grodno
     color: f6f6eb
-    country: belarus
+    country: soviet_union
     planet: earth
   }
   {
     identifier: mogilev
     color: c8e26e
-    country: belarus
+    country: soviet_union
     planet: earth
   }
   {
     identifier: minsk
     color: "8e0511"
-    country: belarus
+    country: soviet_union
     planet: earth
   }
 ]

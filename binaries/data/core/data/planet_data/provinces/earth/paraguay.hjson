@@ -5,4 +5,16 @@
     country: paraguay
     planet: earth
   }
+  {
+    identifier: mato_grosso_do_sul
+    color: "8e4891"
+    country: paraguay
+    planet: earth
+  }
+  {
+    identifier: parana_
+    color: c12eb4
+    country: paraguay
+    planet: earth
+  }
 ]

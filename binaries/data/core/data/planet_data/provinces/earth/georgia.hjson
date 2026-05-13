@@ -2,13 +2,13 @@
   {
     identifier: south_caucasus
     color: "485152"
-    country: georgia
+    country: soviet_union
     planet: earth
   }
   {
     identifier: sdrk
     color: 38d3b2
-    country: georgia
+    country: soviet_union
     planet: earth
   }
 ]

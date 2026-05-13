@@ -2,31 +2,31 @@
   {
     identifier: chardzhou
     color: 279dba
-    country: turkmenistan
+    country: soviet_union
     planet: earth
   }
   {
     identifier: mary
     color: b0cee5
-    country: turkmenistan
+    country: soviet_union
     planet: earth
   }
   {
     identifier: ahal
     color: 6fbc19
-    country: turkmenistan
+    country: soviet_union
     planet: earth
   }
   {
     identifier: balkan
     color: fe3e15
-    country: turkmenistan
+    country: soviet_union
     planet: earth
   }
   {
     identifier: tashauz
     color: cdb870
-    country: turkmenistan
+    country: soviet_union
     planet: earth
   }
 ]

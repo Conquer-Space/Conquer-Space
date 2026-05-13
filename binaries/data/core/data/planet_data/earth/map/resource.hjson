@@ -11,11 +11,6 @@
         type: texture
         hints: {}
     }
-    earth_colors: {
-        path: earth_color_list.hjson
-        type: hjson
-        hints: {}
-    }
     province_map: {
         path: countryprovinces2k.png
         type: binary

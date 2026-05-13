@@ -2,13 +2,13 @@
   {
     identifier: leninabad
     color: 6fa822
-    country: tajikistan
+    country: soviet_union
     planet: earth
   }
   {
     identifier: gorno_badakhshan
     color: d6b17c
-    country: tajikistan
+    country: soviet_union
     planet: earth
   }
 ]

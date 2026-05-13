@@ -2,7 +2,15 @@
   {
     identifier: chittagong
     color: 03c851
-    country: bangladesh
+    country: pakistan
     planet: earth
+    [
+      {
+          size: 39728535
+          job_distribution: {
+              laborer: 1625938
+          }
+      }
+    ]
   }
 ]

@@ -21,6 +21,8 @@
 #include <map>
 #include <string_view>
 
+#include <glm/glm.hpp>
+
 #include "core/universe.h"
 
 namespace cqsp::core::loading {
@@ -36,6 +38,10 @@ class HjsonLoader {
 
  protected:
     Universe& universe;
+
+    glm::vec3 LoadColor(const Hjson::Value& value, std::string_view identifier);
+    glm::vec3 LoadColor(const Hjson::Value& value);
+    uint32_t StringHash(std::string_view);
 };
 
 class TagLoader {
