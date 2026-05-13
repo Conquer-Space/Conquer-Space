@@ -4,6 +4,15 @@
     color: 4a2f90
     country: soviet_union
     planet: earth
+    population:
+        [
+            {
+                size: 500000
+                job_distribution: {
+                    laborer: 1625938
+                }
+            }
+        ]
   }
   {
     identifier: volyn
