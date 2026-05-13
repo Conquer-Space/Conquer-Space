@@ -10,6 +10,11 @@
     identifier: yugoslavia
   }
   {
+    name: Czechoslovakia
+    common: Czechoslovakia
+    identifier: czechoslovakia
+  }
+  {
     name: Republic of Zambia
     common: Zambia
     identifier: zambia
@@ -103,11 +108,6 @@
     name: Syrian Arab Republic
     common: Syria
     identifier: syria
-  }
-  {
-    name: Czech Republic
-    common: Czechia
-    identifier: czechia
   }
   {
     name: Republic of El Salvador
@@ -323,11 +323,6 @@
     name: Republic of Somaliland
     common: Somaliland
     identifier: somaliland
-  }
-  {
-    name: Slovak Republic
-    common: Slovakia
-    identifier: slovakia
   }
   {
     name: Republic of Slovenia
@@ -644,11 +639,6 @@
     name: Republic of Kenya
     common: Kenya
     identifier: kenya
-  }
-  {
-    name: Republic of Kazakhstan
-    common: Kazakhstan
-    identifier: kazakhstan
   }
   {
     name: Hashemite Kingdom of Jordan

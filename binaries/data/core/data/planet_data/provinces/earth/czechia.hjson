@@ -2,19 +2,19 @@
   {
     identifier: ustecky
     color: 22c239
-    country: czechia
+    country: czechoslovakia
     planet: earth
   }
   {
     identifier: liberecky
     color: 00b4f6
-    country: czechia
+    country: czechoslovakia
     planet: earth
   }
   {
     identifier: olomoucky
     color: 9fb1ba
-    country: czechia
+    country: czechoslovakia
     planet: earth
   }
 ]

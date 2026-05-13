@@ -2,19 +2,19 @@
   {
     identifier: zilinsky
     color: 8315b2
-    country: slovakia
+    country: czechoslovakia
     planet: earth
   }
   {
     identifier: presov
     color: d988a3
-    country: slovakia
+    country: czechoslovakia
     planet: earth
   }
   {
     identifier: bratislavsky
     color: 5857a5
-    country: slovakia
+    country: czechoslovakia
     planet: earth
   }
 ]
