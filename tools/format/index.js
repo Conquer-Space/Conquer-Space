@@ -44,7 +44,8 @@ walk("../../binaries/data", function(err, results) {
         }
         var text = Hjson.rt.parse(data);
         var output = Hjson.rt.stringify(text, {
-            bracesSameLine: false
+            bracesSameLine: true,
+            condense: 60
         });
 
         fs.writeFile(file_name, output, 'utf8', (err) => {
