@@ -1,80 +1,80 @@
 [
-  {
-    identifier: aoste
-    color: 356fa9
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: como
-    color: 8cd006
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: bozen
-    color: 173fe9
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: rimini
-    color: 1c8cd9
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: pesaro_e_urbino
-    color: 1dd003
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: trieste
-    color: ae8603
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: teramo
-    color: de1269
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: barletta_andria_trani
-    color: 113b8c
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: matera
-    color: 3affa3
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: salerno
-    color: 058b11
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: livorno
-    color: 0f06f2
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: sicily
-    color: fff057
-    country: italy
-    planet: earth
-  }
-  {
-    identifier: sardinia
-    color: "95e798"
-    country: italy
-    planet: earth
-  }
+    {
+        identifier: aoste
+        color: 356fa9
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: como
+        color: 8cd006
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: bozen
+        color: 173fe9
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: rimini
+        color: 1c8cd9
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: pesaro_e_urbino
+        color: 1dd003
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: trieste
+        color: ae8603
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: teramo
+        color: de1269
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: barletta_andria_trani
+        color: 113b8c
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: matera
+        color: 3affa3
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: salerno
+        color: 058b11
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: livorno
+        color: 0f06f2
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: sicily
+        color: fff057
+        country: italy
+        planet: earth
+    }
+    {
+        identifier: sardinia
+        color: 95e798
+        country: italy
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: guatemala
-    color: bc2a37
-    country: guatemala
-    planet: earth
-  }
+    {
+        identifier: guatemala
+        color: bc2a37
+        country: guatemala
+        planet: earth
+    }
 ]

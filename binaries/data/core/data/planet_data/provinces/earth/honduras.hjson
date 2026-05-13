@@ -1,8 +1,8 @@
 [
-  {
-    identifier: honduras
-    color: b1c9dd
-    country: honduras
-    planet: earth
-  }
+    {
+        identifier: honduras
+        color: b1c9dd
+        country: honduras
+        planet: earth
+    }
 ]

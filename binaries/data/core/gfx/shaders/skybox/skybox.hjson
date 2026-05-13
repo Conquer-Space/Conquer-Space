@@ -3,7 +3,5 @@
     // Skybox should be a cubemap
     vert: skybox.vert
     frag: skybox.frag
-    uniforms: {
-        skybox: 0
-    }
+    uniforms: {skybox: 0}
 }

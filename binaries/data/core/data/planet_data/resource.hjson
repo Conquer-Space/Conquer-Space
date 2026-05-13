@@ -2,7 +2,6 @@
     provinces: {
         path: provinces
         type: hjson
-        hints: {
-        }
+        hints: {}
     }
 }

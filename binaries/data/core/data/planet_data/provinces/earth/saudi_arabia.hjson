@@ -1,50 +1,50 @@
 [
-  {
-    identifier: ash_sharqiyah
-    color: d8d89c
-    country: saudi_arabia
-    planet: earth
-  }
-  {
-    identifier: al_hudud_ash_shamaliyah
-    color: acd285
-    country: saudi_arabia
-    planet: earth
-  }
-  {
-    identifier: al_jawf
-    color: 62dcba
-    country: saudi_arabia
-    planet: earth
-  }
-  {
-    identifier: najran
-    color: 2f641d
-    country: saudi_arabia
-    planet: earth
-  }
-  {
-    identifier: tabuk
-    color: dafbb5
-    country: saudi_arabia
-    planet: earth
-  }
-  {
-    identifier: al_madinah
-    color: 2a6313
-    country: saudi_arabia
-    planet: earth
-  }
-  {
-    identifier: makkah
-    color: b7c330
-    country: saudi_arabia
-    planet: earth
-  }
-  {
-    identifier: ar_riyad
-    color: 9df518
-    country: saudi_arabia
-    planet: earth
-  }
+    {
+        identifier: ash_sharqiyah
+        color: d8d89c
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_hudud_ash_shamaliyah
+        color: acd285
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_jawf
+        color: 62dcba
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: najran
+        color: 2f641d
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: tabuk
+        color: dafbb5
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: al_madinah
+        color: 2a6313
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: makkah
+        color: b7c330
+        country: saudi_arabia
+        planet: earth
+    }
+    {
+        identifier: ar_riyad
+        color: 9df518
+        country: saudi_arabia
+        planet: earth
+    }
 ]

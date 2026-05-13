@@ -1,62 +1,62 @@
 [
-  {
-    identifier: maputo
-    color: ddb48d
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: cabo_delgado
-    color: 68bcfd
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: niassa
-    color: 00e57e
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: tete
-    color: c03618
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: manica
-    color: "787161"
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: gaza
-    color: 53685c
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: zambezia
-    color: 9da867
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: inhambane
-    color: 3d820e
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: sofala
-    color: "282526"
-    country: mozambique
-    planet: earth
-  }
-  {
-    identifier: nampula
-    color: "210176"
-    country: mozambique
-    planet: earth
-  }
+    {
+        identifier: maputo
+        color: ddb48d
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: cabo_delgado
+        color: 68bcfd
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: niassa
+        color: 00e57e
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: tete
+        color: c03618
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: manica
+        color: "787161"
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: gaza
+        color: 53685c
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: zambezia
+        color: 9da867
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: inhambane
+        color: 3d820e
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: sofala
+        color: "282526"
+        country: mozambique
+        planet: earth
+    }
+    {
+        identifier: nampula
+        color: "210176"
+        country: mozambique
+        planet: earth
+    }
 ]

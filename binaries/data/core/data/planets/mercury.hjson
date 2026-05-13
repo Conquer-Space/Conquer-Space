@@ -5,8 +5,7 @@
         radius: 2440 km
         reference: sun
         gm: 22032.9
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.2056187278872585
             semi_major_axis: 57908973.50211744 km
             M0: 299.6055621749458 deg
@@ -16,10 +15,7 @@
         }
         day_length: 58.646 d
         axial: 2.04 deg
-        texture:
-        {
-            terrain: mercurymap
-        }
+        texture: {terrain: "mercurymap"}
         tags: []
     }
 ]

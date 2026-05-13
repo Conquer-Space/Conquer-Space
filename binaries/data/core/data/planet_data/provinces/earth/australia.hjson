@@ -1,62 +1,62 @@
 [
-  {
-    identifier: western_australia
-    color: ac7f21
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: northern_territory
-    color: 45dd99
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: south_australia
-    color: 2586f7
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: queensland
-    color: bfe934
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: new_south_wales
-    color: c35a8e
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: jervis_bay_territory
-    color: a614b6
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: victoria
-    color: 56a7a0
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: heard_island_and_mcdonald_islands
-    color: 4ebbc0
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: tasmania
-    color: 6b76f9
-    country: australia
-    planet: earth
-  }
-  {
-    identifier: coral_sea_islands
-    color: 87a95e
-    country: australia
-    planet: earth
-  }
+    {
+        identifier: western_australia
+        color: ac7f21
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: northern_territory
+        color: 45dd99
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: south_australia
+        color: 2586f7
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: queensland
+        color: bfe934
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: new_south_wales
+        color: c35a8e
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: jervis_bay_territory
+        color: a614b6
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: victoria
+        color: 56a7a0
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: heard_island_and_mcdonald_islands
+        color: 4ebbc0
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: tasmania
+        color: 6b76f9
+        country: australia
+        planet: earth
+    }
+    {
+        identifier: coral_sea_islands
+        color: 87a95e
+        country: australia
+        planet: earth
+    }
 ]

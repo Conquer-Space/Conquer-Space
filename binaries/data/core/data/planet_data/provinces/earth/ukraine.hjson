@@ -1,137 +1,134 @@
 [
-  {
-    identifier: chernihiv
-    color: 4a2f90
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    {
+        identifier: chernihiv
+        color: 4a2f90
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 500000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: volyn
-    color: 442a0e
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: rivne
-    color: ea48f0
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: zhytomyr
-    color: 60ec67
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: kiev
-    color: 6482a1
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: transcarpathia
-    color: 43f797
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: chernivtsi
-    color: bad0e0
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: odessa
-    color: b75a50
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: vinnytsya
-    color: d737ee
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: sumy
-    color: 39d8e6
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: kharkiv
-    color: a7d272
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: luhans_k
-    color: eafea9
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: donets_k
-    color: 59576d
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: kherson
-    color: eac985
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: zaporizhzhya
-    color: 27ba4c
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: mykolayiv
-    color: 2350a6
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: poltava
-    color: f335f1
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: khmel_nyts_kyy
-    color: b620c0
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: dnipropetrovs_k
-    color: 0bf9fc
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: cherkasy
-    color: c837c9
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: kirovohrad
-    color: 9261dd
-    country: soviet_union
-    planet: earth
-  }
+    }
+    {
+        identifier: volyn
+        color: 442a0e
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: rivne
+        color: ea48f0
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: zhytomyr
+        color: 60ec67
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: kiev
+        color: 6482a1
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: transcarpathia
+        color: 43f797
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: chernivtsi
+        color: bad0e0
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: odessa
+        color: b75a50
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: vinnytsya
+        color: d737ee
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: sumy
+        color: 39d8e6
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: kharkiv
+        color: a7d272
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: luhans_k
+        color: eafea9
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: donets_k
+        color: 59576d
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: kherson
+        color: eac985
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: zaporizhzhya
+        color: 27ba4c
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: mykolayiv
+        color: 2350a6
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: poltava
+        color: f335f1
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: khmel_nyts_kyy
+        color: b620c0
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: dnipropetrovs_k
+        color: 0bf9fc
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: cherkasy
+        color: c837c9
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: kirovohrad
+        color: 9261dd
+        country: soviet_union
+        planet: earth
+    }
 ]

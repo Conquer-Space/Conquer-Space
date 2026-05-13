@@ -2,7 +2,6 @@
     defaultfont: {
         path: Roboto-Regular.ttf
         type: font
-        hints: {
-        }
+        hints: {}
     }
 }

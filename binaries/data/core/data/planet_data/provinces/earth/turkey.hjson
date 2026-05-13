@@ -1,74 +1,74 @@
 [
-  {
-    identifier: ardahan
-    color: 670a01
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: artvin
-    color: 5e930f
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: istambul
-    color: df9530
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: mardin
-    color: b4aa47
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: hatay
-    color: 33795f
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: canakkale
-    color: cbed3c
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: giresun
-    color: "4e8517"
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: samsun
-    color: bf57c3
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: kastamonu
-    color: cd9bf4
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: duzce
-    color: 083f22
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: aydin
-    color: bed4bf
-    country: turkey
-    planet: earth
-  }
-  {
-    identifier: kutahya
-    color: d7e690
-    country: turkey
-    planet: earth
-  }
+    {
+        identifier: ardahan
+        color: 670a01
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: artvin
+        color: 5e930f
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: istambul
+        color: df9530
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: mardin
+        color: b4aa47
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: hatay
+        color: 33795f
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: canakkale
+        color: cbed3c
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: giresun
+        color: 4e8517
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: samsun
+        color: bf57c3
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kastamonu
+        color: cd9bf4
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: duzce
+        color: 083f22
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: aydin
+        color: bed4bf
+        country: turkey
+        planet: earth
+    }
+    {
+        identifier: kutahya
+        color: d7e690
+        country: turkey
+        planet: earth
+    }
 ]

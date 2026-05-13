@@ -2,73 +2,61 @@
     skycubemap: {
         path: skybox/skybox.hjson
         type: cubemap
-        hints: {
-        }
+        hints: {}
     }
     earthmap: {
         path: earth8k.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     earthnormal: {
         path: earthnormal8k.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     earthroughness: {
         path: earthroughness8k.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     jupitermap: {
         path: 2k_jupiter.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     marsmap: {
         path: 2k_mars.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     mercurymap: {
         path: 2k_mercury.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     moonmap: {
         path: 2k_moon.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     neptunemap: {
         path: 2k_neptune.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     saturnmap: {
         path: 2k_saturn.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     uranusmap: {
         path: 2k_uranus.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
     venusmap: {
         path: 2k_venus.jpg
         type: texture
-        hints: {
-        }
+        hints: {}
     }
 }

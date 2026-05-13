@@ -1,8 +1,8 @@
 [
-  {
-    identifier: saoma
-    color: a0c9f3
-    country: samoa
-    planet: earth
-  }
+    {
+        identifier: saoma
+        color: a0c9f3
+        country: samoa
+        planet: earth
+    }
 ]

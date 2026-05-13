@@ -1,98 +1,98 @@
 [
-  {
-    identifier: silesian
-    color: "768298"
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: lesser_poland
-    color: "660121"
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: subcarpathian
-    color: 5229c5
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: lower_silesian
-    color: a3271b
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: opole
-    color: "188565"
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: podlachian
-    color: 172dd9
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: warmian_masurian
-    color: 9c8ce0
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: lubusz
-    color: c21fb1
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: west_pomeranian
-    color: 27be28
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: lublin
-    color: 087872
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: pomeranian
-    color: bdc1c5
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: masovian
-    color: 392f70
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: odz
-    color: ddefb8
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: kuyavian_pomeranian
-    color: 4fb6db
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: greater_poland
-    color: 112f88
-    country: poland
-    planet: earth
-  }
-  {
-    identifier: swietokrzyskie
-    color: da94b0
-    country: poland
-    planet: earth
-  }
+    {
+        identifier: silesian
+        color: "768298"
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lesser_poland
+        color: "660121"
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: subcarpathian
+        color: 5229c5
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lower_silesian
+        color: a3271b
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: opole
+        color: "188565"
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: podlachian
+        color: 172dd9
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: warmian_masurian
+        color: 9c8ce0
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lubusz
+        color: c21fb1
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: west_pomeranian
+        color: 27be28
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: lublin
+        color: 087872
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: pomeranian
+        color: bdc1c5
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: masovian
+        color: 392f70
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: odz
+        color: ddefb8
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: kuyavian_pomeranian
+        color: 4fb6db
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: greater_poland
+        color: 112f88
+        country: poland
+        planet: earth
+    }
+    {
+        identifier: swietokrzyskie
+        color: da94b0
+        country: poland
+        planet: earth
+    }
 ]

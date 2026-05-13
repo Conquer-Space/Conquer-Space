@@ -1,38 +1,38 @@
 [
-  {
-    identifier: lapland
-    color: 14b1ef
-    country: finland
-    planet: earth
-  }
-  {
-    identifier: northern_ostrobothnia
-    color: 0c7e1f
-    country: finland
-    planet: earth
-  }
-  {
-    identifier: kainuu
-    color: a7ea27
-    country: finland
-    planet: earth
-  }
-  {
-    identifier: south_karelia
-    color: b960ef
-    country: finland
-    planet: earth
-  }
-  {
-    identifier: uusimaa
-    color: 3e240c
-    country: finland
-    planet: earth
-  }
-  {
-    identifier: ostrobothnia
-    color: fcd104
-    country: finland
-    planet: earth
-  }
+    {
+        identifier: lapland
+        color: 14b1ef
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: northern_ostrobothnia
+        color: 0c7e1f
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: kainuu
+        color: a7ea27
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: south_karelia
+        color: b960ef
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: uusimaa
+        color: 3e240c
+        country: finland
+        planet: earth
+    }
+    {
+        identifier: ostrobothnia
+        color: fcd104
+        country: finland
+        planet: earth
+    }
 ]

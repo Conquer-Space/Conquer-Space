@@ -3,26 +3,15 @@
     {
         name: Steel Manufacturing
         identifier: steel_manufacturing
-        input: {
-            iron: 100
-            coal: 20
-        }
-        output: {
-            steel: 120
-        }
+        input: {iron: 100, coal: 20}
+        output: {steel: 120}
         cost: {
-            labor: {
-                laborer: 15000
-            }
+            labor: {laborer: 15000}
         }
         construction: {
             time: 4 weeks
-            cost: {
-                heavy_machinery: 1000
-                concrete: 2500
-            }
+            cost: {heavy_machinery: 1000, concrete: 2500}
         }
-        tags: [
-        ]
+        tags: []
     }
 ]

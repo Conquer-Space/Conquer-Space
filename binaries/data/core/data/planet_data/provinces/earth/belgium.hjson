@@ -1,8 +1,8 @@
 [
-  {
-    identifier: belgium
-    color: f0599c
-    country: belgium
-    planet: earth
-  }
+    {
+        identifier: belgium
+        color: f0599c
+        country: belgium
+        planet: earth
+    }
 ]

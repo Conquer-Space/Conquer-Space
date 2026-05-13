@@ -1,50 +1,50 @@
 [
-  {
-    identifier: muchinga
-    color: 481bc1
-    country: zambia
-    planet: earth
-  }
-  {
-    identifier: eastern
-    color: "709463"
-    country: zambia
-    planet: earth
-  }
-  {
-    identifier: luapula
-    color: 5a10f4
-    country: zambia
-    planet: earth
-  }
-  {
-    identifier: lusaka
-    color: 1a370a
-    country: zambia
-    planet: earth
-  }
-  {
-    identifier: kafue_
-    color: "101e98"
-    country: zambia
-    planet: earth
-  }
-  {
-    identifier: north_western
-    color: e596d8
-    country: zambia
-    planet: earth
-  }
-  {
-    identifier: copperbelt
-    color: ff52e7
-    country: zambia
-    planet: earth
-  }
-  {
-    identifier: langwa
-    color: 66df49
-    country: zambia
-    planet: earth
-  }
+    {
+        identifier: muchinga
+        color: 481bc1
+        country: zambia
+        planet: earth
+    }
+    {
+        identifier: eastern
+        color: "709463"
+        country: zambia
+        planet: earth
+    }
+    {
+        identifier: luapula
+        color: 5a10f4
+        country: zambia
+        planet: earth
+    }
+    {
+        identifier: lusaka
+        color: 1a370a
+        country: zambia
+        planet: earth
+    }
+    {
+        identifier: kafue_
+        color: "101e98"
+        country: zambia
+        planet: earth
+    }
+    {
+        identifier: north_western
+        color: e596d8
+        country: zambia
+        planet: earth
+    }
+    {
+        identifier: copperbelt
+        color: ff52e7
+        country: zambia
+        planet: earth
+    }
+    {
+        identifier: langwa
+        color: 66df49
+        country: zambia
+        planet: earth
+    }
 ]

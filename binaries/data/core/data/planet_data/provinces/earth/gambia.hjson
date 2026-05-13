@@ -1,8 +1,8 @@
 [
-  {
-    identifier: the_gambia
-    color: e876d5
-    country: gambia
-    planet: earth
-  }
+    {
+        identifier: the_gambia
+        color: e876d5
+        country: gambia
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: grenadines
-    color: 3ddba7
-    country: st__vin__and_gren_
-    planet: earth
-  }
+    {
+        identifier: grenadines
+        color: 3ddba7
+        country: st__vin__and_gren_
+        planet: earth
+    }
 ]

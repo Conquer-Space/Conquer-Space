@@ -1,8 +1,8 @@
 [
-  {
-    identifier: cyprus
-    color: 9fd502
-    country: cyprus
-    planet: earth
-  }
+    {
+        identifier: cyprus
+        color: 9fd502
+        country: cyprus
+        planet: earth
+    }
 ]

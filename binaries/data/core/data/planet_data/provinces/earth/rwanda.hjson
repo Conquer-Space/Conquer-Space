@@ -1,8 +1,8 @@
 [
-  {
-    identifier: rwanda
-    color: 310a98
-    country: rwanda
-    planet: earth
-  }
+    {
+        identifier: rwanda
+        color: 310a98
+        country: rwanda
+        planet: earth
+    }
 ]

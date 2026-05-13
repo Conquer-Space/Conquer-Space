@@ -3,39 +3,21 @@
     {
         name: Tractor Production
         identifier: tractor_production
-        input: {
-            steel: 20
-        }
-        output: {
-            tractors: 5
-        }
+        input: {steel: 20}
+        output: {tractors: 5}
         cost: {
-            labor: {
-                laborer: 30000
-            }
+            labor: {laborer: 30000}
         }
-        tags: [
-            ratio
-            capital
-        ]
+        tags: ["ratio", "capital"]
     }
     {
         name: Heavy Machinery Production
         identifier: machinery_production
-        input: {
-            steel: 20
-        }
-        output: {
-            heavy_machinery: 5
-        }
+        input: {steel: 20}
+        output: {heavy_machinery: 5}
         cost: {
-            labor: {
-                laborer: 30000
-            }
+            labor: {laborer: 30000}
         }
-        tags: [
-            ratio
-            capital
-        ]
+        tags: ["ratio", "capital"]
     }
 ]

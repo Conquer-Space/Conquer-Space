@@ -1,20 +1,20 @@
 [
-  {
-    identifier: mindanao
-    color: 06aab3
-    country: philippines
-    planet: earth
-  }
-  {
-    identifier: luzon
-    color: dd92cd
-    country: philippines
-    planet: earth
-  }
-  {
-    identifier: visayas
-    color: a69b6f
-    country: philippines
-    planet: earth
-  }
+    {
+        identifier: mindanao
+        color: 06aab3
+        country: philippines
+        planet: earth
+    }
+    {
+        identifier: luzon
+        color: dd92cd
+        country: philippines
+        planet: earth
+    }
+    {
+        identifier: visayas
+        color: a69b6f
+        country: philippines
+        planet: earth
+    }
 ]

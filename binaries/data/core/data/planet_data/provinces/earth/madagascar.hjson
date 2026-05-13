@@ -1,14 +1,14 @@
 [
-  {
-    identifier: north_madagascar
-    color: 3e4bff
-    country: madagascar
-    planet: earth
-  }
-  {
-    identifier: south_madagascar
-    color: 344d6d
-    country: madagascar
-    planet: earth
-  }
+    {
+        identifier: north_madagascar
+        color: 3e4bff
+        country: madagascar
+        planet: earth
+    }
+    {
+        identifier: south_madagascar
+        color: 344d6d
+        country: madagascar
+        planet: earth
+    }
 ]

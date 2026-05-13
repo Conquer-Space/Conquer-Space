@@ -1,8 +1,8 @@
 [
-  {
-    identifier: suriname
-    color: 01288a
-    country: suriname
-    planet: earth
-  }
+    {
+        identifier: suriname
+        color: 01288a
+        country: suriname
+        planet: earth
+    }
 ]

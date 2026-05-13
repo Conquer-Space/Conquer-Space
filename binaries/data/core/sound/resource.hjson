@@ -2,19 +2,16 @@
     button_press: {
         path: gui/buttonselect.ogg
         type: audio
-        hints: {
-        }
+        hints: {}
     }
     button_swipe: {
         path: gui/swipe.ogg
         type: audio
-        hints: {
-        }
+        hints: {}
     }
     scrollclick: {
         path: gui/scrollclick.ogg
         type: audio
-        hints: {
-        }
+        hints: {}
     }
 }

@@ -1,14 +1,14 @@
 [
-  {
-    identifier: aruba
-    color: 12e7a3
-    country: mauritius
-    planet: earth
-  }
-  {
-    identifier: mauritius
-    color: 772db3
-    country: mauritius
-    planet: earth
-  }
+    {
+        identifier: aruba
+        color: 12e7a3
+        country: mauritius
+        planet: earth
+    }
+    {
+        identifier: mauritius
+        color: 772db3
+        country: mauritius
+        planet: earth
+    }
 ]

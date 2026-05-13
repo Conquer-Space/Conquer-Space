@@ -1,14 +1,14 @@
 [
-  {
-    identifier: upper_east
-    color: 231c8b
-    country: ghana
-    planet: earth
-  }
-  {
-    identifier: volta
-    color: e63149
-    country: ghana
-    planet: earth
-  }
+    {
+        identifier: upper_east
+        color: 231c8b
+        country: ghana
+        planet: earth
+    }
+    {
+        identifier: volta
+        color: e63149
+        country: ghana
+        planet: earth
+    }
 ]

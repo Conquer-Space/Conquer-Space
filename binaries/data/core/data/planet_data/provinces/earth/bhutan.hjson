@@ -1,8 +1,8 @@
 [
-  {
-    identifier: bhutan
-    color: cee1b7
-    country: bhutan
-    planet: earth
-  }
+    {
+        identifier: bhutan
+        color: cee1b7
+        country: bhutan
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: burundi
-    color: 02088d
-    country: burundi
-    planet: earth
-  }
+    {
+        identifier: burundi
+        color: 02088d
+        country: burundi
+        planet: earth
+    }
 ]

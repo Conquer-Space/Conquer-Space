@@ -1,8 +1,8 @@
 [
-  {
-    identifier: liechtenstein
-    color: fcbe61
-    country: liechtenstein
-    planet: earth
-  }
+    {
+        identifier: liechtenstein
+        color: fcbe61
+        country: liechtenstein
+        planet: earth
+    }
 ]

@@ -1,17 +1,7 @@
 [
-    {
-        identifier: food
-    }
-    {
-        identifier: water
-    }
-    {
-        identifier: heating
-    }
-    {
-        identifier: household
-    }
-    {
-        identifier: entertainment
-    }
+    {identifier: "food"}
+    {identifier: "water"}
+    {identifier: "heating"}
+    {identifier: "household"}
+    {identifier: "entertainment"}
 ]

@@ -5,8 +5,7 @@
         reference: earth
         radius: 1737.4 km
         gm: 4904.86959
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.05298940093961622
             semi_major_axis: 384399.3412619646 km
             M0: 219.8346069893559 deg
@@ -14,8 +13,7 @@
             LAN: 13.23683594105054 deg
             arg_periapsis: 189.1483925319013 deg
         }
-        texture:
-        {
+        texture: {
             terrain: moonmap
             province_map: moon_province_map
             province_definitions: moon_province_defs
@@ -34,14 +32,8 @@
                 // We need a base but for now let's do the basic stuff
                 stage: 100
             }
-            {
-                identifier: initial_base
-                stage: 100
-            }
-            {
-                identifier: settlement
-                stage: 100
-            }
+            {identifier: "initial_base", stage: 100}
+            {identifier: "settlement", stage: 100}
             {
                 // Once we hit this stage we will go to the colony view
                 // Let's just do a basic we recieved this much launches or something

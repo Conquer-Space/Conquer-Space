@@ -2,86 +2,54 @@
     {
         name: Chemistry
         identifier: chemistry
-        adjacent: [
-            mathematics
-        ]
-        parent: [
-            science
-        ]
+        adjacent: ["mathematics"]
+        parent: ["science"]
     }
     {
         name: Quantum Physics
         identifier: quantum_physics
         description: The study of the physical properties of matter at the atomic and subatomic scale
-        adjacent: [
-            nuke_physics
-            calculus
-        ]
-        parent: [
-            physics
-        ]
+        adjacent: ["nuke_physics", "calculus"]
+        parent: ["physics"]
     }
     {
         name: Number Theory
         identifier: number_theory
-        parent: [
-            mathematics
-        ]
+        parent: ["mathematics"]
     }
     {
         name: Engineering
         identifier: engineering
-        adjacent: [
-            physics
-            mathematics
-        ]
+        adjacent: ["physics", "mathematics"]
     }
     {
         name: Geometry
         identifier: geometry
-        adjacent: [
-            calculus
-        ]
-        parent: [
-            mathematics
-        ]
+        adjacent: ["calculus"]
+        parent: ["mathematics"]
     }
     {
         name: Calculus
         identifier: calculus
-        parent: [
-            algebra
-        ]
+        parent: ["algebra"]
     }
     {
         name: Algebra
         identifier: algebra
-        parent: [
-            mathematics
-        ]
+        parent: ["mathematics"]
     }
-    {
-        name: Mathematics
-        identifier: mathematics
-    }
+    {name: "Mathematics", identifier: "mathematics"}
     {
         name: Nuclear Physics
         identifier: nuke_physics
-        parent: [
-            physics
-        ]
+        parent: ["physics"]
     }
     {
         name: Physics
         identifier: physics
         description: Physics is the study of matter, its motion, and its behavior through space and time.
-        adjacent: [
-            mathematics
-            algebra
-        ]
-        parent: [
-            science
-        ]
+        adjacent: ["mathematics", "algebra"]
+        parent: ["science"]
     }
     {
         name: Science

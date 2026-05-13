@@ -1,8 +1,8 @@
 [
-  {
-    identifier: barbados
-    color: ad84b5
-    country: barbados
-    planet: earth
-  }
+    {
+        identifier: barbados
+        color: ad84b5
+        country: barbados
+        planet: earth
+    }
 ]

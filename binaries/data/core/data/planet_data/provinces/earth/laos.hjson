@@ -1,14 +1,14 @@
 [
-  {
-    identifier: huapanh
-    color: 5d6bb8
-    country: laos
-    planet: earth
-  }
-  {
-    identifier: attapeu
-    color: "863033"
-    country: laos
-    planet: earth
-  }
+    {
+        identifier: huapanh
+        color: 5d6bb8
+        country: laos
+        planet: earth
+    }
+    {
+        identifier: attapeu
+        color: "863033"
+        country: laos
+        planet: earth
+    }
 ]

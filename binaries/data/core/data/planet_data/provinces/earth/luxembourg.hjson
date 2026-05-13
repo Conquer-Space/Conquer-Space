@@ -1,8 +1,8 @@
 [
-  {
-    identifier: luxembourg
-    color: ebe0cf
-    country: luxembourg
-    planet: earth
-  }
+    {
+        identifier: luxembourg
+        color: ebe0cf
+        country: luxembourg
+        planet: earth
+    }
 ]

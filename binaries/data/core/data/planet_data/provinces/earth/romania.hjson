@@ -1,32 +1,32 @@
 [
-  {
-    identifier: satu_mare
-    color: 3cc048
-    country: romania
-    planet: earth
-  }
-  {
-    identifier: mehedinti
-    color: c9a249
-    country: romania
-    planet: earth
-  }
-  {
-    identifier: calarasi
-    color: 741e0d
-    country: romania
-    planet: earth
-  }
-  {
-    identifier: botosani
-    color: "237804"
-    country: romania
-    planet: earth
-  }
-  {
-    identifier: maramures
-    color: 263a81
-    country: romania
-    planet: earth
-  }
+    {
+        identifier: satu_mare
+        color: 3cc048
+        country: romania
+        planet: earth
+    }
+    {
+        identifier: mehedinti
+        color: c9a249
+        country: romania
+        planet: earth
+    }
+    {
+        identifier: calarasi
+        color: 741e0d
+        country: romania
+        planet: earth
+    }
+    {
+        identifier: botosani
+        color: "237804"
+        country: romania
+        planet: earth
+    }
+    {
+        identifier: maramures
+        color: 263a81
+        country: romania
+        planet: earth
+    }
 ]

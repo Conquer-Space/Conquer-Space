@@ -1,8 +1,8 @@
 [
-  {
-    identifier: solomon_islands
-    color: ff88e6
-    country: solomon_is_
-    planet: earth
-  }
+    {
+        identifier: solomon_islands
+        color: ff88e6
+        country: solomon_is_
+        planet: earth
+    }
 ]

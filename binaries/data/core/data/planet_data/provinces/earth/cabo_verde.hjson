@@ -1,8 +1,8 @@
 [
-  {
-    identifier: cabo_verde
-    color: 28d671
-    country: cabo_verde
-    planet: earth
-  }
+    {
+        identifier: cabo_verde
+        color: 28d671
+        country: cabo_verde
+        planet: earth
+    }
 ]

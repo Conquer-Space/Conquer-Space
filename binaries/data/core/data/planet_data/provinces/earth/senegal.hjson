@@ -1,20 +1,20 @@
 [
-  {
-    identifier: _kolda
-    color: add331
-    country: senegal
-    planet: earth
-  }
-  {
-    identifier: tambacounda
-    color: "667987"
-    country: senegal
-    planet: earth
-  }
-  {
-    identifier: dakar
-    color: 44d035
-    country: senegal
-    planet: earth
-  }
+    {
+        identifier: _kolda
+        color: add331
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: tambacounda
+        color: "667987"
+        country: senegal
+        planet: earth
+    }
+    {
+        identifier: dakar
+        color: 44d035
+        country: senegal
+        planet: earth
+    }
 ]

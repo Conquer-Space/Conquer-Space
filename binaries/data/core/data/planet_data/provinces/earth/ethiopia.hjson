@@ -1,50 +1,50 @@
 [
-  {
-    identifier: southern_nations_nationalities_and_peoples
-    color: 422b1e
-    country: ethiopia
-    planet: earth
-  }
-  {
-    identifier: somali
-    color: 09e6cb
-    country: ethiopia
-    planet: earth
-  }
-  {
-    identifier: afar
-    color: 87b120
-    country: ethiopia
-    planet: earth
-  }
-  {
-    identifier: amhara
-    color: 2a4514
-    country: ethiopia
-    planet: earth
-  }
-  {
-    identifier: tigray
-    color: a5cb5d
-    country: ethiopia
-    planet: earth
-  }
-  {
-    identifier: benshangul_gumaz
-    color: 56a82e
-    country: ethiopia
-    planet: earth
-  }
-  {
-    identifier: gambela_peoples
-    color: b82b8f
-    country: ethiopia
-    planet: earth
-  }
-  {
-    identifier: oromiya
-    color: "715990"
-    country: ethiopia
-    planet: earth
-  }
+    {
+        identifier: southern_nations_nationalities_and_peoples
+        color: 422b1e
+        country: ethiopia
+        planet: earth
+    }
+    {
+        identifier: somali
+        color: 09e6cb
+        country: ethiopia
+        planet: earth
+    }
+    {
+        identifier: afar
+        color: 87b120
+        country: ethiopia
+        planet: earth
+    }
+    {
+        identifier: amhara
+        color: 2a4514
+        country: ethiopia
+        planet: earth
+    }
+    {
+        identifier: tigray
+        color: a5cb5d
+        country: ethiopia
+        planet: earth
+    }
+    {
+        identifier: benshangul_gumaz
+        color: 56a82e
+        country: ethiopia
+        planet: earth
+    }
+    {
+        identifier: gambela_peoples
+        color: b82b8f
+        country: ethiopia
+        planet: earth
+    }
+    {
+        identifier: oromiya
+        color: "715990"
+        country: ethiopia
+        planet: earth
+    }
 ]

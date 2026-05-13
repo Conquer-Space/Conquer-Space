@@ -1,8 +1,8 @@
 [
-  {
-    identifier: benin
-    color: a79ba8
-    country: benin
-    planet: earth
-  }
+    {
+        identifier: benin
+        color: a79ba8
+        country: benin
+        planet: earth
+    }
 ]

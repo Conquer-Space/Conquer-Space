@@ -6,9 +6,7 @@
         volume: 1 m3
         mass: 500 kg
         price: 300
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Steel
@@ -16,10 +14,8 @@
         volume: 1 m3
         mass: 7850 kg
         price: 700
-        desc: "Steel is an alloy of carbon and iron that displays improved mechanical properties"
-        tags: [
-            intermediate
-        ]
+        desc: Steel is an alloy of carbon and iron that displays improved mechanical properties
+        tags: ["intermediate"]
     }
     {
         name: Chemicals
@@ -28,9 +24,7 @@
         mass: 7850 kg
         price: 300
         desc: Chemicals that are used for reactions or as a catalyst for other production methods
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Microprocessors
@@ -39,9 +33,7 @@
         mass: 300 kg
         price: 3000
         desc: Compute for small devices
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Glass
@@ -50,9 +42,7 @@
         mass: 7850 kg
         price: 400
         desc: Compute for small devices
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Composites
@@ -60,9 +50,7 @@
         volume: 1 m3
         mass: 700 kg
         price: 900
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Electric Motors
@@ -70,9 +58,7 @@
         volume: 1 m3
         mass: 1200 kg
         price: 1200
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Precision Components
@@ -80,9 +66,7 @@
         volume: 1 m3
         mass: 3000 kg
         price: 1500
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Magnets
@@ -90,9 +74,7 @@
         volume: 1 m3
         mass: 7850 kg
         price: 2000
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Pesticides
@@ -100,9 +82,7 @@
         volume: 1 m3
         mass: 1000 kg
         price: 600
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
     {
         name: Alloys
@@ -110,8 +90,6 @@
         volume: 1 m3
         mass: 3000 kg
         price: 6000
-        tags: [
-            intermediate
-        ]
+        tags: ["intermediate"]
     }
 ]

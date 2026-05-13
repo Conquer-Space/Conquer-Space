@@ -1,8 +1,8 @@
 [
-  {
-    identifier: cambodia
-    color: 4a5e1e
-    country: cambodia
-    planet: earth
-  }
+    {
+        identifier: cambodia
+        color: 4a5e1e
+        country: cambodia
+        planet: earth
+    }
 ]

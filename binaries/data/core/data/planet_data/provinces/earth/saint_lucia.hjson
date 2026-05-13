@@ -1,8 +1,8 @@
 [
-  {
-    identifier: st_lucia
-    color: 47ff43
-    country: saint_lucia
-    planet: earth
-  }
+    {
+        identifier: st_lucia
+        color: 47ff43
+        country: saint_lucia
+        planet: earth
+    }
 ]

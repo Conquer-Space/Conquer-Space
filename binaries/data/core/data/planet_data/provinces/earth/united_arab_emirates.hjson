@@ -1,8 +1,8 @@
 [
-  {
-    identifier: trucial_coast
-    color: a00029
-    country: united_arab_emirates
-    planet: earth
-  }
+    {
+        identifier: trucial_coast
+        color: a00029
+        country: united_arab_emirates
+        planet: earth
+    }
 ]

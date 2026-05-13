@@ -1,8 +1,8 @@
 [
-  {
-    identifier: lubombo
-    color: 41997b
-    country: eswatini
-    planet: earth
-  }
+    {
+        identifier: lubombo
+        color: 41997b
+        country: eswatini
+        planet: earth
+    }
 ]

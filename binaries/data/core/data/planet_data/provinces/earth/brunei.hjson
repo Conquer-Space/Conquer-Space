@@ -1,8 +1,8 @@
 [
-  {
-    identifier: brunei
-    color: 18a194
-    country: brunei
-    planet: earth
-  }
+    {
+        identifier: brunei
+        color: 18a194
+        country: brunei
+        planet: earth
+    }
 ]

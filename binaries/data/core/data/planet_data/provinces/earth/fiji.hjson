@@ -1,14 +1,14 @@
 [
-  {
-    identifier: fiji
-    color: e1bf51
-    country: fiji
-    planet: earth
-  }
-  {
-    identifier: rotuma
-    color: 56eb77
-    country: fiji
-    planet: earth
-  }
+    {
+        identifier: fiji
+        color: e1bf51
+        country: fiji
+        planet: earth
+    }
+    {
+        identifier: rotuma
+        color: 56eb77
+        country: fiji
+        planet: earth
+    }
 ]

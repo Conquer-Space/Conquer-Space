@@ -6,9 +6,7 @@
         volume: 1 m3
         mass: 1200 kg
         price: 20
-        tags: [
-            agricultural
-        ]
+        tags: ["agricultural"]
     }
     {
         name: Fruits and Vegetables
@@ -16,9 +14,7 @@
         volume: 1 m3
         mass: 1300 kg
         price: 30
-        tags: [
-            agricultural
-        ]
+        tags: ["agricultural"]
     }
     {
         name: Meat
@@ -26,9 +22,7 @@
         volume: 1 m3
         mass: 1500 kg
         price: 45
-        tags: [
-            agricultural
-        ]
+        tags: ["agricultural"]
     }
     {
         name: Oilseeds
@@ -36,8 +30,6 @@
         volume: 1 m3
         mass: 1500 kg
         price: 45
-        tags: [
-            agricultural
-        ]
+        tags: ["agricultural"]
     }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: grenada
-    color: a9b8f5
-    country: grenada
-    planet: earth
-  }
+    {
+        identifier: grenada
+        color: a9b8f5
+        country: grenada
+        planet: earth
+    }
 ]

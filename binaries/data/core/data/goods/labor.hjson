@@ -5,9 +5,7 @@
         volume: 0 m3
         mass: 0 kg
         price: 1
-        tags: [
-            labor
-        ]
+        tags: ["labor"]
     }
     {
         name: Technician
@@ -15,8 +13,6 @@
         volume: 0 m3
         mass: 0 kg
         price: 10
-        tags: [
-            labor
-        ]
+        tags: ["labor"]
     }
 ]

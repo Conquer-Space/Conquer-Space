@@ -1,8 +1,8 @@
 [
-  {
-    identifier: paupa_new_guinea
-    color: 1d85c5
-    country: papua_new_guinea
-    planet: earth
-  }
+    {
+        identifier: paupa_new_guinea
+        color: 1d85c5
+        country: papua_new_guinea
+        planet: earth
+    }
 ]

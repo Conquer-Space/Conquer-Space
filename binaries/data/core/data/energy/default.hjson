@@ -2,9 +2,7 @@
     oil: {
         name: Oil Burning
         generates: electricity
-        input: {
-            oil: 1
-        }
-        output: 4.5e+10
+        input: {oil: 1}
+        output: 45000000000
     }
 }

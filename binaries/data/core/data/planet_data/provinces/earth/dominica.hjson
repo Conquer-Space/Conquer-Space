@@ -1,8 +1,8 @@
 [
-  {
-    identifier: dominica
-    color: 28b48b
-    country: dominica
-    planet: earth
-  }
+    {
+        identifier: dominica
+        color: 28b48b
+        country: dominica
+        planet: earth
+    }
 ]

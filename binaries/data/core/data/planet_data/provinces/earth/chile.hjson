@@ -1,26 +1,26 @@
 [
-  {
-    identifier: arica_y_parinacota
-    color: 8f9834
-    country: chile
-    planet: earth
-  }
-  {
-    identifier: atacama
-    color: 8ac928
-    country: chile
-    planet: earth
-  }
-  {
-    identifier: maule
-    color: 669c2a
-    country: chile
-    planet: earth
-  }
-  {
-    identifier: aisen_del_general_carlos_ibanez_del_campo
-    color: eea90a
-    country: chile
-    planet: earth
-  }
+    {
+        identifier: arica_y_parinacota
+        color: 8f9834
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: atacama
+        color: 8ac928
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: maule
+        color: 669c2a
+        country: chile
+        planet: earth
+    }
+    {
+        identifier: aisen_del_general_carlos_ibanez_del_campo
+        color: eea90a
+        country: chile
+        planet: earth
+    }
 ]

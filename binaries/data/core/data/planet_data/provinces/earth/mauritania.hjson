@@ -1,80 +1,80 @@
 [
-  {
-    identifier: tiris_zemmour
-    color: d920c0
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: dakhlet_nouadhibou
-    color: 02e856
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: adrar
-    color: 3c1874
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: brakna
-    color: 60ac36
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: trarza
-    color: a5113a
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: gorgol
-    color: "96e204"
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: guidimaka
-    color: 3f36a4
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: hodh_ech_chargui
-    color: 0d2be3
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: hodh_el_gharbi
-    color: a33e1d
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: assaba
-    color: 7ebc59
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: inchiri
-    color: 5f455d
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: nouakchott
-    color: b1221e
-    country: mauritania
-    planet: earth
-  }
-  {
-    identifier: tagant
-    color: 7a870e
-    country: mauritania
-    planet: earth
-  }
+    {
+        identifier: tiris_zemmour
+        color: d920c0
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: dakhlet_nouadhibou
+        color: 02e856
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: adrar
+        color: 3c1874
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: brakna
+        color: 60ac36
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: trarza
+        color: a5113a
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: gorgol
+        color: "96e204"
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: guidimaka
+        color: 3f36a4
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: hodh_ech_chargui
+        color: 0d2be3
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: hodh_el_gharbi
+        color: a33e1d
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: assaba
+        color: 7ebc59
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: inchiri
+        color: 5f455d
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: nouakchott
+        color: b1221e
+        country: mauritania
+        planet: earth
+    }
+    {
+        identifier: tagant
+        color: 7a870e
+        country: mauritania
+        planet: earth
+    }
 ]

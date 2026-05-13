@@ -1,62 +1,62 @@
 [
-  {
-    identifier: eastern_equatoria
-    color: 4bf72d
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: western_bahr_el_ghazal
-    color: 0bd3ae
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: western_equatoria
-    color: ede4e1
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: central_equatoria
-    color: 3d43f8
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: upper_nile
-    color: e6caa5
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: jonglei
-    color: 6c54bb
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: unity
-    color: 8b5384
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: northern_bahr_el_ghazal
-    color: 8c8eba
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: lakes
-    color: be1bf0
-    country: s__sudan
-    planet: earth
-  }
-  {
-    identifier: warrap
-    color: ceefa6
-    country: s__sudan
-    planet: earth
-  }
+    {
+        identifier: eastern_equatoria
+        color: 4bf72d
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: western_bahr_el_ghazal
+        color: 0bd3ae
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: western_equatoria
+        color: ede4e1
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: central_equatoria
+        color: 3d43f8
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: upper_nile
+        color: e6caa5
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: jonglei
+        color: 6c54bb
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: unity
+        color: 8b5384
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: northern_bahr_el_ghazal
+        color: 8c8eba
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: lakes
+        color: be1bf0
+        country: s__sudan
+        planet: earth
+    }
+    {
+        identifier: warrap
+        color: ceefa6
+        country: s__sudan
+        planet: earth
+    }
 ]

@@ -1,14 +1,14 @@
 [
-  {
-    identifier: tataouine
-    color: 091970
-    country: tunisia
-    planet: earth
-  }
-  {
-    identifier: jendouba
-    color: 0248d1
-    country: tunisia
-    planet: earth
-  }
+    {
+        identifier: tataouine
+        color: 091970
+        country: tunisia
+        planet: earth
+    }
+    {
+        identifier: jendouba
+        color: 0248d1
+        country: tunisia
+        planet: earth
+    }
 ]

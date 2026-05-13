@@ -6,10 +6,7 @@
         volume: 0.148987 m3
         mass: 136 kg
         price: 100
-        tags: [
-            raw
-            fluid
-        ]
+        tags: ["raw", "fluid"]
     }
     {
         name: Silicates
@@ -17,9 +14,7 @@
         volume: 1 m3
         mass: 1602 kg
         price: 20
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Iron
@@ -27,9 +22,7 @@
         volume: 1 m3
         mass: 7874 kg
         price: 100
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Lithium
@@ -37,9 +30,7 @@
         volume: 1 m3
         mass: 534 kg
         price: 6000
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Copper
@@ -47,9 +38,7 @@
         volume: 1 m3
         mass: 8960 kg
         price: 7000
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Coal
@@ -57,9 +46,7 @@
         volume: 1 m3
         mass: 1500 kg
         price: 50
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Lumber
@@ -67,9 +54,7 @@
         volume: 1 m3
         mass: 1500 kg
         price: 20
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Fabric
@@ -77,9 +62,7 @@
         volume: 1 m3
         mass: 1500 kg
         price: 20
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Natural Gas
@@ -87,9 +70,7 @@
         volume: 1 m3
         mass: 185 kg
         price: 50
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Noble Gases
@@ -97,9 +78,7 @@
         volume: 1 m3
         mass: 185 kg
         price: 8000
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Gold
@@ -107,9 +86,7 @@
         volume: 1 m3
         mass: 19300 kg
         price: 8000
-        tags: [
-            raw
-        ] 
+        tags: ["raw"]
     }
     {
         name: Aluminium
@@ -117,9 +94,7 @@
         volume: 1 m3
         mass: 19300 kg
         price: 8000
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Phospates
@@ -127,9 +102,7 @@
         volume: 1 m3
         mass: 19300 kg
         price: 8000
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Water
@@ -137,9 +110,7 @@
         volume: 1 m3
         mass: 1000 kg
         price: 10
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Uranium
@@ -147,10 +118,7 @@
         volume: 1 m3
         mass: 1000 kg
         price: 10
-        tags: [
-            raw
-            radioactive
-        ]
+        tags: ["raw", "radioactive"]
     }
     {
         name: Rare Earth Elements
@@ -158,9 +126,7 @@
         volume: 1 m3
         mass: 1000 kg
         price: 3000
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
     {
         name: Titanium
@@ -168,8 +134,6 @@
         volume: 1 m3
         mass: 1000 kg
         price: 5000
-        tags: [
-            raw
-        ]
+        tags: ["raw"]
     }
 ]

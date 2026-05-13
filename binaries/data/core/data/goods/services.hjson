@@ -6,9 +6,7 @@
         volume: 0 m3
         mass: 0 kg
         price: 100
-        tags: [
-            service
-        ]
+        tags: ["service"]
     }
     {
         name: Medical Services
@@ -16,8 +14,6 @@
         volume: 0 m3
         mass: 0 kg
         price: 100
-        tags: [
-            service
-        ]
+        tags: ["service"]
     }
 ]

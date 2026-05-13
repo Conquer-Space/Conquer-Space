@@ -1,8 +1,8 @@
 [
-  {
-    identifier: liberia
-    color: c7ef7c
-    country: liberia
-    planet: earth
-  }
+    {
+        identifier: liberia
+        color: c7ef7c
+        country: liberia
+        planet: earth
+    }
 ]
