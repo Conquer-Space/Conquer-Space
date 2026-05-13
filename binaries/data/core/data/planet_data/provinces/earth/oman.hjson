@@ -1,8 +1,8 @@
 [
-  {
-    identifier: oman
-    color: 831a2d
-    country: oman
-    planet: earth
-  }
+    {
+        identifier: oman
+        color: 831a2d
+        country: oman
+        planet: earth
+    }
 ]

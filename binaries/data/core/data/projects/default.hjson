@@ -3,9 +3,7 @@
         identifier: probe
         construction: {
             time: 4 weeks
-            cost: {
-                steel: 1000
-            }
+            cost: {steel: 1000}
         }
         // So this just provides enough of this that we can accomplish it
         survey: 100
@@ -14,10 +12,7 @@
         identifier: habitation_module
         construction: {
             time: 4 weeks
-            cost: {
-                steel: 1000
-                plastic: 500
-            }
+            cost: {steel: 1000, plastic: 500}
         }
         // Now other attributes or something
         crew: 10

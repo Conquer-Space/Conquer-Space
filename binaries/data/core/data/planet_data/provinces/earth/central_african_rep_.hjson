@@ -1,38 +1,38 @@
 [
-  {
-    identifier: vakaga
-    color: 35ffe8
-    country: central_african_rep_
-    planet: earth
-  }
-  {
-    identifier: haut_mbomou
-    color: 10440e
-    country: central_african_rep_
-    planet: earth
-  }
-  {
-    identifier: kemo
-    color: 31eb96
-    country: central_african_rep_
-    planet: earth
-  }
-  {
-    identifier: bangui
-    color: 8a06cf
-    country: central_african_rep_
-    planet: earth
-  }
-  {
-    identifier: lobaye
-    color: "3796e7"
-    country: central_african_rep_
-    planet: earth
-  }
-  {
-    identifier: ouham
-    color: 3ada3e
-    country: central_african_rep_
-    planet: earth
-  }
+    {
+        identifier: vakaga
+        color: 35ffe8
+        country: central_african_rep_
+        planet: earth
+    }
+    {
+        identifier: haut_mbomou
+        color: 10440e
+        country: central_african_rep_
+        planet: earth
+    }
+    {
+        identifier: kemo
+        color: 31eb96
+        country: central_african_rep_
+        planet: earth
+    }
+    {
+        identifier: bangui
+        color: 8a06cf
+        country: central_african_rep_
+        planet: earth
+    }
+    {
+        identifier: lobaye
+        color: "3796e7"
+        country: central_african_rep_
+        planet: earth
+    }
+    {
+        identifier: ouham
+        color: 3ada3e
+        country: central_african_rep_
+        planet: earth
+    }
 ]

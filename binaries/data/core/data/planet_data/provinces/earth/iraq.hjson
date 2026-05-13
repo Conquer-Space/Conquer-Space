@@ -1,32 +1,32 @@
 [
-  {
-    identifier: dihok
-    color: 92ddf8
-    country: iraq
-    planet: earth
-  }
-  {
-    identifier: al_basrah
-    color: 02d88c
-    country: iraq
-    planet: earth
-  }
-  {
-    identifier: al_muthannia
-    color: e62b73
-    country: iraq
-    planet: earth
-  }
-  {
-    identifier: diyala
-    color: "686652"
-    country: iraq
-    planet: earth
-  }
-  {
-    identifier: al_anbar
-    color: ce1dd9
-    country: iraq
-    planet: earth
-  }
+    {
+        identifier: dihok
+        color: 92ddf8
+        country: iraq
+        planet: earth
+    }
+    {
+        identifier: al_basrah
+        color: 02d88c
+        country: iraq
+        planet: earth
+    }
+    {
+        identifier: al_muthannia
+        color: e62b73
+        country: iraq
+        planet: earth
+    }
+    {
+        identifier: diyala
+        color: "686652"
+        country: iraq
+        planet: earth
+    }
+    {
+        identifier: al_anbar
+        color: ce1dd9
+        country: iraq
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: the_bahamas
-    color: db9bf8
-    country: bahamas
-    planet: earth
-  }
+    {
+        identifier: the_bahamas
+        color: db9bf8
+        country: bahamas
+        planet: earth
+    }
 ]

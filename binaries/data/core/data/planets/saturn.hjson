@@ -5,8 +5,7 @@
         radius: 58232 km
         reference: sun
         gm: 37931187.9
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.05349428774855907
             semi_major_axis: 1424571194.123218 km
             M0: 73.49287239717029 deg
@@ -16,13 +15,8 @@
         }
         day_length: 633 m
         axial: 26.73 deg
-        texture:
-        {
-            terrain: saturnmap
-        }
-        atmosphere: {
-            scale_height: 59.5 km
-        }
+        texture: {terrain: "saturnmap"}
+        atmosphere: {scale_height: "59.5 km"}
         tags: []
     }
 ]

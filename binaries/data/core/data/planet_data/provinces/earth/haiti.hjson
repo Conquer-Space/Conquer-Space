@@ -1,8 +1,8 @@
 [
-  {
-    identifier: haiti
-    color: 35e33c
-    country: haiti
-    planet: earth
-  }
+    {
+        identifier: haiti
+        color: 35e33c
+        country: haiti
+        planet: earth
+    }
 ]

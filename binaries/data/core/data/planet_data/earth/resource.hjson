@@ -2,7 +2,6 @@
     satellites: {
         path: satellites/
         type: hjson
-        hints: {
-        }
+        hints: {}
     }
 }

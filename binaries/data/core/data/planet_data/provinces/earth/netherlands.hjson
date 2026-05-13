@@ -1,20 +1,20 @@
 [
-  {
-    identifier: sint_maarten
-    color: "238283"
-    country: netherlands
-    planet: earth
-  }
-  {
-    identifier: netherlands
-    color: 8cdfd4
-    country: netherlands
-    planet: earth
-  }
-  {
-    identifier: curacao
-    color: 0d9094
-    country: netherlands
-    planet: earth
-  }
+    {
+        identifier: sint_maarten
+        color: "238283"
+        country: netherlands
+        planet: earth
+    }
+    {
+        identifier: netherlands
+        color: 8cdfd4
+        country: netherlands
+        planet: earth
+    }
+    {
+        identifier: curacao
+        color: 0d9094
+        country: netherlands
+        planet: earth
+    }
 ]

@@ -1,20 +1,20 @@
 [
-  {
-    identifier: denguele
-    color: a6fb87
-    country: cote_d'ivoire
-    planet: earth
-  }
-  {
-    identifier: zanzan
-    color: b736b2
-    country: cote_d'ivoire
-    planet: earth
-  }
-  {
-    identifier: centre_ouest
-    color: 4584bb
-    country: cote_d'ivoire
-    planet: earth
-  }
+    {
+        identifier: denguele
+        color: a6fb87
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: zanzan
+        color: b736b2
+        country: cote_d'ivoire
+        planet: earth
+    }
+    {
+        identifier: centre_ouest
+        color: 4584bb
+        country: cote_d'ivoire
+        planet: earth
+    }
 ]

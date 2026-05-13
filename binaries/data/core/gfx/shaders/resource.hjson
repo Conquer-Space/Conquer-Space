@@ -2,34 +2,27 @@
     fontvertexshader: {
         path: font/font_shader.vert
         type: shader
-        hints: {
-            type: vert
-        }
+        hints: {type: "vert"}
     }
     fontfragshader: {
         path: font/font_shader.frag
         type: shader
-        hints: {
-            type: frag
-        }
+        hints: {type: "frag"}
     }
     shader.orbitshader: {
         path: orbit_shader.hjson
         type: shader_def
-        hints: {
-        }
+        hints: {}
     }
     shader.2dtexturedshader: {
         path: 2dtexturedshader.hjson
         type: shader_def
-        hints: {
-        }
+        hints: {}
     }
     shader.2dcolorshader: {
         path: 2dcolorshader.hjson
         type: shader_def
-        hints: {
-        }
+        hints: {}
     }
     shader.vertex_vis: {
         path: vertex_vis.hjson

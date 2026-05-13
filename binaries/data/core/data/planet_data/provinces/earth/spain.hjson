@@ -1,68 +1,68 @@
 [
-  {
-    identifier: ceuta
-    color: ee2c5a
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: melilla
-    color: eccda7
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: aragon
-    color: "569674"
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: huesca
-    color: f3b605
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: castilla
-    color: f4124c
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: andalusia
-    color: 85b4df
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: gallica
-    color: 685ec0
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: castille
-    color: "936949"
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: castellon
-    color: 768f61
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: canary_islands
-    color: c4fdb5
-    country: spain
-    planet: earth
-  }
-  {
-    identifier: baleares
-    color: "384e06"
-    country: spain
-    planet: earth
-  }
+    {
+        identifier: ceuta
+        color: ee2c5a
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: melilla
+        color: eccda7
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: aragon
+        color: "569674"
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: huesca
+        color: f3b605
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: castilla
+        color: f4124c
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: andalusia
+        color: 85b4df
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: gallica
+        color: 685ec0
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: castille
+        color: "936949"
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: castellon
+        color: 768f61
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: canary_islands
+        color: c4fdb5
+        country: spain
+        planet: earth
+    }
+    {
+        identifier: baleares
+        color: "384e06"
+        country: spain
+        planet: earth
+    }
 ]

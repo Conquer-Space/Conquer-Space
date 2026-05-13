@@ -1,7 +1,5 @@
 {
     vert: framebuffer.vert
     frag: framebuffer.frag
-    uniforms: {
-        screenTexture: 0
-    }
+    uniforms: {screenTexture: 0}
 }

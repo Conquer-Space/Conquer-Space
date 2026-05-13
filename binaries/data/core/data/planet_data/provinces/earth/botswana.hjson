@@ -1,32 +1,32 @@
 [
-  {
-    identifier: central
-    color: 396b91
-    country: botswana
-    planet: earth
-  }
-  {
-    identifier: kgatleng
-    color: 4ebe9a
-    country: botswana
-    planet: earth
-  }
-  {
-    identifier: okavango_delta
-    color: d9bcc5
-    country: botswana
-    planet: earth
-  }
-  {
-    identifier: kgalagadi
-    color: 0233ed
-    country: botswana
-    planet: earth
-  }
-  {
-    identifier: ghanzi
-    color: cf3977
-    country: botswana
-    planet: earth
-  }
+    {
+        identifier: central
+        color: 396b91
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: kgatleng
+        color: 4ebe9a
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: okavango_delta
+        color: d9bcc5
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: kgalagadi
+        color: 0233ed
+        country: botswana
+        planet: earth
+    }
+    {
+        identifier: ghanzi
+        color: cf3977
+        country: botswana
+        planet: earth
+    }
 ]

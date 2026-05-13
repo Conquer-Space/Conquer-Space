@@ -1,8 +1,8 @@
 [
-  {
-    identifier: israel
-    color: 9b3a57
-    country: israel
-    planet: earth
-  }
+    {
+        identifier: israel
+        color: 9b3a57
+        country: israel
+        planet: earth
+    }
 ]

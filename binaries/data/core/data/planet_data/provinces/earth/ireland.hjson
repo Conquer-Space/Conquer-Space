@@ -1,20 +1,20 @@
 [
-  {
-    identifier: connacht
-    color: f74e81
-    country: ireland
-    planet: earth
-  }
-  {
-    identifier: lienster
-    color: 0d0d16
-    country: ireland
-    planet: earth
-  }
-  {
-    identifier: munster
-    color: a6ccd2
-    country: ireland
-    planet: earth
-  }
+    {
+        identifier: connacht
+        color: f74e81
+        country: ireland
+        planet: earth
+    }
+    {
+        identifier: lienster
+        color: 0d0d16
+        country: ireland
+        planet: earth
+    }
+    {
+        identifier: munster
+        color: a6ccd2
+        country: ireland
+        planet: earth
+    }
 ]

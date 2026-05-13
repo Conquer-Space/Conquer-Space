@@ -1,14 +1,14 @@
 [
-  {
-    identifier: kankan
-    color: f94512
-    country: guinea
-    planet: earth
-  }
-  {
-    identifier: boke
-    color: 9fa6c3
-    country: guinea
-    planet: earth
-  }
+    {
+        identifier: kankan
+        color: f94512
+        country: guinea
+        planet: earth
+    }
+    {
+        identifier: boke
+        color: 9fa6c3
+        country: guinea
+        planet: earth
+    }
 ]

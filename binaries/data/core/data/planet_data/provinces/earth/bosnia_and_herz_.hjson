@@ -1,14 +1,14 @@
 [
-  {
-    identifier: herzegovina
-    color: ab6eab
-    country: yugoslavia
-    planet: earth
-  }
-  {
-    identifier: bosnia
-    color: fdbd86
-    country: yugoslavia
-    planet: earth
-  }
+    {
+        identifier: herzegovina
+        color: ab6eab
+        country: yugoslavia
+        planet: earth
+    }
+    {
+        identifier: bosnia
+        color: fdbd86
+        country: yugoslavia
+        planet: earth
+    }
 ]

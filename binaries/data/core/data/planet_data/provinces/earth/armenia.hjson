@@ -1,8 +1,8 @@
 [
-  {
-    identifier: armenia
-    color: 00d649
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: armenia
+        color: 00d649
+        country: soviet_union
+        planet: earth
+    }
 ]

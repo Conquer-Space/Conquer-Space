@@ -1,14 +1,14 @@
 [
-  {
-    identifier: leninabad
-    color: 6fa822
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: gorno_badakhshan
-    color: d6b17c
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: leninabad
+        color: 6fa822
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: gorno_badakhshan
+        color: d6b17c
+        country: soviet_union
+        planet: earth
+    }
 ]

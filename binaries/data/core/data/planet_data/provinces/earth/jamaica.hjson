@@ -1,8 +1,8 @@
 [
-  {
-    identifier: jamaica
-    color: 67c32c
-    country: jamaica
-    planet: earth
-  }
+    {
+        identifier: jamaica
+        color: 67c32c
+        country: jamaica
+        planet: earth
+    }
 ]

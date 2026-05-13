@@ -1,8 +1,8 @@
 [
-  {
-    identifier: guinea_bissau
-    color: ffd898
-    country: guinea-bissau
-    planet: earth
-  }
+    {
+        identifier: guinea_bissau
+        color: ffd898
+        country: guinea-bissau
+        planet: earth
+    }
 ]

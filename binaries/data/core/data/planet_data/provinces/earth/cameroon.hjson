@@ -1,44 +1,44 @@
 [
-  {
-    identifier: sud
-    color: 6a6d3c
-    country: cameroon
-    planet: earth
-  }
-  {
-    identifier: extreme_nord
-    color: 4e8bc4
-    country: cameroon
-    planet: earth
-  }
-  {
-    identifier: benoue
-    color: 20f455
-    country: cameroon
-    planet: earth
-  }
-  {
-    identifier: adamaoua
-    color: fce0db
-    country: cameroon
-    planet: earth
-  }
-  {
-    identifier: nord_ouest
-    color: 854df1
-    country: cameroon
-    planet: earth
-  }
-  {
-    identifier: est
-    color: a46639
-    country: cameroon
-    planet: earth
-  }
-  {
-    identifier: yaounde
-    color: 8b4e78
-    country: cameroon
-    planet: earth
-  }
+    {
+        identifier: sud
+        color: 6a6d3c
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: extreme_nord
+        color: 4e8bc4
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: benoue
+        color: 20f455
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: adamaoua
+        color: fce0db
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: nord_ouest
+        color: 854df1
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: est
+        color: a46639
+        country: cameroon
+        planet: earth
+    }
+    {
+        identifier: yaounde
+        color: 8b4e78
+        country: cameroon
+        planet: earth
+    }
 ]

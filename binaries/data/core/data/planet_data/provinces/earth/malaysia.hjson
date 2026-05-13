@@ -1,74 +1,74 @@
 [
-  {
-    identifier: sabah
-    color: 7ef512
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: kedah
-    color: d1834c
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: kelantan
-    color: 6d7815
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: perak
-    color: 3cb303
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: sarawak
-    color: 133a48
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: selangor
-    color: aab009
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: negeri_sembilan
-    color: 04c114
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: melaka
-    color: ddcaf4
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: johor
-    color: 8fa343
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: pahang
-    color: be6069
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: terengganu
-    color: d6ff77
-    country: malaysia
-    planet: earth
-  }
-  {
-    identifier: labuan
-    color: b7a42c
-    country: malaysia
-    planet: earth
-  }
+    {
+        identifier: sabah
+        color: 7ef512
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: kedah
+        color: d1834c
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: kelantan
+        color: 6d7815
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: perak
+        color: 3cb303
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: sarawak
+        color: 133a48
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: selangor
+        color: aab009
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: negeri_sembilan
+        color: 04c114
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: melaka
+        color: ddcaf4
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: johor
+        color: 8fa343
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: pahang
+        color: be6069
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: terengganu
+        color: d6ff77
+        country: malaysia
+        planet: earth
+    }
+    {
+        identifier: labuan
+        color: b7a42c
+        country: malaysia
+        planet: earth
+    }
 ]

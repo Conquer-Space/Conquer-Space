@@ -1,8 +1,8 @@
 [
-  {
-    identifier: uruguay
-    color: 6c20f9
-    country: uruguay
-    planet: earth
-  }
+    {
+        identifier: uruguay
+        color: 6c20f9
+        country: uruguay
+        planet: earth
+    }
 ]

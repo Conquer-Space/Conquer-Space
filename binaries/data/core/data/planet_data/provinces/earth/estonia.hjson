@@ -1,8 +1,8 @@
 [
-  {
-    identifier: estonia
-    color: 0c8950
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: estonia
+        color: 0c8950
+        country: soviet_union
+        planet: earth
+    }
 ]

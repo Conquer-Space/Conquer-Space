@@ -1,23 +1,7 @@
 {
-    default: {
-        path: Roboto-Regular.ttf
-        size: 18
-    }
-    h1: {
-        path: Roboto-Regular.ttf
-        size: 32
-    }
-    h2: {
-        path: Roboto-Bold.ttf
-        size: 24
-    }
-    h3: {
-        path: Roboto-Bold.ttf
-        size: 18
-    }
-    rmlui: [
-        Roboto-Regular.ttf
-        Roboto-Bold.ttf
-        Comfortaa.ttf
-    ]
+    default: {path: "Roboto-Regular.ttf", size: 18}
+    h1: {path: "Roboto-Regular.ttf", size: 32}
+    h2: {path: "Roboto-Bold.ttf", size: 24}
+    h3: {path: "Roboto-Bold.ttf", size: 18}
+    rmlui: ["Roboto-Regular.ttf", "Roboto-Bold.ttf", "Comfortaa.ttf"]
 }

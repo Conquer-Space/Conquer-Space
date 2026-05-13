@@ -1,8 +1,8 @@
 [
-  {
-    identifier: nepal
-    color: 3cbd08
-    country: nepal
-    planet: earth
-  }
+    {
+        identifier: nepal
+        color: 3cbd08
+        country: nepal
+        planet: earth
+    }
 ]

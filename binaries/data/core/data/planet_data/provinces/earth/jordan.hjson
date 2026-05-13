@@ -1,20 +1,20 @@
 [
-  {
-    identifier: north_jordan
-    color: 6a9e62
-    country: jordan
-    planet: earth
-  }
-  {
-    identifier: central_jordan
-    color: ef50c3
-    country: jordan
-    planet: earth
-  }
-  {
-    identifier: south_jordan
-    color: 758f07
-    country: jordan
-    planet: earth
-  }
+    {
+        identifier: north_jordan
+        color: 6a9e62
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: central_jordan
+        color: ef50c3
+        country: jordan
+        planet: earth
+    }
+    {
+        identifier: south_jordan
+        color: 758f07
+        country: jordan
+        planet: earth
+    }
 ]

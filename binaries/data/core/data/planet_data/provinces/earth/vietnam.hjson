@@ -1,26 +1,26 @@
 [
-  {
-    identifier: kon_tum
-    color: 88c829
-    country: vietnam
-    planet: earth
-  }
-  {
-    identifier: ak_nong
-    color: aae260
-    country: vietnam
-    planet: earth
-  }
-  {
-    identifier: ien_bien
-    color: 06ddb3
-    country: vietnam
-    planet: earth
-  }
-  {
-    identifier: ha_tinh
-    color: 701fa9
-    country: vietnam
-    planet: earth
-  }
+    {
+        identifier: kon_tum
+        color: 88c829
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ak_nong
+        color: aae260
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ien_bien
+        color: 06ddb3
+        country: vietnam
+        planet: earth
+    }
+    {
+        identifier: ha_tinh
+        color: 701fa9
+        country: vietnam
+        planet: earth
+    }
 ]

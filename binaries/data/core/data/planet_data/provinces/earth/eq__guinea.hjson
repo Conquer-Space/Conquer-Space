@@ -1,14 +1,14 @@
 [
-  {
-    identifier: equatorial_guinea
-    color: bffe50
-    country: eq__guinea
-    planet: earth
-  }
-  {
-    identifier: malabo
-    color: eb29d4
-    country: eq__guinea
-    planet: earth
-  }
+    {
+        identifier: equatorial_guinea
+        color: bffe50
+        country: eq__guinea
+        planet: earth
+    }
+    {
+        identifier: malabo
+        color: eb29d4
+        country: eq__guinea
+        planet: earth
+    }
 ]

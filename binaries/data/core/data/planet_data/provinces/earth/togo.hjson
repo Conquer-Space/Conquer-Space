@@ -1,8 +1,8 @@
 [
-  {
-    identifier: togo
-    color: 042a25
-    country: togo
-    planet: earth
-  }
+    {
+        identifier: togo
+        color: 042a25
+        country: togo
+        planet: earth
+    }
 ]

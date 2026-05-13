@@ -1,8 +1,8 @@
 [
-  {
-    identifier: north_macedonia
-    color: 88541a
-    country: yugoslavia
-    planet: earth
-  }
+    {
+        identifier: north_macedonia
+        color: 88541a
+        country: yugoslavia
+        planet: earth
+    }
 ]

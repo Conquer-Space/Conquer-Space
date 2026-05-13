@@ -1,8 +1,8 @@
 [
-  {
-    identifier: malta
-    color: 37fabd
-    country: malta
-    planet: earth
-  }
+    {
+        identifier: malta
+        color: 37fabd
+        country: malta
+        planet: earth
+    }
 ]

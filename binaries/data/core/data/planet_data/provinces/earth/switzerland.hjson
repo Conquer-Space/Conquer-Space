@@ -1,14 +1,14 @@
 [
-  {
-    identifier: western_swizerland
-    color: 09dfae
-    country: switzerland
-    planet: earth
-  }
-  {
-    identifier: eastern_swizerland
-    color: 80c950
-    country: switzerland
-    planet: earth
-  }
+    {
+        identifier: western_swizerland
+        color: 09dfae
+        country: switzerland
+        planet: earth
+    }
+    {
+        identifier: eastern_swizerland
+        color: 80c950
+        country: switzerland
+        planet: earth
+    }
 ]

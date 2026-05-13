@@ -1,86 +1,86 @@
 [
-  {
-    identifier: east_kazakhstan
-    color: 6f9e49
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: almaty
-    color: 1d5f92
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: zhambyl
-    color: 37e0e5
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: south_kazakhstan
-    color: c598e3
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: mangghystau
-    color: 14bf2e
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: qyzylorda
-    color: e57036
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: aqtobe
-    color: 7e494e
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: north_kazakhstan
-    color: 1ff7ef
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: qostanay
-    color: d62d27
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: pavlodar
-    color: c6d659
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: west_kazakhstan
-    color: d843d5
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: atyrau
-    color: 66a3ed
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: aqmola
-    color: 19f7c4
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: qaraghandy
-    color: ef9a0c
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: east_kazakhstan
+        color: 6f9e49
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: almaty
+        color: 1d5f92
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: zhambyl
+        color: 37e0e5
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: south_kazakhstan
+        color: c598e3
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: mangghystau
+        color: 14bf2e
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: qyzylorda
+        color: e57036
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: aqtobe
+        color: 7e494e
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: north_kazakhstan
+        color: 1ff7ef
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: qostanay
+        color: d62d27
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: pavlodar
+        color: c6d659
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: west_kazakhstan
+        color: d843d5
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: atyrau
+        color: 66a3ed
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: aqmola
+        color: 19f7c4
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: qaraghandy
+        color: ef9a0c
+        country: soviet_union
+        planet: earth
+    }
 ]

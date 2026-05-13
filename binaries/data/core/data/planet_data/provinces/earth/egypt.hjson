@@ -1,32 +1,32 @@
 [
-  {
-    identifier: shamal_sina_
-    color: 96650d
-    country: egypt
-    planet: earth
-  }
-  {
-    identifier: aswan
-    color: 4b0e62
-    country: egypt
-    planet: earth
-  }
-  {
-    identifier: matruh
-    color: 94ba63
-    country: egypt
-    planet: earth
-  }
-  {
-    identifier: al_wadi_at_jadid
-    color: "517368"
-    country: egypt
-    planet: earth
-  }
-  {
-    identifier: cairo
-    color: 74436c
-    country: egypt
-    planet: earth
-  }
+    {
+        identifier: shamal_sina_
+        color: 96650d
+        country: egypt
+        planet: earth
+    }
+    {
+        identifier: aswan
+        color: 4b0e62
+        country: egypt
+        planet: earth
+    }
+    {
+        identifier: matruh
+        color: 94ba63
+        country: egypt
+        planet: earth
+    }
+    {
+        identifier: al_wadi_at_jadid
+        color: "517368"
+        country: egypt
+        planet: earth
+    }
+    {
+        identifier: cairo
+        color: 74436c
+        country: egypt
+        planet: earth
+    }
 ]

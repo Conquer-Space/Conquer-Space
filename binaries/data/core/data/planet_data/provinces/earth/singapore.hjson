@@ -1,8 +1,8 @@
 [
-  {
-    identifier: singapore
-    color: fcde04
-    country: singapore
-    planet: earth
-  }
+    {
+        identifier: singapore
+        color: fcde04
+        country: singapore
+        planet: earth
+    }
 ]

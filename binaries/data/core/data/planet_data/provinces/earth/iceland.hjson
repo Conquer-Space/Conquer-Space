@@ -1,8 +1,8 @@
 [
-  {
-    identifier: iceland
-    color: 924c88
-    country: iceland
-    planet: earth
-  }
+    {
+        identifier: iceland
+        color: 924c88
+        country: iceland
+        planet: earth
+    }
 ]

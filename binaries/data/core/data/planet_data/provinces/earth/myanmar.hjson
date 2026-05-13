@@ -1,38 +1,38 @@
 [
-  {
-    identifier: rakhine
-    color: a68ab0
-    country: myanmar
-    planet: earth
-  }
-  {
-    identifier: kachin
-    color: be0eb2
-    country: myanmar
-    planet: earth
-  }
-  {
-    identifier: sagaing
-    color: b51ed8
-    country: myanmar
-    planet: earth
-  }
-  {
-    identifier: shan
-    color: "6474e6"
-    country: myanmar
-    planet: earth
-  }
-  {
-    identifier: kayin
-    color: 43bd9a
-    country: myanmar
-    planet: earth
-  }
-  {
-    identifier: magway
-    color: 00d8a7
-    country: myanmar
-    planet: earth
-  }
+    {
+        identifier: rakhine
+        color: a68ab0
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: kachin
+        color: be0eb2
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: sagaing
+        color: b51ed8
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: shan
+        color: "6474e6"
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: kayin
+        color: 43bd9a
+        country: myanmar
+        planet: earth
+    }
+    {
+        identifier: magway
+        color: 00d8a7
+        country: myanmar
+        planet: earth
+    }
 ]

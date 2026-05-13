@@ -1,8 +1,8 @@
 [
-  {
-    identifier: kosrae
-    color: ce157d
-    country: micronesia
-    planet: earth
-  }
+    {
+        identifier: kosrae
+        color: ce157d
+        country: micronesia
+        planet: earth
+    }
 ]

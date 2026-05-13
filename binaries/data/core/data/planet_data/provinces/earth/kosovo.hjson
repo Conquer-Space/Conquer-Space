@@ -1,8 +1,8 @@
 [
-  {
-    identifier: kosovo
-    color: 6dd4bf
-    country: yugoslavia
-    planet: earth
-  }
+    {
+        identifier: kosovo
+        color: 6dd4bf
+        country: yugoslavia
+        planet: earth
+    }
 ]

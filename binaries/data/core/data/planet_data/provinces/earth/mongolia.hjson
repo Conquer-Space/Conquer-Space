@@ -1,68 +1,68 @@
 [
-  {
-    identifier: dornod
-    color: f755f5
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: bayan_olgiy
-    color: a2b7b9
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: dornogovi
-    color: "1e5046"
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: govi_altay
-    color: 98cf1d
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: bayanhongor
-    color: "816564"
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: omnogovi
-    color: a81c0b
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: hovsgol
-    color: b39bed
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: selenge
-    color: 209f74
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: dzavhan
-    color: "123378"
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: orhon
-    color: 73871a
-    country: mongolia
-    planet: earth
-  }
-  {
-    identifier: dundgovi
-    color: b7b47b
-    country: mongolia
-    planet: earth
-  }
+    {
+        identifier: dornod
+        color: f755f5
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: bayan_olgiy
+        color: a2b7b9
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: dornogovi
+        color: 1e5046
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: govi_altay
+        color: 98cf1d
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: bayanhongor
+        color: "816564"
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: omnogovi
+        color: a81c0b
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: hovsgol
+        color: b39bed
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: selenge
+        color: 209f74
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: dzavhan
+        color: "123378"
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: orhon
+        color: 73871a
+        country: mongolia
+        planet: earth
+    }
+    {
+        identifier: dundgovi
+        color: b7b47b
+        country: mongolia
+        planet: earth
+    }
 ]

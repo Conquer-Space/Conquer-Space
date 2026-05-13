@@ -1,8 +1,8 @@
 [
-  {
-    identifier: seychelles
-    color: 4d8ebc
-    country: seychelles
-    planet: earth
-  }
+    {
+        identifier: seychelles
+        color: 4d8ebc
+        country: seychelles
+        planet: earth
+    }
 ]

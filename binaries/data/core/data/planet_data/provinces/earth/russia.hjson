@@ -1,1282 +1,1041 @@
 [
-  {
-    identifier: gorno_altay
-    name: Gorno-Altaysk
-    color: 606ac1
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    {
+        identifier: gorno_altay
+        name: Gorno-Altaysk
+        color: 606ac1
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 20000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: pskov
-    name: Pskov
-    color: dccfd7
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: pskov
+        name: Pskov
+        color: dccfd7
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1000000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: krasnodar
-    name: Krasnodar
-    color: daab87
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: krasnodar
+        name: Krasnodar
+        color: daab87
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 3462499
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: karachay_cherkess
-    name: Karachay-Cherkessia
-    color: 6bddbb
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: karachay_cherkess
+        name: Karachay-Cherkessia
+        color: 6bddbb
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 200000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kabardin_balkar
-    name: Kabardino-Balkarian
-    color: d923f8
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kabardin_balkar
+        name: Kabardino-Balkarian
+        color: d923f8
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 359000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: north_ossetia
-    name: North Ossetia
-    color: 1f8124
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: north_ossetia
+        name: North Ossetia
+        color: 1f8124
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 397000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: ingush
-    name: Ingushetia
-    color: 74b288
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: ingush
+        name: Ingushetia
+        color: 74b288
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 65000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: chechnya
-    name: Chechnya
-    color: 7a3a34
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: chechnya
+        name: Chechnya
+        color: 7a3a34
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 400000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: dagestan
-    name: Dagestan
-    color: df18d0
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: dagestan
+        name: Dagestan
+        color: df18d0
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1000000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: murmansk
-    name: Murmansk
-    color: 7b713a
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: murmansk
+        name: Murmansk
+        color: 7b713a
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 500000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: karelia
-    name: Karelia
-    color: 5ae0ca
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: karelia
+        name: Karelia
+        color: 5ae0ca
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 550000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: leningrad
-    name: Leningrad
-    color: d42ca5
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: leningrad
+        name: Leningrad
+        color: d42ca5
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1044991
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kaliningrad
-    name: Kaliningrad
-    color: 4fda6e
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kaliningrad
+        name: Kaliningrad
+        color: 4fda6e
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 183570
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: smolensk
-    name: Smolensk
-    color: f2d44b
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: smolensk
+        name: Smolensk
+        color: f2d44b
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1000969
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: bryansk
-    name: Bryansk
-    color: 1e6d0d
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: bryansk
+        name: Bryansk
+        color: 1e6d0d
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1549945
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kursk
-    name: Kursk
-    color: "960731"
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kursk
+        name: Kursk
+        color: "960731"
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1083305
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: belgorod
-    name: Belgorod
-    color: aeb5cf
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: belgorod
+        name: Belgorod
+        color: aeb5cf
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1026328
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: voronezh
-    name: Voronezh
-    color: ca76e2
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: voronezh
+        name: Voronezh
+        color: ca76e2
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2000000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: rostov
-    name: Rostov
-    color: c4c286
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: rostov
+        name: Rostov
+        color: c4c286
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 3011747
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: buryat
-    name: Buryat
-    color: 4504f7
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: buryat
+        name: Buryat
+        color: 4504f7
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 473326
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: tuva
-    name: Tuva
-    color: "511351"
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: tuva
+        name: Tuva
+        color: "511351"
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 121928
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: chita
-    name: Zabaykalsky Krai
-    color: 312c1f
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: chita
+        name: Zabaykalsky Krai
+        color: 312c1f
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1336387
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: amur
-    name: Amur
-    color: 327f49
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: amur
+        name: Amur
+        color: 327f49
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 687514
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: yevrey
-    name: Yevrey
-    color: cd09ba
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: yevrey
+        name: Yevrey
+        color: cd09ba
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 132856
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: khabarovsk
-    name: Khabarovsk
-    color: "511211"
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: khabarovsk
+        name: Khabarovsk
+        color: "511211"
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 272744
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: primor_ye
-    name: Primorsky Krai
-    color: "405386"
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: primor_ye
+        name: Primorsky Krai
+        color: "405386"
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1081018
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: tyumen
-    name: Tyumen
-    color: f286c6
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: tyumen
+        name: Tyumen
+        color: f286c6
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 892126
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kurgan
-    name: Kurgan
-    color: be6c9d
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kurgan
+        name: Kurgan
+        color: be6c9d
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 899170
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: omsk
-    name: Omsk
-    color: 42ae33
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: omsk
+        name: Omsk
+        color: 42ae33
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1345017
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: novosibirsk
-    name: Novosibirsk
-    color: ae9dde
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: novosibirsk
+        name: Novosibirsk
+        color: ae9dde
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2098481
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: chelyabinsk
-    name: Chelyabinsk
-    color: cc0552
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: chelyabinsk
+        name: Chelyabinsk
+        color: cc0552
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2576625
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: altay
-    name: Altay
-    color: 1550f7
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: altay
+        name: Altay
+        color: 1550f7
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2383265
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: orenburg
-    name: Orenburg
-    color: 3c7f92
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: orenburg
+        name: Orenburg
+        color: 3c7f92
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1929481
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: saratov
-    name:   
-    color: eb1a82
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: saratov
+        name: color: eb1a82
+        country: soviet_union
+        planet: earth
+        population: [
             {
-                size: 128643  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 128643
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: astrakhan
-    name: Astrakhan
-    color: 7059b3
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: astrakhan
+        name: Astrakhan
+        color: 7059b3
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2562751
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: volgograd
-    name: Volgograd
-    color: 74f85a
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: volgograd
+        name: Volgograd
+        color: 74f85a
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2053928
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: crimea
-    name: Crimea
-    color: "1943e6"
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: crimea
+        name: Crimea
+        color: "1943e6"
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1001517
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: magadan
-    name: Magadan
-    color: f7b501
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: magadan
+        name: Magadan
+        color: f7b501
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 173889
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: sakhalin
-    name: Sakhalin
-    color: 3a19a6
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: sakhalin
+        name: Sakhalin
+        color: 3a19a6
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 499405
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: chukotka
-    name: Chukotka
-    color: a32629
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: chukotka
+        name: Chukotka
+        color: a32629
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 35689
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: yamal_nenets
-    name: Yamalo-Nenets
-    color: da7e33
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: yamal_nenets
+        name: Yamalo-Nenets
+        color: da7e33
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 56334
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: nenets
-    name: Nenets
-    color: 09d2ff
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: nenets
+        name: Nenets
+        color: 09d2ff
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 40825
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: sakha
-    name: Sakha
-    color: e70a41
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: sakha
+        name: Sakha
+        color: e70a41
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 437343
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: arkhangelsk
-    name: Arkhangelsk
-    color: 04e796
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: arkhangelsk
+        name: Arkhangelsk
+        color: 04e796
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1030305
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: krasnoyarsk
-    name: Krasnoyarsk
-    color: aa272c
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: krasnoyarsk
+        name: Krasnoyarsk
+        color: aa272c
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 206309
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kalmyk
-    name: Kalmykia
-    color: "179884"
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kalmyk
+        name: Kalmykia
+        color: "179884"
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 134857
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kamchatka
-    name: Kamchatka
-    color: 74b514
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kamchatka
+        name: Kamchatka
+        color: 74b514
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 200753
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: bashkortostan
-    name: Bashkortostan
-    color: 7b03dd
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: bashkortostan
+        name: Bashkortostan
+        color: 7b03dd
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 3041609
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: sverdlovsk
-    name: Sverdlovsk
-    color: 6e381f
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: sverdlovsk
+        name: Sverdlovsk
+        color: 6e381f
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 3644416
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: khanty_mansiy
-    name: Khanty-Mansi
-    color: 9af782
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: khanty_mansiy
+        name: Khanty-Mansi
+        color: 9af782
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 103926
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: lipetsk
-    name: Lipetsk
-    color: 170af8
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: lipetsk
+        name: Lipetsk
+        color: 170af8
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 991567
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: tambov
-    name: Tambov
-    color: 32fe8f
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: tambov
+        name: Tambov
+        color: 32fe8f
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1249001
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: tomsk
-    name: Tomsk
-    color: e17cbe
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: tomsk
+        name: Tomsk
+        color: e17cbe
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 706802
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: tatarstan
-    name: Tatarstan
-    color: a52ea6
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: tatarstan
+        name: Tatarstan
+        color: a52ea6
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2450417
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: ulyanovsk
-    name: Ulyanovsk
-    color: 309c9b
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: ulyanovsk
+        name: Ulyanovsk
+        color: 309c9b
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1217359
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: penza
-    name: Penza
-    color: b72f89
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: penza
+        name: Penza
+        color: b72f89
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1807765
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kemerovo
-    name: Kemerovo
-    color: 0517aa
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kemerovo
+        name: Kemerovo
+        color: 0517aa
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2485872
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: orel
-    name: Orel
-    color: caf127
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: orel
+        name: Orel
+        color: caf127
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1329013
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: irkutsk
-    name: Irkutsk
-    color: 370cf8
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: irkutsk
+        name: Irkutsk
+        color: 370cf8
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1576453
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: khakass
-    name: Khakassia
-    color: 3a6cda
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: khakass
+        name: Khakassia
+        color: 3a6cda
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 341047
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: mordovia
-    name: Mordovia
-    color: 0e2c38
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: mordovia
+        name: Mordovia
+        color: 0e2c38
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1101994
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kaluga
-    name: Kaluga
-    color: 3c7490
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kaluga
+        name: Kaluga
+        color: 3c7490
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 985852
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kostroma
-    name: Kostroma
-    color: 261b43
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kostroma
+        name: Kostroma
+        color: 261b43
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 881945
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: yaroslavl
-    name: Yaroslavl
-    color: 8b2a17
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: yaroslavl
+        name: Yaroslavl
+        color: 8b2a17
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1365627
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: vladimir
-    name: Vladimir
-    color: 2213f1
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: vladimir
+        name: Vladimir
+        color: 2213f1
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1372910
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: ryazan
-    name: Ryazan
-    color: 96f551
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: ryazan
+        name: Ryazan
+        color: 96f551
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1944755
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: nizhegorod
-    name: Nizhegorod
-    color: d4261f
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: nizhegorod
+        name: Nizhegorod
+        color: d4261f
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 3500274
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: tula
-    name: Tula
-    color: 34d2b5
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: tula
+        name: Tula
+        color: 34d2b5
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1520308
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: chuvash
-    name: Chuvash
-    color: 4457bb
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: chuvash
+        name: Chuvash
+        color: 4457bb
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 897859
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: vologda
-    name: Vologda
-    color: 1998c4
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: vologda
+        name: Vologda
+        color: 1998c4
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1007531
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: novgorod
-    name: Novgorod
-    color: "425879"
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: novgorod
+        name: Novgorod
+        color: "425879"
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 836529
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: tver
-    name: Tver
-    color: bc213b
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: tver
+        name: Tver
+        color: bc213b
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1306787
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: moskovskaya
-    name: Moscow
-    color: dd39b8
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: moskovskaya
+        name: Moscow
+        color: dd39b8
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 5063003
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: kirov
-    name: Kirov
-    color: 29c892
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: kirov
+        name: Kirov
+        color: 29c892
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1713600
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: udmurt
-    name: Udmurt
-    color: 92a832
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: udmurt
+        name: Udmurt
+        color: 92a832
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1036927
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: komi
-    name: Komi
-    color: a58362
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: komi
+        name: Komi
+        color: a58362
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 534000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: perm
-    name: Perm
-    color: 3c7607
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: perm
+        name: Perm
+        color: 3c7607
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 2392876
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: samara
-    name: Samara
-    color: 146bbd
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: samara
+        name: Samara
+        color: 146bbd
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1900000
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: stavropol
-    name: Stavropol
-    color: 759cb6
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: stavropol
+        name: Stavropol
+        color: 759cb6
+        country: soviet_union
+        planet: earth
+        population: [
             {
                 size: 1282911
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
-  {
-    identifier: adygey
-    name: Adygea
-    color: e8e257
-    country: soviet_union
-    planet: earth
-    population:
-        [
+    }
+    {
+        identifier: adygey
+        name: Adygea
+        color: e8e257
+        country: soviet_union
+        planet: earth
+        population: [
             {
-                size: 128643  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 128643
+                job_distribution: {laborer: 1625938}
             }
         ]
-  }
+    }
 ]

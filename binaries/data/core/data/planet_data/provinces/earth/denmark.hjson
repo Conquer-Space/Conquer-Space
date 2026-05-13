@@ -1,32 +1,32 @@
 [
-  {
-    identifier: syddanmark
-    color: 81a62a
-    country: denmark
-    planet: earth
-  }
-  {
-    identifier: midtjylland
-    color: 3288c3
-    country: denmark
-    planet: earth
-  }
-  {
-    identifier: nordjylland
-    color: 0be837
-    country: denmark
-    planet: earth
-  }
-  {
-    identifier: greenland
-    color: ece46d
-    country: denmark
-    planet: earth
-  }
-  {
-    identifier: sjalland
-    color: 8b0add
-    country: denmark
-    planet: earth
-  }
+    {
+        identifier: syddanmark
+        color: 81a62a
+        country: denmark
+        planet: earth
+    }
+    {
+        identifier: midtjylland
+        color: 3288c3
+        country: denmark
+        planet: earth
+    }
+    {
+        identifier: nordjylland
+        color: 0be837
+        country: denmark
+        planet: earth
+    }
+    {
+        identifier: greenland
+        color: ece46d
+        country: denmark
+        planet: earth
+    }
+    {
+        identifier: sjalland
+        color: 8b0add
+        country: denmark
+        planet: earth
+    }
 ]

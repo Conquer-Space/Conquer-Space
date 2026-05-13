@@ -1,12 +1,8 @@
 [
-    
     {
         name: Los Angeles
         identifier: los_angeles
-        coordinates: {
-            latitude: 34.1139
-            longitude: -118.4068
-        }
+        coordinates: {latitude: 34.1139, longitude: -118.4068}
         planet: earth
         timezone: PDT
         country: usa
@@ -15,23 +11,16 @@
     {
         name: Seattle
         identifier: seattle
-        coordinates: {
-            latitude: 47.6211
-            longitude: -122.3244
-        }
+        coordinates: {latitude: 47.6211, longitude: -122.3244}
         province: washington
         planet: earth
         timezone: PST
         country: usa
     }
-    
     {
         name: Phoenix
         identifier: phoenix
-        coordinates: {
-            latitude: 33.5722
-            longitude: -112.0891
-        }
+        coordinates: {latitude: 33.5722, longitude: -112.0891}
         planet: earth
         timezone: UMST
         province: arizona
@@ -43,13 +32,8 @@
         timezone: EDT
         planet: earth
         country: usa
-        coordinates: {
-            latitude: 28.46
-            longitude: -80.53
-        }
-        space-port: {
-            launch: 0
-        }
+        coordinates: {latitude: 28.46, longitude: -80.53}
+        space-port: {launch: 0}
         province: florida
     }
     {
@@ -58,10 +42,7 @@
         timezone: EDT
         planet: earth
         country: usa
-        coordinates: {
-            latitude: 25.78
-            longitude: -80.21
-        }
+        coordinates: {latitude: 25.78, longitude: -80.21}
         province: florida
     }
 ]

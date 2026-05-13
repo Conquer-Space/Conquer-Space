@@ -1,38 +1,38 @@
 [
-  {
-    identifier: mbeya
-    color: "130422"
-    country: tanzania
-    planet: earth
-  }
-  {
-    identifier: njombe
-    color: 10d6a7
-    country: tanzania
-    planet: earth
-  }
-  {
-    identifier: kigoma
-    color: "8e6443"
-    country: tanzania
-    planet: earth
-  }
-  {
-    identifier: kagera
-    color: f80d20
-    country: tanzania
-    planet: earth
-  }
-  {
-    identifier: arusha
-    color: 76fd14
-    country: tanzania
-    planet: earth
-  }
-  {
-    identifier: dodoma
-    color: 7604f2
-    country: tanzania
-    planet: earth
-  }
+    {
+        identifier: mbeya
+        color: "130422"
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: njombe
+        color: 10d6a7
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kigoma
+        color: 8e6443
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: kagera
+        color: f80d20
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: arusha
+        color: 76fd14
+        country: tanzania
+        planet: earth
+    }
+    {
+        identifier: dodoma
+        color: 7604f2
+        country: tanzania
+        planet: earth
+    }
 ]

@@ -1,14 +1,14 @@
 [
-  {
-    identifier: azerbaijan
-    color: 4b0cdf
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: nakhchivan
-    color: a9f1dc
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: azerbaijan
+        color: 4b0cdf
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: nakhchivan
+        color: a9f1dc
+        country: soviet_union
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: san_marino
-    color: 70b3ec
-    country: san_marino
-    planet: earth
-  }
+    {
+        identifier: san_marino
+        color: 70b3ec
+        country: san_marino
+        planet: earth
+    }
 ]

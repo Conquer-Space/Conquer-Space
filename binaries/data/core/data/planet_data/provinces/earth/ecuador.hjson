@@ -1,8 +1,8 @@
 [
-  {
-    identifier: ecuador
-    color: 8f0a95
-    country: ecuador
-    planet: earth
-  }
+    {
+        identifier: ecuador
+        color: 8f0a95
+        country: ecuador
+        planet: earth
+    }
 ]

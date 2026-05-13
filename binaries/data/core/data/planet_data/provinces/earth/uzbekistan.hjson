@@ -1,44 +1,44 @@
 [
-  {
-    identifier: ferghana
-    color: 9efd00
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: jizzakh
-    color: e0d776
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: kashkadarya
-    color: 52acec
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: surkhandarya
-    color: ff71ae
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: karakalpakstan
-    color: 6c9e90
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: navoi
-    color: 0e807a
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: bukhoro
-    color: 982cff
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: ferghana
+        color: 9efd00
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: jizzakh
+        color: e0d776
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: kashkadarya
+        color: 52acec
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: surkhandarya
+        color: ff71ae
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: karakalpakstan
+        color: 6c9e90
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: navoi
+        color: 0e807a
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: bukhoro
+        color: 982cff
+        country: soviet_union
+        planet: earth
+    }
 ]

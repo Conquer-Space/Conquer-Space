@@ -1,86 +1,86 @@
 [
-  {
-    identifier: lac
-    color: dc8a7b
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: sila
-    color: 5320fb
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: salamat
-    color: "134e56"
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: moyen_chari
-    color: 12cebc
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: logone_oriental
-    color: 5f219a
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: hadjer_lamis
-    color: "648040"
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: chari_baguirmi
-    color: f4e99e
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: ville_de_n_djamena
-    color: 264c90
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: ennedi
-    color: df1283
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: borkou
-    color: 37d30e
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: tibesti
-    color: ce5fe9
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: ouaddai
-    color: "1879e2"
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: guera
-    color: a18ebc
-    country: chad
-    planet: earth
-  }
-  {
-    identifier: batha
-    color: "153092"
-    country: chad
-    planet: earth
-  }
+    {
+        identifier: lac
+        color: dc8a7b
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: sila
+        color: 5320fb
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: salamat
+        color: "134e56"
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: moyen_chari
+        color: 12cebc
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: logone_oriental
+        color: 5f219a
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: hadjer_lamis
+        color: "648040"
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: chari_baguirmi
+        color: f4e99e
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: ville_de_n_djamena
+        color: 264c90
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: ennedi
+        color: df1283
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: borkou
+        color: 37d30e
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: tibesti
+        color: ce5fe9
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: ouaddai
+        color: "1879e2"
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: guera
+        color: a18ebc
+        country: chad
+        planet: earth
+    }
+    {
+        identifier: batha
+        color: "153092"
+        country: chad
+        planet: earth
+    }
 ]

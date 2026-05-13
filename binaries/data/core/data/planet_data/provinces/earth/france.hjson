@@ -1,194 +1,194 @@
 [
-  {
-    identifier: guyane_francaise
-    color: e7d71e
-    country: france
-    planet: earth
-  }
-  {
-    identifier: st_martin
-    color: 1d3f24
-    country: france
-    planet: earth
-  }
-  {
-    identifier: nord
-    color: 43eaf6
-    country: france
-    planet: earth
-  }
-  {
-    identifier: ardennes
-    color: fcb611
-    country: france
-    planet: earth
-  }
-  {
-    identifier: provence
-    color: 19bbba
-    country: france
-    planet: earth
-  }
-  {
-    identifier: hautes_alpes
-    color: 6bc22a
-    country: france
-    planet: earth
-  }
-  {
-    identifier: aquitane
-    color: "110811"
-    country: france
-    planet: earth
-  }
-  {
-    identifier: haute_garonne
-    color: b81719
-    country: france
-    planet: earth
-  }
-  {
-    identifier: territoire_de_belfort
-    color: fc0d26
-    country: france
-    planet: earth
-  }
-  {
-    identifier: new_caledonia
-    color: 6a83e8
-    country: france
-    planet: earth
-  }
-  {
-    identifier: saint_pierre
-    color: 517bf4
-    country: france
-    planet: earth
-  }
-  {
-    identifier: miquelon_langlade
-    color: 9f449b
-    country: france
-    planet: earth
-  }
-  {
-    identifier: poitou_saintongue
-    color: 1db207
-    country: france
-    planet: earth
-  }
-  {
-    identifier: brtittany
-    color: c4a27e
-    country: france
-    planet: earth
-  }
-  {
-    identifier: normandy
-    color: b5594c
-    country: france
-    planet: earth
-  }
-  {
-    identifier: french_polynesia
-    color: 843ebc
-    country: france
-    planet: earth
-  }
-  {
-    identifier: windward_islands
-    color: 7aff15
-    country: france
-    planet: earth
-  }
-  {
-    identifier: iles_eparses_de_l_ocean_indien
-    color: 4d9e59
-    country: france
-    planet: earth
-  }
-  {
-    identifier: martinique
-    color: cc2bb7
-    country: france
-    planet: earth
-  }
-  {
-    identifier: guadeloupe
-    color: 98e7f8
-    country: france
-    planet: earth
-  }
-  {
-    identifier: archipel_des_kerguelen
-    color: f2356f
-    country: france
-    planet: earth
-  }
-  {
-    identifier: archipel_des_crozet
-    color: 15b955
-    country: france
-    planet: earth
-  }
-  {
-    identifier: la_reunion
-    color: 0c24c0
-    country: france
-    planet: earth
-  }
-  {
-    identifier: corsica
-    color: 2c4736
-    country: france
-    planet: earth
-  }
-  {
-    identifier: iles_saint_paul_et_nouvelle_amsterdam
-    color: "195661"
-    country: france
-    planet: earth
-  }
-  {
-    identifier: clipperton_island
-    color: 29413d
-    country: france
-    planet: earth
-  }
-  {
-    identifier: guyenne
-    color: 0d87de
-    country: france
-    planet: earth
-  }
-  {
-    identifier: correze
-    color: 60e98e
-    country: france
-    planet: earth
-  }
-  {
-    identifier: indre
-    color: 730c16
-    country: france
-    planet: earth
-  }
-  {
-    identifier: loir_et_cher
-    color: f13f78
-    country: france
-    planet: earth
-  }
-  {
-    identifier: rhone
-    color: 54f287
-    country: france
-    planet: earth
-  }
-  {
-    identifier: paris
-    color: 26b83b
-    country: france
-    planet: earth
-  }
+    {
+        identifier: guyane_francaise
+        color: e7d71e
+        country: france
+        planet: earth
+    }
+    {
+        identifier: st_martin
+        color: 1d3f24
+        country: france
+        planet: earth
+    }
+    {
+        identifier: nord
+        color: 43eaf6
+        country: france
+        planet: earth
+    }
+    {
+        identifier: ardennes
+        color: fcb611
+        country: france
+        planet: earth
+    }
+    {
+        identifier: provence
+        color: 19bbba
+        country: france
+        planet: earth
+    }
+    {
+        identifier: hautes_alpes
+        color: 6bc22a
+        country: france
+        planet: earth
+    }
+    {
+        identifier: aquitane
+        color: "110811"
+        country: france
+        planet: earth
+    }
+    {
+        identifier: haute_garonne
+        color: b81719
+        country: france
+        planet: earth
+    }
+    {
+        identifier: territoire_de_belfort
+        color: fc0d26
+        country: france
+        planet: earth
+    }
+    {
+        identifier: new_caledonia
+        color: 6a83e8
+        country: france
+        planet: earth
+    }
+    {
+        identifier: saint_pierre
+        color: 517bf4
+        country: france
+        planet: earth
+    }
+    {
+        identifier: miquelon_langlade
+        color: 9f449b
+        country: france
+        planet: earth
+    }
+    {
+        identifier: poitou_saintongue
+        color: 1db207
+        country: france
+        planet: earth
+    }
+    {
+        identifier: brtittany
+        color: c4a27e
+        country: france
+        planet: earth
+    }
+    {
+        identifier: normandy
+        color: b5594c
+        country: france
+        planet: earth
+    }
+    {
+        identifier: french_polynesia
+        color: 843ebc
+        country: france
+        planet: earth
+    }
+    {
+        identifier: windward_islands
+        color: 7aff15
+        country: france
+        planet: earth
+    }
+    {
+        identifier: iles_eparses_de_l_ocean_indien
+        color: 4d9e59
+        country: france
+        planet: earth
+    }
+    {
+        identifier: martinique
+        color: cc2bb7
+        country: france
+        planet: earth
+    }
+    {
+        identifier: guadeloupe
+        color: 98e7f8
+        country: france
+        planet: earth
+    }
+    {
+        identifier: archipel_des_kerguelen
+        color: f2356f
+        country: france
+        planet: earth
+    }
+    {
+        identifier: archipel_des_crozet
+        color: 15b955
+        country: france
+        planet: earth
+    }
+    {
+        identifier: la_reunion
+        color: 0c24c0
+        country: france
+        planet: earth
+    }
+    {
+        identifier: corsica
+        color: 2c4736
+        country: france
+        planet: earth
+    }
+    {
+        identifier: iles_saint_paul_et_nouvelle_amsterdam
+        color: "195661"
+        country: france
+        planet: earth
+    }
+    {
+        identifier: clipperton_island
+        color: 29413d
+        country: france
+        planet: earth
+    }
+    {
+        identifier: guyenne
+        color: 0d87de
+        country: france
+        planet: earth
+    }
+    {
+        identifier: correze
+        color: 60e98e
+        country: france
+        planet: earth
+    }
+    {
+        identifier: indre
+        color: 730c16
+        country: france
+        planet: earth
+    }
+    {
+        identifier: loir_et_cher
+        color: f13f78
+        country: france
+        planet: earth
+    }
+    {
+        identifier: rhone
+        color: 54f287
+        country: france
+        planet: earth
+    }
+    {
+        identifier: paris
+        color: 26b83b
+        country: france
+        planet: earth
+    }
 ]

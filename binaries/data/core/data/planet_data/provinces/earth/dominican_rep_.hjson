@@ -1,8 +1,8 @@
 [
-  {
-    identifier: dominican_republic
-    color: e55f48
-    country: dominican_rep_
-    planet: earth
-  }
+    {
+        identifier: dominican_republic
+        color: e55f48
+        country: dominican_rep_
+        planet: earth
+    }
 ]

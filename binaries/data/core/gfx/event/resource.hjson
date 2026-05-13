@@ -2,8 +2,6 @@
     rocket-event: {
         path: rocket-event.jpg
         type: texture
-        hints: {
-            attribution: "NASA, Public domain, via Wikimedia Commons"
-        }
+        hints: {attribution: "NASA, Public domain, via Wikimedia Commons"}
     }
 }

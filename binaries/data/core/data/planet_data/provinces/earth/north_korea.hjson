@@ -1,20 +1,20 @@
 [
-  {
-    identifier: kangwon_do
-    color: 3990d0
-    country: north_korea
-    planet: earth
-  }
-  {
-    identifier: hamgyong_bukto
-    color: 2fc1a0
-    country: north_korea
-    planet: earth
-  }
-  {
-    identifier: chagang_do
-    color: c28e2c
-    country: north_korea
-    planet: earth
-  }
+    {
+        identifier: kangwon_do
+        color: 3990d0
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: hamgyong_bukto
+        color: 2fc1a0
+        country: north_korea
+        planet: earth
+    }
+    {
+        identifier: chagang_do
+        color: c28e2c
+        country: north_korea
+        planet: earth
+    }
 ]

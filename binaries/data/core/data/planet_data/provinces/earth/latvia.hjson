@@ -1,14 +1,14 @@
 [
-  {
-    identifier: vidzemes
-    color: b55aac
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: riga
-    color: 59c393
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: vidzemes
+        color: b55aac
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: riga
+        color: 59c393
+        country: soviet_union
+        planet: earth
+    }
 ]

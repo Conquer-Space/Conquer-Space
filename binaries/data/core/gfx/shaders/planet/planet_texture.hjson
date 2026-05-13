@@ -12,8 +12,8 @@
         country_palette: 4
         overlay_texture: 5
         C: 1
-        far: 1e13
-        offset: 1.0
+        far: 10000000000000
+        offset: 1
         // Is rendering country?
         country: false
         is_roughness: false

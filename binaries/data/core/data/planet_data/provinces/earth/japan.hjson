@@ -1,50 +1,50 @@
 [
-  {
-    identifier: kyushu
-    color: 59ed91
-    country: japan
-    planet: earth
-  }
-  {
-    identifier: shikoku
-    color: ea3002
-    country: japan
-    planet: earth
-  }
-  {
-    identifier: chugoku
-    color: f00182
-    country: japan
-    planet: earth
-  }
-  {
-    identifier: kinki
-    color: e24192
-    country: japan
-    planet: earth
-  }
-  {
-    identifier: chubu
-    color: 9a2b6c
-    country: japan
-    planet: earth
-  }
-  {
-    identifier: tohoku
-    color: f0c7f6
-    country: japan
-    planet: earth
-  }
-  {
-    identifier: kanto
-    color: f125a4
-    country: japan
-    planet: earth
-  }
-  {
-    identifier: hokkaido
-    color: c62daf
-    country: japan
-    planet: earth
-  }
+    {
+        identifier: kyushu
+        color: 59ed91
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: shikoku
+        color: ea3002
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: chugoku
+        color: f00182
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: kinki
+        color: e24192
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: chubu
+        color: 9a2b6c
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: tohoku
+        color: f0c7f6
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: kanto
+        color: f125a4
+        country: japan
+        planet: earth
+    }
+    {
+        identifier: hokkaido
+        color: c62daf
+        country: japan
+        planet: earth
+    }
 ]

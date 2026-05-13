@@ -1,20 +1,20 @@
 [
-  {
-    identifier: wouleu_ntem
-    color: 8c2b64
-    country: gabon
-    planet: earth
-  }
-  {
-    identifier: ogooue_ivindo
-    color: 04632f
-    country: gabon
-    planet: earth
-  }
-  {
-    identifier: ngounie
-    color: 5b9984
-    country: gabon
-    planet: earth
-  }
+    {
+        identifier: wouleu_ntem
+        color: 8c2b64
+        country: gabon
+        planet: earth
+    }
+    {
+        identifier: ogooue_ivindo
+        color: 04632f
+        country: gabon
+        planet: earth
+    }
+    {
+        identifier: ngounie
+        color: 5b9984
+        country: gabon
+        planet: earth
+    }
 ]

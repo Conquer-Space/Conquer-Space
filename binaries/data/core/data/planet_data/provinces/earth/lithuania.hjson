@@ -1,14 +1,14 @@
 [
-  {
-    identifier: utenos
-    color: 97580c
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: telsiai
-    color: 7ecd4c
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: utenos
+        color: 97580c
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: telsiai
+        color: 7ecd4c
+        country: soviet_union
+        planet: earth
+    }
 ]

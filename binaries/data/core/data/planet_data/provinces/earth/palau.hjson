@@ -1,8 +1,8 @@
 [
-  {
-    identifier: palau
-    color: d6fefd
-    country: palau
-    planet: earth
-  }
+    {
+        identifier: palau
+        color: d6fefd
+        country: palau
+        planet: earth
+    }
 ]

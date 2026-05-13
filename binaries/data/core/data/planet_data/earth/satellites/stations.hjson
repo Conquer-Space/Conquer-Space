@@ -1,21 +1,17 @@
 [
-  {
-    name: ISS
-    orbit:
     {
-      eccentricity: 0.0004996
-      semi_major_axis: 6795667.972420554 m
-      inclination: 51.6338 deg
-      LAN: 336.6423 deg
-      arg_periapsis: 12.8919 deg
-      M0: 347.2196 deg
-      epoch: 1762194490.587072
-      reference: earth
+        name: ISS
+        orbit: {
+            eccentricity: 0.0004996
+            semi_major_axis: 6795667.972420554 m
+            inclination: 51.6338 deg
+            LAN: 336.6423 deg
+            arg_periapsis: 12.8919 deg
+            M0: 347.2196 deg
+            epoch: 1762194490.587072
+            reference: earth
+        }
+        tags: ["station"]
+        model: iss
     }
-    tags:
-    [
-      station
-    ]
-    model: iss
-  }
 ]

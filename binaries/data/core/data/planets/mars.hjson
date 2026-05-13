@@ -6,8 +6,7 @@
         radius: 3390 km
         reference: sun
         gm: 42828.372
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.09326110180342093
             semi_major_axis: 227949700.8297164 km
             M0: 171.1890083274421 deg
@@ -17,13 +16,8 @@
         }
         day_length: 1.025957 d
         axial: 25.19 deg
-        texture:
-        {
-            terrain: marsmap
-        }
-        atmosphere: {
-            scale_height: 11.1 km
-        }
+        texture: {terrain: "marsmap"}
+        atmosphere: {scale_height: "11.1 km"}
         tags: []
     }
 ]

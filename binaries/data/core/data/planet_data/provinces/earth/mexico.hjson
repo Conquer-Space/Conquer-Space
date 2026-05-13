@@ -1,104 +1,104 @@
 [
-  {
-    identifier: sonora
-    color: 52fc68
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: baja_california
-    color: 777b09
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: chihuahua
-    color: faab6a
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: coahuila
-    color: 03f6b5
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: yutacan
-    color: 11b6b5
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: campeche
-    color: 945b64
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: chiapas
-    color: d88bc4
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: colima
-    color: c8f41b
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: sinaloa
-    color: fb4b49
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: veracruz
-    color: ccf47d
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: michoacan
-    color: 70b38f
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: guerrero
-    color: "188516"
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: oaxaca
-    color: 4c5a61
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: mexico
-    color: d9ef1c
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: san_luis_potosi
-    color: 99cd4b
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: zacatecas
-    color: c4cb0a
-    country: mexico
-    planet: earth
-  }
-  {
-    identifier: durango
-    color: dfb3c7
-    country: mexico
-    planet: earth
-  }
+    {
+        identifier: sonora
+        color: 52fc68
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: baja_california
+        color: 777b09
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: chihuahua
+        color: faab6a
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: coahuila
+        color: 03f6b5
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: yutacan
+        color: 11b6b5
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: campeche
+        color: 945b64
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: chiapas
+        color: d88bc4
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: colima
+        color: c8f41b
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: sinaloa
+        color: fb4b49
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: veracruz
+        color: ccf47d
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: michoacan
+        color: 70b38f
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: guerrero
+        color: "188516"
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: oaxaca
+        color: 4c5a61
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: mexico
+        color: d9ef1c
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: san_luis_potosi
+        color: 99cd4b
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: zacatecas
+        color: c4cb0a
+        country: mexico
+        planet: earth
+    }
+    {
+        identifier: durango
+        color: dfb3c7
+        country: mexico
+        planet: earth
+    }
 ]

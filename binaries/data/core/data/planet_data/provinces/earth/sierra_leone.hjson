@@ -1,8 +1,8 @@
 [
-  {
-    identifier: sierra_leone
-    color: 8eb1a5
-    country: sierra_leone
-    planet: earth
-  }
+    {
+        identifier: sierra_leone
+        color: 8eb1a5
+        country: sierra_leone
+        planet: earth
+    }
 ]

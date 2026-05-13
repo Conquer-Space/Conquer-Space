@@ -1,20 +1,20 @@
 [
-  {
-    identifier: east_cuba
-    color: bd0a09
-    country: cuba
-    planet: earth
-  }
-  {
-    identifier: central_cuba
-    color: c4e41e
-    country: cuba
-    planet: earth
-  }
-  {
-    identifier: west_cuba
-    color: 5c99b6
-    country: cuba
-    planet: earth
-  }
+    {
+        identifier: east_cuba
+        color: bd0a09
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: central_cuba
+        color: c4e41e
+        country: cuba
+        planet: earth
+    }
+    {
+        identifier: west_cuba
+        color: 5c99b6
+        country: cuba
+        planet: earth
+    }
 ]

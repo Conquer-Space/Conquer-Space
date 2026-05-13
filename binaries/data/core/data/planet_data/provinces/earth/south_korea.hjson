@@ -1,20 +1,20 @@
 [
-  {
-    identifier: gyeonggi
-    color: 1dcd74
-    country: south_korea
-    planet: earth
-  }
-  {
-    identifier: south_chungcheong
-    color: c42600
-    country: south_korea
-    planet: earth
-  }
-  {
-    identifier: gyeongsang
-    color: d0e4d3
-    country: south_korea
-    planet: earth
-  }
+    {
+        identifier: gyeonggi
+        color: 1dcd74
+        country: south_korea
+        planet: earth
+    }
+    {
+        identifier: south_chungcheong
+        color: c42600
+        country: south_korea
+        planet: earth
+    }
+    {
+        identifier: gyeongsang
+        color: d0e4d3
+        country: south_korea
+        planet: earth
+    }
 ]
