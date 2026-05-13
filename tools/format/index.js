@@ -42,10 +42,16 @@ walk("../../binaries/data", function(err, results) {
             console.error(err);
             return;
         }
+        try {
         var text = Hjson.rt.parse(data);
+        } catch(error) {
+            console.log("Error in file " + file_name);
+            console.log(error);
+        }
         var output = Hjson.rt.stringify(text, {
             bracesSameLine: true,
-            condense: 60
+            condense: 60,
+            space: 4
         });
 
         fs.writeFile(file_name, output, 'utf8', (err) => {
