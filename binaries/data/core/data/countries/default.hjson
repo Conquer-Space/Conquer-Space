@@ -5,6 +5,11 @@
     identifier: zimbabwe
   }
   {
+    name: Yugoslavia
+    common: Yugoslavia
+    identifier: yugoslavia
+  }
+  {
     name: Republic of Zambia
     common: Zambia
     identifier: zambia
