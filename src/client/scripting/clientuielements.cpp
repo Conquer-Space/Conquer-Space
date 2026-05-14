@@ -37,7 +37,6 @@ void InitClientElements(core::Universe& universe, core::scripting::ScriptInterfa
     REGISTER_FUNCTION("get_hovered_entity", [&] {
         // Now we can set our country
         const auto& hovering = universe.ctx().at<client::ctx::HoveringItem>();
-        hovering.world_space
     });
     REGISTER_FUNCTION("get_selected_country", [&] {});
 }

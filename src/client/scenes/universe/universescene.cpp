@@ -92,6 +92,7 @@ void UniverseScene::Init() {
     system_renderer->Initialize();
 
     GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
+    GetUniverse().ctx().emplace<client::ctx::UiDisplayMode>(client::ctx::UiDisplayMode::CountrySelect);
     GetUniverse().ctx().emplace<client::ctx::HoveringItem>();
     GetUniverse().ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
     GetUniverse().ctx().emplace<client::ctx::StarSystemViewDebug>();
@@ -144,17 +145,26 @@ void UniverseScene::Update(float deltaTime) {
 
     DoScreenshot();
 
-    for (auto& ui : documents) {
-        ui->Update(deltaTime);
-    }
+    switch (GetUniverse().ctx().at<client::ctx::UiDisplayMode>()) {
+        case client::ctx::UiDisplayMode::CountrySelect:
+            for (auto& ui : country_selection_documents) {
+                ui->Update(deltaTime);
+            }
+            break;
+        case client::ctx::UiDisplayMode::Gameplay: {
+            for (auto& ui : documents) {
+                ui->Update(deltaTime);
+            }
 
-    for (auto& ui : user_interfaces) {
-        if (game_halted) {
-            ui->window_flags = ImGuiWindowFlags_NoInputs;
-        } else {
-            ui->window_flags = 0;
-        }
-        ui->DoUpdate(deltaTime);
+            for (auto& ui : user_interfaces) {
+                if (game_halted) {
+                    ui->window_flags = ImGuiWindowFlags_NoInputs;
+                } else {
+                    ui->window_flags = 0;
+                }
+                ui->DoUpdate(deltaTime);
+            }
+        } break;
     }
 }
 

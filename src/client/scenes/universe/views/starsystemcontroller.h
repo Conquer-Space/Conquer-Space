@@ -24,6 +24,7 @@
 #include "client/scenes/universe/views/starsystemcamera.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
+#include "core/components/surface.h"
 #include "core/universe.h"
 #include "engine/application.h"
 
@@ -117,6 +118,10 @@ class StarSystemController {
     void CheckHoveringEntity();
     entt::entity SurfaceCoordinateToProvince(core::components::types::SurfaceCoordinate coordinate,
                                              entt::entity planet);
+
+    glm::vec4 CountryColorToVec4(const glm::vec3 &color);
+    glm::vec4 CountryColorToVec4(const core::components::ProvinceColor &color);
+    glm::vec4 CountryColorToVec4(const entt::entity province);
 
     core::Universe &universe;
     engine::Application &app;

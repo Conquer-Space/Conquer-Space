@@ -69,7 +69,5 @@ class RightClickWindow : public SysRmlUiInterface {
     } right_click_listener {GetUniverse(), *this};
 
     std::vector<RightClickMenuItem> buttons;
-
-    void TestFunction(Rml::DataModelHandle, Rml::Event&, const Rml::VariantList&);
 };
 }  // namespace cqsp::client::systems::rmlui

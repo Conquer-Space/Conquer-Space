@@ -1,5 +1,9 @@
 -- We need some event listener
-function on_country_select(country)
-    local country = core.get_name(country)
-    -- Nowe we should update everything...
+CountrySelectionWindow = CountrySelectionWindow or {}
+
+function CountrySelectionWindow.OnProvinceSelect(document)
+    -- Also get the current document to actually set it
+    -- local country = core.get_name(country)
+    -- Now we should update everything...
+    -- how do we plumb this
 end

@@ -456,8 +456,7 @@ std::optional<glm::vec3> StarSystemController::CheckIntersection(const glm::vec3
 void StarSystemController::SetCountryProvincesColor(entt::entity country) {
     auto& country_list = universe.get<components::CountryCityList>(country);
     auto& country_comp = universe.get<components::Country>(country);
-    glm::vec4 color =
-        glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], DEFAULT_PROVINCE_APLHA);
+    glm::vec4 color = CountryColorToVec4(country_comp.color);
     for (entt::entity province : country_list.province_list) {
         // TODO(EhWhoAmI): Check if the province is on the selected planet
         renderer.UpdatePlanetProvinceColors(focused_planet, province, color);
@@ -471,14 +470,8 @@ void StarSystemController::SetCountryProvincesToProvinceColor(entt::entity count
     glm::vec4 color =
         glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], DEFAULT_PROVINCE_APLHA);
     for (entt::entity province : country_list.province_list) {
-        auto& planet_province_colors = universe.colors_province[focused_planet];
-        int color_int = planet_province_colors[province];
-        auto color = components::ProvinceColor::fromInt(color_int);
         // TODO(EhWhoAmI): Check if the province is on the selected planet
-        renderer.UpdatePlanetProvinceColors(
-            focused_planet, province,
-            glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
-                      static_cast<float>(color.b) / 255.f, DEFAULT_PROVINCE_APLHA));
+        renderer.UpdatePlanetProvinceColors(focused_planet, province, CountryColorToVec4(province));
     }
 }
 
@@ -689,27 +682,16 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
             return color;
         } break;
         case ctx::MapMode::ProvinceMapMode: {
-            auto& planet_province_colors = universe.colors_province[focused_planet];
-            int color_int = planet_province_colors[province];
-
-            auto color = components::ProvinceColor::fromInt(color_int);
-            return glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
-                             static_cast<float>(color.b) / 255.f, DEFAULT_PROVINCE_APLHA);
+            return CountryColorToVec4(province);
         }
         case ctx::MapMode::LocalSelectedMapMode: {
             const auto& province_comp = universe.get<components::Province>(province);
             if (province_comp.country == universe.GetPlayer()) {
-                auto& planet_province_colors = universe.colors_province[focused_planet];
-                int color_int = planet_province_colors[province];
-
-                auto color = components::ProvinceColor::fromInt(color_int);
-                return glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
-                                 static_cast<float>(color.b) / 255.f, DEFAULT_PROVINCE_APLHA);
+                return CountryColorToVec4(province);
             } else {
                 if (universe.valid(province_comp.country)) {
                     auto& country_comp = universe.get<components::Country>(province_comp.country);
-                    glm::vec4 color = glm::vec4(country_comp.color, DEFAULT_PROVINCE_APLHA);
-                    return color;
+                    return CountryColorToVec4(country_comp.color);
                 }
                 return ColonizationTargetProvinceColor(province);
             }
@@ -773,6 +755,23 @@ void StarSystemController::SelectForeignProvince(entt::entity province) {
     SetCountryProvincesColor(province_comp.country);
 }
 
+glm::vec4 StarSystemController::CountryColorToVec4(const glm::vec3& color) {
+    return glm::vec4(color, DEFAULT_PROVINCE_APLHA);
+}
+
+glm::vec4 StarSystemController::CountryColorToVec4(const core::components::ProvinceColor& color) {
+    return glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.f,
+                     static_cast<float>(color.b) / 255.f, DEFAULT_PROVINCE_APLHA);
+}
+
+glm::vec4 StarSystemController::CountryColorToVec4(const entt::entity province) {
+    auto& planet_province_colors = universe.colors_province[focused_planet];
+    int color_int = planet_province_colors[province];
+
+    auto color = components::ProvinceColor::fromInt(color_int);
+    return CountryColorToVec4(color);
+}
+
 void StarSystemController::SelectDomesticProvince(entt::entity province) {
     // We should remain at whatever mode we were at last time
     // But if we're at country mode, we should then show province view for each province in the country
@@ -784,18 +783,12 @@ void StarSystemController::SelectDomesticProvince(entt::entity province) {
     }
     auto& country_comp = universe.get<components::Country>(province_comp.country);
     auto& country_list = universe.get<components::CountryCityList>(province_comp.country);
-    auto& planet_province_colors = universe.colors_province[hovering_planet];
     if (universe.ctx().at<ctx::MapMode>() == ctx::MapMode::CountryMapMode) {
         universe.ctx().at<ctx::MapMode>() = ctx::MapMode::LocalSelectedMapMode;
     }
     for (entt::entity province : country_list.province_list) {
         // TODO(EhWhoAmI): Check if the province is on the selected planet
-        int color_int = planet_province_colors[province];
-        auto color = components::ProvinceColor::fromInt(color_int);
-        renderer.UpdatePlanetProvinceColors(
-            hovering_planet, province,
-            glm::vec4(static_cast<float>(color.r) / 255.f, static_cast<float>(color.g) / 255.,
-                      static_cast<float>(color.b) / 255.f, DEFAULT_PROVINCE_APLHA));
+        renderer.UpdatePlanetProvinceColors(hovering_planet, province, CountryColorToVec4(province));
     }
 }
 

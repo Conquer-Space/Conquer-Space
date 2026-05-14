@@ -31,6 +31,8 @@ struct StarSystemViewDebug {
     bool to_show = false;
 };
 
+enum UiDisplayMode { CountrySelect, Gameplay };
+
 struct PauseOptions {
     bool to_tick = false;
     int tick_speed = 3;
