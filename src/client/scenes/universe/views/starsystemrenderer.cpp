@@ -25,6 +25,7 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
+#include "client/components/rightclick.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
 #include "core/components/model.h"
@@ -83,6 +84,14 @@ SysStarSystemRenderer::SysStarSystemRenderer(core::Universe& _u, engine::Applica
 void SysStarSystemRenderer::Initialize() {
     InitializeMeshes();
     InitializeFramebuffers();
+
+    universe.ctx().emplace<client::ctx::PauseOptions>();
+    universe.ctx().emplace<client::ctx::UiDisplayMode>(client::ctx::UiDisplayMode::CountrySelect);
+    universe.ctx().emplace<client::ctx::HoveringItem>();
+    universe.ctx().emplace<client::ctx::MapModeCtx>();
+    universe.ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
+    universe.ctx().emplace<client::ctx::StarSystemViewDebug>();
+    universe.ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::LocalSelectedMapMode);
 
     SetupDummyTextures();
     // Zoom into the player's capital city

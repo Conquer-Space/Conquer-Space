@@ -93,13 +93,6 @@ void UniverseScene::Init() {
     system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
     system_renderer->Initialize();
 
-    GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
-    GetUniverse().ctx().emplace<client::ctx::UiDisplayMode>(client::ctx::UiDisplayMode::CountrySelect);
-    GetUniverse().ctx().emplace<client::ctx::HoveringItem>();
-    GetUniverse().ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
-    GetUniverse().ctx().emplace<client::ctx::StarSystemViewDebug>();
-    GetUniverse().ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::LocalSelectedMapMode);
-
     system_renderer->SeeStarSystem();
 
     SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);

@@ -21,6 +21,7 @@
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/scenes/selection/countryselectionscene.h"
 #include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
 #include "client/systems/universeloader.h"
@@ -50,7 +51,12 @@ void UniverseLoadingScene::Update(float deltaTime) {
     if (m_completed_loading && thread->joinable()) {
         // Switch scene
         thread->join();
-        GetApp().SetScene<UniverseScene>();
+        auto system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
+        system_renderer->Initialize();
+        system_renderer->SeeStarSystem();
+        SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
+
+        GetApp().SetScene<CountrySelectionScene>(std::move(system_renderer));
     }
 }
 

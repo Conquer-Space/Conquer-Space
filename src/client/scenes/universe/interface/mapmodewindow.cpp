@@ -21,10 +21,7 @@
 #include "core/util/nameutil.h"
 
 namespace cqsp::client::systems {
-void MapModeWindow::Init() {
-    selected_good = GetUniverse().view<core::components::Good>().front();
-    GetUniverse().ctx().emplace<ctx::MapModeCtx>(selected_good);
-}
+void MapModeWindow::Init() { selected_good = GetUniverse().view<core::components::Good>().front(); }
 
 // If the last frame had a tick
 void MapModeWindow::OnTick() {

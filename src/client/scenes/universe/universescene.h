@@ -36,17 +36,7 @@ namespace cqsp::client::scene {
 class UniverseScene : public ClientScene {
  public:
     explicit UniverseScene(engine::Application& app);
-    ~UniverseScene() {
-        // Delete ui
-        simulation.reset();
-        for (auto it = user_interfaces.begin(); it != user_interfaces.end(); it++) {
-            it->reset();
-        }
-        for (auto& it : documents) {
-            it.reset();
-        }
-        system_renderer.reset();
-    }
+    ~UniverseScene() = default;
 
     void Init();
     void Update(float deltaTime);
