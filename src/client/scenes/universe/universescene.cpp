@@ -53,6 +53,7 @@
 #include "core/components/population.h"
 #include "core/components/resource.h"
 #include "core/components/surface.h"
+#include "core/scripting/functionreg.h"
 #include "core/scripting/luafunctions.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/polygon.h"
@@ -85,6 +86,7 @@ void UniverseScene::Init() {
 
     core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
     client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
+    InitializeScriptFunctions();
 
     GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
 
@@ -145,26 +147,17 @@ void UniverseScene::Update(float deltaTime) {
 
     DoScreenshot();
 
-    switch (GetUniverse().ctx().at<client::ctx::UiDisplayMode>()) {
-        case client::ctx::UiDisplayMode::CountrySelect:
-            for (auto& ui : country_selection_documents) {
-                ui->Update(deltaTime);
-            }
-            break;
-        case client::ctx::UiDisplayMode::Gameplay: {
-            for (auto& ui : documents) {
-                ui->Update(deltaTime);
-            }
+    for (auto& ui : documents) {
+        ui->Update(deltaTime);
+    }
 
-            for (auto& ui : user_interfaces) {
-                if (game_halted) {
-                    ui->window_flags = ImGuiWindowFlags_NoInputs;
-                } else {
-                    ui->window_flags = 0;
-                }
-                ui->DoUpdate(deltaTime);
-            }
-        } break;
+    for (auto& ui : user_interfaces) {
+        if (game_halted) {
+            ui->window_flags = ImGuiWindowFlags_NoInputs;
+        } else {
+            ui->window_flags = 0;
+        }
+        ui->DoUpdate(deltaTime);
     }
 }
 
@@ -269,4 +262,7 @@ void SetGameHalted(bool b) { game_halted = b; }
 
 bool IsGameHalted() { return game_halted; }
 
+void UniverseScene::InitializeScriptFunctions() {
+    // Init stuff
+}
 }  // namespace cqsp::client::scene

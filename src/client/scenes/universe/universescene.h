@@ -67,18 +67,13 @@ class UniverseScene : public ClientScene {
         documents.push_back(std::move(ui));
     }
 
-    template <class T>
-    void AddCountrySelectionSystem() {
-        auto ui = std::make_unique<T>(GetApp());
-        ui->OpenDocument();
-        country_selection_documents.push_back(std::move(ui));
-    }
-
  private:
     /// <summary>
     /// Does the screenshot interface.
     /// </summary>
     void DoScreenshot();
+
+    void InitializeScriptFunctions();
 
     void CheckUiReload();
     void ManageTick();
@@ -87,8 +82,6 @@ class UniverseScene : public ClientScene {
     std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation;
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
     std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
-
-    std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> country_selection_documents;
 
     double last_tick = 0;
 
