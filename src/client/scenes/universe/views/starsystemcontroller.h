@@ -122,6 +122,7 @@ class StarSystemController {
     glm::vec4 CountryColorToVec4(const glm::vec3 &color);
     glm::vec4 CountryColorToVec4(const core::components::ProvinceColor &color);
     glm::vec4 CountryColorToVec4(const entt::entity province);
+    glm::vec4 GetCountrySelectionColor(const glm::vec3 &country_color);
 
     core::Universe &universe;
     engine::Application &app;

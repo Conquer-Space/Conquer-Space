@@ -287,10 +287,8 @@ void StarSystemController::FocusOnEntity(entt::entity ent) {
 void StarSystemController::SelectProvince() {
     ZoneScoped;
     // Unset previous province color
-    entt::entity province_to_reset = entt::null;
-    if (universe.valid(selected_province)) {
-        province_to_reset = selected_province;
-    }
+    entt::entity province_to_reset = selected_province;
+    entt::entity country_to_reset = selected_country;
     selected_province = hovering_province;
 
     // Set the selected province
@@ -313,8 +311,14 @@ void StarSystemController::SelectProvince() {
     entt::entity player = universe.GetPlayer();
     const auto& province = universe.get<components::Province>(selected_province);
 
-    if (province_to_reset != entt::null && universe.valid(selected_province)) {
+    if (province_to_reset != entt::null && universe.valid(province_to_reset)) {
         ResetProvinceColor(province_to_reset);
+        // Reset our country
+        selected_country = province.country;
+        if (province.country != country_to_reset) {
+            // Set our country color
+            SetCountryProvincesColor(country_to_reset);
+        }
     }
 
     selected_country = province.country;
@@ -457,6 +461,9 @@ void StarSystemController::SetCountryProvincesColor(entt::entity country) {
     auto& country_list = universe.get<components::CountryCityList>(country);
     auto& country_comp = universe.get<components::Country>(country);
     glm::vec4 color = CountryColorToVec4(country_comp.color);
+    if (country == selected_country) {
+        color = GetCountrySelectionColor(country_comp.color);
+    }
     for (entt::entity province : country_list.province_list) {
         // TODO(EhWhoAmI): Check if the province is on the selected planet
         renderer.UpdatePlanetProvinceColors(focused_planet, province, color);
@@ -466,9 +473,6 @@ void StarSystemController::SetCountryProvincesColor(entt::entity country) {
 void StarSystemController::SetCountryProvincesToProvinceColor(entt::entity country) {
     ZoneScoped;
     auto& country_list = universe.get<components::CountryCityList>(country);
-    auto& country_comp = universe.get<components::Country>(country);
-    glm::vec4 color =
-        glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], DEFAULT_PROVINCE_APLHA);
     for (entt::entity province : country_list.province_list) {
         // TODO(EhWhoAmI): Check if the province is on the selected planet
         renderer.UpdatePlanetProvinceColors(focused_planet, province, CountryColorToVec4(province));
@@ -677,8 +681,14 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
                 return ColonizationTargetProvinceColor(province);
             }
             auto& country_comp = universe.get<components::Country>(province_comp.country);
-            glm::vec4 color =
-                glm::vec4(country_comp.color[0], country_comp.color[1], country_comp.color[2], DEFAULT_PROVINCE_APLHA);
+
+            glm::vec4 color = CountryColorToVec4(country_comp.color);
+            // Check if we are currently selecting a foreign country then in that case we choose the country selection color?
+            if (selected_country == province_comp.country && province_comp.country != universe.GetPlayer()) {
+                // Then select our selected color
+                color = GetCountrySelectionColor(country_comp.color);
+            }
+
             return color;
         } break;
         case ctx::MapMode::ProvinceMapMode: {
@@ -748,11 +758,18 @@ void StarSystemController::ResetProvinceColor(entt::entity province) {
 void StarSystemController::SelectForeignProvince(entt::entity province) {
     const auto& province_comp = universe.get<components::Province>(province);
     universe.ctx().at<ctx::MapMode>() = ctx::MapMode::CountryMapMode;
-    UpdateMapMode();  //  This feels like a hack, we should not do this
     if (!universe.valid(province_comp.country)) {
         return;
     }
     SetCountryProvincesColor(province_comp.country);
+}
+
+glm::vec4 StarSystemController::GetCountrySelectionColor(const glm::vec3& country_color) {
+    glm::vec3 hsl_color = util::toHSL(country_color);
+
+    hsl_color.z = std::clamp(hsl_color.z + 0.1f, 0.f, 1.f);
+    const glm::vec3 rgb = util::toRGB(hsl_color);
+    return glm::vec4(rgb, DEFAULT_PROVINCE_APLHA);
 }
 
 glm::vec4 StarSystemController::CountryColorToVec4(const glm::vec3& color) {
