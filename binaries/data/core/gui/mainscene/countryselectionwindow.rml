@@ -43,7 +43,7 @@
         }
         </style>
     </head>
-    <body>
+    <body onprovinceselect="print(core.get_name(selection.get_selected_country()))">
         <div id="country-name">Country Name</div>
         <div id="description">Description</div>
         <button id="start-game" onclick="selection:start_game()">Start Game</button>

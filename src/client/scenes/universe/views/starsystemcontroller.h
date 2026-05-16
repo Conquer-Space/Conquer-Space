@@ -65,6 +65,8 @@ class StarSystemController {
      */
     glm::vec3 CalculateFutureCenteredPosition(const entt::entity entity);
 
+    entt::entity GetSelectedCountry() { return selected_country; }
+
  private:
     void SeeEntity();
     void CenterCameraOnCity();

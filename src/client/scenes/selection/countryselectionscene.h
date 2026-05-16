@@ -51,5 +51,7 @@ class CountrySelectionScene : public ClientScene {
     std::unique_ptr<core::systems::simulation::Simulation> simulation;
 
     std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
+
+    entt::entity selected_country = entt::null;
 };
 }  // namespace cqsp::client::scene

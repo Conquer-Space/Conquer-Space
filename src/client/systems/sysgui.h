@@ -49,6 +49,7 @@ class SysRmlUiInterface {
     virtual void OpenDocument() = 0;
     virtual void OnTick() {}
     virtual void ReloadWindow() {}
+    virtual void DispatchEvent(const Rml::String &event, const Rml::Dictionary &parameters) {};
 
  protected:
     engine::Application &GetApp() { return m_app; }

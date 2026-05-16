@@ -24,4 +24,8 @@ void CountrySelectionMenu::OpenDocument() {
     document->Show();
 }
 void CountrySelectionMenu::ReloadWindow() {}
+
+void CountrySelectionMenu::DispatchEvent(const Rml::String& event, const Rml::Dictionary& parameters) {
+    document->DispatchEvent(event, parameters);
+}
 }  // namespace cqsp::client::systems::rmlui

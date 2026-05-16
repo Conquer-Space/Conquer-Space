@@ -83,13 +83,6 @@ UniverseScene::UniverseScene(engine::Application& app, std::unique_ptr<systems::
 
 void UniverseScene::Init() {
     ZoneScoped;
-
-    core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
-    client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
-    InitializeScriptFunctions();
-
-    GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
-
     AddUISystem<systems::SysStarSystemTree>();
     AddUISystem<systems::SysPauseMenu>();
     AddUISystem<systems::SysDebugMenu>();

@@ -22,9 +22,12 @@
 
 #include "client/components/clientctx.h"
 #include "client/scenes/selection/countryselectionscene.h"
+#include "client/scenes/universe/lua/hovertext.h"
 #include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
 #include "client/systems/universeloader.h"
+#include "core/scripting/functionreg.h"
+#include "core/scripting/luafunctions.h"
 #include "core/systems/sysuniversegenerator.h"
 #include "core/util/save/savegame.h"
 
@@ -56,6 +59,8 @@ void UniverseLoadingScene::Update(float deltaTime) {
         system_renderer->SeeStarSystem();
         SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
 
+        InitializeGameScene();
+
         GetApp().SetScene<CountrySelectionScene>(std::move(system_renderer));
     }
 }
@@ -75,5 +80,11 @@ void UniverseLoadingScene::LoadCurrentUniverse() {
 
     SPDLOG_INFO("Done loading the universe, entering game");
     m_completed_loading = true;
+}
+
+void UniverseLoadingScene::InitializeGameScene() {
+    core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
+    client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
+    GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
 }
 }  // namespace cqsp::client::scene

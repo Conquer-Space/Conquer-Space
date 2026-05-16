@@ -39,6 +39,8 @@ class UniverseLoadingScene : public ClientScene {
 
     void LoadCurrentUniverse();
 
+    void InitializeGameScene();
+
     bool m_completed_loading;
 
     Rml::ElementDocument* document;

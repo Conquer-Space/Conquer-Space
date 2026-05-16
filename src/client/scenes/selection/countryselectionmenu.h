@@ -28,6 +28,7 @@ class CountrySelectionMenu : public SysRmlUiInterface {
     void Update(double delta_time) override;
     void OpenDocument() override;
     void ReloadWindow() override;
+    void DispatchEvent(const Rml::String& event, const Rml::Dictionary& parameters) override;
 
  private:
     std::string file_name = "../data/core/gui/mainscene/countryselectionwindow.rml";
