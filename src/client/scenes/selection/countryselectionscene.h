@@ -45,6 +45,7 @@ class CountrySelectionScene : public ClientScene {
 
  private:
     void StartGame();
+    void InitializeLuaFunctions();
 
     std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
     std::unique_ptr<core::systems::simulation::Simulation> simulation;

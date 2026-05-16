@@ -79,7 +79,7 @@ using core::systems::simulation::Simulation;
 
 UniverseScene::UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
                              std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation)
-    : ClientScene(app), system_renderer(std::move(system_renderer)), simulation(std::move(simulation)) {}
+    : ClientScene(app), system_renderer(std::move(renderer)), simulation(std::move(simulation)) {}
 
 void UniverseScene::Init() {
     ZoneScoped;

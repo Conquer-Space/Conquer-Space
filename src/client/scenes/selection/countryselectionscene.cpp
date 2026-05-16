@@ -20,6 +20,8 @@
 #include "client/components/rightclick.h"
 #include "client/scenes/selection/countryselectionmenu.h"
 #include "client/scenes/universe/universescene.h"
+#include "core/components/player.h"
+#include "core/scripting/functionreg.h"
 
 namespace cqsp::client::scene {
 CountrySelectionScene::CountrySelectionScene(engine::Application& app,
@@ -37,6 +39,7 @@ void CountrySelectionScene::Init() {
 
     AddRmlUiSystem<systems::rmlui::CountrySelectionMenu>();
     // Init our lua functions
+    InitializeLuaFunctions();
 }
 
 void CountrySelectionScene::Update(float deltaTime) {
@@ -55,6 +58,17 @@ void CountrySelectionScene::Render(float deltaTime) {
 
 void CountrySelectionScene::StartGame() {
     // Set the next scene and move everything as well
+    auto player = GetUniverse().countries["usa"];
+    //universe.emplace<components::Civilization>(player);
+    GetUniverse().emplace<core::components::Player>(GetUniverse().countries["usa"]);
     GetApp().SetScene<UniverseScene>(std::move(system_renderer), std::move(simulation));
+}
+
+void CountrySelectionScene::InitializeLuaFunctions() {
+    auto& script_engine = GetApp().GetSolState();
+    auto& universe = GetUniverse();
+    CREATE_NAMESPACE(selection);
+
+    REGISTER_FUNCTION("start_game", [&]() { StartGame(); });
 }
 }  // namespace cqsp::client::scene
