@@ -18,9 +18,10 @@
 
 #include "client/components/clientctx.h"
 #include "client/components/rightclick.h"
+#include "client/scenes/selection/countryselectionmenu.h"
+#include "client/scenes/universe/universescene.h"
 
 namespace cqsp::client::scene {
-
 CountrySelectionScene::CountrySelectionScene(engine::Application& app,
                                              std::unique_ptr<systems::SysStarSystemRenderer> renderer)
     : ClientScene(app), system_renderer(std::move(renderer)) {}
@@ -33,9 +34,16 @@ void CountrySelectionScene::Init() {
     simulation->Init();
     // Init simulation tick
     simulation->tick();
+
+    AddRmlUiSystem<systems::rmlui::CountrySelectionMenu>();
 }
 
-void CountrySelectionScene::Update(float deltaTime) { system_renderer->Update(deltaTime); }
+void CountrySelectionScene::Update(float deltaTime) {
+    for (auto& ui : documents) {
+        ui->Update(deltaTime);
+    }
+    system_renderer->Update(deltaTime);
+}
 
 void CountrySelectionScene::Ui(float deltaTime) { system_renderer->DoUI(deltaTime); }
 
@@ -44,4 +52,8 @@ void CountrySelectionScene::Render(float deltaTime) {
     system_renderer->Render(deltaTime);
 }
 
+void CountrySelectionScene::StartGame() {
+    // Set the next scene and move everything as well
+    GetApp().SetScene<UniverseScene>(std::move(system_renderer), std::move(simulation));
+}
 }  // namespace cqsp::client::scene

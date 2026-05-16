@@ -77,25 +77,18 @@ namespace systems = client::systems;
 
 using core::systems::simulation::Simulation;
 
-UniverseScene::UniverseScene(engine::Application& app) : ClientScene(app) {}
+UniverseScene::UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
+                             std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation)
+    : ClientScene(app), system_renderer(std::move(system_renderer)), simulation(std::move(simulation)) {}
 
 void UniverseScene::Init() {
     ZoneScoped;
-
-    simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
 
     core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
     client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
     InitializeScriptFunctions();
 
     GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
-
-    system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
-    system_renderer->Initialize();
-
-    system_renderer->SeeStarSystem();
-
-    SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
 
     AddUISystem<systems::SysStarSystemTree>();
     AddUISystem<systems::SysPauseMenu>();
@@ -116,10 +109,6 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
-
-    simulation->Init();
-    // Init simulation tick
-    simulation->tick();
 }
 
 void UniverseScene::Update(float deltaTime) {

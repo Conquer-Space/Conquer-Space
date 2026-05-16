@@ -35,7 +35,8 @@
 namespace cqsp::client::scene {
 class UniverseScene : public ClientScene {
  public:
-    explicit UniverseScene(engine::Application& app);
+    explicit UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer>,
+                           std::unique_ptr<cqsp::core::systems::simulation::Simulation>);
     ~UniverseScene() = default;
 
     void Init();

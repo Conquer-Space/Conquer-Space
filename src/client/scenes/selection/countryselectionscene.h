@@ -20,6 +20,7 @@
 
 #include "client/scenes/scene.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
+#include "client/systems/sysgui.h"
 #include "core/simulation.h"
 #include "engine/asset/assetloader.h"
 
@@ -35,8 +36,19 @@ class CountrySelectionScene : public ClientScene {
     void Ui(float deltaTime);
     void Render(float deltaTime);
 
+    template <class T>
+    void AddRmlUiSystem() {
+        auto ui = std::make_unique<T>(GetApp());
+        ui->OpenDocument();
+        documents.push_back(std::move(ui));
+    }
+
  private:
+    void StartGame();
+
     std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
     std::unique_ptr<core::systems::simulation::Simulation> simulation;
+
+    std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
 };
 }  // namespace cqsp::client::scene
