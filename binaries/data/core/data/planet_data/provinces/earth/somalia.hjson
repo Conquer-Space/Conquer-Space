@@ -1,20 +1,20 @@
 [
-  {
-    identifier: nugaal
-    color: 2b8cfb
-    country: somalia
-    planet: earth
-  }
-  {
-    identifier: gedo
-    color: cd10cc
-    country: somalia
-    planet: earth
-  }
-  {
-    identifier: banaadir
-    color: d12385
-    country: somalia
-    planet: earth
-  }
+    {
+        identifier: nugaal
+        color: 2b8cfb
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: gedo
+        color: cd10cc
+        country: somalia
+        planet: earth
+    }
+    {
+        identifier: banaadir
+        color: d12385
+        country: somalia
+        planet: earth
+    }
 ]

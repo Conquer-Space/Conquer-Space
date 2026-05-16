@@ -1,20 +1,20 @@
 [
-  {
-    identifier: matabeleland_north
-    color: "5e5181"
-    country: zimbabwe
-    planet: earth
-  }
-  {
-    identifier: masvingo
-    color: b166a3
-    country: zimbabwe
-    planet: earth
-  }
-  {
-    identifier: mashonaland_west
-    color: 3d0a7d
-    country: zimbabwe
-    planet: earth
-  }
+    {
+        identifier: matabeleland_north
+        color: 5e5181
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: masvingo
+        color: b166a3
+        country: zimbabwe
+        planet: earth
+    }
+    {
+        identifier: mashonaland_west
+        color: 3d0a7d
+        country: zimbabwe
+        planet: earth
+    }
 ]

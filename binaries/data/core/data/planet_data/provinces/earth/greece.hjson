@@ -1,32 +1,32 @@
 [
-  {
-    identifier: dytiki_makedonia
-    color: 196b4e
-    country: greece
-    planet: earth
-  }
-  {
-    identifier: ipeiros
-    color: 1f256f
-    country: greece
-    planet: earth
-  }
-  {
-    identifier: anatoliki_makedonia_kai_thraki
-    color: 1b4560
-    country: greece
-    planet: earth
-  }
-  {
-    identifier: attiki
-    color: 55cd6f
-    country: greece
-    planet: earth
-  }
-  {
-    identifier: kriti
-    color: f506d5
-    country: greece
-    planet: earth
-  }
+    {
+        identifier: dytiki_makedonia
+        color: 196b4e
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: ipeiros
+        color: 1f256f
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: anatoliki_makedonia_kai_thraki
+        color: 1b4560
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: attiki
+        color: 55cd6f
+        country: greece
+        planet: earth
+    }
+    {
+        identifier: kriti
+        color: f506d5
+        country: greece
+        planet: earth
+    }
 ]

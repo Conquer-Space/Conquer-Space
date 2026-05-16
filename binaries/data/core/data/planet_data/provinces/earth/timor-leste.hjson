@@ -1,8 +1,8 @@
 [
-  {
-    identifier: East Timor
-    color: dc06b5
-    country: timor-leste
-    planet: earth
-  }
+    {
+        identifier: East Timor
+        color: dc06b5
+        country: timor-leste
+        planet: earth
+    }
 ]

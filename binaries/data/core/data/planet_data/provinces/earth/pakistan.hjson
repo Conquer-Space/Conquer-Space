@@ -1,38 +1,38 @@
 [
-  {
-    identifier: northern_areas
-    color: cecd6c
-    country: pakistan
-    planet: earth
-  }
-  {
-    identifier: kp
-    color: 5a7040
-    country: pakistan
-    planet: earth
-  }
-  {
-    identifier: baluchistan
-    color: ac31a8
-    country: pakistan
-    planet: earth
-  }
-  {
-    identifier: punjab
-    color: 118c14
-    country: pakistan
-    planet: earth
-  }
-  {
-    identifier: sind
-    color: e3dbf9
-    country: pakistan
-    planet: earth
-  }
-  {
-    identifier: azad_kashmir
-    color: fd72cd
-    country: pakistan
-    planet: earth
-  }
+    {
+        identifier: northern_areas
+        color: cecd6c
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: kp
+        color: 5a7040
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: baluchistan
+        color: ac31a8
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: punjab
+        color: 118c14
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: sind
+        color: e3dbf9
+        country: pakistan
+        planet: earth
+    }
+    {
+        identifier: azad_kashmir
+        color: fd72cd
+        country: pakistan
+        planet: earth
+    }
 ]

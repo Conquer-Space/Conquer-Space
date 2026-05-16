@@ -1,8 +1,8 @@
 [
-  {
-    identifier: bahrain
-    color: a88b3d
-    country: bahrain
-    planet: earth
-  }
+    {
+        identifier: bahrain
+        color: a88b3d
+        country: bahrain
+        planet: earth
+    }
 ]

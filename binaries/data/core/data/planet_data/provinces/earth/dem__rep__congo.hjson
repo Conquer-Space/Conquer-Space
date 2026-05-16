@@ -1,56 +1,56 @@
 [
-  {
-    identifier: equateur
-    color: 997e1a
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: bandundu
-    color: a20150
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: kinshasa_city
-    color: b695fe
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: orientale
-    color: ece545
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: sud_kivu
-    color: 5e0afe
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: katanga
-    color: ec27e6
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: kasai_occidental
-    color: 2aa8d5
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: kasai_oriental
-    color: 185ad4
-    country: dem__rep__congo
-    planet: earth
-  }
-  {
-    identifier: maniema
-    color: caff61
-    country: dem__rep__congo
-    planet: earth
-  }
+    {
+        identifier: equateur
+        color: 997e1a
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: bandundu
+        color: a20150
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: kinshasa_city
+        color: b695fe
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: orientale
+        color: ece545
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: sud_kivu
+        color: 5e0afe
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: katanga
+        color: ec27e6
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: kasai_occidental
+        color: 2aa8d5
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: kasai_oriental
+        color: 185ad4
+        country: dem__rep__congo
+        planet: earth
+    }
+    {
+        identifier: maniema
+        color: caff61
+        country: dem__rep__congo
+        planet: earth
+    }
 ]

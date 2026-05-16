@@ -1,50 +1,50 @@
 [
-  {
-    identifier: karas
-    color: 42dce4
-    country: namibia
-    planet: earth
-  }
-  {
-    identifier: kunene
-    color: 6e8bbe
-    country: namibia
-    planet: earth
-  }
-  {
-    identifier: omusati
-    color: 6a1fd0
-    country: namibia
-    planet: earth
-  }
-  {
-    identifier: kavango
-    color: 9ba0e3
-    country: namibia
-    planet: earth
-  }
-  {
-    identifier: hardap
-    color: b47d1f
-    country: namibia
-    planet: earth
-  }
-  {
-    identifier: otjozondjupa
-    color: c4b083
-    country: namibia
-    planet: earth
-  }
-  {
-    identifier: omaheke
-    color: 031e4d
-    country: namibia
-    planet: earth
-  }
-  {
-    identifier: erongo
-    color: a64444
-    country: namibia
-    planet: earth
-  }
+    {
+        identifier: karas
+        color: 42dce4
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: kunene
+        color: 6e8bbe
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: omusati
+        color: 6a1fd0
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: kavango
+        color: 9ba0e3
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: hardap
+        color: b47d1f
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: otjozondjupa
+        color: c4b083
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: omaheke
+        color: 031e4d
+        country: namibia
+        planet: earth
+    }
+    {
+        identifier: erongo
+        color: a64444
+        country: namibia
+        planet: earth
+    }
 ]

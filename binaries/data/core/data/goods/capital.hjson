@@ -6,9 +6,7 @@
         volume: 100 m3
         mass: 30000 kg
         price: 1000
-        tags: [
-            capital
-        ]
+        tags: ["capital"]
     }
     {
         name: Heavy Machinery
@@ -16,9 +14,7 @@
         volume: 100 m3
         mass: 4000 kg
         price: 60000
-        tags: [
-            capital
-        ]
+        tags: ["capital"]
     }
     {
         name: Cranes
@@ -26,9 +22,7 @@
         volume: 200 m3
         mass: 4000 kg
         price: 40000
-        tags: [
-            capital
-        ]
+        tags: ["capital"]
     }
     {
         name: Machine Tools
@@ -36,9 +30,7 @@
         volume: 200 m3
         mass: 4000 kg
         price: 40000
-        tags: [
-            capital
-        ]
+        tags: ["capital"]
     }
     {
         name: Tractors
@@ -46,9 +38,7 @@
         volume: 300 m3
         mass: 4000 kg
         price: 65000
-        tags: [
-            capital
-        ]
+        tags: ["capital"]
     }
     {
         name: CNC Machines
@@ -56,9 +46,7 @@
         volume: 200 m3
         mass: 4000 kg
         price: 40000
-        tags: [
-            capital
-        ]
+        tags: ["capital"]
     }
     {
         name: Lab Equipment
@@ -66,8 +54,6 @@
         volume: 200 m3
         mass: 4000 kg
         price: 120000
-        tags: [
-            capital
-        ]
+        tags: ["capital"]
     }
 ]

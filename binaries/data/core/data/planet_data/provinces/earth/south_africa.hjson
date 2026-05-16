@@ -1,50 +1,50 @@
 [
-  {
-    identifier: northern_cape
-    color: "951981"
-    country: south_africa
-    planet: earth
-  }
-  {
-    identifier: kwazulu_natal
-    color: 3550ea
-    country: south_africa
-    planet: earth
-  }
-  {
-    identifier: free_state
-    color: c1af74
-    country: south_africa
-    planet: earth
-  }
-  {
-    identifier: eastern_cape
-    color: c8b417
-    country: south_africa
-    planet: earth
-  }
-  {
-    identifier: limpopo
-    color: a0f825
-    country: south_africa
-    planet: earth
-  }
-  {
-    identifier: north_west
-    color: 833a13
-    country: south_africa
-    planet: earth
-  }
-  {
-    identifier: mpumalanga
-    color: 5f4d55
-    country: south_africa
-    planet: earth
-  }
-  {
-    identifier: western_cape
-    color: "787497"
-    country: south_africa
-    planet: earth
-  }
+    {
+        identifier: northern_cape
+        color: "951981"
+        country: south_africa
+        planet: earth
+    }
+    {
+        identifier: kwazulu_natal
+        color: 3550ea
+        country: south_africa
+        planet: earth
+    }
+    {
+        identifier: free_state
+        color: c1af74
+        country: south_africa
+        planet: earth
+    }
+    {
+        identifier: eastern_cape
+        color: c8b417
+        country: south_africa
+        planet: earth
+    }
+    {
+        identifier: limpopo
+        color: a0f825
+        country: south_africa
+        planet: earth
+    }
+    {
+        identifier: north_west
+        color: 833a13
+        country: south_africa
+        planet: earth
+    }
+    {
+        identifier: mpumalanga
+        color: 5f4d55
+        country: south_africa
+        planet: earth
+    }
+    {
+        identifier: western_cape
+        color: "787497"
+        country: south_africa
+        planet: earth
+    }
 ]

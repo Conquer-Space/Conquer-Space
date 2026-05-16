@@ -1,92 +1,92 @@
 [
-  {
-    identifier: cabinda
-    color: ce80f5
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: cuando_cubango
-    color: 3a0908
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: hulia
-    color: 46a64c
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: moxico
-    color: 85b4ac
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: namibe
-    color: ca90e0
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: cunene
-    color: b61e5f
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: zaire
-    color: dfe074
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: uige
-    color: 7870ab
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: lunda_norte
-    color: d01667
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: malanje
-    color: 269ea0
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: lunda_sul
-    color: dcbf5e
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: cuanza_sul
-    color: "60e858"
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: benguela
-    color: 60ffec
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: bengo
-    color: bb0f89
-    country: angola
-    planet: earth
-  }
-  {
-    identifier: bie
-    color: 964c1a
-    country: angola
-    planet: earth
-  }
+    {
+        identifier: cabinda
+        color: ce80f5
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cuando_cubango
+        color: 3a0908
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: hulia
+        color: 46a64c
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: moxico
+        color: 85b4ac
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: namibe
+        color: ca90e0
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cunene
+        color: b61e5f
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: zaire
+        color: dfe074
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: uige
+        color: 7870ab
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: lunda_norte
+        color: d01667
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: malanje
+        color: 269ea0
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: lunda_sul
+        color: dcbf5e
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: cuanza_sul
+        color: 60e858
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: benguela
+        color: 60ffec
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: bengo
+        color: bb0f89
+        country: angola
+        planet: earth
+    }
+    {
+        identifier: bie
+        color: 964c1a
+        country: angola
+        planet: earth
+    }
 ]

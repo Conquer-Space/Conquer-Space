@@ -1,128 +1,128 @@
 [
-  {
-    identifier: west_azarbaijan
-    color: 8ef684
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: east_azarbaijan
-    color: 8eda96
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: ardebil
-    color: 3da5e1
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: kordestan
-    color: c5c30f
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: kermanshah
-    color: 22ada4
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: khuzestan
-    color: a78c69
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: north_khorasan
-    color: 6d4791
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: golestan
-    color: f3f5be
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: razavi_khorasan
-    color: c0c065
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: south_khorasan
-    color: af6e6b
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: sistan_and_baluchestan
-    color: 7bf70b
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: bushehr
-    color: 83cb04
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: hormozgan
-    color: 7cd97e
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: mazandaran
-    color: ba3c2b
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: semnan
-    color: ce1811
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: zanjan
-    color: "133581"
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: markazi
-    color: 72724a
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: esfahan
-    color: 80a708
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: fars
-    color: 9fd51d
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: kerman
-    color: 2a028a
-    country: iran
-    planet: earth
-  }
-  {
-    identifier: yazd
-    color: d8c84c
-    country: iran
-    planet: earth
-  }
+    {
+        identifier: west_azarbaijan
+        color: 8ef684
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: east_azarbaijan
+        color: 8eda96
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: ardebil
+        color: 3da5e1
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: kordestan
+        color: c5c30f
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: kermanshah
+        color: 22ada4
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: khuzestan
+        color: a78c69
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: north_khorasan
+        color: 6d4791
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: golestan
+        color: f3f5be
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: razavi_khorasan
+        color: c0c065
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: south_khorasan
+        color: af6e6b
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: sistan_and_baluchestan
+        color: 7bf70b
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: bushehr
+        color: 83cb04
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: hormozgan
+        color: 7cd97e
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: mazandaran
+        color: ba3c2b
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: semnan
+        color: ce1811
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: zanjan
+        color: "133581"
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: markazi
+        color: 72724a
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: esfahan
+        color: 80a708
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: fars
+        color: 9fd51d
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: kerman
+        color: 2a028a
+        country: iran
+        planet: earth
+    }
+    {
+        identifier: yazd
+        color: d8c84c
+        country: iran
+        planet: earth
+    }
 ]

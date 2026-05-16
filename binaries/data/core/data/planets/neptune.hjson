@@ -5,8 +5,7 @@
         radius: 24622 km
         reference: sun
         gm: 6836529.9
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.007951397160324341
             semi_major_axis: 4498279383.789233 km
             M0: 161.1995284842505 deg
@@ -16,13 +15,8 @@
         }
         day_length: 0.6713 d
         axial: 97.77 deg
-        texture:
-        {
-            terrain: neptunemap
-        }
-        atmosphere: {
-            scale_height: 19.7 km
-        }
+        texture: {terrain: "neptunemap"}
+        atmosphere: {scale_height: "19.7 km"}
         tags: []
     }
 ]

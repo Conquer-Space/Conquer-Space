@@ -1,14 +1,14 @@
 [
-  {
-    identifier: briceni
-    color: 9d0ff9
-    country: soviet_union
-    planet: earth
-  }
-  {
-    identifier: south_moldova
-    color: af3dd9
-    country: soviet_union
-    planet: earth
-  }
+    {
+        identifier: briceni
+        color: 9d0ff9
+        country: soviet_union
+        planet: earth
+    }
+    {
+        identifier: south_moldova
+        color: af3dd9
+        country: soviet_union
+        planet: earth
+    }
 ]

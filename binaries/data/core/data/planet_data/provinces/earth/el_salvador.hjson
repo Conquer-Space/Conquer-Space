@@ -1,8 +1,8 @@
 [
-  {
-    identifier: el_salvador
-    color: 231ea7
-    country: el_salvador
-    planet: earth
-  }
+    {
+        identifier: el_salvador
+        color: 231ea7
+        country: el_salvador
+        planet: earth
+    }
 ]

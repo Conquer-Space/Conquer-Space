@@ -1,122 +1,122 @@
 [
-  {
-    identifier: kalimantan_timur
-    color: de8d4a
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: nusa_tenggara_timur
-    color: 6acd9a
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: kalimantan_barat
-    color: 73cce3
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: papua
-    color: f2690b
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: jawa_timur
-    color: 617a5b
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: maluku
-    color: 87b6fe
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: nusa_tenggara_barat
-    color: bb92bb
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: sulawesi
-    color: cdbc94
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: jawa_barat
-    color: cefbde
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: maluku_utara
-    color: 72339b
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: kepulauan_riau
-    color: 014bc7
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: riau
-    color: cfc5cb
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: jambi
-    color: a08126
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: sumatera_selatan
-    color: 3f3093
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: sumatera_barat
-    color: f1affe
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: sumatera_utara
-    color: abbf1b
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: aceh
-    color: 55f1f5
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: kalimantan_tengah
-    color: ec1371
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: kalimantan_selatan
-    color: 38a22c
-    country: indonesia
-    planet: earth
-  }
-  {
-    identifier: bali
-    color: 9b554b
-    country: indonesia
-    planet: earth
-  }
+    {
+        identifier: kalimantan_timur
+        color: de8d4a
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: nusa_tenggara_timur
+        color: 6acd9a
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: kalimantan_barat
+        color: 73cce3
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: papua
+        color: f2690b
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: jawa_timur
+        color: 617a5b
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: maluku
+        color: 87b6fe
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: nusa_tenggara_barat
+        color: bb92bb
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: sulawesi
+        color: cdbc94
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: jawa_barat
+        color: cefbde
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: maluku_utara
+        color: 72339b
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: kepulauan_riau
+        color: 014bc7
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: riau
+        color: cfc5cb
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: jambi
+        color: a08126
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: sumatera_selatan
+        color: 3f3093
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: sumatera_barat
+        color: f1affe
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: sumatera_utara
+        color: abbf1b
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: aceh
+        color: 55f1f5
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: kalimantan_tengah
+        color: ec1371
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: kalimantan_selatan
+        color: 38a22c
+        country: indonesia
+        planet: earth
+    }
+    {
+        identifier: bali
+        color: 9b554b
+        country: indonesia
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: andorra
-    color: dae682
-    country: andorra
-    planet: earth
-  }
+    {
+        identifier: andorra
+        color: dae682
+        country: andorra
+        planet: earth
+    }
 ]

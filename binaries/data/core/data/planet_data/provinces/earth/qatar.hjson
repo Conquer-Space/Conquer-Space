@@ -1,8 +1,8 @@
 [
-  {
-    identifier: qatar
-    color: 76ba7b
-    country: qatar
-    planet: earth
-  }
+    {
+        identifier: qatar
+        color: 76ba7b
+        country: qatar
+        planet: earth
+    }
 ]

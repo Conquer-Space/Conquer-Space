@@ -1,68 +1,68 @@
 [
-  {
-    identifier: algerian_adrar
-    color: 8d47c8
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: tamanghasset
-    color: 8538ab
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: tindouf
-    color: be1d7e
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: bechar
-    color: "605332"
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: el_tarf
-    color: e6cdd2
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: ouargla
-    color: fb77e5
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: illizi
-    color: aebeb5
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: naama
-    color: e57c8d
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: bejaia
-    color: 27a036
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: el_bayadh
-    color: "712520"
-    country: algeria
-    planet: earth
-  }
-  {
-    identifier: ghardaia
-    color: c55b35
-    country: algeria
-    planet: earth
-  }
+    {
+        identifier: algerian_adrar
+        color: 8d47c8
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: tamanghasset
+        color: 8538ab
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: tindouf
+        color: be1d7e
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: bechar
+        color: "605332"
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: el_tarf
+        color: e6cdd2
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: ouargla
+        color: fb77e5
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: illizi
+        color: aebeb5
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: naama
+        color: e57c8d
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: bejaia
+        color: 27a036
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: el_bayadh
+        color: "712520"
+        country: algeria
+        planet: earth
+    }
+    {
+        identifier: ghardaia
+        color: c55b35
+        country: algeria
+        planet: earth
+    }
 ]

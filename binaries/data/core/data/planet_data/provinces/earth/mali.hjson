@@ -1,50 +1,50 @@
 [
-  {
-    identifier: kayes
-    color: 1add68
-    country: mali
-    planet: earth
-  }
-  {
-    identifier: timbuktu
-    color: cf0ff8
-    country: mali
-    planet: earth
-  }
-  {
-    identifier: gao
-    color: 0d6361
-    country: mali
-    planet: earth
-  }
-  {
-    identifier: mopti
-    color: b24f87
-    country: mali
-    planet: earth
-  }
-  {
-    identifier: segou
-    color: 8a38a5
-    country: mali
-    planet: earth
-  }
-  {
-    identifier: sikasso
-    color: fb3f90
-    country: mali
-    planet: earth
-  }
-  {
-    identifier: koulikoro
-    color: 1f99ef
-    country: mali
-    planet: earth
-  }
-  {
-    identifier: kidal
-    color: 8050dc
-    country: mali
-    planet: earth
-  }
+    {
+        identifier: kayes
+        color: 1add68
+        country: mali
+        planet: earth
+    }
+    {
+        identifier: timbuktu
+        color: cf0ff8
+        country: mali
+        planet: earth
+    }
+    {
+        identifier: gao
+        color: 0d6361
+        country: mali
+        planet: earth
+    }
+    {
+        identifier: mopti
+        color: b24f87
+        country: mali
+        planet: earth
+    }
+    {
+        identifier: segou
+        color: 8a38a5
+        country: mali
+        planet: earth
+    }
+    {
+        identifier: sikasso
+        color: fb3f90
+        country: mali
+        planet: earth
+    }
+    {
+        identifier: koulikoro
+        color: 1f99ef
+        country: mali
+        planet: earth
+    }
+    {
+        identifier: kidal
+        color: 8050dc
+        country: mali
+        planet: earth
+    }
 ]

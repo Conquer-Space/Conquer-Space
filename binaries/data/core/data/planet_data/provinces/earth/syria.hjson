@@ -1,32 +1,32 @@
 [
-  {
-    identifier: southern_syria
-    color: 287acc
-    country: syria
-    planet: earth
-  }
-  {
-    identifier: homs_(hims)
-    color: 1c2c4d
-    country: syria
-    planet: earth
-  }
-  {
-    identifier: tartus
-    color: aca55e
-    country: syria
-    planet: earth
-  }
-  {
-    identifier: hasaka_(al_haksa)
-    color: 9a7dfc
-    country: syria
-    planet: earth
-  }
-  {
-    identifier: ar_raqqah
-    color: 4c52fa
-    country: syria
-    planet: earth
-  }
+    {
+        identifier: southern_syria
+        color: 287acc
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: homs_(hims)
+        color: 1c2c4d
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: tartus
+        color: aca55e
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: hasaka_(al_haksa)
+        color: 9a7dfc
+        country: syria
+        planet: earth
+    }
+    {
+        identifier: ar_raqqah
+        color: 4c52fa
+        country: syria
+        planet: earth
+    }
 ]

@@ -6,8 +6,7 @@
         reference: sun
         gm: 398600.44188
         habitation: true
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.01674946005075306
             semi_major_axis: 149599044.3972877 km
             M0: 357.9172145985277 deg
@@ -18,8 +17,7 @@
         day_length: 0.99726968 d
         day_offset: 3 deg
         axial: 23.4392811 deg
-        texture:
-        {
+        texture: {
             terrain: earthmap
             normal: earthnormal
             roughness: earthroughness
@@ -27,12 +25,7 @@
             province_definitions: province_defs
             adjacencies: province_adj_map
         }
-        atmosphere: {
-            scale_height: 8.5 km
-        }
-        tags:
-        [
-            market
-        ]
+        atmosphere: {scale_height: "8.5 km"}
+        tags: ["market"]
     }
 ]

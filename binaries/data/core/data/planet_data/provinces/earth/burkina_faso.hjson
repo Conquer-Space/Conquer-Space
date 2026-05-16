@@ -1,8 +1,8 @@
 [
-  {
-    identifier: east_burkina_faso
-    color: f87047
-    country: burkina_faso
-    planet: earth
-  }
+    {
+        identifier: east_burkina_faso
+        color: f87047
+        country: burkina_faso
+        planet: earth
+    }
 ]

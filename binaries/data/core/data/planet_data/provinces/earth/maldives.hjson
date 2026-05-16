@@ -1,8 +1,8 @@
 [
-  {
-    identifier: maldives
-    color: 035df8
-    country: maldives
-    planet: earth
-  }
+    {
+        identifier: maldives
+        color: 035df8
+        country: maldives
+        planet: earth
+    }
 ]

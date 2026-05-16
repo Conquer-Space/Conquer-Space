@@ -1,7 +1,5 @@
 {
     vert: modelshader.vert
     frag: modelfrag.frag
-    uniforms: {
-        texture_diffuse: 0
-    }
+    uniforms: {texture_diffuse: 0}
 }

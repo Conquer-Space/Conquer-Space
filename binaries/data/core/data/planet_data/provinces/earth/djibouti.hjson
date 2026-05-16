@@ -1,8 +1,8 @@
 [
-  {
-    identifier: djibouti
-    color: b95c2c
-    country: djibouti
-    planet: earth
-  }
+    {
+        identifier: djibouti
+        color: b95c2c
+        country: djibouti
+        planet: earth
+    }
 ]

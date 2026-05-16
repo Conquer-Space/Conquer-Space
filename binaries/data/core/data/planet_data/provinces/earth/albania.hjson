@@ -1,8 +1,8 @@
 [
-  {
-    identifier: albania
-    color: 6d9bbc
-    country: albania
-    planet: earth
-  }
+    {
+        identifier: albania
+        color: 6d9bbc
+        country: albania
+        planet: earth
+    }
 ]

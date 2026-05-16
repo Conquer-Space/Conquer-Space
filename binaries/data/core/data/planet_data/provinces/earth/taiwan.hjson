@@ -1,14 +1,14 @@
 [
-  {
-    identifier: taiwan
-    color: "50e741"
-    country: taiwan
-    planet: earth
-  }
-  {
-    identifier: kinmen
-    color: 638c29
-    country: taiwan
-    planet: earth
-  }
+    {
+        identifier: taiwan
+        color: 50e741
+        country: taiwan
+        planet: earth
+    }
+    {
+        identifier: kinmen
+        color: 638c29
+        country: taiwan
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: railik_chain
-    color: 4170d6
-    country: marshall_is_
-    planet: earth
-  }
+    {
+        identifier: railik_chain
+        color: 4170d6
+        country: marshall_is_
+        planet: earth
+    }
 ]

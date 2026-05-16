@@ -1,32 +1,32 @@
 [
-  {
-    identifier: badakhshan
-    color: 35b5a5
-    country: afghanistan
-    planet: earth
-  }
-  {
-    identifier: balkh
-    color: 75dae1
-    country: afghanistan
-    planet: earth
-  }
-  {
-    identifier: nimroz
-    color: bebcb1
-    country: afghanistan
-    planet: earth
-  }
-  {
-    identifier: kunar
-    color: f8c48a
-    country: afghanistan
-    planet: earth
-  }
-  {
-    identifier: zabul
-    color: 7c2e1c
-    country: afghanistan
-    planet: earth
-  }
+    {
+        identifier: badakhshan
+        color: 35b5a5
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: balkh
+        color: 75dae1
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: nimroz
+        color: bebcb1
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: kunar
+        color: f8c48a
+        country: afghanistan
+        planet: earth
+    }
+    {
+        identifier: zabul
+        color: 7c2e1c
+        country: afghanistan
+        planet: earth
+    }
 ]

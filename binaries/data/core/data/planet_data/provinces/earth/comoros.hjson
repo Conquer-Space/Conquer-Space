@@ -1,8 +1,8 @@
 [
-  {
-    identifier: comoros
-    color: a7e8f8
-    country: comoros
-    planet: earth
-  }
+    {
+        identifier: comoros
+        color: a7e8f8
+        country: comoros
+        planet: earth
+    }
 ]

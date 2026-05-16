@@ -1,8 +1,8 @@
 [
-  {
-    identifier: panama
-    color: a10df5
-    country: panama
-    planet: earth
-  }
+    {
+        identifier: panama
+        color: a10df5
+        country: panama
+        planet: earth
+    }
 ]

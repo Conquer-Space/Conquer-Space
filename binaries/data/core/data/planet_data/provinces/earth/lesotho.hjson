@@ -1,8 +1,8 @@
 [
-  {
-    identifier: lesotho
-    color: abeebc
-    country: lesotho
-    planet: earth
-  }
+    {
+        identifier: lesotho
+        color: abeebc
+        country: lesotho
+        planet: earth
+    }
 ]

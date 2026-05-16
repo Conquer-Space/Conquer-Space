@@ -1,50 +1,50 @@
 [
-  {
-    identifier: troms
-    color: 2df059
-    country: norway
-    planet: earth
-  }
-  {
-    identifier: nordland
-    color: bb2752
-    country: norway
-    planet: earth
-  }
-  {
-    identifier: sr_trndelag
-    color: 008b9c
-    country: norway
-    planet: earth
-  }
-  {
-    identifier: finnmark
-    color: e835fa
-    country: norway
-    planet: earth
-  }
-  {
-    identifier: buskerud
-    color: 1043d4
-    country: norway
-    planet: earth
-  }
-  {
-    identifier: agder
-    color: 9f427f
-    country: norway
-    planet: earth
-  }
-  {
-    identifier: hordaland
-    color: cbf507
-    country: norway
-    planet: earth
-  }
-  {
-    identifier: bouvet_island
-    color: b13f53
-    country: norway
-    planet: earth
-  }
+    {
+        identifier: troms
+        color: 2df059
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: nordland
+        color: bb2752
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: sr_trndelag
+        color: 008b9c
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: finnmark
+        color: e835fa
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: buskerud
+        color: 1043d4
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: agder
+        color: 9f427f
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: hordaland
+        color: cbf507
+        country: norway
+        planet: earth
+    }
+    {
+        identifier: bouvet_island
+        color: b13f53
+        country: norway
+        planet: earth
+    }
 ]

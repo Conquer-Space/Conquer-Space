@@ -1,14 +1,14 @@
 [
-  {
-    identifier: slavonia
-    color: 141da8
-    country: croatia
-    planet: earth
-  }
-  {
-    identifier: dalmatia
-    color: 6a6e43
-    country: croatia
-    planet: earth
-  }
+    {
+        identifier: slavonia
+        color: 141da8
+        country: yugoslavia
+        planet: earth
+    }
+    {
+        identifier: dalmatia
+        color: 6a6e43
+        country: yugoslavia
+        planet: earth
+    }
 ]

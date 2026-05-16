@@ -1,56 +1,56 @@
 [
-  {
-    identifier: tacna
-    color: e38b03
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: madre_de_dios
-    color: c9010c
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: loreto
-    color: b91ebf
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: tumbes
-    color: 49aabd
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: ucayali
-    color: 5fb7c5
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: ica
-    color: fc3007
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: lima
-    color: 1675fa
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: cusco
-    color: 20e7de
-    country: peru
-    planet: earth
-  }
-  {
-    identifier: huanuco
-    color: d22a75
-    country: peru
-    planet: earth
-  }
+    {
+        identifier: tacna
+        color: e38b03
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: madre_de_dios
+        color: c9010c
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: loreto
+        color: b91ebf
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: tumbes
+        color: 49aabd
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: ucayali
+        color: 5fb7c5
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: ica
+        color: fc3007
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: lima
+        color: 1675fa
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: cusco
+        color: 20e7de
+        country: peru
+        planet: earth
+    }
+    {
+        identifier: huanuco
+        color: d22a75
+        country: peru
+        planet: earth
+    }
 ]

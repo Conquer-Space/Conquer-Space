@@ -1,20 +1,20 @@
 [
-  {
-    identifier: chitipa
-    color: e83b1e
-    country: malawi
-    planet: earth
-  }
-  {
-    identifier: likoma
-    color: fedf7d
-    country: malawi
-    planet: earth
-  }
-  {
-    identifier: south_malawi
-    color: 89ad6c
-    country: malawi
-    planet: earth
-  }
+    {
+        identifier: chitipa
+        color: e83b1e
+        country: malawi
+        planet: earth
+    }
+    {
+        identifier: likoma
+        color: fedf7d
+        country: malawi
+        planet: earth
+    }
+    {
+        identifier: south_malawi
+        color: 89ad6c
+        country: malawi
+        planet: earth
+    }
 ]

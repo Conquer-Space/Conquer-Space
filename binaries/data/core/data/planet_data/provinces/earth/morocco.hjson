@@ -1,32 +1,32 @@
 [
-  {
-    identifier: guelmim_es_semara
-    color: "955728"
-    country: morocco
-    planet: earth
-  }
-  {
-    identifier: laayoune_boujdour_sakia_el_hamra
-    color: cc9a93
-    country: morocco
-    planet: earth
-  }
-  {
-    identifier: tanger_tetouan
-    color: 3af45e
-    country: morocco
-    planet: earth
-  }
-  {
-    identifier: oriental
-    color: d58ca0
-    country: morocco
-    planet: earth
-  }
-  {
-    identifier: meknes_tafilalet
-    color: e7444f
-    country: morocco
-    planet: earth
-  }
+    {
+        identifier: guelmim_es_semara
+        color: "955728"
+        country: morocco
+        planet: earth
+    }
+    {
+        identifier: laayoune_boujdour_sakia_el_hamra
+        color: cc9a93
+        country: morocco
+        planet: earth
+    }
+    {
+        identifier: tanger_tetouan
+        color: 3af45e
+        country: morocco
+        planet: earth
+    }
+    {
+        identifier: oriental
+        color: d58ca0
+        country: morocco
+        planet: earth
+    }
+    {
+        identifier: meknes_tafilalet
+        color: e7444f
+        country: morocco
+        planet: earth
+    }
 ]

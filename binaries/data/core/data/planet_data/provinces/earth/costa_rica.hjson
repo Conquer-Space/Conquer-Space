@@ -1,8 +1,8 @@
 [
-  {
-    identifier: costa_rica
-    color: 1fa4e9
-    country: costa_rica
-    planet: earth
-  }
+    {
+        identifier: costa_rica
+        color: 1fa4e9
+        country: costa_rica
+        planet: earth
+    }
 ]

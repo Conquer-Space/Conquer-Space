@@ -1,8 +1,8 @@
 [
-  {
-    identifier: nicaragua
-    color: 3d7807
-    country: nicaragua
-    planet: earth
-  }
+    {
+        identifier: nicaragua
+        color: 3d7807
+        country: nicaragua
+        planet: earth
+    }
 ]

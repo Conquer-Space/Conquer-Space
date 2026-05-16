@@ -1,44 +1,44 @@
 [
-  {
-    identifier: la_paz
-    color: 7b3cd7
-    country: bolivia
-    planet: earth
-  }
-  {
-    identifier: oruro
-    color: 8d42da
-    country: bolivia
-    planet: earth
-  }
-  {
-    identifier: potosi
-    color: 4d846b
-    country: bolivia
-    planet: earth
-  }
-  {
-    identifier: tarija
-    color: cbdb5c
-    country: bolivia
-    planet: earth
-  }
-  {
-    identifier: pando
-    color: 59803a
-    country: bolivia
-    planet: earth
-  }
-  {
-    identifier: el_beni
-    color: ac3a58
-    country: bolivia
-    planet: earth
-  }
-  {
-    identifier: cochabamba
-    color: "800795"
-    country: bolivia
-    planet: earth
-  }
+    {
+        identifier: la_paz
+        color: 7b3cd7
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: oruro
+        color: 8d42da
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: potosi
+        color: 4d846b
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: tarija
+        color: cbdb5c
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: pando
+        color: 59803a
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: el_beni
+        color: ac3a58
+        country: bolivia
+        planet: earth
+    }
+    {
+        identifier: cochabamba
+        color: "800795"
+        country: bolivia
+        planet: earth
+    }
 ]

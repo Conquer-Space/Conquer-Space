@@ -1,50 +1,50 @@
 [
-  {
-    identifier: kebbi
-    color: ff2c4b
-    country: nigeria
-    planet: earth
-  }
-  {
-    identifier: kwara
-    color: 3e191a
-    country: nigeria
-    planet: earth
-  }
-  {
-    identifier: borno
-    color: c6d8e1
-    country: nigeria
-    planet: earth
-  }
-  {
-    identifier: adamawa
-    color: 7f63fb
-    country: nigeria
-    planet: earth
-  }
-  {
-    identifier: benue
-    color: d63856
-    country: nigeria
-    planet: earth
-  }
-  {
-    identifier: katsina
-    color: "9e8433"
-    country: nigeria
-    planet: earth
-  }
-  {
-    identifier: ondo
-    color: 45ab32
-    country: nigeria
-    planet: earth
-  }
-  {
-    identifier: abuja
-    color: 80af8f
-    country: nigeria
-    planet: earth
-  }
+    {
+        identifier: kebbi
+        color: ff2c4b
+        country: nigeria
+        planet: earth
+    }
+    {
+        identifier: kwara
+        color: 3e191a
+        country: nigeria
+        planet: earth
+    }
+    {
+        identifier: borno
+        color: c6d8e1
+        country: nigeria
+        planet: earth
+    }
+    {
+        identifier: adamawa
+        color: 7f63fb
+        country: nigeria
+        planet: earth
+    }
+    {
+        identifier: benue
+        color: d63856
+        country: nigeria
+        planet: earth
+    }
+    {
+        identifier: katsina
+        color: 9e8433
+        country: nigeria
+        planet: earth
+    }
+    {
+        identifier: ondo
+        color: 45ab32
+        country: nigeria
+        planet: earth
+    }
+    {
+        identifier: abuja
+        color: 80af8f
+        country: nigeria
+        planet: earth
+    }
 ]

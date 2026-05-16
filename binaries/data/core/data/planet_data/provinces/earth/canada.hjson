@@ -1,80 +1,171 @@
 [
-  {
-    identifier: british_columbia
-    color: 46a3a5
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: alberta
-    color: aa4fe5
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: saskatchewan
-    color: b06f6a
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: manitoba
-    color: 9f8d8e
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: ontario
-    color: 1e6ade
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: quebec
-    color: "256390"
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: new_brunswick
-    color: 794be5
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: yukon
-    color: 4c921e
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: nunavut
-    color: 0912c5
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: newfoundland_and_labrador
-    color: e73f5a
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: nova_scotia
-    color: ff6c9e
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: northwest_territories
-    color: fd8ff1
-    country: canada
-    planet: earth
-  }
-  {
-    identifier: prince_edward_island
-    color: 77d574
-    country: canada
-    planet: earth
-  }
+    {
+        identifier: british_columbia
+        name: British Columbia
+        color: 46a3a5
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 1165210
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: alberta
+        name: Alberta
+        color: aa4fe5
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 939501
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: saskatchewan
+        name: Saskatchewan
+        color: b06f6a
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 831728
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: manitoba
+        name: Manitoba
+        color: 9f8d8e
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 776541
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: ontario
+        name: Ontario
+        color: 1e6ade
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 4597542
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: quebec
+        name: Quebec
+        color: "256390"
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 4055681
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: new_brunswick
+        name: New Brunswick
+        color: 794be5
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 515697
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: yukon
+        name: Yukon
+        color: 4c921e
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 9096
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: nunavut
+        name: Nunavut
+        color: 0912c5
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 2000
+                job_distribution: {laborer: 2000}
+            }
+        ]
+    }
+    {
+        identifier: newfoundland_and_labrador
+        name: Newfoundland and Labrador
+        color: e73f5a
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 361416
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: nova_scotia
+        name: Nova Scotia
+        color: ff6c9e
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 642584
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: northwest_territories
+        name: Northwest Territories
+        color: fd8ff1
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 16004
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
+    {
+        identifier: prince_edward_island
+        name: Prince Edward Island
+        color: 77d574
+        country: canada
+        planet: earth
+        population: [
+            {
+                size: 98429
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
 ]

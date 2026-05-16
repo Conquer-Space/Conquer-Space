@@ -1,8 +1,8 @@
 [
-  {
-    identifier: sri_lanka
-    color: 15b9c3
-    country: sri_lanka
-    planet: earth
-  }
+    {
+        identifier: sri_lanka
+        color: 15b9c3
+        country: sri_lanka
+        planet: earth
+    }
 ]

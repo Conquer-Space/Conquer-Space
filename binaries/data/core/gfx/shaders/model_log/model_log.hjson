@@ -3,9 +3,5 @@
     // texture in the future
     vert: model.vert
     frag: model.frag
-    uniforms: {
-        C: 1
-        far: 1e13
-        offset: 1.0
-    }
+    uniforms: {C: 1, far: 10000000000000, offset: 1}
 }

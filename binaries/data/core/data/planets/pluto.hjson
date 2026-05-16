@@ -7,8 +7,7 @@
         gm: 871.9
         day_length: -6.387230 d
         axial: 122.53 deg
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.2488575225441436
             semi_major_axis: 5892333361.630591 km
             M0: 273.9534804532167 deg
@@ -16,9 +15,7 @@
             LAN: 110.3627463601493 deg
             arg_periapsis: 114.2937178928628 deg
         }
-        atmosphere: {
-            scale_height: 50 km
-        }
+        atmosphere: {scale_height: "50 km"}
         tags: []
     }
 ]

@@ -1,74 +1,74 @@
 [
-  {
-    identifier: narino
-    color: 4739f8
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: cordoba
-    color: 82a760
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: choco
-    color: fcd48a
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: guainia
-    color: d96ad2
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: vaupes
-    color: 8ba4dd
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: la_guajira
-    color: d3efcb
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: arauca
-    color: e67e14
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: boyaca
-    color: ec238d
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: valle_del_cauca
-    color: 1ed6da
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: san_andres_y_providencia
-    color: "6e3466"
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: guaviare
-    color: 28fcf1
-    country: colombia
-    planet: earth
-  }
-  {
-    identifier: bogota
-    color: 1975bc
-    country: colombia
-    planet: earth
-  }
+    {
+        identifier: narino
+        color: 4739f8
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: cordoba
+        color: 82a760
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: choco
+        color: fcd48a
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: guainia
+        color: d96ad2
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: vaupes
+        color: 8ba4dd
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: la_guajira
+        color: d3efcb
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: arauca
+        color: e67e14
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: boyaca
+        color: ec238d
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: valle_del_cauca
+        color: 1ed6da
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: san_andres_y_providencia
+        color: 6e3466
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: guaviare
+        color: 28fcf1
+        country: colombia
+        planet: earth
+    }
+    {
+        identifier: bogota
+        color: 1975bc
+        country: colombia
+        planet: earth
+    }
 ]

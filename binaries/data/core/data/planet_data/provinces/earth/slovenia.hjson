@@ -1,20 +1,20 @@
 [
-  {
-    identifier: piran
-    color: 7d0601
-    country: slovenia
-    planet: earth
-  }
-  {
-    identifier: slovenia
-    color: da11a6
-    country: slovenia
-    planet: earth
-  }
-  {
-    identifier: podcetrtek
-    color: a5d89a
-    country: slovenia
-    planet: earth
-  }
+    {
+        identifier: piran
+        color: 7d0601
+        country: yugoslavia
+        planet: earth
+    }
+    {
+        identifier: slovenia
+        color: da11a6
+        country: yugoslavia
+        planet: earth
+    }
+    {
+        identifier: podcetrtek
+        color: a5d89a
+        country: yugoslavia
+        planet: earth
+    }
 ]

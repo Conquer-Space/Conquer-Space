@@ -1,8 +1,8 @@
 [
-  {
-    identifier: montenegro
-    color: ef7f92
-    country: montenegro
-    planet: earth
-  }
+    {
+        identifier: montenegro
+        color: ef7f92
+        country: yugoslavia
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: sao_tome_and_principe
-    color: 3fbf34
-    country: sao_tome_and_principe
-    planet: earth
-  }
+    {
+        identifier: sao_tome_and_principe
+        color: 3fbf34
+        country: sao_tome_and_principe
+        planet: earth
+    }
 ]

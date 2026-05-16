@@ -3,216 +3,115 @@
     {
         name: Plastic Manufacturing
         identifier: plastic_manufacturing
-        input: {
-            crude_oil: 1000
-        }
-        output: {
-            plastic: 1000
-        }
+        input: {crude_oil: 1000}
+        output: {plastic: 1000}
         cost: {
-            labor: {
-                laborer: 50
-            }
+            labor: {laborer: 50}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Plastic Manufacturing
         identifier: plastic_processing
-        input: {
-            crude_oil: 1000
-        }
-        output: {
-            plastic: 5000
-        }
+        input: {crude_oil: 1000}
+        output: {plastic: 5000}
         cost: {
-            labor: {
-                laborer: 10000
-            }
+            labor: {laborer: 10000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Concrete Manufacturing
         identifier: concrete_manufacturing
-        input: {
-            silicates: 1000
-        }
-        output: {
-            concrete: 500
-        }
+        input: {silicates: 1000}
+        output: {concrete: 500}
         cost: {
-            labor: {
-                laborer: 1000
-            }
+            labor: {laborer: 1000}
         }
         construction: {
             time: 3 weeks
-            cost: {
-                concrete: 1000
-            }
+            cost: {concrete: 1000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Gasoline Production
         identifier: gasoline_production
-        input: {
-            crude_oil: 1000
-        }
-        output: {
-            gasoline: 1000
-        }
+        input: {crude_oil: 1000}
+        output: {gasoline: 1000}
         cost: {
-            labor: {
-                laborer: 1000
-            }
+            labor: {laborer: 1000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Iron Mining
         identifier: iron_mining
-        input: {
-            heavy_machinery: 0.1
-        }
-        output: {
-            iron: 1000
-        }
+        input: {heavy_machinery: 0.1}
+        output: {iron: 1000}
         cost: {
-            labor: {
-                laborer: 1000
-            }
+            labor: {laborer: 1000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Coal Mining
         identifier: coal_mining
-        input: {
-            heavy_machinery: 0.1
-        }
-        output: {
-            coal: 1200
-        }
+        input: {heavy_machinery: 0.1}
+        output: {coal: 1200}
         cost: {
-            labor: {
-                laborer: 1000
-            }
+            labor: {laborer: 1000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Logging
         identifier: logging
-        input: {
-            heavy_machinery: 0.1
-        }
-        output: {
-            lumber: 800
-        }
+        input: {heavy_machinery: 0.1}
+        output: {lumber: 800}
         cost: {
-            labor: {
-                laborer: 4000
-            }
+            labor: {laborer: 4000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Oil Drilling
         identifier: oil_drilling
-        input: {
-            heavy_machinery: 0.1
-        }
-        output: {
-            crude_oil: 4000
-        }
+        input: {heavy_machinery: 0.1}
+        output: {crude_oil: 4000}
         cost: {
-            labor: {
-                laborer: 10000
-            }
+            labor: {laborer: 10000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Sand Mining
         identifier: silicates_mining
-        input: {
-            heavy_machinery: 0.1
-        }
-        output: {
-            silicates: 10000
-        }
+        input: {heavy_machinery: 0.1}
+        output: {silicates: 10000}
         cost: {
-            labor: {
-                laborer: 150
-            }
+            labor: {laborer: 150}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Cotton Farming
         identifier: cotton_farming
-        input: {
-            heavy_machinery: 0.1
-        }
-        output: {
-            fabric: 1000
-        }
+        input: {heavy_machinery: 0.1}
+        output: {fabric: 1000}
         cost: {
-            labor: {
-                laborer: 1500
-            }
+            labor: {laborer: 1500}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
-        {
+    {
         name: Chemical Manufacturing
         identifier: chemical_processing
-        input: {
-            crude_oil: 1000
-        }
-        output: {
-            chemicals: 2000
-        }
+        input: {crude_oil: 1000}
+        output: {chemicals: 2000}
         cost: {
-            labor: {
-                laborer: 10000
-            }
+            labor: {laborer: 10000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
 ]

@@ -1,7 +1,5 @@
 {
     vert: pane.vert
     frag: textured_pane.frag
-    uniforms: {
-        texture0: 0
-    }
+    uniforms: {texture0: 0}
 }

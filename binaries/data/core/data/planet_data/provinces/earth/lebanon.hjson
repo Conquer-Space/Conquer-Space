@@ -1,8 +1,8 @@
 [
-  {
-    identifier: lebanon
-    color: ac7322
-    country: lebanon
-    planet: earth
-  }
+    {
+        identifier: lebanon
+        color: ac7322
+        country: lebanon
+        planet: earth
+    }
 ]

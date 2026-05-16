@@ -1,8 +1,8 @@
 [
-  {
-    identifier: kuwait
-    color: 3baed3
-    country: kuwait
-    planet: earth
-  }
+    {
+        identifier: kuwait
+        color: 3baed3
+        country: kuwait
+        planet: earth
+    }
 ]

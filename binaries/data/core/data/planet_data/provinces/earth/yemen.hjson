@@ -1,8 +1,8 @@
 [
-  {
-    identifier: yemen
-    color: 4bea94
-    country: yemen
-    planet: earth
-  }
+    {
+        identifier: yemen
+        color: 4bea94
+        country: yemen
+        planet: earth
+    }
 ]

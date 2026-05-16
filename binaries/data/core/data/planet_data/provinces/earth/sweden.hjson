@@ -1,56 +1,56 @@
 [
-  {
-    identifier: norrbotten
-    color: "466224"
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: vasterbotten
-    color: f872a2
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: jamtland
-    color: acac37
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: dalarna
-    color: 2a6587
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: varmland
-    color: "40e099"
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: vastra_gotaland
-    color: 9eb04e
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: vasternorrland
-    color: 8684d5
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: gavleborg
-    color: d6d48d
-    country: sweden
-    planet: earth
-  }
-  {
-    identifier: kalmar
-    color: 13212c
-    country: sweden
-    planet: earth
-  }
+    {
+        identifier: norrbotten
+        color: "466224"
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: vasterbotten
+        color: f872a2
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: jamtland
+        color: acac37
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: dalarna
+        color: 2a6587
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: varmland
+        color: "40e099"
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: vastra_gotaland
+        color: 9eb04e
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: vasternorrland
+        color: 8684d5
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: gavleborg
+        color: d6d48d
+        country: sweden
+        planet: earth
+    }
+    {
+        identifier: kalmar
+        color: 13212c
+        country: sweden
+        planet: earth
+    }
 ]

@@ -6,13 +6,8 @@
         volume: 1 m3
         mass: 500 kg
         price: 500
-        consumption: {
-            autonomous_consumption: 1
-            marginal_propensity: 0.2
-        }
-        tags: [
-            consumer
-        ]
+        consumption: {autonomous_consumption: 1, marginal_propensity: 0.2}
+        tags: ["consumer"]
     }
     {
         name: Furniture
@@ -20,13 +15,8 @@
         volume: 1 m3
         mass: 500 kg
         price: 300
-        consumption: {
-            autonomous_consumption: 1
-            marginal_propensity: 0.2
-        }
-        tags: [
-            consumer
-        ]
+        consumption: {autonomous_consumption: 1, marginal_propensity: 0.2}
+        tags: ["consumer"]
     }
     {
         name: Household Products
@@ -35,13 +25,8 @@
         mass: 700 kg
         price: 600
         description: Household supplies for cleaning and maintainence of a household
-        consumption: {
-            autonomous_consumption: 0.1
-            marginal_propensity: 0.5
-        }
-        tags: [
-            consumer
-        ]
+        consumption: {autonomous_consumption: 0.1, marginal_propensity: 0.5}
+        tags: ["consumer"]
     }
     {
         name: Groceries
@@ -49,13 +34,8 @@
         volume: 1 m3
         mass: 850 kg
         price: 500
-        consumption: {
-            autonomous_consumption: 1
-            marginal_propensity: 0.2
-        }
-        tags: [
-            consumer
-        ]
+        consumption: {autonomous_consumption: 1, marginal_propensity: 0.2}
+        tags: ["consumer"]
     }
     {
         name: Gasoline
@@ -63,14 +43,8 @@
         volume: 0.148987 m3
         mass: 136 kg
         price: 400
-        consumption: {
-            autonomous_consumption: 1
-            marginal_propensity: 2
-        }
-        tags: [
-            consumer
-            fluid
-        ]
+        consumption: {autonomous_consumption: 1, marginal_propensity: 2}
+        tags: ["consumer", "fluid"]
     }
     {
         name: Automobiles
@@ -78,41 +52,23 @@
         volume: 0.148987 m3
         mass: 136 kg
         price: 30000
-        consumption: {
-            autonomous_consumption: 0.01
-            marginal_propensity: 0.05
-        }
-        tags: [
-            consumer
-            fluid
-        ]
+        consumption: {autonomous_consumption: 0.01, marginal_propensity: 0.05}
+        tags: ["consumer", "fluid"]
     }
     {
         name: Pharmaceutical Drugs
         volume: 0.148987 m3
         mass: 136 kg
         price: 30000
-        consumption: {
-            autonomous_consumption: 0.1
-            marginal_propensity: 0.05
-        }
-        tags: [
-            consumer
-            fluid
-        ]
+        consumption: {autonomous_consumption: 0.1, marginal_propensity: 0.05}
+        tags: ["consumer", "fluid"]
     }
     {
         name: Consumer Electronics
         volume: 0.148987 m3
         mass: 136 kg
         price: 2000
-        consumption: {
-            autonomous_consumption: 1
-            marginal_propensity: 0.5
-        }
-        tags: [
-            consumer
-            fluid
-        ]
+        consumption: {autonomous_consumption: 1, marginal_propensity: 0.5}
+        tags: ["consumer", "fluid"]
     }
 ]

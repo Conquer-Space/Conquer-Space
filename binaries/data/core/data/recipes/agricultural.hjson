@@ -3,56 +3,31 @@
     {
         name: Farming
         identifier: farming
-        input: {
-            tractors: 0.1
-        }
-        output: {
-            cereal_grains: 1500
-        }
+        input: {tractors: 0.1}
+        output: {cereal_grains: 1500}
         cost: {
-            labor: {
-                laborer: 1000
-            }
+            labor: {laborer: 1000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Meat Production
         identifier: meat_production
-        input: {
-            cereal_grains: 90
-        }
-        output: {
-            meat: 600
-        }
+        input: {cereal_grains: 90}
+        output: {meat: 600}
         cost: {
-            labor: {
-                laborer: 2500
-            }
+            labor: {laborer: 2500}
         }
-        tags: [
-            ratio
-        ]
+        tags: ["ratio"]
     }
     {
         name: Fruit and Vegetable Production
         identifier: fresh_food_production
-        input: {
-            tractors: 0.1
-        }
-        output: {
-            fruits_and_vegetables: 1000
-        }
+        input: {tractors: 0.1}
+        output: {fruits_and_vegetables: 1000}
         cost: {
-            labor: {
-                laborer: 2500
-            }
+            labor: {laborer: 2500}
         }
-        tags: [
-            ratio
-        ]
+        tags: ["ratio"]
     }
 ]

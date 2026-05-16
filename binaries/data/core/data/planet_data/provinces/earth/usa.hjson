@@ -5,13 +5,10 @@
         color: cca96f
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 3061743 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 3061743
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -21,13 +18,10 @@
         color: d2aa45
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 128643  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 128643
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -36,17 +30,13 @@
         color: 6c84ba
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 749587 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 749587
+                job_distribution: {laborer: 1625938}
             }
         ]
-        industry:
-        [
+        industry: [
             {
                 recipe: iron_mining
                 size: 60
@@ -71,28 +61,19 @@
                 material_costs: 6000
                 profit: 4438.5589331573865
             }
-            {
-                recipe: silicates_mining
-                size: 10
-            }
+            {recipe: "silicates_mining", size: 10}
         ]
-        tags:
-        [
-            log_market
-        ]
+        tags: ["log_market"]
     }
     {
         identifier: arkansas
         color: 64989e
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 1909511 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 1909511
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -102,18 +83,13 @@
         color: "938741"
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 10586223 
-                job_distribution: {
-                    laborer: 1830410
-                    technician: 18000
-                }
+                size: 10586223
+                job_distribution: {laborer: 1830410, technician: 18000}
             }
         ]
-        industry:
-        [
+        industry: [
             {
                 recipe: furniture_manufacturing
                 size: 300
@@ -173,10 +149,7 @@
                 profit: 452095.21231826395
             }
         ]
-        tags:
-        [
-            log_market
-        ]
+        tags: ["log_market"]
     }
     {
         identifier: colorado
@@ -184,13 +157,10 @@
         color: 63626e
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 1325089  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 1325089
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -200,13 +170,10 @@
         color: 55b5de
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2007280 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2007280
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -216,13 +183,10 @@
         color: 6e44b0
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 318085 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 318085
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -232,13 +196,10 @@
         color: d3526f
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 802178  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 802178
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -248,13 +209,10 @@
         color: 87d55f
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2771305 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2771305
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -264,13 +222,10 @@
         color: 689f7c
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 3444578
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -280,13 +235,10 @@
         color: 77e5a4
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 58754 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 58754
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -296,13 +248,10 @@
         color: 43d588
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 588637 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 588637
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -312,18 +261,14 @@
         color: 020d3a
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 8712176 
+                size: 8712176
                 sol: 10
-                job_distribution: {
-                    laborer: 1448008
-                }
+                job_distribution: {laborer: 1448008}
             }
         ]
-        industry:
-        [
+        industry: [
             {
                 recipe: farming
                 size: 235
@@ -433,10 +378,7 @@
                 profit: 57857.27624656004
             }
         ]
-        tags:
-        [
-            log_market
-        ]
+        tags: ["log_market"]
     }
     {
         identifier: indiana
@@ -444,13 +386,10 @@
         color: 4add0f
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 3934224
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -460,13 +399,10 @@
         color: "0e9795"
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2621073 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2621073
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -476,13 +412,10 @@
         color: 318eaf
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 1905299 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 1905299
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -492,13 +425,10 @@
         color: b9c1db
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 2944806
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -508,13 +438,10 @@
         color: 133f0b
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2683516 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2683516
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -524,13 +451,10 @@
         color: 37cb07
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 913774 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 913774
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -540,13 +464,10 @@
         color: 35eaec
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2343001 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2343001
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -556,13 +477,10 @@
         color: 4caf91
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 4690514
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -572,13 +490,10 @@
         color: 0ab67b
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 6371766
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -588,13 +503,10 @@
         color: "789441"
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 2982483
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -604,13 +516,10 @@
         color: 420d58
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2178914 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2178914
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -620,13 +529,10 @@
         color: 0c604a
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 3954653
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -636,13 +542,10 @@
         color: 1ecea0
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 591024 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 591024
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -652,13 +555,10 @@
         color: 241dbd
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 1325510  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 1325510
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -668,13 +568,10 @@
         color: b9281a
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 160083  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 160083
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -684,13 +581,10 @@
         color: be8124
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 533242  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 533242
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -700,13 +594,10 @@
         color: 9dcb0a
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 499794 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 499794
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -716,13 +607,10 @@
         color: e57357
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 4835329 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 4835329
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -732,13 +620,10 @@
         color: f90853
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 681187  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 681187
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -748,20 +633,14 @@
         color: 9f2db1
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 8000000
-                job_distribution: {
-                    laborer: 8000000
-                }
+                size: 14830192
+                job_distribution: {laborer: 8000000}
             }
         ]
         transport: 0.05
-        infrastructure:
-        {
-            highway: 0.02
-        }
+        infrastructure: {highway: 0.02}
     }
     {
         identifier: north_carolina
@@ -769,13 +648,10 @@
         color: 5df794
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 619636 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 619636
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -785,34 +661,23 @@
         color: 2c4ae1
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 14830192 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 14830192
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
     {
         identifier: northern_islands
         name: Northern Islands
-        color:
-        [
-            171
-            93
-            12
-        ]
+        color: [171, 93, 12]
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 7335 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 7335
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -822,13 +687,10 @@
         color: 8d6345
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 7946627
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -838,13 +700,10 @@
         color: 9d058e
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2233351 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2233351
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -854,34 +713,23 @@
         color: 53faaa
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 1521341 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 1521341
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
     {
         identifier: palmyra_atoll
         name: Palmyra Atoll
-        color:
-        [
-            176
-            182
-            44
-        ]
+        color: [176, 182, 44]
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 3948 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 3948
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -891,13 +739,10 @@
         color: "612876"
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 14830192 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 10498012
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -907,13 +752,10 @@
         color: 493a52
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 14830192 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2205398
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -923,71 +765,49 @@
         color: 7a42a4
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 791896  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 791896
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
     {
         identifier: rota
         name: Rota
-        color:
-        [
-            171
-            36
-            0
-        ]
+        color: [171, 36, 0]
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2353 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2353
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
     {
         identifier: saint_croix
         name: Saint Croix
-        color:
-        [
-            147
-            175
-            209
-        ]
+        color: [147, 175, 209]
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 1256 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 1256
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
     {
         identifier: south_carolina
         name: South Carolina
-        color: "8e4892"
+        color: 8e4892
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2117027 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2117027
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -997,34 +817,23 @@
         color: c3e74a
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 652740  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 652740
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
     {
         identifier: swains_island
         name: Swain's Island
-        color:
-        [
-            172
-            122
-            72
-        ]
+        color: [172, 122, 72]
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 9 
-                job_distribution: {
-                    laborer: 0
-                }
+                size: 9
+                job_distribution: {laborer: 0}
             }
         ]
     }
@@ -1034,13 +843,10 @@
         color: 450f1f
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 3291718
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -1050,34 +856,23 @@
         color: "84e145"
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 7711194
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
     {
         identifier: tinian
         name: Tinian
-        color:
-        [
-            171
-            50
-            67
-        ]
+        color: [171, 50, 67]
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 1200 
-                job_distribution: {
-                    laborer: 1200
-                }
+                size: 1200
+                job_distribution: {laborer: 1200}
             }
         ]
     }
@@ -1087,13 +882,10 @@
         color: a24ccb
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 688862  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 688862
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -1103,13 +895,10 @@
         color: df5164
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 377747  
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 377747
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -1119,13 +908,10 @@
         color: 82527a
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 3318680 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 3318680
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -1135,17 +921,13 @@
         color: c16993
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2378963 
-                job_distribution: {
-                    laborer: 233374
-                }
+                size: 2378963
+                job_distribution: {laborer: 233374}
             }
         ]
-        industry:
-        [
+        industry: [
             {
                 recipe: logging
                 size: 200
@@ -1166,13 +948,10 @@
         color: 65d417
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 2005552 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 2005552
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -1182,13 +961,10 @@
         color: 0c0d26
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
                 size: 3434575
-                job_distribution: {
-                    laborer: 1625938
-                }
+                job_distribution: {laborer: 1625938}
             }
         ]
     }
@@ -1198,13 +974,10 @@
         color: 84dfe4
         country: usa
         planet: earth
-        population:
-        [
+        population: [
             {
-                size: 290529 
-                job_distribution: {
-                    laborer: 1625938
-                }
+                size: 290529
+                job_distribution: {laborer: 1625938}
             }
         ]
     }

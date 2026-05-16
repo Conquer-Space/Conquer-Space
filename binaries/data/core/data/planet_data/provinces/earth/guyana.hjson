@@ -1,8 +1,8 @@
 [
-  {
-    identifier: guyana
-    color: 6760bd
-    country: guyana
-    planet: earth
-  }
+    {
+        identifier: guyana
+        color: 6760bd
+        country: guyana
+        planet: earth
+    }
 ]

@@ -1,8 +1,8 @@
 [
-  {
-    identifier: tafea
-    color: fc5594
-    country: vanuatu
-    planet: earth
-  }
+    {
+        identifier: tafea
+        color: fc5594
+        country: vanuatu
+        planet: earth
+    }
 ]

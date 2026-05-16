@@ -1,8 +1,8 @@
 [
-  {
-    identifier: eritrea
-    color: f57110
-    country: eritrea
-    planet: earth
-  }
+    {
+        identifier: eritrea
+        color: f57110
+        country: eritrea
+        planet: earth
+    }
 ]

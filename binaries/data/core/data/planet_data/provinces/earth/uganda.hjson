@@ -1,8 +1,8 @@
 [
-  {
-    identifier: uganda
-    color: 2a17c2
-    country: uganda
-    planet: earth
-  }
+    {
+        identifier: uganda
+        color: 2a17c2
+        country: uganda
+        planet: earth
+    }
 ]

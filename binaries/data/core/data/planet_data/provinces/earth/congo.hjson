@@ -1,38 +1,38 @@
 [
-  {
-    identifier: likouala
-    color: 224c9e
-    country: congo
-    planet: earth
-  }
-  {
-    identifier: cuvette
-    color: 1f2ffb
-    country: congo
-    planet: earth
-  }
-  {
-    identifier: plateaux
-    color: a5cbb7
-    country: congo
-    planet: earth
-  }
-  {
-    identifier: bouenza
-    color: 1e23ac
-    country: congo
-    planet: earth
-  }
-  {
-    identifier: sangha
-    color: 48d300
-    country: congo
-    planet: earth
-  }
-  {
-    identifier: pointe_noire
-    color: effdfa
-    country: congo
-    planet: earth
-  }
+    {
+        identifier: likouala
+        color: 224c9e
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: cuvette
+        color: 1f2ffb
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: plateaux
+        color: a5cbb7
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: bouenza
+        color: 1e23ac
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: sangha
+        color: 48d300
+        country: congo
+        planet: earth
+    }
+    {
+        identifier: pointe_noire
+        color: effdfa
+        country: congo
+        planet: earth
+    }
 ]

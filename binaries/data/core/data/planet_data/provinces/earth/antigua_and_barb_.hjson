@@ -1,8 +1,8 @@
 [
-  {
-    identifier: antigua_and_barbuda
-    color: b35a64
-    country: antigua_and_barb_
-    planet: earth
-  }
+    {
+        identifier: antigua_and_barbuda
+        color: b35a64
+        country: antigua_and_barb_
+        planet: earth
+    }
 ]

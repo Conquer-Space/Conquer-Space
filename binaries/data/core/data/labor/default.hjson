@@ -13,7 +13,6 @@
         identifier: technician
         name: Technican
         good: technician_labor
-        tags: [
-        ]
+        tags: []
     }
 ]

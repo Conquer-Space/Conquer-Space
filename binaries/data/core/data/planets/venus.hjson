@@ -5,8 +5,7 @@
         radius: 6052 km
         reference: sun
         gm: 324859.9
-        orbit:
-        {
+        orbit: {
             eccentricity: 0.006810367596020351
             semi_major_axis: 108209554.8282247 km
             M0: 310.7799941746339 deg
@@ -16,13 +15,8 @@
         }
         day_length: -243.0226 d
         axial: 2.64 deg
-        texture:
-        {
-            terrain: venusmap
-        }
-        atmosphere: {
-            scale_height: 15.9 km
-        }
+        texture: {terrain: "venusmap"}
+        atmosphere: {scale_height: "15.9 km"}
         tags: []
     }
 ]

@@ -1,8 +1,14 @@
 [
-  {
-    identifier: chittagong
-    color: 03c851
-    country: bangladesh
-    planet: earth
-  }
+    {
+        identifier: chittagong
+        color: 03c851
+        country: pakistan
+        planet: earth
+        population: [
+            {
+                size: 39728535
+                job_distribution: {laborer: 1625938}
+            }
+        ]
+    }
 ]

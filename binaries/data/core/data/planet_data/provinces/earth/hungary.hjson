@@ -1,14 +1,14 @@
 [
-  {
-    identifier: szabolcs_szatmar_bereg
-    color: 4c438e
-    country: hungary
-    planet: earth
-  }
-  {
-    identifier: gyor_moson_sopron
-    color: 18e66e
-    country: hungary
-    planet: earth
-  }
+    {
+        identifier: szabolcs_szatmar_bereg
+        color: 4c438e
+        country: hungary
+        planet: earth
+    }
+    {
+        identifier: gyor_moson_sopron
+        color: 18e66e
+        country: hungary
+        planet: earth
+    }
 ]

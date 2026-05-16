@@ -1,20 +1,20 @@
 [
-  {
-    identifier: vojvodina
-    color: 52ed62
-    country: serbia
-    planet: earth
-  }
-  {
-    identifier: southern_and_eastern_serbia
-    color: 0e650f
-    country: serbia
-    planet: earth
-  }
-  {
-    identifier: sumadija
-    color: c154ae
-    country: serbia
-    planet: earth
-  }
+    {
+        identifier: vojvodina
+        color: 52ed62
+        country: yugoslavia
+        planet: earth
+    }
+    {
+        identifier: southern_and_eastern_serbia
+        color: 0e650f
+        country: yugoslavia
+        planet: earth
+    }
+    {
+        identifier: sumadija
+        color: c154ae
+        country: yugoslavia
+        planet: earth
+    }
 ]

@@ -1,20 +1,20 @@
 [
-  {
-    identifier: zilinsky
-    color: 8315b2
-    country: slovakia
-    planet: earth
-  }
-  {
-    identifier: presov
-    color: d988a3
-    country: slovakia
-    planet: earth
-  }
-  {
-    identifier: bratislavsky
-    color: 5857a5
-    country: slovakia
-    planet: earth
-  }
+    {
+        identifier: zilinsky
+        color: 8315b2
+        country: czechoslovakia
+        planet: earth
+    }
+    {
+        identifier: presov
+        color: d988a3
+        country: czechoslovakia
+        planet: earth
+    }
+    {
+        identifier: bratislavsky
+        color: 5857a5
+        country: czechoslovakia
+        planet: earth
+    }
 ]

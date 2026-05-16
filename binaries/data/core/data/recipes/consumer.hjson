@@ -3,83 +3,42 @@
     {
         name: Groceries Production
         identifier: groceries_manufacturing
-        input: {
-            meat: 1000
-            cereal_grains: 1000
-            fruits_and_vegetables: 1000
-        }
-        output: {
-            groceries: 1000
-        }
+        input: {meat: 1000, cereal_grains: 1000, fruits_and_vegetables: 1000}
+        output: {groceries: 1000}
         cost: {
-            labor: {
-                laborer: 20000
-            }
+            labor: {laborer: 20000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         name: Furniture Manufacturing
         identifier: furniture_manufacturing
-        input: {
-            lumber: 1000
-            iron: 200
-            steel: 50
-        }
-        output: {
-            furniture: 800
-        }
+        input: {lumber: 1000, iron: 200, steel: 50}
+        output: {furniture: 800}
         cost: {
-            labor: {
-                laborer: 10000
-                technician: 5000
-            }
+            labor: {laborer: 10000, technician: 5000}
         }
-        tags: [
-            ratio
-            raw
-        ]
+        tags: ["ratio", "raw"]
     }
     {
         // This is literally just so that we have enough jobs to feed people
         name: Textile Sweatshops
         identifier: textile_sweatshop
-        input: {
-            fabric: 1000
-        }
-        output: {
-            textile_goods: 500
-        }
+        input: {fabric: 1000}
+        output: {textile_goods: 500}
         cost: {
-            labor: {
-                laborer: 30000
-            }
+            labor: {laborer: 30000}
         }
-        tags: [
-            ratio
-            consumer
-        ]
+        tags: ["ratio", "consumer"]
     }
     {
         name: Household Product Production
         identifier: household_chemical_production
-        input: {
-            chemicals: 1000
-        }
-        output: {
-            household_products: 800
-        }
+        input: {chemicals: 1000}
+        output: {household_products: 800}
         cost: {
-            labor: {
-                laborer: 30000
-            }
+            labor: {laborer: 30000}
         }
-        tags: [
-            ratio
-            consumer
-        ]
+        tags: ["ratio", "consumer"]
     }
 ]

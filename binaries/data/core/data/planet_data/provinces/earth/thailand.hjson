@@ -1,26 +1,26 @@
 [
-  {
-    identifier: surin
-    color: ede7e3
-    country: thailand
-    planet: earth
-  }
-  {
-    identifier: sa_kaeo
-    color: 6ef9b9
-    country: thailand
-    planet: earth
-  }
-  {
-    identifier: satun
-    color: a9c01b
-    country: thailand
-    planet: earth
-  }
-  {
-    identifier: chiang_rai
-    color: bf5538
-    country: thailand
-    planet: earth
-  }
+    {
+        identifier: surin
+        color: ede7e3
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: sa_kaeo
+        color: 6ef9b9
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: satun
+        color: a9c01b
+        country: thailand
+        planet: earth
+    }
+    {
+        identifier: chiang_rai
+        color: bf5538
+        country: thailand
+        planet: earth
+    }
 ]

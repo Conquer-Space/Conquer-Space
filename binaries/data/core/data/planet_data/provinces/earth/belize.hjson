@@ -1,8 +1,8 @@
 [
-  {
-    identifier: belize
-    color: 3c3e60
-    country: belize
-    planet: earth
-  }
+    {
+        identifier: belize
+        color: 3c3e60
+        country: belize
+        planet: earth
+    }
 ]

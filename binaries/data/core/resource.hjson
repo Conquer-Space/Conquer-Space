@@ -2,13 +2,11 @@
     ui_sounds: {
         path: gui/ui_sounds.hjson
         type: hjson
-        hints: {
-        }
+        hints: {}
     }
     credits: {
         path: credits.md
         type: text
-        hints: {
-        }
+        hints: {}
     }
 }

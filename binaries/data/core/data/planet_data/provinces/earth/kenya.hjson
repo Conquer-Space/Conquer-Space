@@ -1,20 +1,20 @@
 [
-  {
-    identifier: rift_valley
-    color: 22bad3
-    country: kenya
-    planet: earth
-  }
-  {
-    identifier: nakuru
-    color: e2a3e7
-    country: kenya
-    planet: earth
-  }
-  {
-    identifier: north_eastern
-    color: f365ca
-    country: kenya
-    planet: earth
-  }
+    {
+        identifier: rift_valley
+        color: 22bad3
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: nakuru
+        color: e2a3e7
+        country: kenya
+        planet: earth
+    }
+    {
+        identifier: north_eastern
+        color: f365ca
+        country: kenya
+        planet: earth
+    }
 ]

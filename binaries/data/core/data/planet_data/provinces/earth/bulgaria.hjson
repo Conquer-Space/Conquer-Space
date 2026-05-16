@@ -1,14 +1,14 @@
 [
-  {
-    identifier: burgas
-    color: e6bf78
-    country: bulgaria
-    planet: earth
-  }
-  {
-    identifier: vidin
-    color: 6d2d87
-    country: bulgaria
-    planet: earth
-  }
+    {
+        identifier: burgas
+        color: e6bf78
+        country: bulgaria
+        planet: earth
+    }
+    {
+        identifier: vidin
+        color: 6d2d87
+        country: bulgaria
+        planet: earth
+    }
 ]
