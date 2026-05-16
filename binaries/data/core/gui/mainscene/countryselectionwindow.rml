@@ -3,13 +3,49 @@
         <title></title>
         <link type="text/rcss" href="window.rcss"/>
         <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            width: 380px;
+            height: 80%;
+            position: absolute;
+            right: 5%;
+            top: 10%;
+            margin-left: -190px;
+        }
+
+        #country-name {
+            display: block;
+            flex-shrink: 0;
+            font-size: 2em;
+            text-align: center;
+            padding: 10px 5px;
+        }
+
+        #description {
+            display: block;
+            flex-grow: 1;
+            padding: 5px 10px;
+        }
+
+        #start-game {
+            display: block;
+            flex-shrink: 0;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            border: 3px #20005c;
+            box-sizing: border-box;
+        }
+
+        #start-game:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
         </style>
     </head>
     <body>
-        <div>
-            <div>Country holder</div>
-            <div>Country data...</div>
-        </div>
-        <div><p>Start Game!</p></div>
+        <div id="country-name">Country Name</div>
+        <div id="description">Description</div>
+        <button id="start-game">Start Game</button>
     </body>
 </rml>

@@ -36,6 +36,7 @@ void CountrySelectionScene::Init() {
     simulation->tick();
 
     AddRmlUiSystem<systems::rmlui::CountrySelectionMenu>();
+    // Init our lua functions
 }
 
 void CountrySelectionScene::Update(float deltaTime) {
