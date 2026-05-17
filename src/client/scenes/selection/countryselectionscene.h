@@ -18,17 +18,17 @@
 
 #include <utility>
 
-#include "client/scenes/scene.h"
+#include "client/scenes/rmlscene.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
-#include "client/systems/sysgui.h"
 #include "core/simulation.h"
 #include "engine/asset/assetloader.h"
 
 namespace cqsp::client::scene {
 // First loading scene when the game starts
-class CountrySelectionScene : public ClientScene {
+class CountrySelectionScene : public RmlClientScene {
  public:
-    explicit CountrySelectionScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer);
+    explicit CountrySelectionScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
+                                   std::unique_ptr<core::systems::simulation::Simulation> simulation);
     ~CountrySelectionScene();
 
     void Init();
@@ -36,23 +36,12 @@ class CountrySelectionScene : public ClientScene {
     void Ui(float deltaTime);
     void Render(float deltaTime);
 
-    template <class T>
-    void AddRmlUiSystem() {
-        auto ui = std::make_unique<T>(GetApp());
-        ui->OpenDocument();
-        documents.push_back(std::move(ui));
-    }
-
-    void CheckUiReload();
-
  private:
     void StartGame();
     void InitializeLuaFunctions();
 
     std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
     std::unique_ptr<core::systems::simulation::Simulation> simulation;
-
-    std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
 
     entt::entity selected_country = entt::null;
 };

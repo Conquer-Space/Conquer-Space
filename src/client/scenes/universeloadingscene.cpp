@@ -26,6 +26,7 @@
 #include "client/scenes/universe/universescene.h"
 #include "client/systems/assetloading.h"
 #include "client/systems/universeloader.h"
+#include "core/components/player.h"
 #include "core/scripting/functionreg.h"
 #include "core/scripting/luafunctions.h"
 #include "core/systems/sysuniversegenerator.h"
@@ -52,16 +53,7 @@ void UniverseLoadingScene::Init() {
 
 void UniverseLoadingScene::Update(float deltaTime) {
     if (m_completed_loading && thread->joinable()) {
-        // Switch scene
-        thread->join();
-        auto system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
-        system_renderer->Initialize();
-        system_renderer->SeeStarSystem();
-        SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
-
-        InitializeGameScene();
-
-        GetApp().SetScene<CountrySelectionScene>(std::move(system_renderer));
+        CompleteLoading();
     }
 }
 
@@ -86,5 +78,35 @@ void UniverseLoadingScene::InitializeGameScene() {
     core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
     client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
     GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
+}
+
+void UniverseLoadingScene::CompleteLoading() {
+    // Switch scene
+    thread->join();
+    auto system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
+    system_renderer->Initialize();
+    system_renderer->SeeStarSystem();
+    SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
+    auto simulation = std::make_unique<core::systems::simulation::Simulation>(
+        dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
+    simulation->Init();
+    // Init simulation tick
+    simulation->tick();
+    InitializeGameScene();
+
+    if (GetApp().HasCmdLineArgs("-i")) {
+        // Then we should check that we have that
+        auto iterator = std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-i");
+        if (++iterator != GetApp().GetCmdLineArgs().end() && GetUniverse().countries.contains(*iterator)) {
+            // Then we should check for a country and we just set our country to that
+            // Then we go to universe scene
+            auto player = GetUniverse().countries[*iterator];
+            GetUniverse().emplace<core::components::Player>(GetUniverse().countries["usa"]);
+            GetApp().SetScene<UniverseScene>(std::move(system_renderer), std::move(simulation));
+            return;
+        }
+    }
+
+    GetApp().SetScene<CountrySelectionScene>(std::move(system_renderer), std::move(simulation));
 }
 }  // namespace cqsp::client::scene

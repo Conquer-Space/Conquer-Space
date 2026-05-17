@@ -16,9 +16,6 @@
  */
 #include "client/scenes/universe/universescene.h"
 
-#include <RmlUi/Core/Factory.h>
-#include <RmlUi/Debugger.h>
-
 #include <cmath>
 #include <string>
 
@@ -79,7 +76,7 @@ using core::systems::simulation::Simulation;
 
 UniverseScene::UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
                              std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation)
-    : ClientScene(app), system_renderer(std::move(renderer)), simulation(std::move(simulation)) {}
+    : RmlClientScene(app), system_renderer(std::move(renderer)), simulation(std::move(simulation)) {}
 
 void UniverseScene::Init() {
     ZoneScoped;
@@ -154,29 +151,6 @@ void UniverseScene::DoScreenshot() {
     if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F1) && GetApp().ButtonIsHeld(engine::KeyInput::KEY_F10)) ||
         (GetApp().ButtonIsHeld(engine::KeyInput::KEY_F1) && GetApp().ButtonIsReleased(engine::KeyInput::KEY_F10))) {
         GetApp().Screenshot();
-    }
-}
-
-void UniverseScene::CheckUiReload() {
-    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
-        Rml::Factory::ClearStyleSheetCache();
-        Rml::Factory::ClearTemplateCache();
-        auto context = Rml::GetContext(0);
-        std::vector<Rml::ElementDocument*> reload_document_list;
-        for (int i = 0; i < context->GetNumDocuments(); i++) {
-            Rml::ElementDocument* document = context->GetDocument(i);
-            const Rml::String& src = document->GetSourceURL();
-            if (src.empty()) {
-                continue;
-            }
-            if (GetApp().DocumentIsLoaded(src)) {
-                continue;
-            }
-            document->Close();
-        }
-        for (auto& ui : documents) {
-            ui->ReloadWindow();
-        }
     }
 }
 

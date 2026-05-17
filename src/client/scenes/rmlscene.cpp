@@ -14,37 +14,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/scenes/rmlscene.h"
 
-#include <atomic>
-#include <memory>
-#include <thread>
-
-#include "client/scenes/scene.h"
+#include <RmlUi/Core/Factory.h>
+#include <RmlUi/Debugger.h>
 
 namespace cqsp::client::scene {
-class UniverseLoadingScene : public ClientScene {
- public:
-    explicit UniverseLoadingScene(engine::Application& app);
-    ~UniverseLoadingScene();
-
-    void Init();
-    void Update(float deltaTime);
-    void Ui(float deltaTime);
-    void Render(float deltaTime);
-
- private:
-    std::atomic<bool> m_done_loading;
-    std::unique_ptr<std::thread> thread;
-
-    void LoadCurrentUniverse();
-
-    void InitializeGameScene();
-
-    void CompleteLoading();
-
-    bool m_completed_loading;
-
-    Rml::ElementDocument* document;
-};
+void RmlClientScene::CheckUiReload() {
+    if (!GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5)) {
+        return;
+    }
+    Rml::Factory::ClearStyleSheetCache();
+    Rml::Factory::ClearTemplateCache();
+    auto context = Rml::GetContext(0);
+    for (int i = 0; i < context->GetNumDocuments(); i++) {
+        Rml::ElementDocument* document = context->GetDocument(i);
+        const Rml::String& src = document->GetSourceURL();
+        if (src.empty()) {
+            continue;
+        }
+        if (GetApp().DocumentIsLoaded(src)) {
+            continue;
+        }
+        document->Close();
+    }
+    for (auto& ui : documents) {
+        ui->ReloadWindow();
+    }
+}
 }  // namespace cqsp::client::scene

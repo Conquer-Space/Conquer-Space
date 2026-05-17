@@ -16,9 +16,6 @@
  */
 #include "client/scenes/selection/countryselectionscene.h"
 
-#include <RmlUi/Core/Factory.h>
-#include <RmlUi/Debugger.h>
-
 #include "client/components/clientctx.h"
 #include "client/components/rightclick.h"
 #include "client/scenes/selection/countryselectionmenu.h"
@@ -28,17 +25,14 @@
 
 namespace cqsp::client::scene {
 CountrySelectionScene::CountrySelectionScene(engine::Application& app,
-                                             std::unique_ptr<systems::SysStarSystemRenderer> renderer)
-    : ClientScene(app), system_renderer(std::move(renderer)) {}
+                                             std::unique_ptr<systems::SysStarSystemRenderer> renderer,
+                                             std::unique_ptr<core::systems::simulation::Simulation> simulation)
+    : RmlClientScene(app), system_renderer(std::move(renderer)), simulation(std::move(simulation)) {}
 
 CountrySelectionScene::~CountrySelectionScene() {}
 
 void CountrySelectionScene::Init() {
     using core::systems::simulation::Simulation;
-    simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
-    simulation->Init();
-    // Init simulation tick
-    simulation->tick();
 
     AddRmlUiSystem<systems::rmlui::CountrySelectionMenu>();
     // Init our lua functions
@@ -72,7 +66,6 @@ void CountrySelectionScene::Render(float deltaTime) {
 void CountrySelectionScene::StartGame() {
     // Set the next scene and move everything as well
     auto player = GetUniverse().countries["usa"];
-    //universe.emplace<components::Civilization>(player);
     GetUniverse().emplace<core::components::Player>(GetUniverse().countries["usa"]);
     GetApp().SetScene<UniverseScene>(std::move(system_renderer), std::move(simulation));
 }
@@ -86,26 +79,4 @@ void CountrySelectionScene::InitializeLuaFunctions() {
     REGISTER_FUNCTION("get_selected_country", [&]() { return selected_country; });
 }
 
-void CountrySelectionScene::CheckUiReload() {
-    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
-        Rml::Factory::ClearStyleSheetCache();
-        Rml::Factory::ClearTemplateCache();
-        auto context = Rml::GetContext(0);
-        std::vector<Rml::ElementDocument*> reload_document_list;
-        for (int i = 0; i < context->GetNumDocuments(); i++) {
-            Rml::ElementDocument* document = context->GetDocument(i);
-            const Rml::String& src = document->GetSourceURL();
-            if (src.empty()) {
-                continue;
-            }
-            if (GetApp().DocumentIsLoaded(src)) {
-                continue;
-            }
-            document->Close();
-        }
-        for (auto& ui : documents) {
-            ui->ReloadWindow();
-        }
-    }
-}
 }  // namespace cqsp::client::scene
