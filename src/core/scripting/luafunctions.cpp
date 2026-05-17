@@ -276,6 +276,8 @@ void FunctionUser(Universe& universe, sol::state_view& script_engine) {
 
     REGISTER_FUNCTION("get_name", [&](entt::entity entity) { return util::GetName(universe, entity); });
 
+    REGISTER_FUNCTION("is_valid", [&](entt::entity entity) { return universe.valid(entity); });
+
     REGISTER_FUNCTION("get_random_name", [&](const std::string& name_gen, const std::string& rule) {
         return universe.name_generators[name_gen].Generate(rule);
     });
@@ -371,6 +373,12 @@ void FunctionCivilizations(Universe& universe, sol::state_view& script_engine) {
     CREATE_NAMESPACE(core);
 
     REGISTER_FUNCTION("get_player", [&]() { return universe.view<components::Player>().front(); });
+    REGISTER_FUNCTION("set_player", [&](entt::entity new_player) {
+        for (entt::entity entity : universe.view<components::Player>()) {
+            universe.remove<components::Player>(entity);
+        }
+        universe.emplace<components::Player>(new_player);
+    });
     REGISTER_FUNCTION("get_capital_city",
                       [&](entt::entity civ) { return universe.get<components::Country>(civ).capital_city; });
 

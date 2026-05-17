@@ -16,6 +16,7 @@
  */
 #include "client/scripting/clientuielements.h"
 
+#include "client/components/rightclick.h"
 #include "client/scenes/universe/interface/markettable.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "core/scripting/functionreg.h"
@@ -32,5 +33,11 @@ void InitClientElements(core::Universe& universe, core::scripting::ScriptInterfa
     REGISTER_FUNCTION("SelectableMarketInformationTable", [&](entt::entity entity) {
         return client::systems::SelectableMarketInformationTable(universe, entity);
     });
+
+    REGISTER_FUNCTION("get_hovered_entity", [&] {
+        // Now we can set our country
+        const auto& hovering = universe.ctx().at<client::ctx::HoveringItem>();
+    });
+    REGISTER_FUNCTION("get_selected_country", [&] {});
 }
 }  // namespace cqsp::client::scripting

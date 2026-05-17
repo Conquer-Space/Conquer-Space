@@ -91,6 +91,12 @@ class Application {
         m_scene_manager.SetScene(std::move(ptr));
     }
 
+    template <class T, typename... Args>
+    void SetScene(Args&&... args) {
+        std::unique_ptr<Scene> ptr = std::make_unique<T>(*this, std::forward<Args>(args)...);
+        m_scene_manager.SetScene(std::move(ptr));
+    }
+
     GameState* GetGame() { return m_game.get(); }
 
     audio::IAudioInterface& GetAudioInterface() { return *m_audio_interface; }

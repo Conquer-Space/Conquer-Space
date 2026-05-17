@@ -30,7 +30,7 @@ void LaunchVehicleWindow::Init() {
 
 void LaunchVehicleWindow::DoUI(int delta_time) {
     // Get player
-    entt::entity player = GetUniverse().view<core::components::Player>().front();
+    entt::entity player = GetUniverse().GetPlayer();
     if (!GetUniverse().all_of<core::components::SpaceCapability>(player)) {
         return;
     }

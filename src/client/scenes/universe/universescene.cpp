@@ -16,9 +16,6 @@
  */
 #include "client/scenes/universe/universescene.h"
 
-#include <RmlUi/Core/Factory.h>
-#include <RmlUi/Debugger.h>
-
 #include <cmath>
 #include <string>
 
@@ -53,6 +50,7 @@
 #include "core/components/population.h"
 #include "core/components/resource.h"
 #include "core/components/surface.h"
+#include "core/scripting/functionreg.h"
 #include "core/scripting/luafunctions.h"
 #include "engine/graphics/primitives/cube.h"
 #include "engine/graphics/primitives/polygon.h"
@@ -76,30 +74,12 @@ namespace systems = client::systems;
 
 using core::systems::simulation::Simulation;
 
-UniverseScene::UniverseScene(engine::Application& app) : ClientScene(app) {}
+UniverseScene::UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
+                             std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation)
+    : RmlClientScene(app), system_renderer(std::move(renderer)), simulation(std::move(simulation)) {}
 
 void UniverseScene::Init() {
     ZoneScoped;
-
-    simulation = std::make_unique<Simulation>(dynamic_cast<ConquerSpace*>(GetApp().GetGame())->GetGame());
-
-    core::scripting::LoadFunctions(GetUniverse(), GetApp().GetSolState());
-    client::scripting::LoadHoverFunctions(GetUniverse(), GetApp().GetSolState());
-
-    GetApp().GetSolState()["global_state"] = GetApp().GetSolState().create_table_with('test', 0);
-
-    system_renderer = std::make_unique<systems::SysStarSystemRenderer>(GetUniverse(), GetApp());
-    system_renderer->Initialize();
-
-    GetUniverse().ctx().emplace<client::ctx::PauseOptions>();
-    GetUniverse().ctx().emplace<client::ctx::HoveringItem>();
-    GetUniverse().ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
-    GetUniverse().ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::NoMapMode);
-
-    system_renderer->SeeStarSystem();
-
-    SeePlanet(GetUniverse(), GetUniverse().planets["earth"]);
-
     AddUISystem<systems::SysStarSystemTree>();
     AddUISystem<systems::SysPauseMenu>();
     AddUISystem<systems::SysDebugMenu>();
@@ -114,8 +94,6 @@ void UniverseScene::Init() {
     AddUISystem<systems::TaxWindow>();
 
     AddUISystem<systems::gui::SysEvent>();
-    simulation->Init();
-    simulation->tick();  // Why do we tick the simulation once here? Idk
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
@@ -176,29 +154,6 @@ void UniverseScene::DoScreenshot() {
     }
 }
 
-void UniverseScene::CheckUiReload() {
-    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
-        Rml::Factory::ClearStyleSheetCache();
-        Rml::Factory::ClearTemplateCache();
-        auto context = Rml::GetContext(0);
-        std::vector<Rml::ElementDocument*> reload_document_list;
-        for (int i = 0; i < context->GetNumDocuments(); i++) {
-            Rml::ElementDocument* document = context->GetDocument(i);
-            const Rml::String& src = document->GetSourceURL();
-            if (src.empty()) {
-                continue;
-            }
-            if (GetApp().DocumentIsLoaded(src)) {
-                continue;
-            }
-            document->Close();
-        }
-        for (auto& ui : documents) {
-            ui->ReloadWindow();
-        }
-    }
-}
-
 void UniverseScene::ManageTick() {
     auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
     int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
@@ -256,4 +211,7 @@ void SetGameHalted(bool b) { game_halted = b; }
 
 bool IsGameHalted() { return game_halted; }
 
+void UniverseScene::InitializeScriptFunctions() {
+    // Init stuff
+}
 }  // namespace cqsp::client::scene

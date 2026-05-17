@@ -1,0 +1,60 @@
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            width: 380px;
+            height: 80%;
+            position: absolute;
+            right: 5%;
+            top: 10%;
+            margin-left: -190px;
+        }
+
+        #country-name {
+            display: block;
+            flex-shrink: 0;
+            font-size: 2em;
+            text-align: center;
+            padding: 10px 5px;
+        }
+
+        #description {
+            display: block;
+            flex-grow: 1;
+            padding: 5px 10px;
+        }
+
+        #start-game {
+            display: block;
+            flex-shrink: 0;
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            border: 3px #20005c;
+            box-sizing: border-box;
+        }
+
+        #start-game.enabled:hover {
+            background-color: rgba(255, 255, 255, 40);
+        }
+
+        #start-game.enabled {
+            color: white;
+        }
+
+        #start-game.disabled {
+            color: rgba(255, 255, 255, 40);
+        }
+        </style>
+        <script src="script/country_selection.lua"></script>
+    </head>
+    <body onprovinceselect="CountrySelectionWindow.OnProvinceSelect(document)" onload="CountrySelectionWindow.OnProvinceSelect(document)">
+        <div id="country-name">Select a Country</div>
+        <div id="description"></div>
+        <button id="start-game" class="disabled" onclick="selection:start_game()">Start Game</button>
+    </body>
+</rml>

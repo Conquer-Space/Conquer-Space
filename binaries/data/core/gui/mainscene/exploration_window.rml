@@ -20,10 +20,6 @@
                 height: 30 px;
             }
 
-            #exploration_title {
-                
-            }
-
             #planet_panel {
                 border: 4px #20005c;
             }
@@ -52,7 +48,7 @@
                 margin: 5px;
             }
         </style>
-        <script src="exploration_window.lua"></script>
+        <script src="script/exploration_window.lua"></script>
     </head>
     <body onload="ExplorationWindow.OnLoad(document)" onmouseovercapture="client.ResetHover()">
         <div id="exit_button" onclick="document:Hide()">X</div>

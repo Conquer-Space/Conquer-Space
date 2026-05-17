@@ -29,9 +29,9 @@ class ISysUniverseGenerator {
     virtual void Generate(Universe& universe) = 0;
 };
 
-class ScriptUniverseGenerator : public ISysUniverseGenerator {
+class SysUniverseGenerator : public ISysUniverseGenerator {
  public:
-    explicit ScriptUniverseGenerator(scripting::ScriptInterface& _interface) : script_engine(_interface) {}
+    explicit SysUniverseGenerator(scripting::ScriptInterface& _interface) : script_engine(_interface) {}
     void Generate(Universe& universe);
 
  private:

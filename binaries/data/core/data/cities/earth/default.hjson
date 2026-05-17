@@ -123,6 +123,9 @@
         population: [
             {size: 10000000}
         ]
+        tags: [
+            capital
+        ]
     }
     {
         name: New Delhi

@@ -14,37 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#pragma once
+#include "client/scenes/selection/countryselectionmenu.h"
 
-#include <atomic>
-#include <memory>
-#include <thread>
+namespace cqsp::client::systems::rmlui {
+CountrySelectionMenu::~CountrySelectionMenu() { GetApp().CloseDocument(file_name); }
+void CountrySelectionMenu::Update(double delta_time) {}
+void CountrySelectionMenu::OpenDocument() {
+    document = GetApp().LoadDocument(file_name);
+    document->Show();
+}
+void CountrySelectionMenu::ReloadWindow() {
+    document = GetApp().ReloadDocument(file_name);
+    document->Show();
+}
 
-#include "client/scenes/scene.h"
-
-namespace cqsp::client::scene {
-class UniverseLoadingScene : public ClientScene {
- public:
-    explicit UniverseLoadingScene(engine::Application& app);
-    ~UniverseLoadingScene();
-
-    void Init();
-    void Update(float deltaTime);
-    void Ui(float deltaTime);
-    void Render(float deltaTime);
-
- private:
-    std::atomic<bool> m_done_loading;
-    std::unique_ptr<std::thread> thread;
-
-    void LoadCurrentUniverse();
-
-    void InitializeGameScene();
-
-    void CompleteLoading();
-
-    bool m_completed_loading;
-
-    Rml::ElementDocument* document;
-};
-}  // namespace cqsp::client::scene
+void CountrySelectionMenu::DispatchEvent(const Rml::String& event, const Rml::Dictionary& parameters) {
+    document->DispatchEvent(event, parameters);
+}
+}  // namespace cqsp::client::systems::rmlui

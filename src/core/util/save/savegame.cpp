@@ -34,7 +34,7 @@ void save_game(Universe& universe) {
     Save save(universe);
     Hjson::Value metadata = save.GetMetadata();
     // Write to a file
-    entt::entity player = universe.view<components::Player>().front();
+    entt::entity player = universe.GetPlayer();
     auto& name = universe.get<components::Identifier>(player);
     // Generate the folder
     std::filesystem::path path = std::filesystem::path(save_dir_path) / (name.identifier + "_" + universe.uuid);

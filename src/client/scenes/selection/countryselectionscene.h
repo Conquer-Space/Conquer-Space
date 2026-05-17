@@ -16,17 +16,20 @@
  */
 #pragma once
 
-#include <atomic>
-#include <memory>
-#include <thread>
+#include <utility>
 
-#include "client/scenes/scene.h"
+#include "client/scenes/rmlscene.h"
+#include "client/scenes/universe/views/starsystemrenderer.h"
+#include "core/simulation.h"
+#include "engine/asset/assetloader.h"
 
 namespace cqsp::client::scene {
-class UniverseLoadingScene : public ClientScene {
+// First loading scene when the game starts
+class CountrySelectionScene : public RmlClientScene {
  public:
-    explicit UniverseLoadingScene(engine::Application& app);
-    ~UniverseLoadingScene();
+    explicit CountrySelectionScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
+                                   std::unique_ptr<core::systems::simulation::Simulation> simulation);
+    ~CountrySelectionScene() = default;
 
     void Init();
     void Update(float deltaTime);
@@ -34,17 +37,12 @@ class UniverseLoadingScene : public ClientScene {
     void Render(float deltaTime);
 
  private:
-    std::atomic<bool> m_done_loading;
-    std::unique_ptr<std::thread> thread;
+    void StartGame();
+    void InitializeLuaFunctions();
 
-    void LoadCurrentUniverse();
+    std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
+    std::unique_ptr<core::systems::simulation::Simulation> simulation;
 
-    void InitializeGameScene();
-
-    void CompleteLoading();
-
-    bool m_completed_loading;
-
-    Rml::ElementDocument* document;
+    entt::entity selected_country = entt::null;
 };
 }  // namespace cqsp::client::scene

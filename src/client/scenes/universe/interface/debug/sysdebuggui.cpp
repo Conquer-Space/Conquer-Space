@@ -91,7 +91,6 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
                 {"lua", {"Executes lua script", lua}},
                 {"log_market", {"Logs market into a csv file", log_market}}};
     to_show_rmlui_window = Rml::Debugger::IsVisible();
-    GetUniverse().ctx().emplace<ctx::StarSystemViewDebug>();
 }
 
 void SysDebugMenu::Init() {}

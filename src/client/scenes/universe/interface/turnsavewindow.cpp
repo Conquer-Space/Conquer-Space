@@ -56,9 +56,9 @@ void TurnSaveWindow::Update(double delta_time) {
     // Set the pause and play thingy if the game is halted or not
     if (pause_opt.to_tick != is_paused) {
         if (pause_opt.to_tick) {
-            pause_element->SetAttribute("src", "pause-button.png");
+            pause_element->SetAttribute("src", "img/pause-button.png");
         } else {
-            pause_element->SetAttribute("src", "play-button.png");
+            pause_element->SetAttribute("src", "img/play-button.png");
         }
         is_paused = pause_opt.to_tick;
     }

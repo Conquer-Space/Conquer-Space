@@ -16,35 +16,27 @@
  */
 #pragma once
 
-#include <atomic>
 #include <memory>
-#include <thread>
+#include <vector>
 
 #include "client/scenes/scene.h"
+#include "client/systems/sysgui.h"
 
 namespace cqsp::client::scene {
-class UniverseLoadingScene : public ClientScene {
+class RmlClientScene : public ClientScene {
  public:
-    explicit UniverseLoadingScene(engine::Application& app);
-    ~UniverseLoadingScene();
+    explicit RmlClientScene(engine::Application& app) : ClientScene(app) {}
 
-    void Init();
-    void Update(float deltaTime);
-    void Ui(float deltaTime);
-    void Render(float deltaTime);
+    template <class T>
+    void AddRmlUiSystem() {
+        auto ui = std::make_unique<T>(GetApp());
+        ui->OpenDocument();
+        documents.push_back(std::move(ui));
+    }
 
- private:
-    std::atomic<bool> m_done_loading;
-    std::unique_ptr<std::thread> thread;
+    void CheckUiReload();
 
-    void LoadCurrentUniverse();
-
-    void InitializeGameScene();
-
-    void CompleteLoading();
-
-    bool m_completed_loading;
-
-    Rml::ElementDocument* document;
+ protected:
+    std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
 };
 }  // namespace cqsp::client::scene

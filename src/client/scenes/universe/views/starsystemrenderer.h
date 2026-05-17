@@ -61,6 +61,8 @@ class SysStarSystemRenderer {
 
     void DrawAllOrbits();
 
+    entt::entity GetSelectedCountry() { return controller.GetSelectedCountry(); }
+
     ~SysStarSystemRenderer();
 
  private:

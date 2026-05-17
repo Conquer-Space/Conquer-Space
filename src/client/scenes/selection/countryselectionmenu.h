@@ -16,35 +16,21 @@
  */
 #pragma once
 
-#include <atomic>
-#include <memory>
-#include <thread>
+#include <string>
 
-#include "client/scenes/scene.h"
+#include "client/systems/sysgui.h"
 
-namespace cqsp::client::scene {
-class UniverseLoadingScene : public ClientScene {
+namespace cqsp::client::systems::rmlui {
+class CountrySelectionMenu : public SysRmlUiInterface {
  public:
-    explicit UniverseLoadingScene(engine::Application& app);
-    ~UniverseLoadingScene();
-
-    void Init();
-    void Update(float deltaTime);
-    void Ui(float deltaTime);
-    void Render(float deltaTime);
+    explicit CountrySelectionMenu(engine::Application& _app) : SysRmlUiInterface(_app) {}
+    ~CountrySelectionMenu();
+    void Update(double delta_time) override;
+    void OpenDocument() override;
+    void ReloadWindow() override;
+    void DispatchEvent(const Rml::String& event, const Rml::Dictionary& parameters) override;
 
  private:
-    std::atomic<bool> m_done_loading;
-    std::unique_ptr<std::thread> thread;
-
-    void LoadCurrentUniverse();
-
-    void InitializeGameScene();
-
-    void CompleteLoading();
-
-    bool m_completed_loading;
-
-    Rml::ElementDocument* document;
+    std::string file_name = "../data/core/gui/mainscene/countryselectionwindow.rml";
 };
-}  // namespace cqsp::client::scene
+}  // namespace cqsp::client::systems::rmlui

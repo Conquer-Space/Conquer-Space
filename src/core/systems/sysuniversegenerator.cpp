@@ -43,19 +43,13 @@ namespace bodies = components::bodies;
 namespace ships = components::ships;
 namespace types = components::types;
 
-void ScriptUniverseGenerator::Generate(Universe& universe) {
+void SysUniverseGenerator::Generate(Universe& universe) {
     script_engine["goods"] = universe.goods;
     script_engine["recipes"] = universe.recipes;
     script_engine["fields"] = universe.fields;
     script_engine["technologies"] = universe.technologies;
     script_engine["countries"] = universe.countries;
     SPDLOG_INFO("Set goods");
-    // Create player
-    // Set player
-    // Set to country
-    auto player = universe.countries["usa"];
-    //universe.emplace<components::Civilization>(player);
-    universe.emplace<components::Player>(player);
 
     SPDLOG_INFO("Done generating");
 }

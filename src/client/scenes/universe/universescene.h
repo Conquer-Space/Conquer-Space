@@ -21,7 +21,7 @@
 #include <utility>
 #include <vector>
 
-#include "client/scenes/scene.h"
+#include "client/scenes/rmlscene.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
 #include "client/systems/sysgui.h"
 #include "core/components/bodies.h"
@@ -33,20 +33,11 @@
 #include "engine/renderer/renderer2d.h"
 
 namespace cqsp::client::scene {
-class UniverseScene : public ClientScene {
+class UniverseScene : public RmlClientScene {
  public:
-    explicit UniverseScene(engine::Application& app);
-    ~UniverseScene() {
-        // Delete ui
-        simulation.reset();
-        for (auto it = user_interfaces.begin(); it != user_interfaces.end(); it++) {
-            it->reset();
-        }
-        for (auto& it : documents) {
-            it.reset();
-        }
-        system_renderer.reset();
-    }
+    explicit UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer>,
+                           std::unique_ptr<cqsp::core::systems::simulation::Simulation>);
+    ~UniverseScene() = default;
 
     void Init();
     void Update(float deltaTime);
@@ -60,26 +51,16 @@ class UniverseScene : public ClientScene {
         user_interfaces.push_back(std::move(ui));
     }
 
-    template <class T>
-    void AddRmlUiSystem() {
-        auto ui = std::make_unique<T>(GetApp());
-        ui->OpenDocument();
-        documents.push_back(std::move(ui));
-    }
-
  private:
-    /// <summary>
-    /// Does the screenshot interface.
-    /// </summary>
     void DoScreenshot();
 
-    void CheckUiReload();
+    void InitializeScriptFunctions();
+
     void ManageTick();
 
     std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
     std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation;
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
-    std::vector<std::unique_ptr<client::systems::SysRmlUiInterface>> documents;
 
     double last_tick = 0;
 
