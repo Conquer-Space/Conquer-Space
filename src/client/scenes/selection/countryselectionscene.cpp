@@ -65,9 +65,10 @@ void CountrySelectionScene::Render(float deltaTime) {
 }
 
 void CountrySelectionScene::StartGame() {
-    // Set the next scene and move everything as well
-    auto player = GetUniverse().countries["usa"];
-    GetUniverse().emplace<core::components::Player>(GetUniverse().countries["usa"]);
+    if (!GetUniverse().valid(selected_country)) {
+        return;
+    }
+    GetUniverse().emplace<core::components::Player>(selected_country);
     GetApp().SetScene<UniverseScene>(std::move(system_renderer), std::move(simulation));
 }
 

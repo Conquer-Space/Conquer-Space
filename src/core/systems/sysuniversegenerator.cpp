@@ -50,12 +50,6 @@ void SysUniverseGenerator::Generate(Universe& universe) {
     script_engine["technologies"] = universe.technologies;
     script_engine["countries"] = universe.countries;
     SPDLOG_INFO("Set goods");
-    // Create player
-    // Set player
-    // Set to country
-    // auto player = universe.countries["usa"];
-    // //universe.emplace<components::Civilization>(player);
-    // universe.emplace<components::Player>(player);
 
     SPDLOG_INFO("Done generating");
 }
