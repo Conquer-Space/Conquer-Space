@@ -97,7 +97,8 @@ void UniverseLoadingScene::CompleteLoading() {
     if (GetApp().HasCmdLineArgs("-i")) {
         // Then we should check that we have that
         auto iterator = std::find(GetApp().GetCmdLineArgs().begin(), GetApp().GetCmdLineArgs().end(), "-i");
-        if (++iterator != GetApp().GetCmdLineArgs().end() && GetUniverse().countries.contains(*iterator)) {
+        ++iterator;
+        if (iterator != GetApp().GetCmdLineArgs().end() && GetUniverse().countries.contains(*iterator)) {
             // Then we should check for a country and we just set our country to that
             // Then we go to universe scene
             auto player = GetUniverse().countries[*iterator];

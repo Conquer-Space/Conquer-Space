@@ -29,8 +29,6 @@ CountrySelectionScene::CountrySelectionScene(engine::Application& app,
                                              std::unique_ptr<core::systems::simulation::Simulation> simulation)
     : RmlClientScene(app), system_renderer(std::move(renderer)), simulation(std::move(simulation)) {}
 
-CountrySelectionScene::~CountrySelectionScene() {}
-
 void CountrySelectionScene::Init() {
     using core::systems::simulation::Simulation;
 

@@ -29,7 +29,7 @@ class CountrySelectionScene : public RmlClientScene {
  public:
     explicit CountrySelectionScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
                                    std::unique_ptr<core::systems::simulation::Simulation> simulation);
-    ~CountrySelectionScene();
+    ~CountrySelectionScene() = default;
 
     void Init();
     void Update(float deltaTime);
