@@ -52,7 +52,7 @@
         </style>
         <script src="script/country_selection.lua"></script>
     </head>
-    <body onprovinceselect="CountrySelectionWindow.OnProvinceSelect(document)">
+    <body onprovinceselect="CountrySelectionWindow.OnProvinceSelect(document)" onload="CountrySelectionWindow.OnProvinceSelect(document)">
         <div id="country-name">Select a Country</div>
         <div id="description"></div>
         <button id="start-game" class="disabled" onclick="selection:start_game()">Start Game</button>

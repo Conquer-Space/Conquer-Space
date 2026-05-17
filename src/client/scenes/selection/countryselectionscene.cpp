@@ -34,9 +34,10 @@ CountrySelectionScene::~CountrySelectionScene() {}
 void CountrySelectionScene::Init() {
     using core::systems::simulation::Simulation;
 
-    AddRmlUiSystem<systems::rmlui::CountrySelectionMenu>();
     // Init our lua functions
     InitializeLuaFunctions();
+
+    AddRmlUiSystem<systems::rmlui::CountrySelectionMenu>();
 }
 
 void CountrySelectionScene::Update(float deltaTime) {

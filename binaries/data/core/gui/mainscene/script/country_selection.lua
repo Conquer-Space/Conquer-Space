@@ -3,7 +3,9 @@ CountrySelectionWindow = CountrySelectionWindow or {}
 
 function CountrySelectionWindow.OnProvinceSelect(document)
     -- Also get the current document to actually set it
-    -- local country = core.get_name(country)
+    if not core.is_valid(selection.get_selected_country()) then
+        return
+    end
     local name = core.get_name(selection.get_selected_country())
     -- Now we should update everything...
     -- how do we plumb this
