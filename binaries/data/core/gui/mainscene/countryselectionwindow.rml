@@ -38,14 +38,23 @@
             box-sizing: border-box;
         }
 
-        #start-game:hover {
-            background-color: rgba(255, 255, 255, 0.15);
+        #start-game.enabled:hover {
+            background-color: rgba(255, 255, 255, 40);
+        }
+
+        #start-game.enabled {
+            color: white;
+        }
+
+        #start-game.disabled {
+            color: rgba(255, 255, 255, 40);
         }
         </style>
+        <script src="script/country_selection.lua"></script>
     </head>
-    <body onprovinceselect="print(core.get_name(selection.get_selected_country()))">
-        <div id="country-name">Country Name</div>
-        <div id="description">Description</div>
-        <button id="start-game" onclick="selection:start_game()">Start Game</button>
+    <body onprovinceselect="CountrySelectionWindow.OnProvinceSelect(document)">
+        <div id="country-name">Select a Country</div>
+        <div id="description"></div>
+        <button id="start-game" class="disabled" onclick="selection:start_game()">Start Game</button>
     </body>
 </rml>

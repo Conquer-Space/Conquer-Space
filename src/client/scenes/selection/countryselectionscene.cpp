@@ -16,6 +16,9 @@
  */
 #include "client/scenes/selection/countryselectionscene.h"
 
+#include <RmlUi/Core/Factory.h>
+#include <RmlUi/Debugger.h>
+
 #include "client/components/clientctx.h"
 #include "client/components/rightclick.h"
 #include "client/scenes/selection/countryselectionmenu.h"
@@ -43,6 +46,7 @@ void CountrySelectionScene::Init() {
 }
 
 void CountrySelectionScene::Update(float deltaTime) {
+    CheckUiReload();
     for (auto& ui : documents) {
         ui->Update(deltaTime);
     }
@@ -80,5 +84,28 @@ void CountrySelectionScene::InitializeLuaFunctions() {
 
     REGISTER_FUNCTION("start_game", [&]() { StartGame(); });
     REGISTER_FUNCTION("get_selected_country", [&]() { return selected_country; });
+}
+
+void CountrySelectionScene::CheckUiReload() {
+    if ((GetApp().ButtonIsReleased(engine::KeyInput::KEY_F5))) {
+        Rml::Factory::ClearStyleSheetCache();
+        Rml::Factory::ClearTemplateCache();
+        auto context = Rml::GetContext(0);
+        std::vector<Rml::ElementDocument*> reload_document_list;
+        for (int i = 0; i < context->GetNumDocuments(); i++) {
+            Rml::ElementDocument* document = context->GetDocument(i);
+            const Rml::String& src = document->GetSourceURL();
+            if (src.empty()) {
+                continue;
+            }
+            if (GetApp().DocumentIsLoaded(src)) {
+                continue;
+            }
+            document->Close();
+        }
+        for (auto& ui : documents) {
+            ui->ReloadWindow();
+        }
+    }
 }
 }  // namespace cqsp::client::scene

@@ -17,13 +17,16 @@
 #include "client/scenes/selection/countryselectionmenu.h"
 
 namespace cqsp::client::systems::rmlui {
-CountrySelectionMenu::~CountrySelectionMenu() {}
+CountrySelectionMenu::~CountrySelectionMenu() { GetApp().CloseDocument(file_name); }
 void CountrySelectionMenu::Update(double delta_time) {}
 void CountrySelectionMenu::OpenDocument() {
     document = GetApp().LoadDocument(file_name);
     document->Show();
 }
-void CountrySelectionMenu::ReloadWindow() {}
+void CountrySelectionMenu::ReloadWindow() {
+    document = GetApp().ReloadDocument(file_name);
+    document->Show();
+}
 
 void CountrySelectionMenu::DispatchEvent(const Rml::String& event, const Rml::Dictionary& parameters) {
     document->DispatchEvent(event, parameters);

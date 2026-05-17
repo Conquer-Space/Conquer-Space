@@ -43,6 +43,8 @@ class CountrySelectionScene : public ClientScene {
         documents.push_back(std::move(ui));
     }
 
+    void CheckUiReload();
+
  private:
     void StartGame();
     void InitializeLuaFunctions();
