@@ -231,16 +231,6 @@ std::unique_ptr<Package> AssetLoader::LoadPackage(const std::string& path) {
     } else {
         ENGINE_LOG_INFO("No script file for package {}", package->name);
     }
-
-    // Load a few default folders
-    // TODO(#279): Don't have default asset loading
-    // So the folders we have to keep track of are the goods and recipes
-    HjsonPrototypeDirectory(*package, fmt::format("{}/data/goods", mount_point), "goods");
-    HjsonPrototypeDirectory(*package, fmt::format("{}/data/recipes", mount_point), "recipes");
-    HjsonPrototypeDirectory(*package, fmt::format("{}/data/names", mount_point), "names");
-
-    ENGINE_LOG_INFO("Loaded prototype directories");
-
     // Then load all the other assets
     // Load resource.hjsons
     LoadResources(*package, package->name);
@@ -269,7 +259,7 @@ std::unique_ptr<Asset> AssetLoader::LoadAsset(const AssetType& type, const std::
 void AssetLoader::PlaceAsset(Package& package, const AssetType& type, const std::string& path, const std::string& key,
                              const Hjson::Value& hints) {
     ZoneScoped;
-    ENGINE_LOG_TRACE("Loading asset {}", path);
+    ENGINE_LOG_INFO("Loading asset {} from path {}", key, path);
     auto asset = LoadAsset(type, path, key, hints);
     if (asset == nullptr) {
         ENGINE_LOG_WARN("Asset {} was not loaded properly", key);

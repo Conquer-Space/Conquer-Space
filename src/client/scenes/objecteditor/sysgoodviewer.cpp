@@ -22,6 +22,7 @@
 #include "core/components/resource.h"
 #include "core/components/tags.h"
 #include "core/util/nameutil.h"
+#include "engine/asset/textasset.h"
 
 namespace cqsp::client::systems {
 
@@ -35,6 +36,11 @@ void SysGoodViewer::DoUI(int delta_time) {
     // List out all the stuff
     auto goods = GetUniverse().view<components::Good>();
     ImGui::TextFmt("Goods: {}", goods.size());
+    ImGui::SameLine();
+    if (ImGui::Button("Save Changes")) {
+        // Now do the changes that we had...
+        SaveGoodList();
+    }
     ImGui::BeginChild("Good_viewer_left", ImVec2(300, -1));
     ImGui::InputText("##good_viewer_search_text", search_text.data(), search_text.size());
     std::string search_string(search_text.data());
@@ -192,5 +198,11 @@ void SysGoodViewer::RecipeTooltip(entt::entity recipe) {
         systems::gui::EntityTooltipContent(GetUniverse(), recipe);
         ImGui::EndTooltip();
     }
+}
+
+void SysGoodViewer::SaveGoodList() {
+    auto& asset_manager = GetApp().GetAssetManager();
+    auto* goods = asset_manager.GetAsset<asset::HjsonAsset>("goods");
+    SPDLOG_INFO("{}", goods->path);
 }
 }  // namespace cqsp::client::systems

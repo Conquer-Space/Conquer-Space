@@ -93,7 +93,7 @@
         identifier: aluminium
         volume: 1 m3
         mass: 19300 kg
-        price: 8000
+        price: 3000
         tags: ["raw"]
     }
     {
@@ -101,7 +101,7 @@
         identifier: phospates
         volume: 1 m3
         mass: 19300 kg
-        price: 8000
+        price: 200
         tags: ["raw"]
     }
     {

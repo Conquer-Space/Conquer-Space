@@ -233,7 +233,7 @@ void HandleDeletedNode(const ed::NodeId& nodeId, FieldNodeInformation& map, core
 
     // Delete entities
     entt::entity ent = CalculateInputPair(map, nodeId.Get());
-    //universe.get<
+
     auto fields = universe.view<Field>();
     for (entt::entity pot : fields) {
         auto& field_comp = universe.get<Field>(pot);
