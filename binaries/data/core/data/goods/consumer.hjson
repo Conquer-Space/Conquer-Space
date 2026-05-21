@@ -57,6 +57,7 @@
     }
     {
         name: Pharmaceutical Drugs
+        identifier: drugs
         volume: 0.148987 m3
         mass: 136 kg
         price: 30000
@@ -65,6 +66,7 @@
     }
     {
         name: Consumer Electronics
+        identifier: consumer_electronics
         volume: 0.148987 m3
         mass: 136 kg
         price: 2000

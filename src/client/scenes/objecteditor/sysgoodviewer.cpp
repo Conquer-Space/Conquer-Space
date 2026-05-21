@@ -16,19 +16,28 @@
  */
 #include "client/scenes/objecteditor/sysgoodviewer.h"
 
+#include <filesystem>
+
 #include "client/scenes/universe/interface/systooltips.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
 #include "core/components/resource.h"
 #include "core/components/tags.h"
 #include "core/util/nameutil.h"
+#include "core/util/paths.h"
 #include "engine/asset/textasset.h"
+#include "engine/asset/vfs/nativevfs.h"
 
 namespace cqsp::client::systems {
-
 namespace components = core::components;
 
-void SysGoodViewer::Init() {}
+namespace {
+struct FileTag {
+    std::string file;
+};
+}  // namespace
+
+void SysGoodViewer::Init() { InitializeGoodFiles(); }
 
 void SysGoodViewer::DoUI(int delta_time) {
     ImGui::SetNextWindowSize(ImVec2(800, 700), ImGuiCond_FirstUseEver);
@@ -200,9 +209,54 @@ void SysGoodViewer::RecipeTooltip(entt::entity recipe) {
     }
 }
 
+void SysGoodViewer::InitializeGoodFiles() {
+    auto& asset_manager = GetApp().GetAssetManager();
+    auto* goods = asset_manager.GetAsset<asset::HjsonAsset>("goods");
+
+    std::filesystem::path data_path(cqsp::core::util::GetCqspDataPath());
+    data_path = data_path / goods->path;
+    // List directory the normal way
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(data_path)) {
+        auto output = Hjson::UnmarshalFromFile(entry.path().string());
+        // Loop through them and then process
+        for (int i = 0; i < output.size(); i++) {
+            const Hjson::Value& val = output[i];
+            std::string identifier = val["identifier"].to_string();
+            if (GetUniverse().goods.contains(identifier)) {
+                GetUniverse().emplace_or_replace<FileTag>(GetUniverse().goods[identifier], entry.path().string());
+            } else {
+                SPDLOG_INFO("Invalid identifier {}", identifier);
+            }
+        }
+    }
+}
+
 void SysGoodViewer::SaveGoodList() {
     auto& asset_manager = GetApp().GetAssetManager();
     auto* goods = asset_manager.GetAsset<asset::HjsonAsset>("goods");
-    SPDLOG_INFO("{}", goods->path);
+
+    std::filesystem::path data_path(cqsp::core::util::GetCqspDataPath());
+    data_path = data_path / goods->path;
+    // List directory the normal way
+    std::map<std::string, entt::entity> good_map = GetUniverse().goods;
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(data_path)) {
+        auto output = Hjson::UnmarshalFromFile(entry.path().string());
+        // Loop through them and then process
+        for (int i = 0; i < output.size(); i++) {
+            const Hjson::Value& val = output[i];
+            std::string identifier = val["identifier"].to_string();
+            if (good_map.contains(identifier)) {
+                // Then edit our values
+                // And then remove...
+                good_map.erase(good_map.find(identifier));
+            } else {
+                SPDLOG_INFO("Invalid identifier {}", identifier);
+                // then place back?
+            }
+        }
+        // Then write to the file
+        Hjson::MarshalToFile(output, entry.path().string());
+    }
+    // Then the remainder in the good map is the values that we want to add to a new file...
 }
 }  // namespace cqsp::client::systems

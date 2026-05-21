@@ -35,6 +35,7 @@ class SysGoodViewer : public SysUserInterface {
     void InputRecipeTable();
     void OutputRecipeTable();
     void RecipeTooltip(entt::entity recipe);
+    void InitializeGoodFiles();
     void SaveGoodList();
 
     std::array<char, 255> search_text;

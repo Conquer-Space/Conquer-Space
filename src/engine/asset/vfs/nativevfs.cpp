@@ -44,7 +44,7 @@ IVirtualFilePtr NativeFileSystem::Open(const std::string& file_path, FileModes m
     }
     std::shared_ptr<NativeFile> nfile = std::make_shared<NativeFile>(this, file_name);
     // Always open binary for carrige return purposes.
-    // TODO(EhWhoAmI): Make this able to read text without carrige return.
+    // TODO(EhWhoAmI): Make this able to read text without carriage return.
     nfile->file.open(path, std::ios::binary);
     // Get the size
     nfile->file.seekg(0, std::ios::end);
