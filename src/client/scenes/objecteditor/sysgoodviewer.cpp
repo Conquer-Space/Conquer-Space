@@ -96,7 +96,10 @@ void SysGoodViewer::GoodViewerRight() {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name: {}", core::util::GetName(GetUniverse(), selected_good));
+    ImGui::TextFmt("Name: {}");
+    ImGui::SameLine();
+    // then same line and stuff
+    ImGui::InputText("###name", &(GetUniverse().get<components::Name>(selected_good).name));
     ImGui::TextFmt("Identifier");
     ImGui::SameLine();
     // then same line and stuff
@@ -112,8 +115,18 @@ void SysGoodViewer::GoodViewerRight() {
     }
     if (GetUniverse().any_of<components::Good>(selected_good)) {
         auto& good_comp = GetUniverse().get<components::Good>(selected_good);
-        ImGui::TextFmt("Mass: {} kg", good_comp.mass);
+        ImGui::TextFmt("Mass (kg)");
+        ImGui::SameLine();
+        ImGui::InputDouble("###mass", &(good_comp.mass));
+        if (good_comp.mass < 0) {
+            good_comp.mass = 0;
+        }
         ImGui::TextFmt("Volume: {} m3", good_comp.volume);
+        ImGui::SameLine();
+        ImGui::InputDouble("###mass", &(good_comp.volume));
+        if (good_comp.volume < 0) {
+            good_comp.volume = 0;
+        }
     }
     ImGui::Separator();
     ImGui::TextFmt("Tags");
@@ -123,6 +136,7 @@ void SysGoodViewer::GoodViewerRight() {
             // Now print tags
             ImGui::TextFmt("{}", tag);
         }
+        // TODO(EhWhoAmI): Some way to add tags
     }
     if (GetUniverse().any_of<components::Price>(selected_good)) {
         ImGui::Separator();
