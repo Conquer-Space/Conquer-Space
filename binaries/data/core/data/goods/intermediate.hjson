@@ -1,20 +1,10 @@
 [
   {
-    identifier: plastic
-    name: Plastic
-    price: 300.0
+    identifier: alloys
+    name: Alloys
+    price: 6000.0
     volume: 1 m3
-    mass: 500 kg
-    tags: [
-      intermediate
-    ]
-  }
-  {
-    identifier: steel
-    name: Steel
-    price: 700.0
-    volume: 1 m3
-    mass: 7850 kg
+    mass: 3000 kg
     tags: [
       intermediate
     ]
@@ -23,26 +13,6 @@
     identifier: chemicals
     name: Chemicals
     price: 300.0
-    volume: 1 m3
-    mass: 7850 kg
-    tags: [
-      intermediate
-    ]
-  }
-  {
-    identifier: microprocessors
-    name: Microprocessors
-    price: 3000.0
-    volume: 1 m3
-    mass: 300 kg
-    tags: [
-      intermediate
-    ]
-  }
-  {
-    identifier: glass
-    name: Glass
-    price: 400.0
     volume: 1 m3
     mass: 7850 kg
     tags: [
@@ -70,11 +40,11 @@
     ]
   }
   {
-    identifier: precision_components
-    name: Precision Components
-    price: 1500.0
+    identifier: glass
+    name: Glass
+    price: 400.0
     volume: 1 m3
-    mass: 3000 kg
+    mass: 7850 kg
     tags: [
       intermediate
     ]
@@ -90,6 +60,16 @@
     ]
   }
   {
+    identifier: microprocessors
+    name: Microprocessors
+    price: 3000.0
+    volume: 1 m3
+    mass: 300 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
     identifier: pesticides
     name: Pesticides
     price: 600.0
@@ -100,11 +80,31 @@
     ]
   }
   {
-    identifier: alloys
-    name: Alloys
-    price: 6000.0
+    identifier: plastic
+    name: Plastic
+    price: 300.0
+    volume: 1 m3
+    mass: 500 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: precision_components
+    name: Precision Components
+    price: 1500.0
     volume: 1 m3
     mass: 3000 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: steel
+    name: Steel
+    price: 700.0
+    volume: 1 m3
+    mass: 7850 kg
     tags: [
       intermediate
     ]

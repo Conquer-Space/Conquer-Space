@@ -1,5 +1,25 @@
 [
   {
+    identifier: cnc_machines
+    name: CNC Machines
+    price: 40000.0
+    volume: 200 m3
+    mass: 4000 kg
+    tags: [
+      capital
+    ]
+  }
+  {
+    identifier: cranes
+    name: Cranes
+    price: 40000.0
+    volume: 200 m3
+    mass: 4000 kg
+    tags: [
+      capital
+    ]
+  }
+  {
     identifier: fluid_systems
     name: Fluid Systems
     price: 1000.0
@@ -20,9 +40,9 @@
     ]
   }
   {
-    identifier: cranes
-    name: Cranes
-    price: 40000.0
+    identifier: lab_equipment
+    name: Lab Equipment
+    price: 120000.0
     volume: 200 m3
     mass: 4000 kg
     tags: [
@@ -44,26 +64,6 @@
     name: Tractors
     price: 65000.0
     volume: 300 m3
-    mass: 4000 kg
-    tags: [
-      capital
-    ]
-  }
-  {
-    identifier: cnc_machines
-    name: CNC Machines
-    price: 40000.0
-    volume: 200 m3
-    mass: 4000 kg
-    tags: [
-      capital
-    ]
-  }
-  {
-    identifier: lab_equipment
-    name: Lab Equipment
-    price: 120000.0
-    volume: 200 m3
     mass: 4000 kg
     tags: [
       capital
