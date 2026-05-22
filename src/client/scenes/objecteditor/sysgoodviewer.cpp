@@ -267,7 +267,7 @@ void SysGoodViewer::SaveGoodList() {
 
             if (GetUniverse().any_of<components::Good>(good)) {
                 auto& good_comp = GetUniverse().get<components::Good>(good);
-                value["volume"] = fmt::format("{} kg", good_comp.volume);
+                value["volume"] = fmt::format("{} m3", good_comp.volume);
                 value["mass"] = fmt::format("{} kg", good_comp.mass);
             }
 

@@ -1,139 +1,174 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Crude Oil
-        identifier: crude_oil
-        volume: 0.148987 m3
-        mass: 136 kg
-        price: 100
-        tags: ["raw", "fluid"]
-    }
-    {
-        name: Silicates
-        identifier: silicates
-        volume: 1 m3
-        mass: 1602 kg
-        price: 20
-        tags: ["raw"]
-    }
-    {
-        name: Iron
-        identifier: iron
-        volume: 1 m3
-        mass: 7874 kg
-        price: 100
-        tags: ["raw"]
-    }
-    {
-        name: Lithium
-        identifier: lithium
-        volume: 1 m3
-        mass: 534 kg
-        price: 6000
-        tags: ["raw"]
-    }
-    {
-        name: Copper
-        identifier: copper
-        volume: 1 m3
-        mass: 8960 kg
-        price: 7000
-        tags: ["raw"]
-    }
-    {
-        name: Coal
-        identifier: coal
-        volume: 1 m3
-        mass: 1500 kg
-        price: 50
-        tags: ["raw"]
-    }
-    {
-        name: Lumber
-        identifier: lumber
-        volume: 1 m3
-        mass: 1500 kg
-        price: 20
-        tags: ["raw"]
-    }
-    {
-        name: Fabric
-        identifier: fabric
-        volume: 1 m3
-        mass: 1500 kg
-        price: 20
-        tags: ["raw"]
-    }
-    {
-        name: Natural Gas
-        identifier: natural_gas
-        volume: 1 m3
-        mass: 185 kg
-        price: 50
-        tags: ["raw"]
-    }
-    {
-        name: Noble Gases
-        identifier: noble_gas
-        volume: 1 m3
-        mass: 185 kg
-        price: 8000
-        tags: ["raw"]
-    }
-    {
-        name: Gold
-        identifier: gold
-        volume: 1 m3
-        mass: 19300 kg
-        price: 8000
-        tags: ["raw"]
-    }
-    {
-        name: Aluminium
-        identifier: aluminium
-        volume: 1 m3
-        mass: 19300 kg
-        price: 3000
-        tags: ["raw"]
-    }
-    {
-        name: Phospates
-        identifier: phospates
-        volume: 1 m3
-        mass: 19300 kg
-        price: 200
-        tags: ["raw"]
-    }
-    {
-        name: Water
-        identifier: water
-        volume: 1 m3
-        mass: 1000 kg
-        price: 10
-        tags: ["raw"]
-    }
-    {
-        name: Uranium
-        identifier: uranium
-        volume: 1 m3
-        mass: 1000 kg
-        price: 10
-        tags: ["raw", "radioactive"]
-    }
-    {
-        name: Rare Earth Elements
-        identifier: rare_earth_elements
-        volume: 1 m3
-        mass: 1000 kg
-        price: 3000
-        tags: ["raw"]
-    }
-    {
-        name: Titanium
-        identifier: titanium
-        volume: 1 m3
-        mass: 1000 kg
-        price: 5000
-        tags: ["raw"]
-    }
+  {
+    identifier: titanium
+    name: Titanium
+    price: 5000.0
+    volume: 1 m3
+    mass: 1000 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: rare_earth_elements
+    name: Rare Earth Elements
+    price: 3000.0
+    volume: 1 m3
+    mass: 1000 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: uranium
+    name: Uranium
+    price: 10.0
+    volume: 1 m3
+    mass: 1000 kg
+    tags: [
+      raw
+      radioactive
+    ]
+  }
+  {
+    identifier: water
+    name: Water
+    price: 10.0
+    volume: 1 m3
+    mass: 1000 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: phospates
+    name: Phospates
+    price: 200.0
+    volume: 1 m3
+    mass: 19300 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: aluminium
+    name: Aluminium
+    price: 3000.0
+    volume: 1 m3
+    mass: 19300 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: gold
+    name: Gold
+    price: 8000.0
+    volume: 1 m3
+    mass: 19300 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: noble_gas
+    name: Noble Gases
+    price: 8000.0
+    volume: 1 m3
+    mass: 185 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: natural_gas
+    name: Natural Gas
+    price: 50.0
+    volume: 1 m3
+    mass: 185 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: fabric
+    name: Fabric
+    price: 20.0
+    volume: 1 m3
+    mass: 1500 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: lumber
+    name: Lumber
+    price: 20.0
+    volume: 1 m3
+    mass: 1500 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: coal
+    name: Coal
+    price: 50.0
+    volume: 1 m3
+    mass: 1500 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: copper
+    name: Copper
+    price: 7000.0
+    volume: 1 m3
+    mass: 8960 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: lithium
+    name: Lithium
+    price: 6000.0
+    volume: 1 m3
+    mass: 534 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: iron
+    name: Iron
+    price: 100.0
+    volume: 1 m3
+    mass: 7874 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: silicates
+    name: Silicates
+    price: 20.0
+    volume: 1 m3
+    mass: 1602 kg
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: crude_oil
+    name: Crude Oil
+    price: 100.0
+    volume: 0.148987 m3
+    mass: 136 kg
+    tags: [
+      raw
+      fluid
+    ]
+  }
 ]
