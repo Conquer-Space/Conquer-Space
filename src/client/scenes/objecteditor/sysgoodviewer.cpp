@@ -16,6 +16,8 @@
  */
 #include "client/scenes/objecteditor/sysgoodviewer.h"
 
+#include <imgui_stdlib.h>
+
 #include <filesystem>
 
 #include "client/scenes/universe/interface/systooltips.h"
@@ -50,6 +52,10 @@ void SysGoodViewer::DoUI(int delta_time) {
     if (ImGui::Button("Save Changes")) {
         // Now do the changes that we had...
         SaveGoodList();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Add good")) {
+        // Add good
     }
     ImGui::BeginChild("Good_viewer_left", ImVec2(300, -1));
     ImGui::InputText("##good_viewer_search_text", search_text.data(), search_text.size());
@@ -91,7 +97,10 @@ void SysGoodViewer::GoodViewerRight() {
         return;
     }
     ImGui::TextFmt("Name: {}", core::util::GetName(GetUniverse(), selected_good));
-    ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_good).identifier);
+    ImGui::TextFmt("Identifier");
+    ImGui::SameLine();
+    // then same line and stuff
+    ImGui::InputText("###identifier", &(GetUniverse().get<components::Identifier>(selected_good).identifier));
     if (ImGui::IsItemClicked()) {
         // Copy
         ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(selected_good).identifier.c_str());
@@ -125,8 +134,9 @@ void SysGoodViewer::GoodViewerRight() {
             price_comp.price = 0;
         }
     }
+
+    ImGui::Separator();
     if (GetUniverse().any_of<components::ConsumerGood>(selected_good)) {
-        ImGui::Separator();
         auto& consumer = GetUniverse().get<components::ConsumerGood>(selected_good);
         ImGui::TextFmt("Autonomous Consumption: {}", consumer.autonomous_consumption);
         if (ImGui::IsItemHovered()) {
@@ -134,11 +144,28 @@ void SysGoodViewer::GoodViewerRight() {
             ImGui::Text("Consumption that is independent of disposable income or when income levels are zero.");
             ImGui::EndTooltip();
         }
-        ImGui::TextFmt("Marginal Propensity: {}", consumer.marginal_propensity);
+        ImGui::SameLine();
+        ImGui::InputDouble("##autonomous consumption", &(consumer.autonomous_consumption));
+        if (consumer.autonomous_consumption < 0) {
+            consumer.autonomous_consumption = 0;
+        }
+        ImGui::TextFmt("Marginal Propensity: ");
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             ImGui::Text("Consumption that scales linearly based off amount of surplus income they have.");
             ImGui::EndTooltip();
+        }
+        ImGui::SameLine();
+        ImGui::InputDouble("##Marginal propensity", &(consumer.marginal_propensity));
+        if (consumer.marginal_propensity < 0) {
+            consumer.marginal_propensity = 0;
+        }
+        if (ImGui::Button("- Consumer Good")) {
+            GetUniverse().remove<components::ConsumerGood>(selected_good);
+        }
+    } else {
+        if (ImGui::Button("+ Consumer Good")) {
+            GetUniverse().emplace<components::ConsumerGood>(selected_good);
         }
     }
     // Find all recipes that lead up to this
@@ -254,6 +281,11 @@ void SysGoodViewer::SaveGoodList() {
     for (auto& [file, list] : good_to_file_map) {
         // now we loop through the list and sort through or something
         Hjson::Value contents;
+        // sort alphabetically
+        std::sort(list.begin(), list.end(), [&](entt::entity left, entt::entity right) {
+            return GetUniverse().get<components::Identifier>(left).identifier <
+                   GetUniverse().get<components::Identifier>(right).identifier;
+        });
         for (entt::entity good : list) {
             Hjson::Value value;
             value["identifier"] = GetUniverse().get<components::Identifier>(good).identifier;
