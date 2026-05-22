@@ -34,6 +34,7 @@ namespace components = core::components;
 namespace {
 struct FileTag {
     std::string file;
+    Hjson::Value value;
 };
 }  // namespace
 
@@ -223,7 +224,7 @@ void SysGoodViewer::InitializeGoodFiles() {
             const Hjson::Value& val = output[i];
             std::string identifier = val["identifier"].to_string();
             if (GetUniverse().goods.contains(identifier)) {
-                GetUniverse().emplace_or_replace<FileTag>(GetUniverse().goods[identifier], entry.path().string());
+                GetUniverse().emplace_or_replace<FileTag>(GetUniverse().goods[identifier], entry.path().string(), val);
             } else {
                 SPDLOG_INFO("Invalid identifier {}", identifier);
             }
@@ -239,24 +240,49 @@ void SysGoodViewer::SaveGoodList() {
     data_path = data_path / goods->path;
     // List directory the normal way
     std::map<std::string, entt::entity> good_map = GetUniverse().goods;
-    for (const auto& entry : std::filesystem::recursive_directory_iterator(data_path)) {
-        auto output = Hjson::UnmarshalFromFile(entry.path().string());
-        // Loop through them and then process
-        for (int i = 0; i < output.size(); i++) {
-            const Hjson::Value& val = output[i];
-            std::string identifier = val["identifier"].to_string();
-            if (good_map.contains(identifier)) {
-                // Then edit our values
-                // And then remove...
-                good_map.erase(good_map.find(identifier));
-            } else {
-                SPDLOG_INFO("Invalid identifier {}", identifier);
-                // then place back?
-            }
-        }
-        // Then write to the file
-        Hjson::MarshalToFile(output, entry.path().string());
+    std::map<std::string, std::vector<entt::entity>> good_to_file_map;
+    // Then we should loop through them
+    for (auto&& [entity, file, good] : GetUniverse().view<FileTag, components::Good>().each()) {
+        good_to_file_map[file.file].push_back(entity);
     }
-    // Then the remainder in the good map is the values that we want to add to a new file...
+
+    for (auto& [file, list] : good_to_file_map) {
+        // now we loop through the list and sort through or something
+        Hjson::Value contents;
+        for (entt::entity good : list) {
+            Hjson::Value value;
+            value["identifier"] = GetUniverse().get<components::Identifier>(good).identifier;
+            value["name"] = GetUniverse().get<components::Name>(good).name;
+            if (GetUniverse().all_of<components::Description>(good)) {
+                value["desc"] = GetUniverse().get<components::Description>(good).description;
+            }
+            value["price"] = GetUniverse().get<components::Price>(good).price;
+            // Then mass and then also tags
+
+            if (GetUniverse().any_of<components::ConsumerGood>(good)) {
+                auto& consumer = GetUniverse().get<components::ConsumerGood>(good);
+                value["consumption"]["autonomous_consumption"] = consumer.autonomous_consumption;
+                value["consumption"]["marginal_propensity"] = consumer.marginal_propensity;
+            }
+
+            if (GetUniverse().any_of<components::Good>(good)) {
+                auto& good_comp = GetUniverse().get<components::Good>(good);
+                value["volume"] = fmt::format("{} kg", good_comp.volume);
+                value["mass"] = fmt::format("{} kg", good_comp.mass);
+            }
+
+            if (GetUniverse().any_of<components::Tags>(good)) {
+                auto& tag_component = GetUniverse().get<components::Tags>(good);
+                for (auto& tag : tag_component.tags) {
+                    // Now print tags
+                    value["tags"].push_back(tag);
+                }
+            }
+            contents.push_back(value);
+        }
+        // Write to file (in theory)
+        SPDLOG_INFO("{}", Hjson::Marshal(contents));
+        Hjson::MarshalToFile(contents, file);
+    }
 }
 }  // namespace cqsp::client::systems

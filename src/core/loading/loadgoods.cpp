@@ -38,6 +38,9 @@ GoodLoader::GoodLoader(Universe& universe) : HjsonLoader(universe) {
     tag_loader.Register<components::RawGood>("raw");
     tag_loader.Register<components::CapitalGood>("capital");
     tag_loader.Register<components::LaborGood>("labor");
+    tag_loader.Register("consumer", [](entt::entity) {});
+    tag_loader.Register<components::FluidGood>("fluid");
+    tag_loader.Register<components::IntermediateGood>("intermediate");
 }
 
 bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
