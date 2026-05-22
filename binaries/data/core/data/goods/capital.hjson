@@ -1,8 +1,28 @@
 [
   {
-    identifier: lab_equipment
-    name: Lab Equipment
-    price: 120000.0
+    identifier: fluid_systems
+    name: Fluid Systems
+    price: 1000.0
+    volume: 100 m3
+    mass: 30000 kg
+    tags: [
+      capital
+    ]
+  }
+  {
+    identifier: heavy_machinery
+    name: Heavy Machinery
+    price: 60000.0
+    volume: 100 m3
+    mass: 4000 kg
+    tags: [
+      capital
+    ]
+  }
+  {
+    identifier: cranes
+    name: Cranes
+    price: 40000.0
     volume: 200 m3
     mass: 4000 kg
     tags: [
@@ -10,8 +30,8 @@
     ]
   }
   {
-    identifier: cnc_machines
-    name: CNC Machines
+    identifier: machine_tools
+    name: Machine Tools
     price: 40000.0
     volume: 200 m3
     mass: 4000 kg
@@ -30,8 +50,8 @@
     ]
   }
   {
-    identifier: machine_tools
-    name: Machine Tools
+    identifier: cnc_machines
+    name: CNC Machines
     price: 40000.0
     volume: 200 m3
     mass: 4000 kg
@@ -40,31 +60,11 @@
     ]
   }
   {
-    identifier: cranes
-    name: Cranes
-    price: 40000.0
+    identifier: lab_equipment
+    name: Lab Equipment
+    price: 120000.0
     volume: 200 m3
     mass: 4000 kg
-    tags: [
-      capital
-    ]
-  }
-  {
-    identifier: heavy_machinery
-    name: Heavy Machinery
-    price: 60000.0
-    volume: 100 m3
-    mass: 4000 kg
-    tags: [
-      capital
-    ]
-  }
-  {
-    identifier: fluid_systems
-    name: Fluid Systems
-    price: 1000.0
-    volume: 100 m3
-    mass: 30000 kg
     tags: [
       capital
     ]

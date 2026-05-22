@@ -1,8 +1,8 @@
 [
   {
-    identifier: medical_services
-    name: Medical Services
-    price: 100.0
+    identifier: financial_services
+    name: Financial Services
+    price: 130.0
     volume: 0 m3
     mass: 0 kg
     tags: [
@@ -10,8 +10,8 @@
     ]
   }
   {
-    identifier: financial_services
-    name: Financial Services
+    identifier: medical_services
+    name: Medical Services
     price: 100.0
     volume: 0 m3
     mass: 0 kg

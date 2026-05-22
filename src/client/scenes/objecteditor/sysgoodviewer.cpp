@@ -118,7 +118,12 @@ void SysGoodViewer::GoodViewerRight() {
     if (GetUniverse().any_of<components::Price>(selected_good)) {
         ImGui::Separator();
         auto& price_comp = GetUniverse().get<components::Price>(selected_good);
-        ImGui::TextFmt("Initial Price: {}", price_comp.price);
+        ImGui::TextFmt("Initial Price:");
+        ImGui::SameLine();
+        ImGui::InputDouble("Price", &(price_comp.price));
+        if (price_comp.price < 0) {
+            price_comp.price = 0;
+        }
     }
     if (GetUniverse().any_of<components::ConsumerGood>(selected_good)) {
         ImGui::Separator();
@@ -281,7 +286,6 @@ void SysGoodViewer::SaveGoodList() {
             contents.push_back(value);
         }
         // Write to file (in theory)
-        SPDLOG_INFO("{}", Hjson::Marshal(contents));
         Hjson::MarshalToFile(contents, file);
     }
 }

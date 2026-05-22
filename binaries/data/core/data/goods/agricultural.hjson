@@ -1,20 +1,10 @@
 [
   {
-    identifier: oilseeds
-    name: Oilseeds
-    price: 45.0
+    identifier: cereal_grains
+    name: Cereal Grains
+    price: 20.0
     volume: 1 m3
-    mass: 1500 kg
-    tags: [
-      agricultural
-    ]
-  }
-  {
-    identifier: meat
-    name: Meat
-    price: 45.0
-    volume: 1 m3
-    mass: 1500 kg
+    mass: 1200 kg
     tags: [
       agricultural
     ]
@@ -30,11 +20,21 @@
     ]
   }
   {
-    identifier: cereal_grains
-    name: Cereal Grains
-    price: 20.0
+    identifier: meat
+    name: Meat
+    price: 45.0
     volume: 1 m3
-    mass: 1200 kg
+    mass: 1500 kg
+    tags: [
+      agricultural
+    ]
+  }
+  {
+    identifier: oilseeds
+    name: Oilseeds
+    price: 45.0
+    volume: 1 m3
+    mass: 1500 kg
     tags: [
       agricultural
     ]

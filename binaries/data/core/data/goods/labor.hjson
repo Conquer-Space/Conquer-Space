@@ -1,8 +1,8 @@
 [
   {
-    identifier: technician_labor
-    name: Technician
-    price: 10.0
+    identifier: basic_labor
+    name: Man-hours
+    price: 1.0
     volume: 0 m3
     mass: 0 kg
     tags: [
@@ -10,9 +10,9 @@
     ]
   }
   {
-    identifier: basic_labor
-    name: Man-hours
-    price: 1.0
+    identifier: technician_labor
+    name: Technician
+    price: 10.0
     volume: 0 m3
     mass: 0 kg
     tags: [

@@ -1,28 +1,18 @@
 [
   {
-    identifier: alloys
-    name: Alloys
-    price: 6000.0
+    identifier: plastic
+    name: Plastic
+    price: 300.0
     volume: 1 m3
-    mass: 3000 kg
+    mass: 500 kg
     tags: [
       intermediate
     ]
   }
   {
-    identifier: pesticides
-    name: Pesticides
-    price: 600.0
-    volume: 1 m3
-    mass: 1000 kg
-    tags: [
-      intermediate
-    ]
-  }
-  {
-    identifier: magnets
-    name: Magnets
-    price: 2000.0
+    identifier: steel
+    name: Steel
+    price: 700.0
     volume: 1 m3
     mass: 7850 kg
     tags: [
@@ -30,39 +20,9 @@
     ]
   }
   {
-    identifier: precision_components
-    name: Precision Components
-    price: 1500.0
-    volume: 1 m3
-    mass: 3000 kg
-    tags: [
-      intermediate
-    ]
-  }
-  {
-    identifier: electric_motors
-    name: Electric Motors
-    price: 1200.0
-    volume: 1 m3
-    mass: 1200 kg
-    tags: [
-      intermediate
-    ]
-  }
-  {
-    identifier: composites
-    name: Composites
-    price: 900.0
-    volume: 1 m3
-    mass: 700 kg
-    tags: [
-      intermediate
-    ]
-  }
-  {
-    identifier: glass
-    name: Glass
-    price: 400.0
+    identifier: chemicals
+    name: Chemicals
+    price: 300.0
     volume: 1 m3
     mass: 7850 kg
     tags: [
@@ -80,9 +40,9 @@
     ]
   }
   {
-    identifier: chemicals
-    name: Chemicals
-    price: 300.0
+    identifier: glass
+    name: Glass
+    price: 400.0
     volume: 1 m3
     mass: 7850 kg
     tags: [
@@ -90,9 +50,39 @@
     ]
   }
   {
-    identifier: steel
-    name: Steel
-    price: 700.0
+    identifier: composites
+    name: Composites
+    price: 900.0
+    volume: 1 m3
+    mass: 700 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: electric_motors
+    name: Electric Motors
+    price: 1200.0
+    volume: 1 m3
+    mass: 1200 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: precision_components
+    name: Precision Components
+    price: 1500.0
+    volume: 1 m3
+    mass: 3000 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: magnets
+    name: Magnets
+    price: 2000.0
     volume: 1 m3
     mass: 7850 kg
     tags: [
@@ -100,11 +90,21 @@
     ]
   }
   {
-    identifier: plastic
-    name: Plastic
-    price: 300.0
+    identifier: pesticides
+    name: Pesticides
+    price: 600.0
     volume: 1 m3
-    mass: 500 kg
+    mass: 1000 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: alloys
+    name: Alloys
+    price: 6000.0
+    volume: 1 m3
+    mass: 3000 kg
     tags: [
       intermediate
     ]
