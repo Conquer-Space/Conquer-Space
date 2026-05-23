@@ -1,17 +1,21 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Steel Manufacturing
-        identifier: steel_manufacturing
-        input: {iron: 100, coal: 20}
-        output: {steel: 120}
-        cost: {
-            labor: {laborer: 15000}
-        }
-        construction: {
-            time: 4 weeks
-            cost: {heavy_machinery: 1000, concrete: 2500}
-        }
-        tags: []
+  {
+    identifier: steel_manufacturing
+    name: Steel Manufacturing
+    input: {
+      coal: 20.0
+      iron: 100.0
     }
+    output: {
+      steel: 120.0
+    }
+    cost: {
+      labor: {
+        laborer: 15000
+      }
+    }
+    tags: [
+      factory
+    ]
+  }
 ]

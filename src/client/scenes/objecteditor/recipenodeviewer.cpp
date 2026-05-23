@@ -93,7 +93,7 @@ void RecipeNodeViewer::DoUI(int delta_time) {
             if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
                 // Then we set that to true?
                 // Then something something we let go or something
-                SPDLOG_INFO("Dobule clickjed!");
+                SPDLOG_INFO("Dobule clicked!");
             }
             ed::EndPin();
         }

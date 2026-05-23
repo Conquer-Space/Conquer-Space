@@ -1,117 +1,200 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Plastic Manufacturing
-        identifier: plastic_manufacturing
-        input: {crude_oil: 1000}
-        output: {plastic: 1000}
-        cost: {
-            labor: {laborer: 50}
-        }
-        tags: ["ratio", "raw"]
+  {
+    identifier: chemical_processing
+    name: Chemical Manufacturing
+    input: {
+      crude_oil: 1000.0
     }
-    {
-        name: Plastic Manufacturing
-        identifier: plastic_processing
-        input: {crude_oil: 1000}
-        output: {plastic: 5000}
-        cost: {
-            labor: {laborer: 10000}
-        }
-        tags: ["ratio", "raw"]
+    output: {
+      chemicals: 2000.0
     }
-    {
-        name: Concrete Manufacturing
-        identifier: concrete_manufacturing
-        input: {silicates: 1000}
-        output: {concrete: 500}
-        cost: {
-            labor: {laborer: 1000}
-        }
-        construction: {
-            time: 3 weeks
-            cost: {concrete: 1000}
-        }
-        tags: ["ratio", "raw"]
+    cost: {
+      labor: {
+        laborer: 10000
+      }
     }
-    {
-        name: Gasoline Production
-        identifier: gasoline_production
-        input: {crude_oil: 1000}
-        output: {gasoline: 1000}
-        cost: {
-            labor: {laborer: 1000}
-        }
-        tags: ["ratio", "raw"]
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: coal_mining
+    name: Coal Mining
+    input: {
+      heavy_machinery: 0.100000001490116
     }
-    {
-        name: Iron Mining
-        identifier: iron_mining
-        input: {heavy_machinery: 0.1}
-        output: {iron: 1000}
-        cost: {
-            labor: {laborer: 1000}
-        }
-        tags: ["ratio", "raw"]
+    output: {
+      coal: 1200.0
     }
-    {
-        name: Coal Mining
-        identifier: coal_mining
-        input: {heavy_machinery: 0.1}
-        output: {coal: 1200}
-        cost: {
-            labor: {laborer: 1000}
-        }
-        tags: ["ratio", "raw"]
+    cost: {
+      labor: {
+        laborer: 1000
+      }
     }
-    {
-        name: Logging
-        identifier: logging
-        input: {heavy_machinery: 0.1}
-        output: {lumber: 800}
-        cost: {
-            labor: {laborer: 4000}
-        }
-        tags: ["ratio", "raw"]
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: concrete_manufacturing
+    name: Concrete Manufacturing
+    input: {
+      silicates: 1000.0
     }
-    {
-        name: Oil Drilling
-        identifier: oil_drilling
-        input: {heavy_machinery: 0.1}
-        output: {crude_oil: 4000}
-        cost: {
-            labor: {laborer: 10000}
-        }
-        tags: ["ratio", "raw"]
+    output: {
+      concrete: 500.0
     }
-    {
-        name: Sand Mining
-        identifier: silicates_mining
-        input: {heavy_machinery: 0.1}
-        output: {silicates: 10000}
-        cost: {
-            labor: {laborer: 150}
-        }
-        tags: ["ratio", "raw"]
+    cost: {
+      labor: {
+        laborer: 1000
+      }
     }
-    {
-        name: Cotton Farming
-        identifier: cotton_farming
-        input: {heavy_machinery: 0.1}
-        output: {fabric: 1000}
-        cost: {
-            labor: {laborer: 1500}
-        }
-        tags: ["ratio", "raw"]
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: cotton_farming
+    name: Cotton Farming
+    input: {
+      heavy_machinery: 0.100000001490116
     }
-    {
-        name: Chemical Manufacturing
-        identifier: chemical_processing
-        input: {crude_oil: 1000}
-        output: {chemicals: 2000}
-        cost: {
-            labor: {laborer: 10000}
-        }
-        tags: ["ratio", "raw"]
+    output: {
+      fabric: 1000.0
     }
+    cost: {
+      labor: {
+        laborer: 1500
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: gasoline_production
+    name: Gasoline Production
+    input: {
+      crude_oil: 1000.0
+    }
+    output: {
+      gasoline: 1000.0
+    }
+    cost: {
+      labor: {
+        laborer: 1000
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: iron_mining
+    name: Iron Mining
+    input: {
+      heavy_machinery: 0.100000001490116
+    }
+    output: {
+      iron: 1000.0
+    }
+    cost: {
+      labor: {
+        laborer: 1000
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: logging
+    name: Logging
+    input: {
+      heavy_machinery: 0.100000001490116
+    }
+    output: {
+      lumber: 800.0
+    }
+    cost: {
+      labor: {
+        laborer: 4000
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: oil_drilling
+    name: Oil Drilling
+    input: {
+      heavy_machinery: 0.100000001490116
+    }
+    output: {
+      crude_oil: 4000.0
+    }
+    cost: {
+      labor: {
+        laborer: 10000
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: plastic_manufacturing
+    name: Plastic Manufacturing
+    input: {
+      crude_oil: 1000.0
+    }
+    output: {
+      plastic: 1000.0
+    }
+    cost: {
+      labor: {
+        laborer: 50
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: plastic_processing
+    name: Plastic Manufacturing
+    input: {
+      crude_oil: 1000.0
+    }
+    output: {
+      plastic: 5000.0
+    }
+    cost: {
+      labor: {
+        laborer: 10000
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: silicates_mining
+    name: Sand Mining
+    input: {
+      heavy_machinery: 0.100000001490116
+    }
+    output: {
+      silicates: 10000.0
+    }
+    cost: {
+      labor: {
+        laborer: 150
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
 ]

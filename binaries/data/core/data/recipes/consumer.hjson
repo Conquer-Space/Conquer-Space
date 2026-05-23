@@ -1,44 +1,79 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Groceries Production
-        identifier: groceries_manufacturing
-        input: {meat: 1000, cereal_grains: 1000, fruits_and_vegetables: 1000}
-        output: {groceries: 1000}
-        cost: {
-            labor: {laborer: 20000}
-        }
-        tags: ["ratio", "raw"]
+  {
+    identifier: furniture_manufacturing
+    name: Furniture Manufacturing
+    input: {
+      steel: 50.0
+      iron: 200.0
+      lumber: 1000.0
     }
-    {
-        name: Furniture Manufacturing
-        identifier: furniture_manufacturing
-        input: {lumber: 1000, iron: 200, steel: 50}
-        output: {furniture: 800}
-        cost: {
-            labor: {laborer: 10000, technician: 5000}
-        }
-        tags: ["ratio", "raw"]
+    output: {
+      furniture: 800.0
     }
-    {
-        // This is literally just so that we have enough jobs to feed people
-        name: Textile Sweatshops
-        identifier: textile_sweatshop
-        input: {fabric: 1000}
-        output: {textile_goods: 500}
-        cost: {
-            labor: {laborer: 30000}
-        }
-        tags: ["ratio", "consumer"]
+    cost: {
+      labor: {
+        laborer: 10000
+        technician: 5000
+      }
     }
-    {
-        name: Household Product Production
-        identifier: household_chemical_production
-        input: {chemicals: 1000}
-        output: {household_products: 800}
-        cost: {
-            labor: {laborer: 30000}
-        }
-        tags: ["ratio", "consumer"]
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: groceries_manufacturing
+    name: Groceries Production
+    input: {
+      cereal_grains: 1000.0
+      fruits_and_vegetables: 1000.0
+      meat: 1000.0
     }
+    output: {
+      groceries: 1000.0
+    }
+    cost: {
+      labor: {
+        laborer: 20000
+      }
+    }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: household_chemical_production
+    name: Household Product Production
+    input: {
+      chemicals: 1000.0
+    }
+    output: {
+      household_products: 800.0
+    }
+    cost: {
+      labor: {
+        laborer: 30000
+      }
+    }
+    tags: [
+      factory
+    ]
+  }
+  {
+    identifier: textile_sweatshop
+    name: Textile Sweatshops
+    input: {
+      fabric: 1000.0
+    }
+    output: {
+      textile_goods: 500.0
+    }
+    cost: {
+      labor: {
+        laborer: 30000
+      }
+    }
+    tags: [
+      factory
+    ]
+  }
 ]

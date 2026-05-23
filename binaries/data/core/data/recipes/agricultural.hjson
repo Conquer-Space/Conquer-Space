@@ -1,33 +1,56 @@
-# This file is part of Conquer-Space
 [
-    {
-        name: Farming
-        identifier: farming
-        input: {tractors: 0.1}
-        output: {cereal_grains: 1500}
-        cost: {
-            labor: {laborer: 1000}
-        }
-        tags: ["ratio", "raw"]
+  {
+    identifier: farming
+    name: Farming
+    input: {
+      tractors: 0.100000001490116
     }
-    {
-        name: Meat Production
-        identifier: meat_production
-        input: {cereal_grains: 90}
-        output: {meat: 600}
-        cost: {
-            labor: {laborer: 2500}
-        }
-        tags: ["ratio"]
+    output: {
+      cereal_grains: 1500.0
     }
-    {
-        name: Fruit and Vegetable Production
-        identifier: fresh_food_production
-        input: {tractors: 0.1}
-        output: {fruits_and_vegetables: 1000}
-        cost: {
-            labor: {laborer: 2500}
-        }
-        tags: ["ratio"]
+    cost: {
+      labor: {
+        laborer: 1000
+      }
     }
+    tags: [
+      raw
+    ]
+  }
+  {
+    identifier: fresh_food_production
+    name: Fruit and Vegetable Production
+    input: {
+      tractors: 0.100000001490116
+    }
+    output: {
+      fruits_and_vegetables: 1000.0
+    }
+    cost: {
+      labor: {
+        laborer: 2500
+      }
+    }
+    tags: [
+      factory
+    ]
+  }
+  {
+    identifier: meat_production
+    name: Meat Production
+    input: {
+      cereal_grains: 90.0
+    }
+    output: {
+      meat: 600.0
+    }
+    cost: {
+      labor: {
+        laborer: 2500
+      }
+    }
+    tags: [
+      factory
+    ]
+  }
 ]
