@@ -49,6 +49,10 @@ void SysRecipeViewer::DoUI(int delta_time) {
     // List out all the stuff
     auto recipes = GetUniverse().view<components::Recipe>();
     ImGui::TextFmt("Recipes: {}", recipes.size());
+    ImGui::SameLine();
+    if (ImGui::Button("Save Recipes")) {
+        SaveRecipes();
+    }
     ImGui::BeginChild("recipe_viewer_left", ImVec2(300, 700));
     ImGui::InputText("##recipe_viewer_search_text", search_text.data(), search_text.size());
     std::string search_string(search_text.data());
@@ -59,14 +63,16 @@ void SysRecipeViewer::DoUI(int delta_time) {
     for (entt::entity recipe : recipes) {
         bool is_selected = recipe == selected_recipe;
         std::string name = core::util::GetName(GetUniverse(), recipe);
+        std::string identifier_lower = GetUniverse().get<components::Identifier>(recipe).identifier;
+        std::transform(identifier_lower.begin(), identifier_lower.end(), identifier_lower.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
         std::string name_lower = name;
         std::transform(name_lower.begin(), name_lower.end(), name_lower.begin(),
                        [](unsigned char c) { return std::tolower(c); });
-        if (!search_string.empty()) {
+        if ((!search_string.empty() && name_lower.find(search_string) == std::string::npos) &&
+            (!identifier_lower.empty() && identifier_lower.find(search_string) == std::string::npos)) {
             // Then we can check if the text contains it
-            if (name_lower.find(search_string) == std::string::npos) {
-                continue;
-            }
+            continue;
         }
         // Now check if the string is in stuff
         if (ImGui::SelectableFmt("{}", &is_selected, name)) {
@@ -200,5 +206,81 @@ void SysRecipeViewer::InitializeRecipeFiles() {
     }
 }
 
-void SysRecipeViewer::SaveRecipes() {}
+void SysRecipeViewer::SaveRecipes() {
+    auto& asset_manager = GetApp().GetAssetManager();
+    auto* recipes = asset_manager.GetAsset<asset::HjsonAsset>("recipes");
+
+    std::filesystem::path data_path(cqsp::core::util::GetCqspDataPath());
+    data_path = data_path / recipes->path;
+
+    std::map<std::string, std::vector<entt::entity>> recipe_to_file_map;
+    for (auto&& [entity, file, recipe] : GetUniverse().view<FileTag, components::Recipe>().each()) {
+        recipe_to_file_map[file.file].push_back(entity);
+    }
+
+    for (auto& [file, list] : recipe_to_file_map) {
+        Hjson::Value contents;
+        std::sort(list.begin(), list.end(), [&](entt::entity left, entt::entity right) {
+            return GetUniverse().get<components::Identifier>(left).identifier <
+                   GetUniverse().get<components::Identifier>(right).identifier;
+        });
+        for (entt::entity recipe : list) {
+            Hjson::Value value;
+            value["identifier"] = GetUniverse().get<components::Identifier>(recipe).identifier;
+            value["name"] = GetUniverse().get<components::Name>(recipe).name;
+            if (GetUniverse().all_of<components::Description>(recipe)) {
+                value["desc"] = GetUniverse().get<components::Description>(recipe).description;
+            }
+            auto& recipe_comp = GetUniverse().get<components::Recipe>(recipe);
+
+            for (auto& [entity, amount] : recipe_comp.input) {
+                value["input"][GetUniverse().get<components::Identifier>(entity).identifier] = amount;
+            }
+
+            value["output"][GetUniverse().get<components::Identifier>(recipe_comp.output.entity).identifier] =
+                recipe_comp.output.amount;
+
+            bool has_capital = !recipe_comp.capitalcost.empty();
+            bool has_labor = !recipe_comp.workers.workers.empty();
+            bool has_recipe_cost = GetUniverse().all_of<components::RecipeCost>(recipe);
+            if (has_capital || has_labor || has_recipe_cost) {
+                if (has_capital) {
+                    for (auto& [entity, amount] : recipe_comp.capitalcost) {
+                        value["cost"]["capital"][GetUniverse().get<components::Identifier>(entity).identifier] = amount;
+                    }
+                }
+                if (has_labor) {
+                    for (auto& [job, workers] : recipe_comp.workers.workers) {
+                        value["cost"]["labor"][GetUniverse().get<components::Identifier>(job).identifier] =
+                            static_cast<int>(workers);
+                    }
+                }
+                if (has_recipe_cost) {
+                    auto& recipe_cost = GetUniverse().get<components::RecipeCost>(recipe);
+                    for (auto& [entity, amount] : recipe_cost.fixed) {
+                        value["cost"]["fixed"][GetUniverse().get<components::Identifier>(entity).identifier] = amount;
+                    }
+                    for (auto& [entity, amount] : recipe_cost.scaling) {
+                        value["cost"]["scaling"][GetUniverse().get<components::Identifier>(entity).identifier] = amount;
+                    }
+                }
+            }
+
+            switch (recipe_comp.type) {
+                case components::ProductionType::mine:
+                    value["tags"].push_back("raw");
+                    break;
+                case components::ProductionType::service:
+                    value["tags"].push_back("service");
+                    break;
+                case components::ProductionType::factory:
+                    value["tags"].push_back("factory");
+                    break;
+            }
+
+            contents.push_back(value);
+        }
+        Hjson::MarshalToFile(contents, file);
+    }
+}
 }  // namespace cqsp::client::systems

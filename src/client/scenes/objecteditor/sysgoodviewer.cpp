@@ -289,7 +289,6 @@ void SysGoodViewer::SaveGoodList() {
     std::filesystem::path data_path(cqsp::core::util::GetCqspDataPath());
     data_path = data_path / goods->path;
     // List directory the normal way
-    std::map<std::string, entt::entity> good_map = GetUniverse().goods;
     std::map<std::string, std::vector<entt::entity>> good_to_file_map;
     // Then we should loop through them
     for (auto&& [entity, file, good] : GetUniverse().view<FileTag, components::Good>().each()) {

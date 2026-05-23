@@ -95,7 +95,6 @@ struct Recipe {
     ResourceVector input;
     RecipeOutput output;
     ProductionType type;
-    float interval;
     // The actual factory worker amount is workers * productivity
     RecipeWorkers workers;
     // double workers;
