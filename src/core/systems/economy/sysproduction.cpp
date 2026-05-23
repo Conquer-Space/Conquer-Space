@@ -68,6 +68,8 @@ double SysProduction::ProcessIndustry(Node& industry_node, components::Market& m
     // Configure how many hours we should hire...
     // We should also drift wages towards the average wage of the pop node or something
     // Just set our factory hiring?
+    // TODO(EhWhoAmI): This is definitely pretty bad for performance so we will have to fix this or tweak it
+    // Chances are we just add a good map for labor in the recipe map
     size.workers.clear();
     for (const auto& [job, workers] : recipe.workers.workers) {
         auto& labor = GetUniverse().get<components::Labor>(job);

@@ -36,7 +36,6 @@ namespace components = core::components;
 namespace {
 struct FileTag {
     std::string file;
-    Hjson::Value value;
 };
 }  // namespace
 
@@ -275,7 +274,7 @@ void SysGoodViewer::InitializeGoodFiles() {
             const Hjson::Value& val = output[i];
             std::string identifier = val["identifier"].to_string();
             if (GetUniverse().goods.contains(identifier)) {
-                GetUniverse().emplace_or_replace<FileTag>(GetUniverse().goods[identifier], entry.path().string(), val);
+                GetUniverse().emplace_or_replace<FileTag>(GetUniverse().goods[identifier], entry.path().string());
             } else {
                 SPDLOG_INFO("Invalid identifier {}", identifier);
             }

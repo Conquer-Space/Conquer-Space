@@ -16,19 +16,32 @@
  */
 #include "recipeviewer.h"
 
+#include <imgui_stdlib.h>
+
+#include <filesystem>
+
 #include "client/scenes/universe/interface/ledgertable.h"
 #include "client/scenes/universe/interface/systooltips.h"
+#include "core/components/labor.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
 #include "core/components/resource.h"
 #include "core/util/nameutil.h"
+#include "core/util/paths.h"
 #include "core/util/utilnumberdisplay.h"
+#include "engine/asset/textasset.h"
+#include "engine/asset/vfs/nativevfs.h"
 
 namespace cqsp::client::systems {
-
 namespace components = core::components;
 
-void SysRecipeViewer::Init() {}
+namespace {
+struct FileTag {
+    std::string file;
+};
+}  // namespace
+
+void SysRecipeViewer::Init() { InitializeRecipeFiles(); }
 
 void SysRecipeViewer::DoUI(int delta_time) {
     ImGui::SetNextWindowSize(ImVec2(800, 700), ImGuiCond_FirstUseEver);
@@ -126,19 +139,66 @@ void SysRecipeViewer::RecipeViewerRight() {
         ImGui::TextColored(id_copy_color, "Click to copy identifier");
         ImGui::EndTooltip();
     }
+    ImGui::Separator();
+    double total_job_cost = 0;
+    if (ImGui::BeginTable("Job cost table", 3)) {
+        // Now go through all the jobs
+        ImGui::TableSetupColumn("Labor");
+        ImGui::TableSetupColumn("Amount");
+        ImGui::TableSetupColumn("Total Cost");
+        ImGui::TableHeadersRow();
+        for (const auto& [job, workers] : recipe_comp.workers.workers) {
+            auto& labor = GetUniverse().get<components::Labor>(job);
+            // Now get the price and all that
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), job));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", workers);
+            ImGui::TableSetColumnIndex(2);
+            ImGui::TextFmt("{}", GetUniverse().get<components::Price>(labor.good).price * workers);
+            total_job_cost += GetUniverse().get<components::Price>(labor.good).price * workers;
+        }
+        ImGui::EndTable();
+    }
     // Some basic calculator so that we can make things easier
     ImGui::Separator();
     double expected_cost = GetLedgerCost(GetUniverse(), recipe_comp.input) * expected_production +
-                           GetLedgerCost(GetUniverse(), recipe_comp.capitalcost);
+                           GetLedgerCost(GetUniverse(), recipe_comp.capitalcost) + total_job_cost;
     double expected_income = GetUniverse().get<components::Price>(recipe_comp.output.entity) *
                              recipe_comp.output.amount * expected_production;
     double expected_profit = expected_income - expected_cost;
     ImGui::TextFmt("Expected Income: {}", util::NumberToHumanString(expected_income));
     ImGui::TextFmt("Expected Cost: {}", util::NumberToHumanString(expected_cost));
+    ImGui::TextFmt("Job Cost: {}", util::NumberToHumanString(total_job_cost));
     ImGui::TextFmt("Expected Profit: {}", util::NumberToHumanString(expected_profit));
     ImGui::TextFmt("P/L ratio: {}", expected_income / expected_cost);
     ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
 }
 
 void SysRecipeViewer::ResetSelection() { expected_production = 1; }
+
+void SysRecipeViewer::InitializeRecipeFiles() {
+    auto& asset_manager = GetApp().GetAssetManager();
+    auto* recipes = asset_manager.GetAsset<asset::HjsonAsset>("recipes");
+
+    std::filesystem::path data_path(cqsp::core::util::GetCqspDataPath());
+    data_path = data_path / recipes->path;
+    // List directory the normal way
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(data_path)) {
+        auto output = Hjson::UnmarshalFromFile(entry.path().string());
+        // Loop through them and then process
+        for (int i = 0; i < output.size(); i++) {
+            const Hjson::Value& val = output[i];
+            std::string identifier = val["identifier"].to_string();
+            if (GetUniverse().recipes.contains(identifier)) {
+                GetUniverse().emplace_or_replace<FileTag>(GetUniverse().recipes[identifier], entry.path().string());
+            } else {
+                SPDLOG_INFO("Invalid identifier {}", identifier);
+            }
+        }
+    }
+}
+
+void SysRecipeViewer::SaveRecipes() {}
 }  // namespace cqsp::client::systems

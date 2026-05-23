@@ -33,6 +33,8 @@ class SysRecipeViewer : public SysUserInterface {
  private:
     void RecipeViewerRight();
     void ResetSelection();
+    void SaveRecipes();
+    void InitializeRecipeFiles();
     entt::entity selected_recipe = entt::null;
 
     std::array<char, 255> search_text;
