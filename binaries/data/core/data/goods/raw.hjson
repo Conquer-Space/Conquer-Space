@@ -131,6 +131,13 @@
     ]
   }
   {
+    identifier: regolith
+    name: Regolith
+    price: 20.0
+    volume: 1 m3
+    mass: 3000 kg
+  }
+  {
     identifier: silicates
     name: Silicates
     price: 20.0

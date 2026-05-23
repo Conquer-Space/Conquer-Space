@@ -56,6 +56,7 @@ void SysGoodViewer::DoUI(int delta_time) {
     ImGui::SameLine();
     if (ImGui::Button("Add good")) {
         // Add good
+        CreateGood();
     }
     ImGui::BeginChild("Good_viewer_left", ImVec2(300, -1));
     ImGui::InputText("##good_viewer_search_text", search_text.data(), search_text.size());
@@ -96,7 +97,7 @@ void SysGoodViewer::GoodViewerRight() {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name: {}");
+    ImGui::TextFmt("Name");
     ImGui::SameLine();
     // then same line and stuff
     ImGui::InputText("###name", &(GetUniverse().get<components::Name>(selected_good).name));
@@ -121,9 +122,9 @@ void SysGoodViewer::GoodViewerRight() {
         if (good_comp.mass < 0) {
             good_comp.mass = 0;
         }
-        ImGui::TextFmt("Volume: {} m3", good_comp.volume);
+        ImGui::TextFmt("Volume (m3)", good_comp.volume);
         ImGui::SameLine();
-        ImGui::InputDouble("###mass", &(good_comp.volume));
+        ImGui::InputDouble("###volume", &(good_comp.volume));
         if (good_comp.volume < 0) {
             good_comp.volume = 0;
         }
@@ -152,7 +153,7 @@ void SysGoodViewer::GoodViewerRight() {
     ImGui::Separator();
     if (GetUniverse().any_of<components::ConsumerGood>(selected_good)) {
         auto& consumer = GetUniverse().get<components::ConsumerGood>(selected_good);
-        ImGui::TextFmt("Autonomous Consumption: {}", consumer.autonomous_consumption);
+        ImGui::TextFmt("Autonomous Consumption");
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             ImGui::Text("Consumption that is independent of disposable income or when income levels are zero.");
@@ -183,6 +184,10 @@ void SysGoodViewer::GoodViewerRight() {
         }
     }
     // Find all recipes that lead up to this
+    ImGui::Separator();
+    if (GetUniverse().any_of<FileTag>(selected_good)) {
+        ImGui::InputText("Output File", &(GetUniverse().get<FileTag>(selected_good).file));
+    }
     ImGui::Separator();
     RecipeTable();
 }
@@ -334,5 +339,15 @@ void SysGoodViewer::SaveGoodList() {
         // Write to file (in theory)
         Hjson::MarshalToFile(contents, file);
     }
+}
+
+void SysGoodViewer::CreateGood() {
+    entt::entity good = GetUniverse().create();
+    GetUniverse().emplace<components::Good>(good);
+    GetUniverse().emplace<components::Identifier>(good, "new_good");
+    GetUniverse().emplace<components::Name>(good, "New Good");
+    GetUniverse().emplace<components::Tags>(good);
+    GetUniverse().emplace<components::Price>(good);
+    GetUniverse().emplace<FileTag>(good, "");
 }
 }  // namespace cqsp::client::systems

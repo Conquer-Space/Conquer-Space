@@ -12,7 +12,7 @@
   {
     identifier: chemicals
     name: Chemicals
-    price: 300.0
+    price: 60.0
     volume: 1 m3
     mass: 7850 kg
     tags: [
