@@ -144,33 +144,18 @@
     ]
   }
   {
-    identifier: plastic_manufacturing
-    name: Plastic Manufacturing
-    input: {
-      crude_oil: 1000.0
-    }
-    output: {
-      plastic: 1000.0
-    }
-    cost: {
-      labor: {
-        laborer: 50
-      }
-    }
-    tags: [
-      raw
-    ]
-  }
-  {
     identifier: plastic_processing
     name: Plastic Manufacturing
     input: {
       crude_oil: 1000.0
     }
     output: {
-      plastic: 5000.0
+      plastic: 500.0
     }
     cost: {
+      capital: {
+        fluid_systems: 10.0
+      }
       labor: {
         laborer: 10000
       }
@@ -183,7 +168,7 @@
     identifier: silicates_mining
     name: Sand Mining
     input: {
-      heavy_machinery: 0.100000001490116
+      heavy_machinery: 3.0
     }
     output: {
       silicates: 10000.0

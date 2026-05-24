@@ -99,7 +99,7 @@ namespace {
 double GetLedgerCost(core::Universe& universe, const components::ResourceVector& ledger) {
     double input_cost = 0;
     for (auto& [entity, amount] : ledger) {
-        input_cost = universe.get<components::Price>(entity) * amount;
+        input_cost += universe.get<components::Price>(entity) * amount;
     }
     return input_cost;
 }
