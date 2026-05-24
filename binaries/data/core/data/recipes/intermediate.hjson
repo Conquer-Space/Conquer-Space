@@ -7,11 +7,11 @@
       iron: 100.0
     }
     output: {
-      steel: 120.0
+      steel: 240.0
     }
     cost: {
       labor: {
-        laborer: 15000
+        laborer: 4000
       }
     }
     tags: [

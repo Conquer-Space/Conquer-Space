@@ -78,7 +78,7 @@
       crude_oil: 1000.0
     }
     output: {
-      gasoline: 1000.0
+      gasoline: 2000.0
     }
     cost: {
       labor: {
@@ -111,14 +111,14 @@
     identifier: logging
     name: Logging
     input: {
-      heavy_machinery: 1.0
+      heavy_machinery: 0.1
     }
     output: {
       lumber: 4000.0
     }
     cost: {
       labor: {
-        laborer: 4000
+        laborer: 1000
       }
     }
     tags: [
@@ -132,15 +132,34 @@
       heavy_machinery: 0.100000001490116
     }
     output: {
-      crude_oil: 4000.0
+      crude_oil: 10000.0
     }
     cost: {
       labor: {
-        laborer: 10000
+        laborer: 1000
       }
     }
     tags: [
       raw
+    ]
+  }
+  {
+    identifier: phospate_mining
+    name: Phospate Mining
+    input: {
+      heavy_machinery: 1.0
+    }
+    output: {
+      phospates: 1000.0
+    }
+    cost: {
+      labor: {
+        laborer: 500
+        technician: 100
+      }
+    }
+    tags: [
+      factory
     ]
   }
   {

@@ -76,7 +76,7 @@
   {
     identifier: groceries
     name: Groceries
-    price: 500.0
+    price: 200.0
     consumption: {
       autonomous_consumption: 1.90258751902588e-05
       marginal_propensity: 3.80517503805175e-06
@@ -90,7 +90,7 @@
   {
     identifier: household_products
     name: Household Products
-    price: 600.0
+    price: 200.0
     consumption: {
       autonomous_consumption: 1.90258751902588e-06
       marginal_propensity: 9.51293759512938e-06
@@ -104,7 +104,7 @@
   {
     identifier: textile_goods
     name: Textile Goods
-    price: 500.0
+    price: 80.0
     consumption: {
       autonomous_consumption: 1.90258751902588e-05
       marginal_propensity: 3.80517503805175e-06

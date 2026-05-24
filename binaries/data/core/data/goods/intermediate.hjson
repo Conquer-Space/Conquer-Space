@@ -102,7 +102,7 @@
   {
     identifier: steel
     name: Steel
-    price: 700.0
+    price: 200.0
     volume: 1 m3
     mass: 7850 kg
     tags: [

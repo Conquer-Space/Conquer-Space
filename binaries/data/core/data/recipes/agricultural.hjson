@@ -3,10 +3,11 @@
     identifier: farming
     name: Farming
     input: {
-      tractors: 0.100000001490116
+      tractors: 1.0
+      phospates: 10.0
     }
     output: {
-      cereal_grains: 1500.0
+      cereal_grains: 10000.0
     }
     cost: {
       labor: {

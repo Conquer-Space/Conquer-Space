@@ -859,7 +859,21 @@
         population: [
             {
                 size: 7711194
-                job_distribution: {laborer: 1625938}
+                job_distribution: {laborer: 3855597}
+            }
+        ]
+        industry: [
+            {
+                recipe: phospate_mining
+                size: 3
+                utilization: 1
+                workers: 0
+                wages: 94.10672537709547
+                continuous_losses: 0
+                continuous_gains: 111
+                revenue: 240000
+                material_costs: 75000
+                profit: 16781.907531074627
             }
         ]
     }

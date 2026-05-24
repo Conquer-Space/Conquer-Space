@@ -24,8 +24,8 @@
     identifier: groceries_manufacturing
     name: Groceries Production
     input: {
-      cereal_grains: 1000.0
-      fruits_and_vegetables: 1000.0
+      cereal_grains: 700.0
+      fruits_and_vegetables: 700.0
       meat: 1000.0
     }
     output: {
@@ -65,11 +65,11 @@
       fabric: 1000.0
     }
     output: {
-      textile_goods: 500.0
+      textile_goods: 700.0
     }
     cost: {
       labor: {
-        laborer: 30000
+        laborer: 1000
       }
     }
     tags: [
