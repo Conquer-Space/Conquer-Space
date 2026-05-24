@@ -54,6 +54,24 @@
     ]
   }
   {
+    identifier: copper_mining
+    name: Copper Mining
+    input: {
+      heavy_machinery: 2.0
+    }
+    output: {
+      copper: 50.0
+    }
+    cost: {
+      labor: {
+        laborer: 1000
+      }
+    }
+    tags: [
+      factory
+    ]
+  }
+  {
     identifier: cotton_farming
     name: Cotton Farming
     input: {
@@ -111,7 +129,7 @@
     identifier: logging
     name: Logging
     input: {
-      heavy_machinery: 0.1
+      heavy_machinery: 0.100000001490116
     }
     output: {
       lumber: 4000.0

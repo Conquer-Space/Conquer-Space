@@ -335,7 +335,10 @@ void SysGoodViewer::SaveGoodList() {
             contents.push_back(value);
         }
         // Write to file (in theory)
-        Hjson::MarshalToFile(contents, file);
+        contents.set_comment_before("# This file is part of Conquer Space");
+        if (!file.empty()) {
+            Hjson::MarshalToFile(contents, file);
+        }
     }
 }
 
