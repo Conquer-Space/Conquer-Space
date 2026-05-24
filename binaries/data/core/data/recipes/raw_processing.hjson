@@ -111,10 +111,10 @@
     identifier: logging
     name: Logging
     input: {
-      heavy_machinery: 0.100000001490116
+      heavy_machinery: 1.0
     }
     output: {
-      lumber: 800.0
+      lumber: 4000.0
     }
     cost: {
       labor: {
