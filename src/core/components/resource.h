@@ -28,10 +28,6 @@
 #include "core/components/units.h"
 
 namespace cqsp::core::components {
-/// <summary>
-/// Something that has a mass.
-/// </summary>
-
 struct Energy {
     // Energy per unit
     types::joule energy;
