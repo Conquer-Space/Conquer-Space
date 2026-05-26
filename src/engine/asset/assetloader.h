@@ -354,5 +354,8 @@ class AssetLoader {
     AssetOptions asset_options;
 };
 
+/**
+ * Helper function for sysorbit test that loads a hjson asset value.
+ */
 Hjson::Value LoadHjsonAsset(const cqsp::asset::IVirtualFileSystemPtr& mount, const std::string& path);
 }  // namespace cqsp::asset

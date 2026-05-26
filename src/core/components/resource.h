@@ -28,10 +28,6 @@
 #include "core/components/units.h"
 
 namespace cqsp::core::components {
-/// <summary>
-/// Something that has a mass.
-/// </summary>
-
 struct Energy {
     // Energy per unit
     types::joule energy;
@@ -68,6 +64,8 @@ struct ConsumerGood {
 struct Mineral {};
 struct RawGood {};
 struct LaborGood {};
+struct FluidGood {};
+struct IntermediateGood {};
 // Good is for capital goods
 struct CapitalGood {};
 
@@ -93,7 +91,6 @@ struct Recipe {
     ResourceVector input;
     RecipeOutput output;
     ProductionType type;
-    float interval;
     // The actual factory worker amount is workers * productivity
     RecipeWorkers workers;
     // double workers;

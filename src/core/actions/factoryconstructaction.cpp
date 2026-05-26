@@ -79,6 +79,7 @@ Node CreateFactory(Node city, Node recipe, int productivity, double wages, doubl
     //employer.population_fufilled = recipe_comp.workers * productivity;
     //employer.population_needed = recipe_comp.workers * productivity;
     employer.segment = entt::null;
+
     return factory;
 }
 

@@ -14,6 +14,21 @@
         type: hjson
         hints: {}
     }
+    goods: {
+        path: goods
+        type: hjson
+        hints: {}
+    }
+    recipes: {
+        path: recipes
+        type: hjson
+        hints: {}
+    }
+    names: {
+        path: names
+        type: hjson
+        hints: {}
+    }
     cities: {
         path: cities
         type: hjson

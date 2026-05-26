@@ -17,29 +17,24 @@
 #pragma once
 
 #include <array>
+#include <vector>
 
 #include "client/systems/sysgui.h"
 
 namespace cqsp::client::systems {
-class SysGoodViewer : public SysUserInterface {
+class ConstructionMenu : public SysUserInterface {
  public:
-    explicit SysGoodViewer(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
-
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
+    explicit ConstructionMenu(engine::Application& app) : SysUserInterface(app) { search_text.fill(0); }
+    void Init() override;
+    void DoUI(int delta_time) override;
+    void DoUpdate(int delta_time) override;
 
  private:
-    void GoodViewerRight();
-    void RecipeTable();
-    void InputRecipeTable();
-    void OutputRecipeTable();
-    void RecipeTooltip(entt::entity recipe);
-    void InitializeGoodFiles();
-    void SaveGoodList();
-    void CreateGood();
+    bool RecipeCombo(const char* label, int& selected_idx, std::vector<std::pair<std::string, entt::entity>>& list);
 
     std::array<char, 255> search_text;
-    entt::entity selected_good = entt::null;
+    bool constructing = false;
+    int selected_index = 0;
+    std::vector<std::pair<std::string, entt::entity>> recipe_list;
 };
 }  // namespace cqsp::client::systems

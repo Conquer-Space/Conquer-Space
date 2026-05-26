@@ -1,11 +1,13 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Concrete
-        identifier: concrete
-        volume: 1 m3
-        mass: 500 kg
-        price: 300
-        tags: ["raw", "fluid"]
-    }
+  {
+    identifier: concrete
+    name: Concrete
+    price: 300.0
+    volume: 1 m3
+    mass: 500 kg
+    tags: [
+      raw
+      fluid
+    ]
+  }
 ]

@@ -21,8 +21,6 @@
 #include <ranges>
 #include <utility>
 
-#include "resourceledger.h"
-
 #define ITERATE_GOODS(name)                    \
     GoodEntity name = ToGoodEntity(0);         \
     static_cast<size_t>(name) < ledger.size(); \

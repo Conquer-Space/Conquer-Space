@@ -1,74 +1,118 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Textile Goods
-        identifier: textile_goods
-        volume: 1 m3
-        mass: 500 kg
-        price: 500
-        consumption: {autonomous_consumption: 1, marginal_propensity: 0.2}
-        tags: ["consumer"]
+  {
+    identifier: automobiles
+    name: Automobiles
+    price: 30000.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-07
+      marginal_propensity: 9.51293759512938e-07
     }
-    {
-        name: Furniture
-        identifier: furniture
-        volume: 1 m3
-        mass: 500 kg
-        price: 300
-        consumption: {autonomous_consumption: 1, marginal_propensity: 0.2}
-        tags: ["consumer"]
+    volume: 0.148987 m3
+    mass: 136 kg
+    tags: [
+      consumer
+      fluid
+    ]
+  }
+  {
+    identifier: consumer_electronics
+    name: Consumer Electronics
+    price: 2000.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-05
+      marginal_propensity: 9.51293759512938e-06
     }
-    {
-        name: Household Products
-        identifier: household_products
-        volume: 1 m3
-        mass: 700 kg
-        price: 600
-        description: Household supplies for cleaning and maintainence of a household
-        consumption: {autonomous_consumption: 0.1, marginal_propensity: 0.5}
-        tags: ["consumer"]
+    volume: 0.148987 m3
+    mass: 136 kg
+    tags: [
+      consumer
+      fluid
+    ]
+  }
+  {
+    identifier: drugs
+    name: Pharmaceutical Drugs
+    price: 30000.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-06
+      marginal_propensity: 9.51293759512938e-07
     }
-    {
-        name: Groceries
-        identifier: groceries
-        volume: 1 m3
-        mass: 850 kg
-        price: 500
-        consumption: {autonomous_consumption: 1, marginal_propensity: 0.2}
-        tags: ["consumer"]
+    volume: 0.148987 m3
+    mass: 136 kg
+    tags: [
+      consumer
+      fluid
+    ]
+  }
+  {
+    identifier: furniture
+    name: Furniture
+    price: 300.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-05
+      marginal_propensity: 3.80517503805175e-06
     }
-    {
-        name: Gasoline
-        identifier: gasoline
-        volume: 0.148987 m3
-        mass: 136 kg
-        price: 400
-        consumption: {autonomous_consumption: 1, marginal_propensity: 2}
-        tags: ["consumer", "fluid"]
+    volume: 1 m3
+    mass: 500 kg
+    tags: [
+      consumer
+    ]
+  }
+  {
+    identifier: gasoline
+    name: Gasoline
+    price: 400.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-05
+      marginal_propensity: 3.80517503805175e-05
     }
-    {
-        name: Automobiles
-        identifier: automobiles
-        volume: 0.148987 m3
-        mass: 136 kg
-        price: 30000
-        consumption: {autonomous_consumption: 0.01, marginal_propensity: 0.05}
-        tags: ["consumer", "fluid"]
+    volume: 0.148987 m3
+    mass: 136 kg
+    tags: [
+      consumer
+      fluid
+    ]
+  }
+  {
+    identifier: groceries
+    name: Groceries
+    price: 200.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-05
+      marginal_propensity: 3.80517503805175e-06
     }
-    {
-        name: Pharmaceutical Drugs
-        volume: 0.148987 m3
-        mass: 136 kg
-        price: 30000
-        consumption: {autonomous_consumption: 0.1, marginal_propensity: 0.05}
-        tags: ["consumer", "fluid"]
+    volume: 1 m3
+    mass: 850 kg
+    tags: [
+      consumer
+    ]
+  }
+  {
+    identifier: household_products
+    name: Household Products
+    price: 200.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-06
+      marginal_propensity: 9.51293759512938e-06
     }
-    {
-        name: Consumer Electronics
-        volume: 0.148987 m3
-        mass: 136 kg
-        price: 2000
-        consumption: {autonomous_consumption: 1, marginal_propensity: 0.5}
-        tags: ["consumer", "fluid"]
+    volume: 1 m3
+    mass: 700 kg
+    tags: [
+      consumer
+    ]
+  }
+  {
+    identifier: textile_goods
+    name: Textile Goods
+    price: 80.0
+    consumption: {
+      autonomous_consumption: 1.90258751902588e-05
+      marginal_propensity: 3.80517503805175e-06
     }
+    volume: 1 m3
+    mass: 500 kg
+    tags: [
+      consumer
+    ]
+  }
 ]

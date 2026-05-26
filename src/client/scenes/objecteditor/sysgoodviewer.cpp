@@ -16,18 +16,30 @@
  */
 #include "client/scenes/objecteditor/sysgoodviewer.h"
 
+#include <imgui_stdlib.h>
+
+#include <filesystem>
+
 #include "client/scenes/universe/interface/systooltips.h"
 #include "core/components/market.h"
 #include "core/components/name.h"
 #include "core/components/resource.h"
 #include "core/components/tags.h"
 #include "core/util/nameutil.h"
+#include "core/util/paths.h"
+#include "engine/asset/textasset.h"
+#include "engine/asset/vfs/nativevfs.h"
 
 namespace cqsp::client::systems {
-
 namespace components = core::components;
 
-void SysGoodViewer::Init() {}
+namespace {
+struct FileTag {
+    std::string file;
+};
+}  // namespace
+
+void SysGoodViewer::Init() { InitializeGoodFiles(); }
 
 void SysGoodViewer::DoUI(int delta_time) {
     ImGui::SetNextWindowSize(ImVec2(800, 700), ImGuiCond_FirstUseEver);
@@ -35,6 +47,16 @@ void SysGoodViewer::DoUI(int delta_time) {
     // List out all the stuff
     auto goods = GetUniverse().view<components::Good>();
     ImGui::TextFmt("Goods: {}", goods.size());
+    ImGui::SameLine();
+    if (ImGui::Button("Save Changes")) {
+        // Now do the changes that we had...
+        SaveGoodList();
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Add good")) {
+        // Add good
+        CreateGood();
+    }
     ImGui::BeginChild("Good_viewer_left", ImVec2(300, -1));
     ImGui::InputText("##good_viewer_search_text", search_text.data(), search_text.size());
     std::string search_string(search_text.data());
@@ -74,8 +96,14 @@ void SysGoodViewer::GoodViewerRight() {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name: {}", core::util::GetName(GetUniverse(), selected_good));
-    ImGui::TextFmt("Identifier: {}", GetUniverse().get<components::Identifier>(selected_good).identifier);
+    ImGui::TextFmt("Name");
+    ImGui::SameLine();
+    // then same line and stuff
+    ImGui::InputText("###name", &(GetUniverse().get<components::Name>(selected_good).name));
+    ImGui::TextFmt("Identifier");
+    ImGui::SameLine();
+    // then same line and stuff
+    ImGui::InputText("###identifier", &(GetUniverse().get<components::Identifier>(selected_good).identifier));
     if (ImGui::IsItemClicked()) {
         // Copy
         ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(selected_good).identifier.c_str());
@@ -87,8 +115,18 @@ void SysGoodViewer::GoodViewerRight() {
     }
     if (GetUniverse().any_of<components::Good>(selected_good)) {
         auto& good_comp = GetUniverse().get<components::Good>(selected_good);
-        ImGui::TextFmt("Mass: {} kg", good_comp.mass);
-        ImGui::TextFmt("Volume: {} m3", good_comp.volume);
+        ImGui::TextFmt("Mass (kg)");
+        ImGui::SameLine();
+        ImGui::InputDouble("###mass", &(good_comp.mass));
+        if (good_comp.mass < 0) {
+            good_comp.mass = 0;
+        }
+        ImGui::TextFmt("Volume (m3)", good_comp.volume);
+        ImGui::SameLine();
+        ImGui::InputDouble("###volume", &(good_comp.volume));
+        if (good_comp.volume < 0) {
+            good_comp.volume = 0;
+        }
     }
     ImGui::Separator();
     ImGui::TextFmt("Tags");
@@ -98,29 +136,57 @@ void SysGoodViewer::GoodViewerRight() {
             // Now print tags
             ImGui::TextFmt("{}", tag);
         }
+        // TODO(EhWhoAmI): Some way to add tags
     }
     if (GetUniverse().any_of<components::Price>(selected_good)) {
         ImGui::Separator();
         auto& price_comp = GetUniverse().get<components::Price>(selected_good);
-        ImGui::TextFmt("Initial Price: {}", price_comp.price);
+        ImGui::TextFmt("Initial Price:");
+        ImGui::SameLine();
+        ImGui::InputDouble("Price", &(price_comp.price));
+        if (price_comp.price < 0) {
+            price_comp.price = 0;
+        }
     }
+
+    ImGui::Separator();
     if (GetUniverse().any_of<components::ConsumerGood>(selected_good)) {
-        ImGui::Separator();
         auto& consumer = GetUniverse().get<components::ConsumerGood>(selected_good);
-        ImGui::TextFmt("Autonomous Consumption: {}", consumer.autonomous_consumption);
+        ImGui::TextFmt("Autonomous Consumption");
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             ImGui::Text("Consumption that is independent of disposable income or when income levels are zero.");
             ImGui::EndTooltip();
         }
-        ImGui::TextFmt("Marginal Propensity: {}", consumer.marginal_propensity);
+        ImGui::SameLine();
+        ImGui::InputDouble("##autonomous consumption", &(consumer.autonomous_consumption));
+        if (consumer.autonomous_consumption < 0) {
+            consumer.autonomous_consumption = 0;
+        }
+        ImGui::TextFmt("Marginal Propensity: ");
         if (ImGui::IsItemHovered()) {
             ImGui::BeginTooltip();
             ImGui::Text("Consumption that scales linearly based off amount of surplus income they have.");
             ImGui::EndTooltip();
         }
+        ImGui::SameLine();
+        ImGui::InputDouble("##Marginal propensity", &(consumer.marginal_propensity));
+        if (consumer.marginal_propensity < 0) {
+            consumer.marginal_propensity = 0;
+        }
+        if (ImGui::Button("- Consumer Good")) {
+            GetUniverse().remove<components::ConsumerGood>(selected_good);
+        }
+    } else {
+        if (ImGui::Button("+ Consumer Good")) {
+            GetUniverse().emplace<components::ConsumerGood>(selected_good);
+        }
     }
     // Find all recipes that lead up to this
+    ImGui::Separator();
+    if (GetUniverse().any_of<FileTag>(selected_good)) {
+        ImGui::InputText("Output File", &(GetUniverse().get<FileTag>(selected_good).file));
+    }
     ImGui::Separator();
     RecipeTable();
 }
@@ -192,5 +258,97 @@ void SysGoodViewer::RecipeTooltip(entt::entity recipe) {
         systems::gui::EntityTooltipContent(GetUniverse(), recipe);
         ImGui::EndTooltip();
     }
+}
+
+void SysGoodViewer::InitializeGoodFiles() {
+    auto& asset_manager = GetApp().GetAssetManager();
+    auto* goods = asset_manager.GetAsset<asset::HjsonAsset>("goods");
+
+    std::filesystem::path data_path(cqsp::core::util::GetCqspDataPath());
+    data_path = data_path / goods->path;
+    // List directory the normal way
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(data_path)) {
+        auto output = Hjson::UnmarshalFromFile(entry.path().string());
+        // Loop through them and then process
+        for (int i = 0; i < output.size(); i++) {
+            const Hjson::Value& val = output[i];
+            std::string identifier = val["identifier"].to_string();
+            if (GetUniverse().goods.contains(identifier)) {
+                GetUniverse().emplace_or_replace<FileTag>(GetUniverse().goods[identifier], entry.path().string());
+            } else {
+                SPDLOG_INFO("Invalid identifier {}", identifier);
+            }
+        }
+    }
+}
+
+void SysGoodViewer::SaveGoodList() {
+    auto& asset_manager = GetApp().GetAssetManager();
+    auto* goods = asset_manager.GetAsset<asset::HjsonAsset>("goods");
+
+    std::filesystem::path data_path(cqsp::core::util::GetCqspDataPath());
+    data_path = data_path / goods->path;
+    // List directory the normal way
+    std::map<std::string, std::vector<entt::entity>> good_to_file_map;
+    // Then we should loop through them
+    for (auto&& [entity, file, good] : GetUniverse().view<FileTag, components::Good>().each()) {
+        good_to_file_map[file.file].push_back(entity);
+    }
+
+    for (auto& [file, list] : good_to_file_map) {
+        // now we loop through the list and sort through or something
+        Hjson::Value contents;
+        // sort alphabetically
+        std::sort(list.begin(), list.end(), [&](entt::entity left, entt::entity right) {
+            return GetUniverse().get<components::Identifier>(left).identifier <
+                   GetUniverse().get<components::Identifier>(right).identifier;
+        });
+        for (entt::entity good : list) {
+            Hjson::Value value;
+            value["identifier"] = GetUniverse().get<components::Identifier>(good).identifier;
+            value["name"] = GetUniverse().get<components::Name>(good).name;
+            if (GetUniverse().all_of<components::Description>(good)) {
+                value["desc"] = GetUniverse().get<components::Description>(good).description;
+            }
+            value["price"] = GetUniverse().get<components::Price>(good).price;
+            // Then mass and then also tags
+
+            if (GetUniverse().any_of<components::ConsumerGood>(good)) {
+                auto& consumer = GetUniverse().get<components::ConsumerGood>(good);
+                value["consumption"]["autonomous_consumption"] = consumer.autonomous_consumption;
+                value["consumption"]["marginal_propensity"] = consumer.marginal_propensity;
+            }
+
+            if (GetUniverse().any_of<components::Good>(good)) {
+                auto& good_comp = GetUniverse().get<components::Good>(good);
+                value["volume"] = fmt::format("{} m3", good_comp.volume);
+                value["mass"] = fmt::format("{} kg", good_comp.mass);
+            }
+
+            if (GetUniverse().any_of<components::Tags>(good)) {
+                auto& tag_component = GetUniverse().get<components::Tags>(good);
+                for (auto& tag : tag_component.tags) {
+                    // Now print tags
+                    value["tags"].push_back(tag);
+                }
+            }
+            contents.push_back(value);
+        }
+        // Write to file (in theory)
+        contents.set_comment_before("# This file is part of Conquer Space");
+        if (!file.empty()) {
+            Hjson::MarshalToFile(contents, file);
+        }
+    }
+}
+
+void SysGoodViewer::CreateGood() {
+    entt::entity good = GetUniverse().create();
+    GetUniverse().emplace<components::Good>(good);
+    GetUniverse().emplace<components::Identifier>(good, "new_good");
+    GetUniverse().emplace<components::Name>(good, "New Good");
+    GetUniverse().emplace<components::Tags>(good);
+    GetUniverse().emplace<components::Price>(good);
+    GetUniverse().emplace<FileTag>(good, "");
 }
 }  // namespace cqsp::client::systems

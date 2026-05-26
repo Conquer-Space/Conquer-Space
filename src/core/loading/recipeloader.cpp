@@ -50,7 +50,7 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
         recipe_component.output.amount = beg->second.to_double();
 
     } else {
-        SPDLOG_WARN("Output({}) is not equal to 1, so there will have some issues", output_value.size());
+        SPDLOG_WARN("Output({}) has more than one output, so there will have some issues", output_value.size());
     }
 
     // Check if it has cost

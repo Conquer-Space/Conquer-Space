@@ -22,6 +22,7 @@
 #include "client/components/clientctx.h"
 #include "client/components/rightclick.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
+#include "client/scenes/universe/interface/constructionmenu.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/explorationwindow.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
@@ -92,6 +93,7 @@ void UniverseScene::Init() {
     AddUISystem<systems::LaunchVehicleWindow>();
     AddUISystem<systems::ProductionSummary>();
     AddUISystem<systems::TaxWindow>();
+    AddUISystem<systems::ConstructionMenu>();
 
     AddUISystem<systems::gui::SysEvent>();
 

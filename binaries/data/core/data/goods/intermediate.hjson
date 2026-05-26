@@ -1,95 +1,112 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Plastic
-        identifier: plastic
-        volume: 1 m3
-        mass: 500 kg
-        price: 300
-        tags: ["intermediate"]
-    }
-    {
-        name: Steel
-        identifier: steel
-        volume: 1 m3
-        mass: 7850 kg
-        price: 700
-        desc: Steel is an alloy of carbon and iron that displays improved mechanical properties
-        tags: ["intermediate"]
-    }
-    {
-        name: Chemicals
-        identifier: chemicals
-        volume: 1 m3
-        mass: 7850 kg
-        price: 300
-        desc: Chemicals that are used for reactions or as a catalyst for other production methods
-        tags: ["intermediate"]
-    }
-    {
-        name: Microprocessors
-        identifier: microprocessors
-        volume: 1 m3
-        mass: 300 kg
-        price: 3000
-        desc: Compute for small devices
-        tags: ["intermediate"]
-    }
-    {
-        name: Glass
-        identifier: glass
-        volume: 1 m3
-        mass: 7850 kg
-        price: 400
-        desc: Compute for small devices
-        tags: ["intermediate"]
-    }
-    {
-        name: Composites
-        identifier: composites
-        volume: 1 m3
-        mass: 700 kg
-        price: 900
-        tags: ["intermediate"]
-    }
-    {
-        name: Electric Motors
-        identifier: electric_motors
-        volume: 1 m3
-        mass: 1200 kg
-        price: 1200
-        tags: ["intermediate"]
-    }
-    {
-        name: Precision Components
-        identifier: precision_components
-        volume: 1 m3
-        mass: 3000 kg
-        price: 1500
-        tags: ["intermediate"]
-    }
-    {
-        name: Magnets
-        identifier: magnets
-        volume: 1 m3
-        mass: 7850 kg
-        price: 2000
-        tags: ["intermediate"]
-    }
-    {
-        name: Pesticides
-        identifier: pesticides
-        volume: 1 m3
-        mass: 1000 kg
-        price: 600
-        tags: ["intermediate"]
-    }
-    {
-        name: Alloys
-        identifier: alloys
-        volume: 1 m3
-        mass: 3000 kg
-        price: 6000
-        tags: ["intermediate"]
-    }
+  {
+    identifier: alloys
+    name: Alloys
+    price: 6000.0
+    volume: 1 m3
+    mass: 3000 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: chemicals
+    name: Chemicals
+    price: 60.0
+    volume: 1 m3
+    mass: 7850 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: composites
+    name: Composites
+    price: 900.0
+    volume: 1 m3
+    mass: 700 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: electric_motors
+    name: Electric Motors
+    price: 1200.0
+    volume: 1 m3
+    mass: 1200 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: glass
+    name: Glass
+    price: 400.0
+    volume: 1 m3
+    mass: 7850 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: magnets
+    name: Magnets
+    price: 2000.0
+    volume: 1 m3
+    mass: 7850 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: microprocessors
+    name: Microprocessors
+    price: 3000.0
+    volume: 1 m3
+    mass: 300 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: pesticides
+    name: Pesticides
+    price: 600.0
+    volume: 1 m3
+    mass: 1000 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: plastic
+    name: Plastic
+    price: 300.0
+    volume: 1 m3
+    mass: 500 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: precision_components
+    name: Precision Components
+    price: 1500.0
+    volume: 1 m3
+    mass: 3000 kg
+    tags: [
+      intermediate
+    ]
+  }
+  {
+    identifier: steel
+    name: Steel
+    price: 200.0
+    volume: 1 m3
+    mass: 7850 kg
+    tags: [
+      intermediate
+    ]
+  }
 ]

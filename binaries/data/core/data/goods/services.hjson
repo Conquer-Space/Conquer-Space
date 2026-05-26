@@ -1,19 +1,22 @@
-# This file is part of Conquer Space
 [
-    {
-        name: Financial Services
-        identifier: financial_services
-        volume: 0 m3
-        mass: 0 kg
-        price: 100
-        tags: ["service"]
-    }
-    {
-        name: Medical Services
-        identifier: medical_services
-        volume: 0 m3
-        mass: 0 kg
-        price: 100
-        tags: ["service"]
-    }
+  {
+    identifier: financial_services
+    name: Financial Services
+    price: 130.0
+    volume: 0 m3
+    mass: 0 kg
+    tags: [
+      service
+    ]
+  }
+  {
+    identifier: medical_services
+    name: Medical Services
+    price: 100.0
+    volume: 0 m3
+    mass: 0 kg
+    tags: [
+      service
+    ]
+  }
 ]

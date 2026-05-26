@@ -45,6 +45,10 @@ struct SelectedProvince {
     bool select_spaceport = false;
 };
 
+struct HoveredProvince {
+    entt::entity hovered_province;
+};
+
 struct GameLoad {
     std::string load_dir;
 };

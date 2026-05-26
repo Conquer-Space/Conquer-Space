@@ -115,7 +115,7 @@ const inline std::string GetGlError(GLenum error) {
 
 void inline APIENTRY glDebugOutput(GLenum source, GLenum type, unsigned int id, GLenum severity, GLsizei length,
                                    const char* message, const void* userParam) {
-    if (id == 131169 || id == 131185 || id == 131218 || id == 131204)
+    if (id == 131169 || id == 131185 || id == 131218 || id == 131204 || id == 8)
         return;  // ignore these non-significant error codes
 
     ENGINE_LOG_INFO("{} message from {} ({}:{}): {}", ParseType(type), ParseSource(source), ParseSeverity(severity), id,

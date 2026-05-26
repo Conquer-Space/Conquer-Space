@@ -23,8 +23,10 @@
 
 namespace cqsp::asset {
 enum FileModes {
-    Text = 0,        // Opens in text mode
-    Binary = 1 << 0  // If true, file is opened in binary mode, if false, file is opened in text mode
+    Text = 0,         // Opens in text mode
+    Binary = 1 << 0,  // If true, file is opened in binary mode, if false, file is opened in text mode
+    Read = 0,
+    Write = 1 << 1
 };
 
 enum class Offset { Beg, End, Cur };

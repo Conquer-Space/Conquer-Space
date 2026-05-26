@@ -33,10 +33,17 @@ class SysRecipeViewer : public SysUserInterface {
  private:
     void RecipeViewerRight();
     void ResetSelection();
+    void SaveRecipes();
+    void InitializeRecipeFiles();
+    void CreateRecipe();
     entt::entity selected_recipe = entt::null;
 
     std::array<char, 255> search_text;
     float expected_production;
     const ImVec4 id_copy_color = ImVec4(0.921568627f, 0.392156863f, 0.203921569f, 1.f);
+    int new_input_good_idx = 0;
+    int new_capital_good_idx = 0;
+    int new_labor_job_idx = 0;
+    int new_output_good_idx = 0;
 };
 }  // namespace cqsp::client::systems

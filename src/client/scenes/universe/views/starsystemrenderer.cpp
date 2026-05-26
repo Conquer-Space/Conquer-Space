@@ -88,6 +88,7 @@ void SysStarSystemRenderer::Initialize() {
     universe.ctx().emplace<client::ctx::PauseOptions>();
     universe.ctx().emplace<client::ctx::UiDisplayMode>(client::ctx::UiDisplayMode::CountrySelect);
     universe.ctx().emplace<client::ctx::HoveringItem>();
+    universe.ctx().emplace<client::ctx::HoveredProvince>(entt::null);
     universe.ctx().emplace<client::ctx::MapModeCtx>();
     universe.ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
     universe.ctx().emplace<client::ctx::StarSystemViewDebug>();
