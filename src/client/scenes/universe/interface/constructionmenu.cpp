@@ -63,7 +63,7 @@ bool ConstructionMenu::RecipeCombo(const char* label, int& selected_idx,
 
 void ConstructionMenu::Init() {
     for (auto&& [entity, name, recipe] : GetUniverse().view<components::Name, components::Recipe>().each()) {
-        recipe_list.constructionmenu(name, entity);
+        recipe_list.emplace_back(name, entity);
     }
 }
 
