@@ -127,7 +127,6 @@ class SysStarSystemRenderer {
 
     void LoadPlanetTextures();
     void LoadPlanetProvinceMap(entt::entity body);
-    void GeneratePlanetOverlay(entt::entity body);
 
     void InitializeFramebuffers();
     void InitializeMeshes();
@@ -147,8 +146,6 @@ class SysStarSystemRenderer {
     glm::mat4 GetBillboardMatrix(const glm::vec3 &pos);
     glm::vec3 GetBillboardPosition(const glm::vec3 &object_pos);
     void SetBillboardProjection(cqsp::asset::ShaderProgram_t &shader, glm::mat4 mat);
-
-    void CheckResourceDistRender();
 
     float GetWindowRatio();
 

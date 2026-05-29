@@ -757,33 +757,6 @@ void SysStarSystemRenderer::SetupDummyTextures() {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, dummy_color_map->buffer_id);
 }
 
-void SysStarSystemRenderer::CheckResourceDistRender() {
-#if FALSE
-    // Then check if it's the same rendered object
-    auto& rend = universe.get<PlanetTerrainRender>(m_viewing_entity);
-    if (rend.resource == controller.terrain_displaying) {
-        return;
-    }
-
-    // Check if it's the same
-    if (!universe.any_of<components::ResourceDistribution>(m_viewing_entity)) {
-        return;
-    }
-
-    auto& dist = universe.get<components::ResourceDistribution>(m_viewing_entity);
-    TerrainImageGenerator gen;
-    gen.terrain.seed = dist.dist[rend.resource];
-    gen.GenerateHeightMap(3, 9);
-    // Make the UI
-    unsigned int a = GeneratePlanetTexture(gen.GetHeightMap());
-    planet_resource = GenerateTexture(a, gen.GetHeightMap());
-    controller.terrain_displaying = rend.resource;
-    // Switch view mode
-    planet.textures[0] = planet_resource;
-    planet.shaderProgram = no_light_shader;
-#endif
-}
-
 float SysStarSystemRenderer::GetWindowRatio() { return window_ratio; }
 
 void SysStarSystemRenderer::DrawAllOrbits() {
@@ -832,13 +805,6 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
 void SysStarSystemRenderer::LoadPlanetProvinceMap(entt::entity body) {
     PlanetProvinceLoader loader(app, universe, body);
     loader.LoadProvinces();
-}
-
-void SysStarSystemRenderer::GeneratePlanetOverlay(entt::entity body) {
-    auto& data = universe.get_or_emplace<PlanetTexture>(body);
-    data.overlay = new cqsp::engine::FramebufferTexture();
-    cqsp::engine::FramebufferTexture* overlay = data.overlay;
-    overlay->InitTexture(4096, 2048);
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {
