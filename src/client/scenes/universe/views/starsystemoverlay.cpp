@@ -34,7 +34,7 @@ void StarSystemOverlay::Initialize() {
         auto& data = universe.get_or_emplace<PlanetTexture>(body);
         data.overlay = new cqsp::engine::FramebufferTexture();
         cqsp::engine::FramebufferTexture* overlay = data.overlay;
-        overlay->InitTexture(4096, 2048);
+        overlay->InitTexture(256, 128);
     }
     // Now also initialize shaders
     line_shader = app.GetAssetManager().GetAsset<ShaderDefinition>("core:shader.line")->MakeShader();

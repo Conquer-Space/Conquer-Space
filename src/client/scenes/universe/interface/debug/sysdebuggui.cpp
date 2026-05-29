@@ -187,29 +187,7 @@ void SysDebugMenu::ConsoleInput() {
     if (ImGui::InputText("DebugInput", &command,
                          ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion |
                              ImGuiInputTextFlags_CallbackHistory)) {
-        std::string command_request = std::string(command);
-        std::transform(command_request.begin(), command_request.end(), command_request.begin(),
-                       [](unsigned char c) { return std::tolower(c); });
-        if (!command_request.empty()) {
-            bool no_command = true;
-            for (auto it = commands.begin(); it != commands.end(); it++) {
-                if (!command_request.starts_with(it->first)) {
-                    continue;
-                }
-                it->second.second(GetApp(), GetUniverse(), GetScriptInterface(),
-                                  command.length() == it->first.length() ? "" : command.substr(it->first.length() + 1),
-                                  items);
-                no_command = false;
-                break;
-            }
-            if (no_command) {
-                items.emplace_back("#Command does not exist!");
-            }
-
-            command = "";
-            scroll_to_bottom = true;
-        }
-        reclaim_focus = true;
+        ProcessConsoleInput();
     }
     ImGui::PopItemWidth();
 
@@ -218,6 +196,34 @@ void SysDebugMenu::ConsoleInput() {
         ImGui::SetKeyboardFocusHere(-1);
         reclaim_focus = false;
     }
+}
+
+void SysDebugMenu::ProcessConsoleInput() {
+    // Split the command too
+    std::string split = command.substr(0, command.find(' '));
+    // Then compare the split
+
+    std::transform(split.begin(), split.end(), split.begin(), [](unsigned char c) { return std::tolower(c); });
+    if (!split.empty()) {
+        bool no_command = true;
+        for (auto it = commands.begin(); it != commands.end(); it++) {
+            if (split != it->first) {
+                continue;
+            }
+            it->second.second(GetApp(), GetUniverse(), GetScriptInterface(),
+                              command.length() == it->first.length() ? "" : command.substr(it->first.length() + 1),
+                              items);
+            no_command = false;
+            break;
+        }
+        if (no_command) {
+            items.emplace_back("#Command does not exist!");
+        }
+
+        command = "";
+        scroll_to_bottom = true;
+    }
+    reclaim_focus = true;
 }
 
 void SysDebugMenu::DoUI(int delta_time) {
