@@ -712,13 +712,11 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
         case ctx::MapMode::ResourceMapMode: {
             // Then we should just color on green to red
             auto& amenability = universe.get<components::ResourceAmenability>(province);
-            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), amenability.resources / 10.f),
-                             DEFAULT_PROVINCE_APLHA);
+            return glm::vec4(MixScale(amenability.resources / 10.f), DEFAULT_PROVINCE_APLHA);
         } break;
         case ctx::MapMode::ScienceMapMode: {
             auto& amenability = universe.get<components::ResourceAmenability>(province);
-            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), amenability.science / 10.f),
-                             DEFAULT_PROVINCE_APLHA);
+            return glm::vec4(MixScale(amenability.science / 10.f), DEFAULT_PROVINCE_APLHA);
         } break;
         case ctx::MapMode::GoodPriceMapMode: {
             // Now get province market
@@ -730,7 +728,7 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
                 universe.good_prices[selected_good] * (1 + universe.economy_config.market_config.base_price_deviation);
             double difference = market.price[universe.good_map[selected_good]] / max_price;
 
-            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), difference), DEFAULT_PROVINCE_APLHA);
+            return glm::vec4(MixScale(difference), DEFAULT_PROVINCE_APLHA);
         }
         default:
         case ctx::MapMode::InvalidMapMode:
@@ -948,5 +946,11 @@ glm::vec3 StarSystemController::CalculateFutureCenteredPosition(const entt::enti
         object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
     }
     return object_pos;
+}
+
+glm::vec3 StarSystemController::MixScale(float amount) {
+    static const glm::vec3 red = HexToRgb("#C20404");
+    static const glm::vec3 green = HexToRgb("#25F307");
+    return glm::mix(red, green, amount);
 }
 }  // namespace cqsp::client::systems
