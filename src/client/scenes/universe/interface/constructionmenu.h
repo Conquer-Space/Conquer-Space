@@ -31,6 +31,7 @@ class ConstructionMenu : public SysUserInterface {
 
  private:
     bool RecipeCombo(const char* label, int& selected_idx, std::vector<std::pair<std::string, entt::entity>>& list);
+    void PerformConstruction(int count);
 
     std::array<char, 255> search_text;
     bool constructing = false;
