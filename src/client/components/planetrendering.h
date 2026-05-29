@@ -67,7 +67,6 @@ struct PlanetTexture {
     std::vector<glm::vec4> province_colors;
     // Converts an entity to a value on the province color vector
     std::unordered_map<entt::entity, uint16_t> province_index_map;
-    std::unordered_map<entt::entity, glm::vec2> province_centers;
 
     // Width and height of the province indices vector and the
     // province map

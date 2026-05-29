@@ -89,6 +89,9 @@ void StarSystemController::Update(float delta_time) {
                 FoundCity();
             }
         }
+        if (app.MouseButtonDoubleClicked(engine::MouseInput::LEFT)) {
+            FocusOnProvince(hovering_province);
+        }
         // Some math if you're close enough you select the city instead of the planet
     }
 
@@ -259,11 +262,26 @@ void StarSystemController::CenterCameraOnCity() {
     }
 
     auto& surf = universe.get<SurfaceCoordinate>(selected_city);
-    // TODO(EhWhoAmI): Change this so that it doesn't have to change the
-    // coordinate system multiple times. Currently this changes from surface
-    // coordinates to 3d coordinates to surface coordinates. I think it can be
-    // solved with a basic formula.
     target_surface_coordinate = surf;
+}
+
+void StarSystemController::FocusOnProvince(entt::entity province) {
+    if (!universe.valid(province) || !universe.all_of<components::Province, SurfaceCoordinate>(province)) {
+        return;
+    }
+    // then do thing
+    auto& province_comp = universe.get<components::Province>(province);
+    if (focused_planet != province_comp.planet) {
+        SeePlanet(province_comp.planet);
+    }
+
+    auto& surf = universe.get<SurfaceCoordinate>(province);
+    target_surface_coordinate = surf;
+    SetCameraToPlanetReferenceFrame();
+    entt::entity planet = universe.view<FocusedPlanet>().front();
+    Body& body = universe.get<Body>(planet);
+    // 100 km above the city
+    camera.scroll = body.radius + 800;
 }
 
 void StarSystemController::FocusOnEntity(entt::entity ent) {
@@ -317,7 +335,7 @@ void StarSystemController::SelectProvince() {
         ResetProvinceColor(province_to_reset);
         // Reset our country
         selected_country = province.country;
-        if (province.country != country_to_reset) {
+        if (province.country != country_to_reset && universe.valid(country_to_reset)) {
             // Set our country color
             SetCountryProvincesColor(country_to_reset);
         }

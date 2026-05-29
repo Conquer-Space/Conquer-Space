@@ -19,6 +19,7 @@
 #include <chrono>
 
 #include "client/components/planetrendering.h"
+#include "core/components/coordinates.h"
 #include "core/components/surface.h"
 #include "engine/asset/textasset.h"
 #include "engine/graphics/texture.h"
@@ -48,6 +49,7 @@ bool PlanetProvinceLoader::CheckConditions() {
     if (!universe.any_of<components::ProvincedPlanet>(body)) {
         return false;
     }
+    return true;
 }
 
 PlanetProvinceLoader::~PlanetProvinceLoader() {
@@ -94,8 +96,8 @@ void PlanetProvinceLoader::BuildIndexMap() {
         glm::vec2 center_of_mass = position_weights[entity] / static_cast<float>(sums);
         // Convert to latitude and longitude
         center_of_mass = glm::vec2(center_of_mass.x / province_width, center_of_mass.y / province_height);
-        planet_texture.province_centers[entity] =
-            glm::vec2((center_of_mass.x - 0.5) * 360, (center_of_mass.y - 0.5) * 180);
+        universe.emplace_or_replace<components::types::SurfaceCoordinate>(entity, (0.5 - center_of_mass.y) * 180,
+                                                                          (center_of_mass.x - 0.5) * 360);
     }
 }
 
