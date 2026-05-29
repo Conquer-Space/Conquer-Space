@@ -45,6 +45,7 @@ class SysDebugMenu : public SysUserInterface {
     void CreateMenuBar();
     void DrawConsole();
     void ConsoleInput();
+    void ProcessConsoleInput();
 
     bool to_show_window = false;
     bool to_show_metrics_window = false;
