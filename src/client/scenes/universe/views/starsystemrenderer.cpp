@@ -449,20 +449,11 @@ void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
     for (entt::entity body_entity : bodies) {
         glm::vec3 object_pos = controller.CalculateCenteredObject(body_entity);
 
-        // This can probably switched to some log system based off the mass of
-        // a planet.
-        //if (true) {
-        // Check if planet has terrain or not
-        // Don't actually use proc-gen terrain for now
-        // if (universe.all_of<bodies::Terrain>(body_entity)) {
-        // Do empty terrain
-        // Check if the planet has the thing
         if (universe.all_of<bodies::TexturedTerrain>(body_entity)) {
             DrawTexturedPlanet(object_pos, body_entity);
         } else {
             DrawTerrainlessPlanet(body_entity, object_pos);
         }
-        //}
     }
 }
 

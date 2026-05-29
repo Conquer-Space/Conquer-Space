@@ -88,6 +88,15 @@ void PlanetProvinceLoader::BuildIndexMap() {
             current_province_idx++;
         }
     }
+
+    // Compute our province weights
+    for (auto& [entity, sums] : mass_sums) {
+        glm::vec2 center_of_mass = position_weights[entity] / static_cast<float>(sums);
+        // Convert to latitude and longitude
+        center_of_mass = glm::vec2(center_of_mass.x / province_width, center_of_mass.y / province_height);
+        planet_texture.province_centers[entity] =
+            glm::vec2((center_of_mass.x - 0.5) * 360, (center_of_mass.y - 0.5) * 180);
+    }
 }
 
 void PlanetProvinceLoader::BuildPlanetTexture() {
@@ -101,8 +110,6 @@ void PlanetProvinceLoader::BuildPlanetTexture() {
         // Position on the map
         int pos = idx * comp;
         int i = components::ProvinceColor::toInt(image[pos], image[pos + 1], image[pos + 2]);
-        int x = idx % province_width;
-        int y = idx / province_width;
         if (universe.province_colors[body].find(i) != universe.province_colors[body].end()) {
             entt::entity province_id = universe.province_colors[body][i];
             planet_texture.province_map.push_back(province_id);
@@ -112,6 +119,11 @@ void PlanetProvinceLoader::BuildPlanetTexture() {
             }
             planet_texture.province_indices.push_back(planet_texture.province_index_map[province_id]);
 
+            int x = idx % province_width;
+            int y = idx / province_width;
+            // COM calculations
+            mass_sums[province_id]++;
+            position_weights[province_id] += glm::vec2(x, y);
         } else {
             // Most likely ocean
             // Maybe next time we should have ocean provinces

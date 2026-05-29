@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <unordered_map>
+
 #include "core/universe.h"
 #include "engine/application.h"
 #include "stb_image.h"  // NOLINT: The linter is rather annoying with stb
@@ -38,6 +40,9 @@ class PlanetProvinceLoader {
     entt::entity body;
     core::Universe &universe;
     engine::Application &app;
+
+    std::unordered_map<entt::entity, glm::vec2> position_weights;
+    std::unordered_map<entt::entity, int> mass_sums;
 
     // stbi information
     int province_width;
