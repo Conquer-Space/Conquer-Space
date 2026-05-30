@@ -1,0 +1,23 @@
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            width: 50%;
+            height: 1.5em;
+            position: absolute;
+            right: 25%;
+            top: 10%;
+        }
+        </style>
+    </head>
+    <body>
+        <!-- Content goes here -->
+         <form>
+            <input type="text" id="search_input" placeholder="Search something"></input>
+         </form>
+    </body>
+</rml>

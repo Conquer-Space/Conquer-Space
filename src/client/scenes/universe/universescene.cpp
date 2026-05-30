@@ -33,6 +33,7 @@
 #include "client/scenes/universe/interface/productionsummary.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/rightclickwindow.h"
+#include "client/scenes/universe/interface/searchmenu.h"
 #include "client/scenes/universe/interface/sidemenu.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
@@ -101,6 +102,7 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
+    AddRmlUiSystem<systems::rmlui::SearchMenu>();
 }
 
 void UniverseScene::Update(float deltaTime) {
