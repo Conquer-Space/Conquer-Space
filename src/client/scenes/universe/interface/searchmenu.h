@@ -16,7 +16,10 @@
 */
 #pragma once
 
+#include <RmlUi/Core/DataModelHandle.h>
+
 #include <string>
+#include <vector>
 
 #include "client/systems/sysgui.h"
 
@@ -33,11 +36,26 @@ class SearchMenu : public SysRmlUiInterface {
  private:
     std::string file_name = "../data/core/gui/mainscene/searchmenu.rml";
 
+    struct SearchResult {
+        std::string name;
+        std::string entity_id;
+    };
+
+    std::vector<SearchResult> results;
+    Rml::DataModelHandle handle;
+
     class SearchEventListener : public Rml::EventListener {
      public:
-        explicit SearchEventListener(core::Universe& universe) : universe(universe) {}
-        void ProcessEvent(Rml::Event& event);
-        core::Universe& universe;
-    } search_listener {GetUniverse()};
+        explicit SearchEventListener(SearchMenu& menu) : menu(menu) {}
+        void ProcessEvent(Rml::Event& event) override;
+        SearchMenu& menu;
+    } search_listener {*this};
+
+    class ClickEventListener : public Rml::EventListener {
+     public:
+        explicit ClickEventListener(SearchMenu& menu) : menu(menu) {}
+        void ProcessEvent(Rml::Event& event) override;
+        SearchMenu& menu;
+    } click_listener {*this};
 };
 }  // namespace cqsp::client::systems::rmlui

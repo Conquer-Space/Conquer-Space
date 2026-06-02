@@ -16,42 +16,122 @@
  */
 #include "client/scenes/universe/interface/searchmenu.h"
 
-#include "RmlUi/Core/Elements/ElementFormControlInput.h"
+#include <RmlUi/Core/Elements/ElementFormControlInput.h>
+
+#include <algorithm>
+#include <cctype>
+#include <string>
+
+#include "client/scenes/universe/universescene.h"
+#include "core/components/bodies.h"
+#include "core/components/name.h"
+#include "core/components/surface.h"
+#include "engine/userinput.h"
 
 namespace cqsp::client::systems::rmlui {
+
 SearchMenu::~SearchMenu() {
     Rml::Element* element = document->GetElementById("search_input");
     element->RemoveEventListener(Rml::EventId::Change, &search_listener);
-}
-void SearchMenu::Update(double delta_time) {
-    if (GetApp().ButtonIsHeld(engine::KeyInput::KEY_LEFT_CONTROL) && GetApp().ButtonIsHeld(engine::KeyInput::KEY_P)) {
-        document->Show();
+    Rml::Element* results_el = document->GetElementById("results");
+    if (results_el) {
+        results_el->RemoveEventListener(Rml::EventId::Click, &click_listener);
     }
-    if (GetApp().ButtonIsHeld(engine::KeyInput::KEY_ESCAPE)) {
+}
+
+void SearchMenu::Update(double delta_time) {
+    bool ctrl = GetApp().ButtonIsHeld(engine::KeyInput::KEY_LEFT_CONTROL);
+    bool p = GetApp().ButtonIsReleased(engine::KeyInput::KEY_P);
+    if (ctrl && p) {
+        if (document->IsVisible()) {
+            document->Hide();
+        } else {
+            document->Show();
+            Rml::Element* input = document->GetElementById("search_input");
+            if (input) input->Focus();
+        }
+    }
+    if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_ESCAPE)) {
         document->Hide();
     }
 }
 
 void SearchMenu::OpenDocument() {
+    Rml::DataModelConstructor ctor = GetApp().GetRmlUiContext()->CreateDataModel("search_results");
+    if (auto s = ctor.RegisterStruct<SearchResult>()) {
+        s.RegisterMember("name", &SearchResult::name);
+        s.RegisterMember("entity_id", &SearchResult::entity_id);
+    }
+    ctor.RegisterArray<std::vector<SearchResult>>();
+    ctor.Bind("result_list", &results);
+    handle = ctor.GetModelHandle();
+
     document = GetApp().LoadDocument(file_name);
-    document->Show();
     SetupDocument();
+    document->Hide();
 }
 
 void SearchMenu::ReloadWindow() {
     document = GetApp().ReloadDocument(file_name);
-    document->Show();
     SetupDocument();
+    document->Hide();
 }
 
 void SearchMenu::SetupDocument() {
-    Rml::Element* element = document->GetElementById("search_input");
-    element->AddEventListener(Rml::EventId::Change, &search_listener);
+    Rml::Element* input = document->GetElementById("search_input");
+    if (input) {
+        input->AddEventListener(Rml::EventId::Change, &search_listener);
+    }
+    Rml::Element* results_el = document->GetElementById("results");
+    if (results_el) {
+        results_el->AddEventListener(Rml::EventId::Click, &click_listener);
+    }
 }
 
 void SearchMenu::SearchEventListener::ProcessEvent(Rml::Event& event) {
     auto* input = static_cast<Rml::ElementFormControlInput*>(event.GetTargetElement());
-    Rml::String value = input->GetValue();
-    SPDLOG_INFO("{}", value);
+    std::string query = input->GetValue();
+
+    menu.results.clear();
+
+    if (!query.empty()) {
+        std::string lower_query = query;
+        std::transform(lower_query.begin(), lower_query.end(), lower_query.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+
+        auto& universe = menu.GetUniverse();
+        for (auto&& [entity, province, name] :
+             universe.view<core::components::Province, core::components::Name>().each()) {
+            std::string lower_name = name.name;
+            std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(),
+                           [](unsigned char c) { return std::tolower(c); });
+            if (lower_name.find(lower_query) != std::string::npos) {
+                menu.results.push_back({name.name, std::to_string(static_cast<uint32_t>(entity))});
+                if (menu.results.size() >= 10) break;
+            }
+        }
+    }
+
+    menu.handle.DirtyAllVariables();
 }
+
+void SearchMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
+    const Rml::Variant* attr = event.GetTargetElement()->GetAttribute("data-entity");
+    if (!attr || attr->GetType() != Rml::Variant::STRING) return;
+
+    uint32_t id = std::stoul(attr->Get<std::string>());
+    entt::entity entity = static_cast<entt::entity>(id);
+
+    auto& universe = menu.GetUniverse();
+    if (universe.all_of<core::components::bodies::Body>(entity)) {
+        scene::SeePlanet(universe, entity);
+    } else if (universe.all_of<core::components::Province>(entity)) {
+        auto& province = universe.get<core::components::Province>(entity);
+        if (province.planet != entt::null) {
+            scene::SeePlanet(universe, province.planet);
+        }
+    }
+    menu.document->Hide();
+}
+
 }  // namespace cqsp::client::systems::rmlui
