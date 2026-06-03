@@ -46,12 +46,25 @@ void SearchMenu::Update(double delta_time) {
         if (document->IsVisible()) {
             document->Hide();
         } else {
-            document->Show();
+            document->Show(Rml::ModalFlag::Modal);
             Rml::Element* input = document->GetElementById("search_input");
             if (input) input->Focus();
         }
     }
     if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_ESCAPE)) {
+        document->Hide();
+    }
+
+    if (document->IsVisible()) {
+        document->PullToFront();
+    }
+    bool left_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::LEFT);
+    bool right_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::RIGHT);
+    bool center_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::MIDDLE);
+    bool any_clicked = left_clicked || right_clicked || center_clicked;
+    Rml::Element* element = Rml::GetContext(0)->GetFocusElement();
+    if (any_clicked && (!GetApp().RmlUiMouseProcessed() || (element && element->GetOwnerDocument() != document))) {
+        // then we should unfocus?
         document->Hide();
     }
 }

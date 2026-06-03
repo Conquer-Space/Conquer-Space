@@ -80,7 +80,7 @@ void ToolTipWindow::Update(double delta_time) {
         to_present = false;
     }
     if (to_present && !document->IsVisible()) {
-        document->Show();
+        document->Show(Rml::ModalFlag::None, Rml::FocusFlag::None);
     } else if (!to_present && document->IsVisible()) {
         document->Hide();
     }

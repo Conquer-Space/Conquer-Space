@@ -100,9 +100,9 @@ void UniverseScene::Init() {
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
+    AddRmlUiSystem<systems::rmlui::SearchMenu>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
-    AddRmlUiSystem<systems::rmlui::SearchMenu>();
 }
 
 void UniverseScene::Update(float deltaTime) {
