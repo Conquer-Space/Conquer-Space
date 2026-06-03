@@ -95,7 +95,7 @@ void StarSystemController::Update(float delta_time) {
         // Some math if you're close enough you select the city instead of the planet
     }
 
-    if (!ImGui::GetIO().WantCaptureKeyboard) {
+    if (app.KeyboardInteractingWithUi()) {
         MoveCamera(delta_time);
     }
 

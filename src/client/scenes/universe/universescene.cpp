@@ -107,7 +107,7 @@ void UniverseScene::Init() {
 
 void UniverseScene::Update(float deltaTime) {
     ZoneScoped;
-    if (!ImGui::GetIO().WantCaptureKeyboard) {
+    if (GetApp().KeyboardInteractingWithUi()) {
         if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_SPACE)) {
             ToggleTick();
         }

@@ -45,6 +45,14 @@ void StarSystemViewUI::RenderInformationWindow(double delta_time) {
                    controller.target_surface_coordinate.latitude());
     ImGui::TextFmt("Cam Up: {:2.f} {:2.f} {:2.f} ({})", camera.cam_up.x, camera.cam_up.y, camera.cam_up.z,
                    camera.camera_time);
+
+    ImGui::TextFmt("Key state: {} {} {}", controller.app.RmlUiKeyboardProcessed(), controller.app.RmlUiMouseProcessed(),
+                   controller.app.RmlUiTextProcessed());
+
+    if (controller.app.RmlUiKeyboardProcessed() || controller.app.RmlUiMouseProcessed() ||
+        controller.app.RmlUiTextProcessed()) {
+        SPDLOG_INFO("Pressed!!!");
+    }
     ImGui::TextFmt("View Center: {} {} {}", camera.view_center.x, camera.view_center.y, camera.view_center.z);
     ImGui::TextFmt("Scroll: {}", camera.scroll);
     ImGui::TextFmt("View {} {}", camera.view_x, camera.view_y);

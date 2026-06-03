@@ -21,7 +21,7 @@
             display: block;
             padding: 4px 8px;
         }
-        .result_item:hover {
+        .result_item:hover, .selected_result {
             background-color: #333366;
             color: yellow;
         }

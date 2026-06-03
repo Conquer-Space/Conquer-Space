@@ -57,5 +57,12 @@ class SearchMenu : public SysRmlUiInterface {
         void ProcessEvent(Rml::Event& event) override;
         SearchMenu& menu;
     } click_listener {*this};
+
+    //class KeyboardEventListener : public Rml::EventListener {
+    //public:
+    //    explicit KeyboardEventListener(SearchMenu& menu) : menu(menu) {}
+    //    void ProcessEvent(Rml::Event& event) override;
+    //    SearchMenu& menu;
+    //} click_listener {*this};
 };
 }  // namespace cqsp::client::systems::rmlui

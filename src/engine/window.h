@@ -63,5 +63,9 @@ class Window {
     virtual bool ExitApplication() = 0;
 
     virtual void SetIcon(std::string_view path) = 0;
+
+    virtual bool RmlUiCapturedKeyboardInput() const = 0;
+    virtual bool RmlUiCapturedMouseInput() const = 0;
+    virtual bool RmlUiCapturedTextInput() const = 0;
 };
 }  // namespace cqsp::engine

@@ -41,29 +41,15 @@ class GLWindow : public Window {
 
     void KeyboardCallback(GLFWwindow* _w, int key, int scancode, int action, int mods);
 
-    void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos) {
-        m_mouse_moved = (m_mouse_x == xpos) && (m_mouse_y == ypos);
-        m_mouse_x = xpos;
-        m_mouse_y = ypos;
-        RmlGLFW::ProcessCursorPosCallback(app->GetRmlUiContext(), _w, xpos, ypos, 0);
-    }
+    void MousePositionCallback(GLFWwindow* _w, double xpos, double ypos);
 
-    void MouseEnterCallback(GLFWwindow* _w, int entered) {
-        RmlGLFW::ProcessCursorEnterCallback(app->GetRmlUiContext(), entered);
-    }
+    void MouseEnterCallback(GLFWwindow* _w, int entered);
 
     void MouseButtonCallback(GLFWwindow* _w, int button, int action, int mods);
 
-    void ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset) {
-        m_scroll_amount = yoffset;
-        RmlGLFW::ProcessScrollCallback(app->GetRmlUiContext(), yoffset, 0);
-    }
+    void ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset);
 
-    void CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
-        // Callback
-        code_input.push_back(codepoint);
-        RmlGLFW::ProcessCharCallback(app->GetRmlUiContext(), codepoint);
-    }
+    void CharacterCallback(GLFWwindow* window, unsigned int codepoint);
 
     void DropCallback(GLFWwindow* _w, int count, const char** paths) {}
 
@@ -105,6 +91,12 @@ class GLWindow : public Window {
 
     void SetIcon(std::string_view path);
 
+    bool RmlUiCapturedKeyboardInput() const override { return rmlui_keyboard_processed; }
+
+    bool RmlUiCapturedMouseInput() const override { return rmlui_mouse_processed; }
+
+    bool RmlUiCapturedTextInput() const override { return rmlui_text_processed; }
+
     GLFWwindow* window;
 
     Application* app;
@@ -132,6 +124,10 @@ class GLWindow : public Window {
     double m_scroll_amount;
 
     int m_window_width, m_window_height;
+
+    bool rmlui_keyboard_processed = false;
+    bool rmlui_mouse_processed = false;
+    bool rmlui_text_processed = false;
 
  public:
     std::vector<int> keys_pressed_last;

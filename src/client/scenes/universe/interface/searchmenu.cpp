@@ -86,6 +86,11 @@ void SearchMenu::SetupDocument() {
     if (results_el) {
         results_el->AddEventListener(Rml::EventId::Click, &click_listener);
     }
+    Rml::Element* main_window = document->GetFirstChild();
+    //if (main_window) {
+    //    main_window->AddEventListener(Rml::EventId::Keydown, &click_listener);
+    //    main_window->AddEventListener(Rml::EventId::Keyup, &click_listener);
+    //}
 }
 
 void SearchMenu::SearchEventListener::ProcessEvent(Rml::Event& event) {
@@ -133,5 +138,4 @@ void SearchMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
     }
     menu.document->Hide();
 }
-
 }  // namespace cqsp::client::systems::rmlui
