@@ -63,6 +63,8 @@ void SearchMenu::Update(double delta_time) {
 
     if (document->IsVisible()) {
         document->PullToFront();
+        Rml::Element* input = document->GetElementById("search_input");
+        if (input) input->Focus();
     }
     bool left_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::LEFT);
     bool right_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::RIGHT);
@@ -171,6 +173,16 @@ void SearchMenu::KeyboardEventListener::ProcessEvent(Rml::Event& event) {
         menu.selected_index = std::max(menu.selected_index - 1, 0);
         menu.UpdateSelection();
         event.StopPropagation();
+    } else if (key == Rml::Input::KI_PRIOR) {
+        // Page up
+        menu.selected_index = std::max(menu.selected_index - 10, 0);
+        menu.UpdateSelection();
+        event.StopPropagation();
+    } else if (key == Rml::Input::KI_NEXT) {
+        // Page down
+        menu.selected_index = std::min(menu.selected_index + 10, count - 1);
+        menu.UpdateSelection();
+        event.StopPropagation();
     } else if (key == Rml::Input::KI_RETURN && menu.selected_index >= 0) {
         uint32_t id = std::stoul(menu.results[menu.selected_index].entity_id);
         entt::entity entity = static_cast<entt::entity>(id);
@@ -196,9 +208,18 @@ void SearchMenu::UpdateSelection() {
         Rml::Element* link = row->GetFirstChild();
         if (link == nullptr) continue;
         link->SetClass("selected_result", i == selected_index);
-        // if (i == selected_index) {
-        //     link->ScrollIntoView(false);
-        // }
+        if (i == selected_index) {
+            float item_top = row->GetOffsetTop();
+            float item_bottom = item_top + row->GetOffsetHeight();
+            float scroll_top = results_el->GetScrollTop();
+            float visible_bottom = scroll_top + results_el->GetClientHeight();
+
+            if (item_top < scroll_top) {
+                results_el->SetScrollTop(item_top);
+            } else if (item_bottom > visible_bottom) {
+                results_el->SetScrollTop(item_bottom - results_el->GetClientHeight());
+            }
+        }
     }
 }
 }  // namespace cqsp::client::systems::rmlui
