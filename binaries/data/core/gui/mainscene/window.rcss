@@ -98,3 +98,16 @@ thead, tbody, tfoot
 {
     display: table-row-group;
 }
+
+scrollbarvertical {
+    width: 5px;
+    height: 100%;
+    background-color: #EAE0CF;
+}
+
+
+sliderbar {
+    width: 5px;
+    background-color: #4B5694;
+    color: #4B5694;
+}

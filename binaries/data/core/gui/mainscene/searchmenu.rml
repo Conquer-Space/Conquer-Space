@@ -12,18 +12,38 @@
             right: 25%;
             top: 10%;
         }
+
+        #search_input {
+            width: 100%;
+            background-color: #1f1f51;
+            height: 100%;
+        }
+
         #results {
             display: block;
             background-color: #1a1a2e;
             border: 1px #333366;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
         }
+
+        .result_row {
+            display: block;
+            width: 100%;
+        }
+
         .result_item {
             display: block;
+            width: 100%;
             padding: 4px 8px;
+            white-space: nowrap;
         }
+
         .result_item:hover, .selected_result {
             background-color: #333366;
             color: yellow;
+            width: 100%;
         }
         </style>
     </head>
@@ -33,7 +53,7 @@
         </form>
         <div data-model="search_results">
             <div data-if="result_list.size > 0" id="results">
-            <div data-for="result : result_list">
+            <div class="result_row" data-for="result : result_list">
                 <a data-attr-data-entity="result.entity_id" class="result_item">{{ result.name }}</a>
             </div>
             </div>

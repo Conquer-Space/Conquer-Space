@@ -43,6 +43,9 @@ class SearchMenu : public SysRmlUiInterface {
 
     std::vector<SearchResult> results;
     Rml::DataModelHandle handle;
+    int selected_index = -1;
+
+    void UpdateSelection();
 
     class SearchEventListener : public Rml::EventListener {
      public:
@@ -58,11 +61,11 @@ class SearchMenu : public SysRmlUiInterface {
         SearchMenu& menu;
     } click_listener {*this};
 
-    //class KeyboardEventListener : public Rml::EventListener {
-    //public:
-    //    explicit KeyboardEventListener(SearchMenu& menu) : menu(menu) {}
-    //    void ProcessEvent(Rml::Event& event) override;
-    //    SearchMenu& menu;
-    //} click_listener {*this};
+    class KeyboardEventListener : public Rml::EventListener {
+     public:
+        explicit KeyboardEventListener(SearchMenu& menu) : menu(menu) {}
+        void ProcessEvent(Rml::Event& event) override;
+        SearchMenu& menu;
+    } arrow_key_listener {*this};
 };
 }  // namespace cqsp::client::systems::rmlui
