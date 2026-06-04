@@ -36,12 +36,12 @@ SearchMenu::~SearchMenu() {
     Rml::Element* element = document->GetElementById("search_input");
     element->RemoveEventListener(Rml::EventId::Change, &search_listener);
     Rml::Element* results_el = document->GetElementById("results");
-    if (results_el) {
+    if (results_el != nullptr) {
         results_el->RemoveEventListener(Rml::EventId::Click, &click_listener);
     }
 
     Rml::Element* main_window = document->GetFirstChild();
-    if (main_window) {
+    if (main_window != nullptr) {
         main_window->RemoveEventListener(Rml::EventId::Keydown, &arrow_key_listener, true);
     }
 }
@@ -55,7 +55,7 @@ void SearchMenu::Update(double delta_time) {
         } else {
             document->Show();
             Rml::Element* input = document->GetElementById("search_input");
-            if (input) input->Focus();
+            if (input != nullptr) input->Focus();
         }
     }
     if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_ESCAPE)) {
@@ -65,14 +65,15 @@ void SearchMenu::Update(double delta_time) {
     if (document->IsVisible()) {
         document->PullToFront();
         Rml::Element* input = document->GetElementById("search_input");
-        if (input) input->Focus();
+        if (input != nullptr) input->Focus();
     }
     bool left_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::LEFT);
     bool right_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::RIGHT);
     bool center_clicked = GetApp().MouseButtonIsPressed(engine::MouseInput::MIDDLE);
     bool any_clicked = left_clicked || right_clicked || center_clicked;
     Rml::Element* element = Rml::GetContext(0)->GetFocusElement();
-    if (any_clicked && (!GetApp().RmlUiMouseProcessed() || (element && element->GetOwnerDocument() != document))) {
+    if (any_clicked &&
+        (!GetApp().RmlUiMouseProcessed() || (element != nullptr && element->GetOwnerDocument() != document))) {
         // then we should unfocus?
         document->Hide();
     }
@@ -101,16 +102,16 @@ void SearchMenu::ReloadWindow() {
 
 void SearchMenu::SetupDocument() {
     Rml::Element* input = document->GetElementById("search_input");
-    if (input) {
+    if (input != nullptr) {
         input->AddEventListener(Rml::EventId::Change, &search_listener);
     }
     Rml::Element* results_el = document->GetElementById("results");
-    if (results_el) {
+    if (results_el != nullptr) {
         results_el->AddEventListener(Rml::EventId::Click, &click_listener);
     }
 
     Rml::Element* main_window = document->GetFirstChild();
-    if (main_window) {
+    if (main_window != nullptr) {
         main_window->AddEventListener(Rml::EventId::Keydown, &arrow_key_listener, true);
     }
 }
@@ -154,7 +155,7 @@ void SearchMenu::SearchEventListener::ProcessEvent(Rml::Event& event) {
 
 void SearchMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
     const Rml::Variant* attr = event.GetTargetElement()->GetAttribute("data-entity");
-    if (!attr || attr->GetType() != Rml::Variant::STRING) return;
+    if (attr == nullptr || attr->GetType() != Rml::Variant::STRING) return;
 
     uint32_t id = std::stoul(attr->Get<std::string>());
     entt::entity entity = static_cast<entt::entity>(id);
@@ -170,7 +171,7 @@ void SearchMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
     }
     // Clear input
     Rml::Element* input = menu.document->GetElementById("search_input");
-    if (input) {
+    if (input != nullptr) {
         static_cast<Rml::ElementFormControlInput*>(input)->SetValue("");
     }
     menu.document->Hide();
@@ -214,8 +215,8 @@ void SearchMenu::KeyboardEventListener::ProcessEvent(Rml::Event& event) {
 
 void SearchMenu::UpdateSelection() {
     Rml::Element* results_el = document->GetElementById("results");
-    if (!results_el) return;
-    for (int i = 0; i < static_cast<int>(results_el->GetNumChildren()); i++) {
+    if (results_el == nullptr) return;
+    for (int i = 0; i < results_el->GetNumChildren(); i++) {
         Rml::Element* row = results_el->GetChild(i);
         if (row == nullptr) continue;
         Rml::Element* link = row->GetFirstChild();

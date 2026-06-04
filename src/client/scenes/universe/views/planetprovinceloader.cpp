@@ -45,12 +45,7 @@ bool PlanetProvinceLoader::LoadPlanetTexture() {
     return image != nullptr;
 }
 
-bool PlanetProvinceLoader::CheckConditions() {
-    if (!universe.any_of<components::ProvincedPlanet>(body)) {
-        return false;
-    }
-    return true;
-}
+bool PlanetProvinceLoader::CheckConditions() { return (universe.any_of<components::ProvincedPlanet>(body)); }
 
 PlanetProvinceLoader::~PlanetProvinceLoader() {
     if (image != nullptr) {
