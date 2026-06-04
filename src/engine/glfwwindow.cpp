@@ -18,6 +18,8 @@
 
 #include <stb_image.h>  // NOLINT
 
+#include <cmath>
+
 #include <tracy/Tracy.hpp>
 
 #include "engine/glfwdebug.h"
@@ -37,10 +39,26 @@ void GLWindow::KeyboardCallback(GLFWwindow* _w, int key, int scancode, int actio
     rmlui_keyboard_processed = !RmlGLFW::ProcessKeyCallback(app->GetRmlUiContext(), key, action, mods);
 }
 
+bool GLWindow::MouseButtonDoubleClicked(int btn) const {
+    bool is_pressed_long_enough = (m_mouse_pressed_time[btn]) <= 0.5f;
+    // Check our distance..
+    bool pressed_same_button =
+        btn == m_mouse_button_current_pressed && m_mouse_button_current_pressed == m_mouse_button_last_pressed;
+    double distance2 =
+        (m_mouse_x_last_clicked - m_mouse_x_on_pressed) * (m_mouse_x_last_clicked - m_mouse_x_on_pressed) +
+        (m_mouse_y_last_clicked - m_mouse_y_on_pressed) * (m_mouse_y_last_clicked - m_mouse_y_on_pressed);
+    bool too_far = distance2 < 0.01;
+    return (pressed_same_button && too_far && MouseButtonIsPressed(btn) && is_pressed_long_enough);
+}
+
 void GLWindow::MouseButtonCallback(GLFWwindow* _w, int button, int action, int mods) {
     if (action == GLFW_PRESS) {
         m_mouse_keys_held[button] = true;
         m_mouse_keys_pressed[button] = true;
+        m_mouse_button_last_pressed = m_mouse_button_current_pressed;
+        m_mouse_button_current_pressed = button;
+        m_mouse_x_last_clicked = m_mouse_x_on_pressed;
+        m_mouse_y_last_clicked = m_mouse_y_on_pressed;
         m_mouse_x_on_pressed = m_mouse_x;
         m_mouse_y_on_pressed = m_mouse_y;
         m_mouse_pressed_time[button] = glfwGetTime() - m_mouse_keys_last_pressed[button];

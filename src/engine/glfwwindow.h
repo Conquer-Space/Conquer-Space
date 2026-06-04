@@ -75,10 +75,7 @@ class GLWindow : public Window {
 
     double MouseButtonLastReleased(int btn) const { return m_mouse_keys_last_pressed[btn]; }
 
-    bool MouseButtonDoubleClicked(int btn) const {
-        bool is_pressed_long_enough = (m_mouse_pressed_time[btn]) <= 0.5f;
-        return (MouseButtonIsPressed(btn) && is_pressed_long_enough);
-    }
+    bool MouseButtonDoubleClicked(int btn) const;
 
     void Destroy();
 
@@ -109,6 +106,11 @@ class GLWindow : public Window {
 
     double m_mouse_x_on_pressed;
     double m_mouse_y_on_pressed;
+    int m_mouse_button_last_pressed;
+    int m_mouse_button_current_pressed;
+
+    double m_mouse_x_last_clicked;
+    double m_mouse_y_last_clicked;
 
     bool m_mouse_keys_held[GLFW_MOUSE_BUTTON_LAST] = {false};
     bool m_mouse_keys_released[GLFW_MOUSE_BUTTON_LAST] = {false};
