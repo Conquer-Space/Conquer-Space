@@ -179,8 +179,8 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
     if (!app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
         return;
     }
-    camera.view_x -= deltaX / app.GetWindowWidth() * std::numbers::pi * PAN_SPEED;
-    camera.view_y -= deltaY / app.GetWindowHeight() * std::numbers::pi * PAN_SPEED;
+    // camera.view_x -= deltaX / app.GetWindowWidth() * std::numbers::pi * PAN_SPEED;
+    // camera.view_y -= deltaY / app.GetWindowHeight() * std::numbers::pi * PAN_SPEED;
 
     if (glm::degrees(camera.view_y) > 89.f) {
         camera.view_y = glm::radians(89.f);
@@ -189,9 +189,9 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
         camera.view_y = glm::radians(-89.f);
     }
     selected_city = entt::null;
-    if (focus_on_city) {
-        target_surface_coordinate = GetCameraOverCoordinate();
-    }
+    // if (focus_on_city) {
+    //     target_surface_coordinate = GetCameraOverCoordinate();
+    // }
 }
 
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }
