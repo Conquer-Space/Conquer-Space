@@ -87,4 +87,8 @@ enum class SelectedMenu {
     ProjectsMenu,
     ExplorationMenu
 };
+
+struct ViewProvince {
+    entt::entity province;
+};
 }  // namespace cqsp::client::ctx

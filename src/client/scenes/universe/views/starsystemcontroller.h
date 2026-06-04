@@ -56,6 +56,7 @@ class StarSystemController {
     glm::vec3 CalculateObjectPos(const entt::entity &ent);
 
     void FocusOnProvince(entt::entity province);
+    void FocusOnProvinceListener(const ctx::ViewProvince &province);
 
     void PreRender();
 

@@ -54,7 +54,9 @@ using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
                                            SysStarSystemRenderer& _r)
-    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {}
+    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {
+    universe.event_dispatcher.sink<ctx::ViewProvince>().connect<&StarSystemController::FocusOnProvinceListener>(*this);
+}
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
@@ -95,6 +97,8 @@ void StarSystemController::Update(float delta_time) {
         // Some math if you're close enough you select the city instead of the planet
     }
 
+    universe.event_dispatcher.update<ctx::ViewProvince>();
+
     if (app.KeyboardInteractingWithUi()) {
         MoveCamera(delta_time);
     }
@@ -106,6 +110,10 @@ void StarSystemController::Update(float delta_time) {
     HandleProvinceHoverColor();
     HandleHoverTooltip();
     last_focused_planet = focused_planet;
+}
+
+void StarSystemController::FocusOnProvinceListener(const ctx::ViewProvince& province) {
+    FocusOnProvince(province.province);
 }
 
 void StarSystemController::MoveCamera(double delta_time) {
@@ -765,6 +773,7 @@ glm::vec4 StarSystemController::ColonizationTargetProvinceColor(entt::entity pro
     }
     return glm::vec4(0.f);
 }
+
 void StarSystemController::ResetProvinceColor(entt::entity province) {
     if (province == entt::null) {
         return;

@@ -23,6 +23,7 @@
 #include <cctype>
 #include <string>
 
+#include "client/components/provincecentering.h"
 #include "client/scenes/universe/universescene.h"
 #include "core/components/bodies.h"
 #include "core/components/name.h"
@@ -167,6 +168,11 @@ void SearchMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
             scene::SeePlanet(universe, province.planet);
         }
     }
+    // Clear input
+    Rml::Element* input = menu.document->GetElementById("search_input");
+    if (input) {
+        static_cast<Rml::ElementFormControlInput*>(input)->SetValue("");
+    }
     menu.document->Hide();
 }
 
@@ -200,10 +206,7 @@ void SearchMenu::KeyboardEventListener::ProcessEvent(Rml::Event& event) {
         if (universe.all_of<core::components::bodies::Body>(entity)) {
             scene::SeePlanet(universe, entity);
         } else if (universe.all_of<core::components::Province>(entity)) {
-            auto& province = universe.get<core::components::Province>(entity);
-            if (province.planet != entt::null) {
-                scene::SeePlanet(universe, province.planet);
-            }
+            ctx::ZoomOntoProvince(universe, entity);
         }
         menu.document->Hide();
     }
