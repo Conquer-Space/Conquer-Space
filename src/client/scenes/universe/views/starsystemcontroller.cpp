@@ -770,7 +770,7 @@ void StarSystemController::ResetProvinceColor(entt::entity province) {
         return;
     }
     glm::vec4 color = GetCountryProvinceColor(province);
-    renderer.UpdatePlanetProvinceColors(universe.view<systems::FocusedPlanet>().front(), province, color);
+    renderer.UpdatePlanetProvinceColors(universe.get<components::Province>(province).planet, province, color);
 }
 
 void StarSystemController::SelectForeignProvince(entt::entity province) {
