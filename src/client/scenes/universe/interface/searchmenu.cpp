@@ -114,6 +114,15 @@ void SearchMenu::SetupDocument() {
     }
 }
 
+void SearchMenu::AddResult(const std::string& query, entt::entity entity, const std::string& name) {
+    std::string lower_name = name;
+    std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+    if (lower_name.find(query) != std::string::npos) {
+        results.push_back({name, std::to_string(static_cast<uint32_t>(entity))});
+    }
+}
+
 void SearchMenu::SearchEventListener::ProcessEvent(Rml::Event& event) {
     auto* input = static_cast<Rml::ElementFormControlInput*>(event.GetTargetElement());
     std::string query = input->GetValue();
@@ -127,14 +136,15 @@ void SearchMenu::SearchEventListener::ProcessEvent(Rml::Event& event) {
                        [](unsigned char c) { return std::tolower(c); });
 
         auto& universe = menu.GetUniverse();
+
+        for (auto&& [entity, body, name] :
+             universe.view<core::components::bodies::Body, core::components::Name>().each()) {
+            menu.AddResult(lower_query, entity, name.name);
+        }
+
         for (auto&& [entity, province, name] :
              universe.view<core::components::Province, core::components::Name>().each()) {
-            std::string lower_name = name.name;
-            std::transform(lower_name.begin(), lower_name.end(), lower_name.begin(),
-                           [](unsigned char c) { return std::tolower(c); });
-            if (lower_name.find(lower_query) != std::string::npos) {
-                menu.results.push_back({name.name, std::to_string(static_cast<uint32_t>(entity))});
-            }
+            menu.AddResult(lower_query, entity, name.name);
         }
     }
 

@@ -41,6 +41,8 @@ class SearchMenu : public SysRmlUiInterface {
         std::string entity_id;
     };
 
+    void AddResult(const std::string& query, entt::entity entity, const std::string& name);
+
     std::vector<SearchResult> results;
     Rml::DataModelHandle handle;
     int selected_index = -1;
