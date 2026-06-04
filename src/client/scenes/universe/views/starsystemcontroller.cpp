@@ -60,29 +60,18 @@ StarSystemController::StarSystemController(core::Universe& _u, engine::Applicati
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
-    universe.clear<systems::MouseOverEntity>();
     focused_planet = universe.view<systems::FocusedPlanet>().front();
-
-    double deltaX = previous_mouseX - app.GetMouseX();
-    double deltaY = previous_mouseY - app.GetMouseY();
-
     is_founding_city = IsFoundingCity();
 
-    // Now we should also check for hovering
+    HandleCameraMovement(delta_time);
+    // Check our focus on the planet and if we are focusing then we should
+    CheckHoveringEntity();
 
-    // Discern between clicking on UI and game
     if (!ImGui::GetIO().WantCaptureMouse && !app.GetRmlUiContext()->IsMouseInteracting()) {
-        CalculateScroll();
-
-        CalculateViewChange(deltaX, deltaY);
-
-        previous_mouseX = app.GetMouseX();
-        previous_mouseY = app.GetMouseY();
-
         // If clicks on object, go to the planet
-        entt::entity ent = universe.view<MouseOverEntity>().front();
-        if (app.MouseButtonIsReleased(engine::MouseInput::LEFT) && ent != entt::null && !app.MouseDragged()) {
-            FocusOnEntity(ent);
+        if (app.MouseButtonIsReleased(engine::MouseInput::LEFT) && hovering_planet != entt::null &&
+            !app.MouseDragged()) {
+            FocusOnEntity(hovering_planet);
 
             if (is_founding_city) {
                 FoundCity();
@@ -94,23 +83,36 @@ void StarSystemController::Update(float delta_time) {
         // Some math if you're close enough you select the city instead of the planet
     }
 
+    UpdateMapMode();
+    HandleProvinceHoverColor();
+    HandleHoverTooltip();
+    last_focused_planet = focused_planet;
+}
+
+void StarSystemController::HandleCameraMovement(float delta_time) {
+    ZoneScoped;
+    double deltaX = previous_mouseX - app.GetMouseX();
+    double deltaY = previous_mouseY - app.GetMouseY();
+
+    // Discern between clicking on UI and game
+    if (!ImGui::GetIO().WantCaptureMouse && !app.GetRmlUiContext()->IsMouseInteracting()) {
+        CalculateScroll();
+
+        CalculateViewChange(deltaX, deltaY);
+
+        previous_mouseX = app.GetMouseX();
+        previous_mouseY = app.GetMouseY();
+    }
+
     universe.event_dispatcher.update<ctx::ViewProvince>();
 
     if (app.KeyboardInteractingWithUi()) {
         MoveCamera(delta_time);
     }
+
     // Calculate camera
     CenterCameraOnPoint();
     camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight(), delta_time);
-
-    // Check our focus on the planet and if we are focusing then we should
-    CheckHoveringEntity();
-    universe.ctx().at<client::ctx::HoveredProvince>().hovered_province = hovering_province;
-
-    UpdateMapMode();
-    HandleProvinceHoverColor();
-    HandleHoverTooltip();
-    last_focused_planet = focused_planet;
 }
 
 void StarSystemController::FocusOnProvinceListener(const ctx::ViewProvince& province) {
@@ -633,7 +635,6 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
         auto intersection = IsMouseOverEntity(body_id, ray_wor, body.radius);
         if (intersection) {
             mouse_on_object_position = *intersection;
-            universe.emplace_or_replace<MouseOverEntity>(body_id);
             return body_id;
         }
     }
@@ -644,7 +645,6 @@ entt::entity StarSystemController::GetMouseOnObject(int mouse_x, int mouse_y) {
         auto intersection = IsMouseOverEntity(body_id, ray_wor, 0.01);
         if (intersection) {
             mouse_on_object_position = *intersection;
-            universe.emplace_or_replace<MouseOverEntity>(body_id);
             return body_id;
         }
     }
@@ -860,6 +860,7 @@ void StarSystemController::CheckHoveringEntity() {
     // Now check country
     auto& province_comp = universe.get<components::Province>(hovering_province);
     hovering_country = province_comp.country;
+    universe.ctx().at<client::ctx::HoveredProvince>().hovered_province = hovering_province;
 }
 
 entt::entity StarSystemController::SurfaceCoordinateToProvince(SurfaceCoordinate coordinate, entt::entity planet) {

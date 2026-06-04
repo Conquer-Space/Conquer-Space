@@ -41,15 +41,6 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
         }
     };
 
-    auto entity_command = [](sysdebuggui_parameters) {
-        entt::entity ent = universe.view<MouseOverEntity>().front();
-        if (ent == entt::null) {
-            input.push_back(fmt::format("Mouse is over null"));
-        } else {
-            input.push_back(fmt::format("Mouse is over {}", ent));
-        }
-    };
-
     auto screen_clear = [](sysdebuggui_parameters) { input.clear(); };
 
     auto entitycount = [](sysdebuggui_parameters) {
@@ -84,7 +75,6 @@ SysDebugMenu::SysDebugMenu(Application& app) : SysUserInterface(app), asset_wind
     auto lua = [](sysdebuggui_parameters) { script_interface.RunScript(args); };
 
     commands = {{"help", {"Shows this help menu", help_command}},
-                {"mouseon", {"Get the entitiy the mouse is over", entity_command}},
                 {"clear", {"Clears screen", screen_clear}},
                 {"entitycount", {"Gets number of entities", entitycount}},
                 {"name", {"Gets name and identifier of entity", entity_name}},

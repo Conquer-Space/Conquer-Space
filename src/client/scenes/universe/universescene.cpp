@@ -39,7 +39,6 @@
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
 #include "client/scenes/universe/interface/syspausemenu.h"
-#include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
 #include "client/scenes/universe/interface/taxwindow.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"

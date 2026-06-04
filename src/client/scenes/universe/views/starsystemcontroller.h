@@ -83,6 +83,7 @@ class StarSystemController {
 
     void FocusPlanetView();
     void FocusCityView();
+    void HandleCameraMovement(float delta_time);
 
     void CalculateCityPositions(entt::entity entity);
 
