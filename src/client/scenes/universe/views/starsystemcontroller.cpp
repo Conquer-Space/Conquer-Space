@@ -67,9 +67,6 @@ void StarSystemController::Update(float delta_time) {
     double deltaY = previous_mouseY - app.GetMouseY();
 
     is_founding_city = IsFoundingCity();
-    // Check our focus on the planet and if we are focusing then we should
-    CheckHoveringEntity();
-    universe.ctx().at<client::ctx::HoveredProvince>().hovered_province = hovering_province;
 
     // Now we should also check for hovering
 
@@ -102,9 +99,13 @@ void StarSystemController::Update(float delta_time) {
     if (app.KeyboardInteractingWithUi()) {
         MoveCamera(delta_time);
     }
-
     // Calculate camera
     CenterCameraOnPoint();
+    camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight(), delta_time);
+
+    // Check our focus on the planet and if we are focusing then we should
+    CheckHoveringEntity();
+    universe.ctx().at<client::ctx::HoveredProvince>().hovered_province = hovering_province;
 
     UpdateMapMode();
     HandleProvinceHoverColor();

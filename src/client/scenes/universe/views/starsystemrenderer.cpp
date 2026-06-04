@@ -128,7 +128,6 @@ void SysStarSystemRenderer::Render(float delta_time) {
     glDepthFunc(GL_LESS);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    // camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight(), 0);
 
     overlay.Update();
 
@@ -162,11 +161,7 @@ void SysStarSystemRenderer::SeeStarSystem() {
     }
 }
 
-void SysStarSystemRenderer::Update(float delta_time) {
-    camera.CalculateCameraMatrix(app.GetWindowWidth(), app.GetWindowHeight(), delta_time);
-
-    controller.Update(delta_time);
-}
+void SysStarSystemRenderer::Update(float delta_time) { controller.Update(delta_time); }
 
 void SysStarSystemRenderer::DoUI(float delta_time) {
     user_interface.DoUI(delta_time);
