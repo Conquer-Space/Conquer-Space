@@ -34,28 +34,7 @@
 #include "core/util/nameutil.h"
 
 namespace cqsp::core::loading {
-CityLoader::CityLoader(Universe& universe) : HjsonLoader(universe) {
-    tag_loader.Register("capital", [](Node& node) {
-        Universe& universe = node.universe();
-        // Then it's a capital city of whatever country it's in
-        node.emplace<components::CapitalCity>();
-        // Add to parent country
-        if (!node.any_of<components::Governed>()) {
-            return;
-        }
-        Node governor_node = universe(node.get<components::Governed>().governor);
-        auto& country_comp = universe.get<components::Country>(governor_node);
-        if (country_comp.capital_city != entt::null) {
-            // Get name
-            SPDLOG_INFO("Country {} already has a capital; {} will be replaced with {}",
-                        util::GetName(universe, governor_node), util::GetName(universe, country_comp.capital_city),
-                        util::GetName(universe, node));
-            // Remove capital tag on the other capital city
-            universe(country_comp.capital_city).remove<components::CapitalCity>();
-        }
-        country_comp.capital_city = node;
-    });
-}
+CityLoader::CityLoader(Universe& universe) : HjsonLoader(universe) {}
 
 namespace {
 struct ConnectedCities {
