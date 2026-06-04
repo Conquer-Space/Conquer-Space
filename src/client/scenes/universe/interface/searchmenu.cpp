@@ -209,6 +209,10 @@ void SearchMenu::KeyboardEventListener::ProcessEvent(Rml::Event& event) {
         } else if (universe.all_of<core::components::Province>(entity)) {
             ctx::ZoomOntoProvince(universe, entity);
         }
+        Rml::Element* input = menu.document->GetElementById("search_input");
+        if (input != nullptr) {
+            static_cast<Rml::ElementFormControlInput*>(input)->SetValue("");
+        }
         menu.document->Hide();
     }
 }
