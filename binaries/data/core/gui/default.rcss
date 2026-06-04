@@ -6,7 +6,7 @@ body {
 
 @spritesheet main_ui_spritesheet
 {
-    /* Path: D:/Code/cqsp/binaries/data/core/gui/menuitems.png */
+    /* Path: cqsp/binaries/data/core/gui/menuitems.png */
     src: menuitems.png;
     resolution: 4.0x;
 
@@ -132,6 +132,21 @@ tabset panels panel
     height: 100%;
 }
 
+.scrollbarvertical {
+    width: 12px;
+}
+
+.scrollbarvertical slidertrack {
+    width: 12px;
+    height: 100%;
+    background-color: #fb0e0e;
+}
+
+.scrollbarvertical sliderbar {
+    width: 12px;
+    background-color: #fb0e0e;
+}
+
 .scrollbarhorizontal {
     margin-top: -6px;
     margin-bottom: -6px;
@@ -147,4 +162,5 @@ tabset panels panel
     decorator: image(slidertrack);
     margin: 5px;
     height: 5px;
+    width: 10px;
 }

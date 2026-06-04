@@ -55,6 +55,9 @@ class StarSystemController {
 
     glm::vec3 CalculateObjectPos(const entt::entity &ent);
 
+    void FocusOnProvince(entt::entity province);
+    void FocusOnProvinceListener(const ctx::ViewProvince &province);
+
     void PreRender();
 
     entt::entity m_viewing_entity = entt::null;
@@ -125,6 +128,7 @@ class StarSystemController {
     glm::vec4 CountryColorToVec4(const core::components::ProvinceColor &color);
     glm::vec4 CountryColorToVec4(const entt::entity province);
     glm::vec4 GetCountrySelectionColor(const glm::vec3 &country_color);
+    glm::vec3 MixScale(float amount);
 
     core::Universe &universe;
     engine::Application &app;

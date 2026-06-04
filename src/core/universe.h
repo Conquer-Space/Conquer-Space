@@ -189,6 +189,8 @@ class Universe : public entt::registry {
 
     entt::entity GetPlayer() const;
 
+    entt::dispatcher event_dispatcher;
+
  private:
     bool to_tick = false;
 };

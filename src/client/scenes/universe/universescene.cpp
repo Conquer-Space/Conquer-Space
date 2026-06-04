@@ -33,6 +33,7 @@
 #include "client/scenes/universe/interface/productionsummary.h"
 #include "client/scenes/universe/interface/provincewindow.h"
 #include "client/scenes/universe/interface/rightclickwindow.h"
+#include "client/scenes/universe/interface/searchmenu.h"
 #include "client/scenes/universe/interface/sidemenu.h"
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
@@ -99,13 +100,14 @@ void UniverseScene::Init() {
 
     AddRmlUiSystem<systems::rmlui::TurnSaveWindow>();
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
+    AddRmlUiSystem<systems::rmlui::SearchMenu>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
 }
 
 void UniverseScene::Update(float deltaTime) {
     ZoneScoped;
-    if (!ImGui::GetIO().WantCaptureKeyboard) {
+    if (GetApp().KeyboardInteractingWithUi()) {
         if (GetApp().ButtonIsReleased(engine::KeyInput::KEY_SPACE)) {
             ToggleTick();
         }

@@ -211,6 +211,11 @@ class Application {
 
     sol::state& GetSolState() { return lua_state; }
 
+    bool RmlUiKeyboardProcessed() { return m_window->RmlUiCapturedKeyboardInput(); }
+    bool RmlUiMouseProcessed() { return m_window->RmlUiCapturedMouseInput(); }
+    bool RmlUiTextProcessed() { return m_window->RmlUiCapturedTextInput(); }
+    bool KeyboardInteractingWithUi();
+
  private:
     void InitFonts();
 
@@ -222,7 +227,7 @@ class Application {
 
     void InitRmlUi();
     void InitImgui();
-    void ProcessRmlUiUserInput();
+
     void InitAudio();
 
     void UpdateScene();

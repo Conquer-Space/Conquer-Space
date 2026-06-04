@@ -26,6 +26,7 @@
 #include "client/components/clientctx.h"
 #include "client/components/planetrendering.h"
 #include "client/components/rightclick.h"
+#include "client/scenes/universe/views/planetprovinceloader.h"
 #include "core/components/bodies.h"
 #include "core/components/coordinates.h"
 #include "core/components/model.h"
@@ -46,7 +47,6 @@
 #include "glad/glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/quaternion.hpp"
-#include "starsystemrenderer.h"
 #include "stb_image.h"  // NOLINT: STB is rather annoying
 #include "tracy/Tracy.hpp"
 
@@ -449,20 +449,11 @@ void SysStarSystemRenderer::DrawAllPlanets(auto& bodies) {
     for (entt::entity body_entity : bodies) {
         glm::vec3 object_pos = controller.CalculateCenteredObject(body_entity);
 
-        // This can probably switched to some log system based off the mass of
-        // a planet.
-        //if (true) {
-        // Check if planet has terrain or not
-        // Don't actually use proc-gen terrain for now
-        // if (universe.all_of<bodies::Terrain>(body_entity)) {
-        // Do empty terrain
-        // Check if the planet has the thing
         if (universe.all_of<bodies::TexturedTerrain>(body_entity)) {
             DrawTexturedPlanet(object_pos, body_entity);
         } else {
             DrawTerrainlessPlanet(body_entity, object_pos);
         }
-        //}
     }
 }
 
@@ -637,57 +628,6 @@ void SysStarSystemRenderer::ResetPlanetProvinceColors(entt::entity entity) {
     MassUpdatePlanetProvinceColors(entity);
 }
 
-/**
- * Generates the OpenGL textures for the province map and the colors we are to assign to the province map
- */
-void SysStarSystemRenderer::GeneratePlanetProvinceMap(entt::entity entity, int province_width, int province_height,
-                                                      uint16_t province_count) {
-    assert(universe.all_of<PlanetTexture>(entity));
-    auto& data = universe.get<PlanetTexture>(entity);
-
-    // Generate int texture for assigning color indices
-    unsigned int texid;
-    glGenTextures(1, &texid);
-    glBindTexture(GL_TEXTURE_2D, texid);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, province_width, province_height, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT,
-                 data.province_indices.data());
-    data.province_index_texture = new Texture();
-    data.province_index_texture->id = texid;
-    data.province_index_texture->width = province_width;
-    data.province_index_texture->height = province_height;
-    data.province_index_texture->texture_type = GL_TEXTURE_2D;
-
-    // Now let's generate our indices for the color for the province
-    const size_t color_count = static_cast<size_t>(province_count);
-    data.province_colors.reserve(color_count);
-    // Now let's just assign random colors...
-    for (size_t i = 0; i < color_count; i++) {
-        data.province_colors.emplace_back(0.f);
-    }
-
-    // Generate TBO
-    GLuint tbo_buffer;
-    glGenBuffers(1, &tbo_buffer);
-    glBindBuffer(GL_TEXTURE_BUFFER, tbo_buffer);
-    glBufferData(GL_TEXTURE_BUFFER, sizeof(decltype(data.province_colors)::value_type) * data.province_colors.size(),
-                 static_cast<const void*>(data.province_colors.data()), GL_STATIC_DRAW);
-
-    GLuint tbo_texture;
-    glGenTextures(1, &tbo_texture);
-    glBindTexture(GL_TEXTURE_BUFFER, tbo_texture);
-
-    glTexBuffer(GL_TEXTURE_BUFFER, GL_RGBA32F, tbo_buffer);
-    // Now let's save this texture
-    data.province_color_map = new asset::TBOTexture();
-    data.province_color_map->id = tbo_texture;
-    dynamic_cast<asset::TBOTexture*>(data.province_color_map)->buffer_id = tbo_buffer;
-    data.province_color_map->texture_type = GL_TEXTURE_BUFFER;
-}
-
 ShaderProgram_t SysStarSystemRenderer::ConstructShader(const std::string& key) {
     return app.GetAssetManager().GetAsset<ShaderDefinition>(key)->MakeShader();
 }
@@ -808,33 +748,6 @@ void SysStarSystemRenderer::SetupDummyTextures() {
     glTexBuffer(GL_TEXTURE_BUFFER, GL_RGB32F, dummy_color_map->buffer_id);
 }
 
-void SysStarSystemRenderer::CheckResourceDistRender() {
-#if FALSE
-    // Then check if it's the same rendered object
-    auto& rend = universe.get<PlanetTerrainRender>(m_viewing_entity);
-    if (rend.resource == controller.terrain_displaying) {
-        return;
-    }
-
-    // Check if it's the same
-    if (!universe.any_of<components::ResourceDistribution>(m_viewing_entity)) {
-        return;
-    }
-
-    auto& dist = universe.get<components::ResourceDistribution>(m_viewing_entity);
-    TerrainImageGenerator gen;
-    gen.terrain.seed = dist.dist[rend.resource];
-    gen.GenerateHeightMap(3, 9);
-    // Make the UI
-    unsigned int a = GeneratePlanetTexture(gen.GetHeightMap());
-    planet_resource = GenerateTexture(a, gen.GetHeightMap());
-    controller.terrain_displaying = rend.resource;
-    // Switch view mode
-    planet.textures[0] = planet_resource;
-    planet.shaderProgram = no_light_shader;
-#endif
-}
-
 float SysStarSystemRenderer::GetWindowRatio() { return window_ratio; }
 
 void SysStarSystemRenderer::DrawAllOrbits() {
@@ -881,87 +794,8 @@ void SysStarSystemRenderer::DrawOrbit(const entt::entity& entity) {
 }
 
 void SysStarSystemRenderer::LoadPlanetProvinceMap(entt::entity body) {
-    if (!universe.any_of<components::ProvincedPlanet>(body)) {
-        return;
-    }
-    auto& province_map = universe.get<components::ProvincedPlanet>(body);
-    asset::BinaryAsset* bin_asset = app.GetAssetManager().GetAsset<asset::BinaryAsset>(province_map.province_map);
-    if (bin_asset == nullptr) {
-        SPDLOG_ERROR("Could not find the planet province map {}", province_map.province_map);
-        return;
-    }
-    auto& data = universe.get_or_emplace<PlanetTexture>(body);
-
-    // Then create vector
-    auto start = std::chrono::high_resolution_clock::now();
-    uint64_t file_size = bin_asset->data.size();
-    int comp = 0;
-    stbi_set_flip_vertically_on_load(0);
-    int province_width;
-    int province_height;
-    auto image_binary =
-        stbi_load_from_memory(bin_asset->data.data(), file_size, &province_width, &province_height, &comp, 0);
-
-    // Set country map
-    data.province_map.reserve(static_cast<size_t>(province_height) * static_cast<size_t>(province_width));
-    data.province_indices.reserve(static_cast<size_t>(province_height) * static_cast<size_t>(province_width));
-    // Counter to assign to the array of colors
-    uint16_t current_province_idx = 1;
-    data.province_index_map[entt::null] = 0;
-    // We expect the province map will be the same dimensions as the province texture, so it should be fine?
-    for (int idx = 0; idx < province_width * province_height; idx++) {
-        // Position on the map
-        int pos = idx * comp;
-        std::tuple<int, int, int, int> t =
-            std::make_tuple(image_binary[pos], image_binary[pos + 1], image_binary[pos + 2], image_binary[pos + 3]);
-        int i = components::ProvinceColor::toInt(std::get<0>(t), std::get<1>(t), std::get<2>(t));
-        if (universe.province_colors[body].find(i) != universe.province_colors[body].end()) {
-            entt::entity province_id = universe.province_colors[body][i];
-            data.province_map.push_back(province_id);
-            if (!data.province_index_map.contains(province_id)) {
-                data.province_index_map[province_id] = current_province_idx;
-                current_province_idx++;
-            }
-            data.province_indices.push_back(data.province_index_map[province_id]);
-        } else {
-            // Most likely ocean
-            // Maybe next time we should have ocean provinces
-            data.province_map.push_back(entt::null);
-            data.province_indices.push_back(0);
-        }
-    }
-    stbi_image_free(image_binary);
-
-    assert(data.province_indices.size() == static_cast<size_t>(province_width) * static_cast<size_t>(province_height));
-    // Check that our province map and indices are the right size.
-    assert(data.province_map.size() == data.province_indices.size());
-    // If the province doesn't have a pixel then we will not add the index, so the index ends up being 0.
-    // We should probably fix this by not having any provinces with no pixels
-    // As a temp fix, let's sort through all the provinces and figure out what province exists or not and
-    // then add it into the map so that it doesn't just go straight to zero
-    auto& settlements = universe.get<components::Settlements>(body);
-    for (entt::entity province : settlements.provinces) {
-        if (!data.province_index_map.contains(province)) {
-            data.province_index_map[province] = current_province_idx;
-            current_province_idx++;
-        }
-    }
-    GeneratePlanetProvinceMap(body, province_width, province_height, current_province_idx);
-
-    data.has_provinces = true;
-    data.width = province_width;
-    data.height = province_height;
-
-    auto end = std::chrono::high_resolution_clock::now();
-    int len = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-    SPDLOG_INFO("Took {} ms to load province image", len);
-}
-
-void SysStarSystemRenderer::GeneratePlanetOverlay(entt::entity body) {
-    auto& data = universe.get_or_emplace<PlanetTexture>(body);
-    data.overlay = new cqsp::engine::FramebufferTexture();
-    cqsp::engine::FramebufferTexture* overlay = data.overlay;
-    overlay->InitTexture(4096, 2048);
+    PlanetProvinceLoader loader(app, universe, body);
+    loader.LoadProvinces();
 }
 
 SysStarSystemRenderer::~SysStarSystemRenderer() {

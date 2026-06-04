@@ -61,6 +61,32 @@ bool ConstructionMenu::RecipeCombo(const char* label, int& selected_idx,
     return changed;
 }
 
+void ConstructionMenu::PerformConstruction(int count) {
+    entt::entity province = GetUniverse().ctx().at<client::ctx::HoveredProvince>().hovered_province;
+    if (!GetUniverse().valid(province) ||
+        !GetUniverse().all_of<components::Province, components::IndustrialZone>(province)) {
+        return;
+    }
+    if (GetUniverse().get<components::Province>(province).country != GetUniverse().GetPlayer()) {
+        return;
+    }
+    // then we can build
+    // Check if the player owns the province
+    auto& industrial_zone = GetUniverse().get<components::IndustrialZone>(province);
+    if (industrial_zone.industries.empty()) {
+        // Then add stuff
+        // Create industry
+        // Add to city
+        auto factory = core::actions::CreateFactory(GetUniverse()(province),
+                                                    GetUniverse()(recipe_list[selected_index].second), count);
+    } else {
+        // check our selected thing
+        entt::entity back = industrial_zone.industries.back();
+        // then we add stuff to the size
+        GetUniverse().get<components::ProductionUnit>(back).size += count;
+    }
+}
+
 void ConstructionMenu::Init() {
     for (auto&& [entity, name, recipe] : GetUniverse().view<components::Name, components::Recipe>().each()) {
         recipe_list.emplace_back(name, entity);
@@ -93,25 +119,7 @@ void ConstructionMenu::DoUpdate(int delta_time) {
             production_count = 10;
         }
         if (GetApp().MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-            SPDLOG_INFO("Adding one building or something");
-            entt::entity province = GetUniverse().ctx().at<client::ctx::HoveredProvince>().hovered_province;
-            if (GetUniverse().valid(province) &&
-                GetUniverse().all_of<components::Province, components::IndustrialZone>(province)) {
-                // then we can build
-                auto& industrial_zone = GetUniverse().get<components::IndustrialZone>(province);
-                if (industrial_zone.industries.empty()) {
-                    // Then add stuff
-                    // Create industry
-                    // Add to city
-                    auto factory = core::actions::CreateFactory(
-                        GetUniverse()(province), GetUniverse()(recipe_list[selected_index].second), production_count);
-                } else {
-                    // check our selected thing
-                    entt::entity back = industrial_zone.industries.back();
-                    // then we add stuff to the size
-                    GetUniverse().get<components::ProductionUnit>(back).size += production_count;
-                }
-            }
+            PerformConstruction(production_count);
         }
 
         if (constructing && GetApp().ButtonIsReleased(engine::KeyInput::KEY_ESCAPE)) {

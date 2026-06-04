@@ -54,7 +54,9 @@ using types::SurfaceCoordinate;
 
 StarSystemController::StarSystemController(core::Universe& _u, engine::Application& _a, StarSystemCamera& _c,
                                            SysStarSystemRenderer& _r)
-    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {}
+    : universe(_u), app(_a), camera(_c), renderer(_r), selected_country(entt::null) {
+    universe.event_dispatcher.sink<ctx::ViewProvince>().connect<&StarSystemController::FocusOnProvinceListener>(*this);
+}
 
 void StarSystemController::Update(float delta_time) {
     ZoneScoped;
@@ -89,10 +91,15 @@ void StarSystemController::Update(float delta_time) {
                 FoundCity();
             }
         }
+        if (app.MouseButtonDoubleClicked(engine::MouseInput::LEFT)) {
+            FocusOnProvince(hovering_province);
+        }
         // Some math if you're close enough you select the city instead of the planet
     }
 
-    if (!ImGui::GetIO().WantCaptureKeyboard) {
+    universe.event_dispatcher.update<ctx::ViewProvince>();
+
+    if (app.KeyboardInteractingWithUi()) {
         MoveCamera(delta_time);
     }
 
@@ -103,6 +110,10 @@ void StarSystemController::Update(float delta_time) {
     HandleProvinceHoverColor();
     HandleHoverTooltip();
     last_focused_planet = focused_planet;
+}
+
+void StarSystemController::FocusOnProvinceListener(const ctx::ViewProvince& province) {
+    FocusOnProvince(province.province);
 }
 
 void StarSystemController::MoveCamera(double delta_time) {
@@ -259,11 +270,26 @@ void StarSystemController::CenterCameraOnCity() {
     }
 
     auto& surf = universe.get<SurfaceCoordinate>(selected_city);
-    // TODO(EhWhoAmI): Change this so that it doesn't have to change the
-    // coordinate system multiple times. Currently this changes from surface
-    // coordinates to 3d coordinates to surface coordinates. I think it can be
-    // solved with a basic formula.
     target_surface_coordinate = surf;
+}
+
+void StarSystemController::FocusOnProvince(entt::entity province) {
+    if (!universe.valid(province) || !universe.all_of<components::Province, SurfaceCoordinate>(province)) {
+        return;
+    }
+    // then do thing
+    auto& province_comp = universe.get<components::Province>(province);
+    if (focused_planet != province_comp.planet) {
+        SeePlanet(province_comp.planet);
+    }
+
+    auto& surf = universe.get<SurfaceCoordinate>(province);
+    target_surface_coordinate = surf;
+    SetCameraToPlanetReferenceFrame();
+    entt::entity planet = universe.view<FocusedPlanet>().front();
+    Body& body = universe.get<Body>(planet);
+    // 100 km above the city
+    camera.scroll = body.radius + 800;
 }
 
 void StarSystemController::FocusOnEntity(entt::entity ent) {
@@ -317,7 +343,7 @@ void StarSystemController::SelectProvince() {
         ResetProvinceColor(province_to_reset);
         // Reset our country
         selected_country = province.country;
-        if (province.country != country_to_reset) {
+        if (province.country != country_to_reset && universe.valid(country_to_reset)) {
             // Set our country color
             SetCountryProvincesColor(country_to_reset);
         }
@@ -712,13 +738,11 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
         case ctx::MapMode::ResourceMapMode: {
             // Then we should just color on green to red
             auto& amenability = universe.get<components::ResourceAmenability>(province);
-            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), amenability.resources / 10.f),
-                             DEFAULT_PROVINCE_APLHA);
+            return glm::vec4(MixScale(amenability.resources / 10.f), DEFAULT_PROVINCE_APLHA);
         } break;
         case ctx::MapMode::ScienceMapMode: {
             auto& amenability = universe.get<components::ResourceAmenability>(province);
-            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), amenability.science / 10.f),
-                             DEFAULT_PROVINCE_APLHA);
+            return glm::vec4(MixScale(amenability.science / 10.f), DEFAULT_PROVINCE_APLHA);
         } break;
         case ctx::MapMode::GoodPriceMapMode: {
             // Now get province market
@@ -730,7 +754,7 @@ glm::vec4 StarSystemController::GetCountryProvinceColor(entt::entity province) {
                 universe.good_prices[selected_good] * (1 + universe.economy_config.market_config.base_price_deviation);
             double difference = market.price[universe.good_map[selected_good]] / max_price;
 
-            return glm::vec4(glm::mix(HexToRgb("#C20404"), HexToRgb("#25F307"), difference), DEFAULT_PROVINCE_APLHA);
+            return glm::vec4(MixScale(difference), DEFAULT_PROVINCE_APLHA);
         }
         default:
         case ctx::MapMode::InvalidMapMode:
@@ -749,12 +773,13 @@ glm::vec4 StarSystemController::ColonizationTargetProvinceColor(entt::entity pro
     }
     return glm::vec4(0.f);
 }
+
 void StarSystemController::ResetProvinceColor(entt::entity province) {
     if (province == entt::null) {
         return;
     }
     glm::vec4 color = GetCountryProvinceColor(province);
-    renderer.UpdatePlanetProvinceColors(universe.view<systems::FocusedPlanet>().front(), province, color);
+    renderer.UpdatePlanetProvinceColors(universe.get<components::Province>(province).planet, province, color);
 }
 
 void StarSystemController::SelectForeignProvince(entt::entity province) {
@@ -948,5 +973,11 @@ glm::vec3 StarSystemController::CalculateFutureCenteredPosition(const entt::enti
         object_pos = (glm::mix(object_pos, future_pos, universe.tick_fraction));
     }
     return object_pos;
+}
+
+glm::vec3 StarSystemController::MixScale(float amount) {
+    static const glm::vec3 red = HexToRgb("#C20404");
+    static const glm::vec3 green = HexToRgb("#25F307");
+    return glm::mix(red, green, amount);
 }
 }  // namespace cqsp::client::systems

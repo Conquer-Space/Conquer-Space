@@ -105,66 +105,6 @@ void Application::InitImgui() {
     SPDLOG_INFO("ImGui Version: {}", ImGui::GetVersion());
 }
 
-void Application::ProcessRmlUiUserInput() {
-    ZoneScoped;
-    rml_context->SetDimensions(Rml::Vector2i(GetWindowWidth(), GetWindowHeight()));
-
-    GLWindow* gl_window = reinterpret_cast<GLWindow*>(m_window);
-    int mods = gl_window->m_mods;
-    int key_modifier = 0;
-    // Check for key mods
-    if ((mods & GLFW_MOD_CONTROL) == GLFW_MOD_CONTROL) {
-        key_modifier |= Rml::Input::KeyModifier::KM_CTRL;
-    }
-    if ((mods & GLFW_MOD_SHIFT) == GLFW_MOD_SHIFT) {
-        key_modifier |= Rml::Input::KeyModifier::KM_SHIFT;
-    }
-    if ((mods & GLFW_MOD_ALT) == GLFW_MOD_ALT) {
-        key_modifier |= Rml::Input::KeyModifier::KM_ALT;
-    }
-    if ((mods & GLFW_MOD_CAPS_LOCK) == GLFW_MOD_CAPS_LOCK) {
-        key_modifier |= Rml::Input::KeyModifier::KM_CAPSLOCK;
-    }
-    if ((mods & GLFW_MOD_NUM_LOCK) == GLFW_MOD_NUM_LOCK) {
-        key_modifier |= Rml::Input::KeyModifier::KM_NUMLOCK;
-    }
-    rml_context->ProcessMouseMove(GetMouseX(), GetMouseY(), key_modifier);
-
-    // Mouse down
-    if (MouseButtonIsPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-        rml_context->ProcessMouseButtonDown(0, key_modifier);
-    }
-    if (MouseButtonIsPressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-        rml_context->ProcessMouseButtonDown(1, key_modifier);
-    }
-    if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_LEFT)) {
-        rml_context->ProcessMouseButtonUp(0, key_modifier);
-    }
-    if (MouseButtonIsReleased(GLFW_MOUSE_BUTTON_RIGHT)) {
-        rml_context->ProcessMouseButtonUp(1, key_modifier);
-    }
-    // Scroll wheel is flipped for some reason
-    rml_context->ProcessMouseWheel(-GetScrollAmount(), key_modifier);
-
-    // Process key inputs
-    for (int key : gl_window->keys_pressed_last) {
-        rml_context->ProcessKeyDown((Rml::Input::KeyIdentifier)GetRmlUiKey(key), key_modifier);
-    }
-
-    for (int key : gl_window->keys_released_last) {
-        rml_context->ProcessKeyUp((Rml::Input::KeyIdentifier)GetRmlUiKey(key), key_modifier);
-    }
-
-    for (unsigned int key : gl_window->code_input) {
-        rml_context->ProcessTextInput(key);
-    }
-
-    // Because the glfw's char callback does not register new line.
-    if (ButtonIsPressed(GLFW_KEY_ENTER)) {
-        rml_context->ProcessTextInput('\n');
-    }
-}
-
 void Application::InitAudio() {
     // Init audio
     m_audio_interface = new audio::AudioInterface();
@@ -182,6 +122,10 @@ void Application::UpdateScene() {
 
     // Update
     m_scene_manager.Update(deltaTime);
+}
+
+bool Application::KeyboardInteractingWithUi() {
+    return !ImGui::GetIO().WantCaptureKeyboard && !RmlUiKeyboardProcessed() && !RmlUiTextProcessed();
 }
 
 void Application::ComputeFramerate() {

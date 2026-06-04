@@ -34,7 +34,7 @@ void GLWindow::KeyboardCallback(GLFWwindow* _w, int key, int scancode, int actio
         m_keys_released[key] = true;
         keys_released_last.push_back(key);
     }
-    RmlGLFW::ProcessKeyCallback(app->GetRmlUiContext(), key, action, mods);
+    rmlui_keyboard_processed = !RmlGLFW::ProcessKeyCallback(app->GetRmlUiContext(), key, action, mods);
 }
 
 void GLWindow::MouseButtonCallback(GLFWwindow* _w, int button, int action, int mods) {
@@ -49,7 +49,7 @@ void GLWindow::MouseButtonCallback(GLFWwindow* _w, int button, int action, int m
         m_mouse_keys_held[button] = false;
         m_mouse_keys_released[button] = true;
     }
-    RmlGLFW::ProcessMouseButtonCallback(app->GetRmlUiContext(), button, action, mods);
+    rmlui_mouse_processed = !RmlGLFW::ProcessMouseButtonCallback(app->GetRmlUiContext(), button, action, mods);
 }
 
 void GLWindow::FrameBufferSizeCallback(GLFWwindow* window, int width, int height) {
@@ -65,6 +65,28 @@ void GLWindow::FrameBufferSizeCallback(GLFWwindow* window, int width, int height
             doc->ReloadStyleSheet();
         }
     }
+}
+
+void GLWindow::MousePositionCallback(GLFWwindow* _w, double xpos, double ypos) {
+    m_mouse_moved = (m_mouse_x == xpos) && (m_mouse_y == ypos);
+    m_mouse_x = xpos;
+    m_mouse_y = ypos;
+    RmlGLFW::ProcessCursorPosCallback(app->GetRmlUiContext(), _w, xpos, ypos, 0);
+}
+
+void GLWindow::ScrollCallback(GLFWwindow* _w, double xoffset, double yoffset) {
+    m_scroll_amount = yoffset;
+    RmlGLFW::ProcessScrollCallback(app->GetRmlUiContext(), yoffset, 0);
+}
+
+void GLWindow::MouseEnterCallback(GLFWwindow* _w, int entered) {
+    RmlGLFW::ProcessCursorEnterCallback(app->GetRmlUiContext(), entered);
+}
+
+void GLWindow::CharacterCallback(GLFWwindow* window, unsigned int codepoint) {
+    // Callback
+    code_input.push_back(codepoint);
+    rmlui_text_processed = !RmlGLFW::ProcessCharCallback(app->GetRmlUiContext(), codepoint);
 }
 
 void GLWindow::SetCallbacks() {

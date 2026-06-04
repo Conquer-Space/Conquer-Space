@@ -17,6 +17,7 @@
 #include "client/scenes/universe/interface/maintooltip.h"
 
 #include "client/components/clientctx.h"
+#include "core/components/coordinates.h"
 #include "core/components/market.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
@@ -79,7 +80,7 @@ void ToolTipWindow::Update(double delta_time) {
         to_present = false;
     }
     if (to_present && !document->IsVisible()) {
-        document->Show();
+        document->Show(Rml::ModalFlag::None, Rml::FocusFlag::None);
     } else if (!to_present && document->IsVisible()) {
         document->Hide();
     }
@@ -92,7 +93,14 @@ void ToolTipWindow::Update(double delta_time) {
 void ToolTipWindow::ProvinceTooltipProvider(entt::entity entity) {
     // Let's just check map mode and if it's price map mode we output that
     if (GetUniverse().ctx().at<ctx::MapMode>() != ctx::MapMode::GoodPriceMapMode) {
-        tooltip_content->SetInnerRML(fmt::format("<p>{}</p>", core::util::GetName(GetUniverse(), entity)));
+        if (GetUniverse().all_of<core::components::types::SurfaceCoordinate>(entity)) {
+            auto& surface = GetUniverse().get<core::components::types::SurfaceCoordinate>(entity);
+            tooltip_content->SetInnerRML(fmt::format("<p>{}</p><p>{},{}</p>",
+                                                     core::util::GetName(GetUniverse(), entity), surface.latitude(),
+                                                     surface.longitude()));
+        } else {
+            tooltip_content->SetInnerRML(fmt::format("<p>{}</p>", core::util::GetName(GetUniverse(), entity)));
+        }
         return;
     }
     const auto& ctx = GetUniverse().ctx().at<ctx::MapModeCtx>();
