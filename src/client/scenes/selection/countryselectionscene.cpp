@@ -78,5 +78,4 @@ void CountrySelectionScene::InitializeLuaFunctions() {
     REGISTER_FUNCTION("start_game", [&]() { StartGame(); });
     REGISTER_FUNCTION("get_selected_country", [&]() { return selected_country; });
 }
-
 }  // namespace cqsp::client::scene

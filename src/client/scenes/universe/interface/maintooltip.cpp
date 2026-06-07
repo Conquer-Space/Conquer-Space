@@ -21,6 +21,7 @@
 #include "core/components/market.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 
 namespace cqsp::client::systems::rmlui {
 ToolTipWindow::~ToolTipWindow() { document->Close(); }
@@ -93,14 +94,10 @@ void ToolTipWindow::Update(double delta_time) {
 void ToolTipWindow::ProvinceTooltipProvider(entt::entity entity) {
     // Let's just check map mode and if it's price map mode we output that
     if (GetUniverse().ctx().at<ctx::MapMode>() != ctx::MapMode::GoodPriceMapMode) {
-        if (GetUniverse().all_of<core::components::types::SurfaceCoordinate>(entity)) {
-            auto& surface = GetUniverse().get<core::components::types::SurfaceCoordinate>(entity);
-            tooltip_content->SetInnerRML(fmt::format("<p>{}</p><p>{},{}</p>",
-                                                     core::util::GetName(GetUniverse(), entity), surface.latitude(),
-                                                     surface.longitude()));
-        } else {
-            tooltip_content->SetInnerRML(fmt::format("<p>{}</p>", core::util::GetName(GetUniverse(), entity)));
-        }
+        // We should also get the population and gdp and stuff
+        double GDP = GetUniverse().get<core::components::Market>(entity).GDP;
+        tooltip_content->SetInnerRML(fmt::format("<p>{}</p><p>GDP: {}</p>", core::util::GetName(GetUniverse(), entity),
+                                                 cqsp::util::NumberToHumanString(GDP)));
         return;
     }
     const auto& ctx = GetUniverse().ctx().at<ctx::MapModeCtx>();

@@ -41,8 +41,9 @@ ProvinceLoader::ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(
         if (node.any_of<components::Governed>()) {
             Node governor_node(universe, node.get<components::Governed>().governor);
             auto& country_comp = universe.get<components::Country>(governor_node);
+            entt::entity previous_capital = country_comp.capital_city;
             country_comp.capital_city = node;
-            if (country_comp.capital_city == entt::null) {
+            if (previous_capital == entt::null) {
                 return;
             }
             // Get name
@@ -50,7 +51,7 @@ ProvinceLoader::ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(
                         util::GetName(universe, governor_node), util::GetName(universe, country_comp.capital_city),
                         util::GetName(universe, node));
             // Remove capital tag on the other capital city
-            Node(universe, country_comp.capital_city).remove<components::CapitalCity>();
+            Node(universe, previous_capital).remove<components::CapitalCity>();
         }
     });
     loader.Register<components::LogMarket>("log_market");
@@ -82,6 +83,7 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // check if it is assigned to a country
     if (country_node.valid()) {
         country_node.get_or_emplace<components::CountryCityList>().province_list.push_back(node);
+        node.emplace<components::Governed>(country_node);
     }
     universe.province_colors[planet_node][static_cast<int>(color)] = node;
     universe.colors_province[planet_node][node] = static_cast<int>(color);

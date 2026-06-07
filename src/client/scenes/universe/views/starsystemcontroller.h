@@ -83,6 +83,7 @@ class StarSystemController {
 
     void FocusPlanetView();
     void FocusCityView();
+    void HandleCameraMovement(float delta_time);
 
     void CalculateCityPositions(entt::entity entity);
 
@@ -139,49 +140,50 @@ class StarSystemController {
     entt::entity terrain_displaying = entt::null;
     entt::entity selected_city = entt::null;
 
-    double previous_mouseX;
-    double previous_mouseY;
+    double previous_mouseX = 0;
+    double previous_mouseY = 0;
 
     /// <summary>
     /// Debugging mouse position
     /// </summary>
-    int tex_x;
-    int tex_y;
+    int tex_x = 0;
+    int tex_y = 0;
 
     /// <summary>
     /// Debugging colors
     /// </summary>
-    int tex_r;
-    int tex_g;
-    int tex_b;
+    int tex_r = 0;
+    int tex_g = 0;
+    int tex_b = 0;
 
     entt::entity hovering_province;
 
     /**
     * The planet the mouse is currently hovering on.
     */
-    entt::entity hovering_planet;
-    entt::entity hovering_country;
-    entt::entity selected_province;
-    entt::entity selected_country;
+    entt::entity hovering_planet = entt::null;
+    entt::entity hovering_country = entt::null;
+    entt::entity selected_province = entt::null;
+    entt::entity selected_country = entt::null;
 
     /**
     * Screen space mouse to planet/sphere intersection point.
     */
-    glm::vec3 mouse_on_object_position;
+    glm::vec3 mouse_on_object_position = glm::vec3(0);
 
-    bool is_rendering_founding_city;
-    bool is_founding_city;
+    bool is_rendering_founding_city = false;
+    bool is_founding_city = false;
 
     bool focus_on_city = false;
     bool planet_frame_scroll = false;
 
     const float CAMERA_MOVEMENT_SPEED = 30.f / 40.f;
-    const float PAN_SPEED = 4.0f;
+    const float PAN_SPEED = 2.0f;
     const float SCROLL_SENSITIVITY = 3.f / 33.f;
     const float DEFAULT_PROVINCE_APLHA = 0.65f;
 
-    core::components::types::SurfaceCoordinate target_surface_coordinate;
+    core::components::types::SurfaceCoordinate target_surface_coordinate =
+        core::components::types::SurfaceCoordinate(0, 0);
 
     core::components::types::SurfaceCoordinate GetCameraOverCoordinate();
 
@@ -194,5 +196,16 @@ class StarSystemController {
     entt::entity focused_planet = entt::null;
     entt::entity last_focused_planet = entt::null;
     entt::entity last_hovered_province = entt::null;
+
+    enum CameraState {
+        // Free camera just going anywhere
+        FreeCamera,
+        // Fixed on the planet/body but not rotating
+        PlanetIntertial,
+        // Fixed to a spot on the planet's surface
+        PlanetFixed
+    };
+
+    CameraState camera_state = CameraState::FreeCamera;
 };
 }  // namespace cqsp::client::systems

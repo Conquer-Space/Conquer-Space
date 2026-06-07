@@ -20,6 +20,7 @@
 #include <string>
 
 #include "client/components/clientctx.h"
+#include "client/components/provincecentering.h"
 #include "client/components/rightclick.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/constructionmenu.h"
@@ -38,7 +39,6 @@
 #include "client/scenes/universe/interface/spaceshipwindow.h"
 #include "client/scenes/universe/interface/sysevent.h"
 #include "client/scenes/universe/interface/syspausemenu.h"
-#include "client/scenes/universe/interface/sysplanetmarketinformation.h"
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
 #include "client/scenes/universe/interface/taxwindow.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
@@ -103,6 +103,13 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::SearchMenu>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
+
+    // zoom into our capital city if we see one
+    entt::entity player = GetUniverse().GetPlayer();
+    if (GetUniverse().any_of<components::Country>(player)) {
+        auto& country = GetUniverse().get<components::Country>(player);
+        client::ctx::ZoomOntoProvince(GetUniverse(), country.capital_city);
+    }
 }
 
 void UniverseScene::Update(float deltaTime) {
