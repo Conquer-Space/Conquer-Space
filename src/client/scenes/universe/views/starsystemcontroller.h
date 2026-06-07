@@ -178,7 +178,7 @@ class StarSystemController {
     bool planet_frame_scroll = false;
 
     const float CAMERA_MOVEMENT_SPEED = 30.f / 40.f;
-    const float PAN_SPEED = 4.0f;
+    const float PAN_SPEED = 2.0f;
     const float SCROLL_SENSITIVITY = 3.f / 33.f;
     const float DEFAULT_PROVINCE_APLHA = 0.65f;
 
@@ -195,5 +195,16 @@ class StarSystemController {
     entt::entity focused_planet = entt::null;
     entt::entity last_focused_planet = entt::null;
     entt::entity last_hovered_province = entt::null;
+
+    enum CameraState {
+        // Free camera just going anywhere
+        FreeCamera,
+        // Fixed on the planet/body but not rotating
+        PlanetIntertial,
+        // Fixed to a spot on the planet's surface
+        PlanetFixed
+    };
+
+    CameraState camera_state = CameraState::FreeCamera;
 };
 }  // namespace cqsp::client::systems

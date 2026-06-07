@@ -31,6 +31,12 @@ struct StarSystemViewDebug {
     bool to_show = false;
 };
 
+struct CameraState {
+    // Then set this?
+    entt::entity focused_planet = entt::null;
+    entt::entity focused_city = entt::null;
+};
+
 enum UiDisplayMode { CountrySelect, Gameplay };
 
 struct PauseOptions {

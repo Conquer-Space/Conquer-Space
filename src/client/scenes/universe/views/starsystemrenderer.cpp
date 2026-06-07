@@ -93,6 +93,7 @@ void SysStarSystemRenderer::Initialize() {
     universe.ctx().emplace<client::ctx::SelectedMenu>(client::ctx::SelectedMenu::NoMenu);
     universe.ctx().emplace<client::ctx::StarSystemViewDebug>();
     universe.ctx().emplace<client::ctx::MapMode>(client::ctx::MapMode::LocalSelectedMapMode);
+    universe.ctx().emplace<client::ctx::CameraState>();
 
     SetupDummyTextures();
     // Zoom into the player's capital city

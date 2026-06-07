@@ -182,8 +182,18 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
     if (!app.MouseButtonIsHeld(engine::MouseInput::LEFT)) {
         return;
     }
-    // camera.view_x -= deltaX / app.GetWindowWidth() * std::numbers::pi * PAN_SPEED;
-    // camera.view_y -= deltaY / app.GetWindowHeight() * std::numbers::pi * PAN_SPEED;
+    // We should probably mutate by our camera up
+    float h = deltaX / app.GetWindowWidth() * std::numbers::pi * PAN_SPEED;
+    float v = deltaY / app.GetWindowHeight() * std::numbers::pi * PAN_SPEED;
+
+    glm::vec3 pos = camera.CameraPositionNormalized();
+    glm::vec3 right = glm::normalize(glm::cross(camera.cam_up, pos));
+
+    glm::quat rot = glm::angleAxis(h, camera.cam_up) * glm::angleAxis(v, right);
+    pos = glm::normalize(rot * pos);
+
+    camera.view_y = std::asin(glm::clamp(pos.z, -1.f, 1.f));
+    camera.view_x = std::atan2(pos.x, pos.y);
 
     if (glm::degrees(camera.view_y) > 89.f) {
         camera.view_y = glm::radians(89.f);
@@ -192,9 +202,9 @@ void StarSystemController::CalculateViewChange(double deltaX, double deltaY) {
         camera.view_y = glm::radians(-89.f);
     }
     selected_city = entt::null;
-    // if (focus_on_city) {
-    //     target_surface_coordinate = GetCameraOverCoordinate();
-    // }
+    if (focus_on_city) {
+        target_surface_coordinate = GetCameraOverCoordinate();
+    }
 }
 
 bool StarSystemController::IsFoundingCity() { return !universe.view<CityFounding>().empty(); }
@@ -684,7 +694,6 @@ glm::vec3 StarSystemController::CalculateObjectPos(const entt::entity& ent) {
 }
 
 void StarSystemController::FocusPlanetView() {
-    // Seeing new planet
     entt::entity current_planet = universe.view<FocusedPlanet>().front();
     if (current_planet != m_viewing_entity && current_planet != entt::null) {
         SPDLOG_INFO("Switched displaying planet, seeing {}", current_planet);
