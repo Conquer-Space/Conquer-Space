@@ -416,6 +416,12 @@ void SysProvinceInformation::InfrastructureTab() {
     if (GetUniverse().any_of<infrastructure::Highway>(current_province)) {
         ImGui::TextFmt("Highway: {}", GetUniverse().get<infrastructure::Highway>(current_province).extent);
     }
+
+    auto& construction = GetUniverse().get<infrastructure::ConstructionSector>(current_province);
+
+    ImGui::TextFmt("Construction Capacity: {}/{}", construction.current_construction,
+                   construction.construction_capacity);
+    ImGui::TextFmt("Construction Cost: ${}", construction.construction_cost);
 }
 
 void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry) {
