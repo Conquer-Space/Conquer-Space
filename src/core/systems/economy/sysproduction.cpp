@@ -37,6 +37,7 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
     ZoneScoped;
     double tax_income = 0;
     auto& employer = industry_node.get<components::Employer>();
+    auto& wallet = industry_node.get<components::Wallet>();
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
@@ -46,6 +47,8 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
     Node recipenode = industry_node.Convert(size.recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
 
+    size.construction_cost = 0;
+    size.tax_cost = 0;
     if (size.state == components::IndustryState::Construction) {
         auto& construction_sector = market_node.get<components::infrastructure::ConstructionSector>();
         // then we also do the construuction input
@@ -73,7 +76,12 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
             construction_amount = construction_amount * 0.1;
         }
         construction.progress += construction_amount;
-        market.consumption += cost_vector;
+        construction_sector.current_construction += construction_amount;
+        auto [cost, tax] = market.PurchaseFromMarket(cost_vector);
+        wallet -= cost + tax;
+        tax_income += tax;
+        size.construction_cost = cost;
+        size.tax_cost += tax;
     }
     // Let's calculate the size from previous input
     // Calculate resource consumption
@@ -128,17 +136,16 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
 
     auto [wage_costs, income_taxes] = market.PurchaseFromMarket(input);
 
-    size.tax_cost = taxes + income_taxes;
+    size.tax_cost += taxes + income_taxes;
     size.wage_cost = wage_costs;
     size.transport = 0;  //output_transport_cost + input_transport_cost;
 
     size.revenue = output.MultiplyAndGetSum(market.price);
     size.profit =
         size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport - size.tax_cost;
-    auto& wallet = industry_node.get<components::Wallet>();
     wallet += size.profit;
     market.GDP += size.revenue - size.material_costs;
-    tax_income = taxes + income_taxes;
+    tax_income += taxes + income_taxes;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
@@ -241,6 +248,12 @@ void SysProduction::DoSystem() {
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
+    // Reset construction
+    for (auto&& [entity, construction, market] :
+         universe.view<components::infrastructure::ConstructionSector, components::Market>().each()) {
+        construction.current_construction = 0;
+    }
+
     IndustryFsm();
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
