@@ -971,6 +971,19 @@
                 job_distribution: {laborer: 1625938}
             }
         ]
+        industry: [
+            {
+                recipe: concrete_manufacturing
+                size: 20
+                utilization: 10
+                workers: 50
+                continuous_losses: 0
+                continuous_gains: 121
+                revenue: 16000
+                material_costs: 6000
+                profit: 854.8469119738747
+            }
+        ]
     }
     {
         identifier: wisconsin
