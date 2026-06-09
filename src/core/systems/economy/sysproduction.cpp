@@ -79,8 +79,9 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
         construction_sector.current_construction += construction_amount;
         auto [cost, tax] = market.PurchaseFromMarket(cost_vector);
         wallet -= cost + tax;
+        wallet -= construction_sector.construction_cost * construction_amount;
         tax_income += tax;
-        size.construction_cost = cost;
+        size.construction_cost = cost + construction_sector.construction_cost * construction_amount;
         size.tax_cost += tax;
     }
     // Let's calculate the size from previous input
