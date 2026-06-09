@@ -355,15 +355,7 @@ components::IndustryState SysProduction::MinimumProduction(entt::entity industry
 }
 
 components::IndustryState SysProduction::Construction(entt::entity industry, components::ProductionUnit& production) {
-    // If construction is done, we should continue
     auto& construction = GetUniverse().get<components::Construction>(industry);
-    // Otherwise we should delete the cost
-    auto recipe_node = GetUniverse()(production.recipe);
-    if (recipe_node.all_of<components::ConstructionCost>()) {
-        // Compute construction cost
-        // TODO(EhWhoAmI): since we do have to talk to the market...
-        // Then we shoul do something...
-    }
 
     if (construction.progress >= construction.maximum) {
         production.size += construction.levels;

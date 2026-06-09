@@ -16,6 +16,12 @@
         technician: 5000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       raw
     ]
@@ -36,6 +42,12 @@
         laborer: 20000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       raw
     ]
@@ -54,6 +66,12 @@
         laborer: 30000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       factory
     ]
@@ -70,6 +88,12 @@
     cost: {
       labor: {
         laborer: 1000
+      }
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
       }
     }
     tags: [
