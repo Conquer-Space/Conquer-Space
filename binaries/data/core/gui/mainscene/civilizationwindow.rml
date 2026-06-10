@@ -13,6 +13,15 @@
                 display: flex;
                 flex-direction: column;
             }
+            .icon {
+                /* Not sure how to make this dynamic...*/
+                top: 4.9px;
+                position: relative;
+
+            }
+            #gdp_text {
+                margin: 0;
+            }
         </style>
         <script src="script/civilization_window.lua"></script>
     </head>
@@ -25,7 +34,12 @@
             <!-- other information -->
              <!-- then pressing these buttons also give more information?-->
              <div id="top_bar"><p>Budget</p><p>Research</p></div>
-             <div id="bottom_bar"><p>GDP<p id="gdp_text"></p></p><p>Population</p></div>
+             <div id="bottom_bar">
+                <span class="item_holder" onmouseovercapture="client.SetHoverText('GDP')">
+                <svg class="icon" width="20px" height="20px" src="img/gdp-icon.svg"></svg>
+            <p id="gdp_text"></p>
+        </span>
+            <p>Population</p></div>
          </div>
     </body>
 </rml>
