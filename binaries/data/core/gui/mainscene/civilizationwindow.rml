@@ -1,0 +1,31 @@
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+             body {
+                height: 80px;
+                top: 0;
+                display: flex;
+                flex-direction: row;
+            }
+            #information_panel {
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
+        <script src="script/civilization_window.lua"></script>
+    </head>
+    <body onload="CivilizationWindow.OnLoad(document)">
+         <div id="flag_container">
+            <!--Flag-->
+            <svg onmouseovercapture="client.SetHoverEntity(core.get_player())" src="../../flags/Flag_of_the_United_States.svg" width="160px" height="80px"></svg>
+         </div>
+         <div id="information_panel">
+            <!-- other information -->
+             <!-- then pressing these buttons also give more information?-->
+             <div id="top_bar"><p>Budget</p><p>Research</p></div>
+             <div id="bottom_bar"><p>GDP<p id="gdp_text"></p></p><p>Population</p></div>
+         </div>
+    </body>
+</rml>
