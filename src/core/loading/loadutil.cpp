@@ -239,6 +239,10 @@ double ReadUnit(std::string_view value, UnitType unit_type, bool* correct) {
                 read_value *= (60 * 60);
             } else if (unit_string == "d" || unit_string == "days" || unit_string == "day") {
                 read_value *= (60 * 60 * 24);
+            } else if (unit_string == "w" || unit_string == "weeks" || unit_string == "week") {
+                read_value *= (60 * 60 * 24 * 7);
+            } else if (unit_string == "y" || unit_string == "years" || unit_string == "year") {
+                read_value *= (60 * 60 * 24 * 365);
             } else {
                 mark_wrong();
             }

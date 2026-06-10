@@ -47,4 +47,14 @@ struct BrownOut {};
 struct Highway {
     int extent;
 };
+
+struct ConstructionSector {
+    // then we should make some construction sector thing?
+    // One capacity represents one day of construction
+    uint32_t construction_capacity;
+    uint32_t current_construction;
+    // How much it costs to hire like one construction person
+    // then other stats for construction labor
+    double construction_cost;
+};
 }  // namespace cqsp::core::components::infrastructure

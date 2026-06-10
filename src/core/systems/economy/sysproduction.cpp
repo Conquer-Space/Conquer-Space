@@ -32,10 +32,12 @@
 #include "core/components/surface.h"
 
 namespace cqsp::core::systems {
-double SysProduction::ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost) {
+double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, components::Market& market,
+                                      double infra_cost) {
     ZoneScoped;
     double tax_income = 0;
     auto& employer = industry_node.get<components::Employer>();
+    auto& wallet = industry_node.get<components::Wallet>();
 
     // Process imdustries
     // Industries MUST have production and a linked recipe
@@ -45,6 +47,43 @@ double SysProduction::ProcessIndustry(Node& industry_node, components::Market& m
     Node recipenode = industry_node.Convert(size.recipe);
     components::Recipe recipe = recipenode.get<components::Recipe>();
 
+    size.construction_cost = 0;
+    size.tax_cost = 0;
+    if (size.state == components::IndustryState::Construction) {
+        auto& construction_sector = market_node.get<components::infrastructure::ConstructionSector>();
+        // then we also do the construuction input
+        // We should probably also do the shortage as well
+        auto& construction = industry_node.get<components::Construction>();
+        // Now progress by one and stuff
+        // Then get the recipe cost as well
+        auto& construction_cost = recipenode.get<components::ConstructionCost>();
+        // How do we process construction
+        // Get the amount that we cost and add to the cost
+        // construction.levels * construction_sector.construction_cost
+        double construction_amount = construction.levels * Interval();
+        components::ResourceVector cost_vector = construction_cost.cost * construction.levels;
+        bool construction_shortage = false;
+        for (auto& [good, amount] : cost_vector) {
+            if (market.chronic_shortages[good] > 5) {
+                // Reduce the amount based off the weighted average of the input?
+                // Then reduce production over time or something
+                construction_shortage = true;
+                break;
+            }
+        }
+        if (construction_shortage) {
+            // Then we should reduce construction rate
+            construction_amount = construction_amount * 0.1;
+        }
+        construction.progress += construction_amount;
+        construction_sector.current_construction += construction_amount;
+        auto [cost, tax] = market.PurchaseFromMarket(cost_vector);
+        wallet -= cost + tax;
+        wallet -= construction_sector.construction_cost * construction_amount;
+        tax_income += tax;
+        size.construction_cost = cost + construction_sector.construction_cost * construction_amount;
+        size.tax_cost += tax;
+    }
     // Let's calculate the size from previous input
     // Calculate resource consumption
     components::ResourceVector capitalinput = recipe.capitalcost * (size.size);
@@ -98,17 +137,16 @@ double SysProduction::ProcessIndustry(Node& industry_node, components::Market& m
 
     auto [wage_costs, income_taxes] = market.PurchaseFromMarket(input);
 
-    size.tax_cost = taxes + income_taxes;
+    size.tax_cost += taxes + income_taxes;
     size.wage_cost = wage_costs;
     size.transport = 0;  //output_transport_cost + input_transport_cost;
 
     size.revenue = output.MultiplyAndGetSum(market.price);
     size.profit =
         size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport - size.tax_cost;
-    auto& wallet = industry_node.get<components::Wallet>();
     wallet += size.profit;
     market.GDP += size.revenue - size.material_costs;
-    tax_income = taxes + income_taxes;
+    tax_income += taxes + income_taxes;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing
@@ -158,55 +196,16 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
     // Now we should expand it...
     // pl_ratio should be maybe
     // Set our construction costs
+    int to_construct = static_cast<int>(production_unit.size * pl_ratio * 5);
     if (recipenode.all_of<components::ConstructionCost>()) {
         const auto& construction_cost = recipenode.get<components::ConstructionCost>();
         // Let's assign construction costs
-        auto& construction = industry_node.emplace<components::Construction>(
-            0, construction_cost.time, static_cast<int>(production_unit.size * pl_ratio * 5));
+        // then we can assign the amount of stuff to this?
+        auto& construction =
+            industry_node.emplace<components::Construction>(0, construction_cost.time * to_construct, to_construct);
     } else {
-        auto& construction = industry_node.emplace<components::Construction>(
-            0, 20, static_cast<int>(production_unit.size * pl_ratio * 5));
+        auto& construction = industry_node.emplace<components::Construction>(0, 20 * to_construct, to_construct);
     }
-}
-
-/**
- * Returns true if we should continue with production false if we are constructing something
- */
-bool SysProduction::HandleConstruction(Node& industry_node, components::Market& market) {
-    ZoneScoped;
-    if (!industry_node.any_of<components::Construction>()) {
-        return true;
-    }
-
-    // Then progress construction
-    auto& construction_progress = industry_node.get<components::Construction>();
-    const auto& recipe_node = industry_node.Convert(industry_node.get<components::ProductionUnit>().recipe);
-    // Now we should get our value...
-    // Process construction costs
-    // Add to market demand and cost
-    if (recipe_node.all_of<components::ConstructionCost>()) {
-        const auto& construction_cost = recipe_node.get<components::ConstructionCost>();
-        market.consumption += construction_cost.cost;
-        double price = construction_cost.cost.MultiplyAndGetSum(market.price);
-
-        // then we should pass on the cost to who?
-        // Next time we can add all our various financializations that we want
-        // Let's just add it to the current wallet
-        auto& wallet = industry_node.get<components::Wallet>();
-        wallet -= price;
-    }
-    // If no shortage we progress construction
-    construction_progress.progress++;
-    int size = construction_progress.levels;
-    if (construction_progress.progress >= construction_progress.maximum) {
-        industry_node.get<components::ProductionUnit>().size += construction_progress.levels;
-        industry_node.remove<components::Construction>();
-    }
-    // We don't have any construction?
-    if (size == 0) {
-        return false;
-    }
-    return false;
 }
 
 /// <summary>
@@ -234,7 +233,7 @@ void SysProduction::ProcessIndustries(Node& node) {
     double total_taxes = 0;
     for (Node industry_node : node.Convert(industries.industries)) {
         // We should also check for industries we want to construct
-        total_taxes += ProcessIndustry(industry_node, market, infra_cost);
+        total_taxes += ProcessIndustry(industry_node, node, market, infra_cost);
     }
     // Now get province and stuff
     auto& province = node.get<components::Province>();
@@ -250,6 +249,12 @@ void SysProduction::DoSystem() {
     // Loop through the markets
     int settlement_count = 0;
     // Get the markets and process the values?
+    // Reset construction
+    for (auto&& [entity, construction, market] :
+         universe.view<components::infrastructure::ConstructionSector, components::Market>().each()) {
+        construction.current_construction = 0;
+    }
+
     IndustryFsm();
     for (Node entity : universe.nodes<components::IndustrialZone, components::Market>()) {
         ProcessIndustries(entity);
@@ -351,16 +356,8 @@ components::IndustryState SysProduction::MinimumProduction(entt::entity industry
 }
 
 components::IndustryState SysProduction::Construction(entt::entity industry, components::ProductionUnit& production) {
-    // If construction is done, we should continue
     auto& construction = GetUniverse().get<components::Construction>(industry);
-    // Otherwise we should delete the cost
-    auto recipe_node = GetUniverse()(production.recipe);
-    if (recipe_node.all_of<components::ConstructionCost>()) {
-        // Compute construction cost
-        // TODO(EhWhoAmI): since we do have to talk to the market...
-    }
 
-    construction.progress += Interval();
     if (construction.progress >= construction.maximum) {
         production.size += construction.levels;
         GetUniverse().remove<components::Construction>(industry);

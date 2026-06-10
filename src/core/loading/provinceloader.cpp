@@ -155,6 +155,8 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Just fill in random values for now
     // TODO(EhWhoAmI): Fix
     node.emplace<components::ResourceAmenability>(distrib(gen), distrib(gen));
+    node.emplace<components::infrastructure::ConstructionSector>(static_cast<uint32_t>(1000), static_cast<uint32_t>(0),
+                                                                 1000.);
     return true;
 }
 

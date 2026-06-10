@@ -18,6 +18,8 @@
 
 #include <spdlog/spdlog.h>
 
+#include <map>
+
 #include <tracy/Tracy.hpp>
 
 #include "core/components/history.h"
@@ -33,41 +35,6 @@ namespace cqsp::core::systems {
 // satisfied.
 
 using components::ResourceConsumption;
-
-void SysPopulationGrowth::DoSystem() {
-    ZoneScoped;
-
-    for (Node pop_node : GetUniverse().nodes<components::PopulationSegment>()) {
-        auto& segment = pop_node.get<components::PopulationSegment>();
-        // If it's hungry, decay population
-        if (pop_node.all_of<components::Hunger>()) {
-            // Population decrease will be about 1 percent each year.
-            float increase = 1.f - static_cast<float>(Interval()) * 0.00000114077116f;
-            segment.population *= increase;
-        }
-
-        if (pop_node.all_of<components::FailedResourceTransfer>()) {
-            // Then alert hunger.
-            pop_node.get_or_emplace<components::Hunger>();
-        } else {
-            pop_node.remove<components::Hunger>();
-        }
-        // If not hungry, grow population
-        if (!pop_node.all_of<components::Hunger>()) {
-            // Population growth will be about 1 percent each year.
-            float increase = static_cast<float>(Interval()) * 0.00000114077116f + 1;
-            segment.population *= increase;
-        }
-
-        // Resolve jobs
-        // TODO(EhWhoAmI)
-        // For now, we would have 100% of the population working, because we
-        // haven't got to social simulation yet. But in the future, this will
-        // probably have to change.
-        auto& employee = pop_node.get_or_emplace<components::LaborInformation>();
-        employee.working_population = segment.population;
-    }
-}
 
 void SysPopulationConsumption::ProcessSettlement(Node& settlement, const ResourceConsumption& marginal_propensity_base,
                                                  const ResourceConsumption& autonomous_consumption_base,
@@ -86,7 +53,6 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
     // Calculate the infrastructure cost
     double infra_cost = infrastructure.default_purchase_cost - infrastructure.improvement;
     auto& market = settlement.get<components::Market>();
-    double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
     // Anything positive is a job that we want to shift away from, anything negative is something we want to shift to
     // Loop through the population segments through the settlements
     for (Node node_segment : settlement.Convert(settlement_comp.population)) {
@@ -124,74 +90,7 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
             cost += extra_cost;
         }
 
-        // Compute labor hours
-        segment.labor.labor_hours.clear();
-        int workforce = 0;
-        double hours_sum = 0;
-        double employment_rate_sum = 0;
-
-        std::map<entt::entity, int> job_drift;
-        // Compute job drift
-        for (auto& [labor, workers] : segment.labor.labor_distribution) {
-            // Now sort through
-            auto& labor_comp = GetUniverse().get<components::Labor>(labor);
-            // Check how much job we should cut and stuff
-            // So we need to loop through our market and see our possible jobs
-            // In the future we should make a graph or something so that we don't need to check everything
-            if (labor != GetUniverse().default_job && market.sd_ratio[labor_comp.good] > 2) {
-                // Then we should probably start cutting
-                // Find a ratio for amount we should cut...
-                double delta = std::min((market.sd_ratio[labor_comp.good] - 2), 10.);
-                double difference = workers * 0.01 * delta;
-                job_drift[GetUniverse().default_job] += difference;
-                job_drift[labor] -= difference;
-            }
-            // Also seek for more jobs
-            for (const auto good : labor_goods) {
-                if (market.price[good] - market.price[labor_comp.good] > market.price[labor_comp.good] * 0.1) {
-                    // It's enough money for the pop segment to want to shift their jobs
-                    // Like the thing is it has to be capped, it can't just swarm it...
-                    // Also cap by the amount of available good labors...
-                    double delta = std::min(
-                        (market.price[good] - market.price[labor_comp.good]) / market.price[labor_comp.good], 1.);
-                    double difference = workers * delta * 0.00001;
-                    double max_diff = std::max(segment.labor.labor_distribution[good_labors[good]] * 0.001, 100.);
-                    difference = std::min(max_diff, difference);
-                    job_drift[good_labors[good]] += difference;
-                    job_drift[labor] -= difference;
-                }
-            }
-        }
-        // Add the job drift
-        for (auto& [labor, drift] : job_drift) {
-            auto labor_count = std::max(1000, static_cast<int>(segment.labor.labor_distribution[labor] * 0.01));
-            int drift_delta = std::clamp(drift, static_cast<int>(-labor_count), static_cast<int>(labor_count));
-            segment.labor.labor_distribution[labor] += drift_delta;
-            // Cap our labor distribution as well...
-        }
-
-        for (auto& [labor, workers] : segment.labor.labor_distribution) {
-            // Get the jobs that we are over and then figure out why
-            auto& labor_comp = GetUniverse().get<components::Labor>(labor);
-            // Check if we are over
-            // Shift our jobs a little towards jobs that need it and pay more...
-            segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
-            workforce += workers;
-            hours_sum += tick_hours * workers;
-            double unemployment_rate = 1 / market.sd_ratio[labor_comp.good];
-
-            // Then we should do something about it
-            // If we are way over we are also overemployed...
-            // Check if we are way over and if we are way over we should dump jobs
-            // Also check job drift to higher paying jobs
-            employment_rate_sum += workers * unemployment_rate;
-        }
-
-        // Now redistribute our workers
-
-        segment.employed_amount = employment_rate_sum;
-        segment.unemployment_rate = (1 - employment_rate_sum) / workforce;
-
+        HandleJob(segment, market);
         // Our income should be equal to our spending...
         double spending_ratio = (segment.income > 0) ? (segment.income - segment.spending) / segment.income : -1.0;
 
@@ -217,6 +116,77 @@ void SysPopulationConsumption::ProcessSettlement(Node& settlement, const Resourc
         total_population += segment.population;
         total_employed += segment.employed_amount;
     }
+}
+
+void SysPopulationConsumption::HandleJob(components::PopulationSegment& segment, components::Market& market) {
+    ZoneScoped;
+    static const double tick_hours = (40. / static_cast<double>(components::StarDate::WEEK)) * Interval();
+    segment.labor.labor_hours.clear();
+    int workforce = 0;
+    double hours_sum = 0;
+    double employment_rate_sum = 0;
+
+    std::map<entt::entity, int> job_drift;
+    // Compute job drift
+    for (auto& [labor, workers] : segment.labor.labor_distribution) {
+        // Now sort through
+        auto& labor_comp = GetUniverse().get<components::Labor>(labor);
+        // Check how much job we should cut and stuff
+        // So we need to loop through our market and see our possible jobs
+        // In the future we should make a graph or something so that we don't need to check everything
+        if (labor != GetUniverse().default_job && market.sd_ratio[labor_comp.good] > 2) {
+            // Then we should probably start cutting
+            // Find a ratio for amount we should cut...
+            double delta = std::min((market.sd_ratio[labor_comp.good] - 2), 10.);
+            double difference = workers * 0.01 * delta;
+            job_drift[GetUniverse().default_job] += difference;
+            job_drift[labor] -= difference;
+        }
+        // Also seek for more jobs
+        for (const auto good : labor_goods) {
+            if (market.price[good] - market.price[labor_comp.good] > market.price[labor_comp.good] * 0.1) {
+                // It's enough money for the pop segment to want to shift their jobs
+                // Like the thing is it has to be capped, it can't just swarm it...
+                // Also cap by the amount of available good labors...
+                double delta =
+                    std::min((market.price[good] - market.price[labor_comp.good]) / market.price[labor_comp.good], 1.);
+                double difference = workers * delta * 0.00001;
+                double max_diff = std::max(segment.labor.labor_distribution[good_labors[good]] * 0.001, 100.);
+                difference = std::min(max_diff, difference);
+                job_drift[good_labors[good]] += difference;
+                job_drift[labor] -= difference;
+            }
+        }
+    }
+    // Add the job drift
+    for (auto& [labor, drift] : job_drift) {
+        auto labor_count = std::max(1000, static_cast<int>(segment.labor.labor_distribution[labor] * 0.01));
+        int drift_delta = std::clamp(drift, static_cast<int>(-labor_count), static_cast<int>(labor_count));
+        segment.labor.labor_distribution[labor] += drift_delta;
+        // Cap our labor distribution as well...
+    }
+
+    for (auto& [labor, workers] : segment.labor.labor_distribution) {
+        // Get the jobs that we are over and then figure out why
+        auto& labor_comp = GetUniverse().get<components::Labor>(labor);
+        // Check if we are over
+        // Shift our jobs a little towards jobs that need it and pay more...
+        segment.labor.labor_hours.emplace_back(labor_comp.good, tick_hours * workers);
+        workforce += workers;
+        hours_sum += tick_hours * workers;
+        double unemployment_rate = 1 / market.sd_ratio[labor_comp.good];
+
+        // Then we should do something about it
+        // If we are way over we are also overemployed...
+        // Check if we are way over and if we are way over we should dump jobs
+        // Also check job drift to higher paying jobs
+        employment_rate_sum += workers * unemployment_rate;
+    }
+
+    // Now redistribute our workers
+
+    segment.employed_amount = employment_rate_sum;
+    segment.unemployment_rate = (1 - employment_rate_sum) / workforce;
 }
 
 // In economics, the consumption function describes a relationship between

@@ -98,6 +98,13 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
         // Then get cost
         const Hjson::Value& cost_map = construction["cost"];
         construction_cost.cost = HjsonToVector(universe, cost_map) / time;
+    } else {
+        // Default cost
+        auto& id = node.get<components::Identifier>();
+        SPDLOG_WARN("Recipe {} does not have a construction cost!", id.identifier);
+        auto& construction_cost = node.emplace<components::ConstructionCost>();
+        construction_cost.time = components::StarDate::WEEK * 12;
+        // Then we are free or something
     }
 
     for (int i = 0; i < values["tags"].size(); i++) {

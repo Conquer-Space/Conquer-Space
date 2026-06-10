@@ -16,18 +16,12 @@
  */
 #pragma once
 
+#include "core/components/population.h"
 #include "core/components/resource.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 
 namespace cqsp::core::systems {
-class SysPopulationGrowth : public ISimulationSystem {
- public:
-    explicit SysPopulationGrowth(Game& game) : ISimulationSystem(game) {}
-    void DoSystem() override;
-    int Interval() const override { return components::StarDate::WEEK * 4; }
-};
-
 class SysPopulationConsumption : public ISimulationSystem {
  public:
     explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
@@ -38,7 +32,7 @@ class SysPopulationConsumption : public ISimulationSystem {
  private:
     void ProcessSettlement(Node& settlement, const components::ResourceConsumption& marginal_propensity_base,
                            const components::ResourceConsumption& autonomous_consumption_base, const float savings);
-
+    void HandleJob(components::PopulationSegment& segment, components::Market& market);
     components::ResourceConsumption marginal_propensity_base;
     components::ResourceConsumption autonomous_consumption_base;
     std::vector<components::GoodEntity> labor_goods;

@@ -14,6 +14,12 @@
         laborer: 4000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       factory
     ]

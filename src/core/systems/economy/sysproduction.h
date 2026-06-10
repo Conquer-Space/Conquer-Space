@@ -29,9 +29,8 @@ class SysProduction : public ISimulationSystem {
 
  private:
     void ProcessIndustries(Node& node);
-    double ProcessIndustry(Node& industry_node, components::Market& market, double infra_cost);
+    double ProcessIndustry(Node& industry_node, Node& market_node, components::Market& market, double infra_cost);
     void ScaleConstruction(Node& industry_node, double pl_ratio);
-    bool HandleConstruction(Node& industry_node, components::Market& market);
     void IndustryFsm();
     components::IndustryState SteadyState(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState MaximumProduction(entt::entity industry, components::ProductionUnit& production);

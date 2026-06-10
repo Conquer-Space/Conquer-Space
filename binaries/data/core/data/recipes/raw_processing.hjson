@@ -13,6 +13,12 @@
         laborer: 10000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       raw
     ]
@@ -31,6 +37,12 @@
         laborer: 1000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       raw
     ]
@@ -42,11 +54,17 @@
       silicates: 1000.0
     }
     output: {
-      concrete: 500.0
+      concrete: 200.0
     }
     cost: {
       labor: {
-        laborer: 1000
+        laborer: 200
+      }
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
       }
     }
     tags: [
@@ -61,6 +79,12 @@
     }
     output: {
       copper: 50.0
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
     }
     cost: {
       labor: {
@@ -79,6 +103,12 @@
     }
     output: {
       fabric: 1000.0
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
     }
     cost: {
       labor: {
@@ -103,6 +133,12 @@
         laborer: 1000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       raw
     ]
@@ -121,6 +157,12 @@
         laborer: 1000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       raw
     ]
@@ -133,6 +175,12 @@
     }
     output: {
       lumber: 4000.0
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
     }
     cost: {
       labor: {
@@ -157,6 +205,12 @@
         laborer: 1000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+      }
+    }
     tags: [
       raw
     ]
@@ -174,6 +228,12 @@
       labor: {
         laborer: 500
         technician: 100
+      }
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
       }
     }
     tags: [
@@ -197,6 +257,13 @@
         laborer: 10000
       }
     }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
+        fluid_systems: 50000
+      }
+    }
     tags: [
       raw
     ]
@@ -213,6 +280,12 @@
     cost: {
       labor: {
         laborer: 150
+      }
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000
       }
     }
     tags: [
