@@ -33,13 +33,19 @@
          <div id="information_panel">
             <!-- other information -->
              <!-- then pressing these buttons also give more information?-->
-             <div id="top_bar"><p>Budget</p><p>Research</p></div>
+             <div id="top_bar"><span n class="item_holder" onmouseovercapture="client.SetHoverText('Budget')">
+
+                <svg class="icon" width="20px" height="20px" src="img/budget-icon.svg"></svg>
+                <p id="budget_text"></p>
+             </span><p>Research</p></div>
              <div id="bottom_bar">
                 <span class="item_holder" onmouseovercapture="client.SetHoverText('GDP')">
                 <svg class="icon" width="20px" height="20px" src="img/gdp-icon.svg"></svg>
-            <p id="gdp_text"></p>
-        </span>
-            <p>Population</p></div>
+                <p id="gdp_text"></p>
+                </span>
+            <span class="item_holder" onmouseovercapture="client.SetHoverText('Population')">
+            <svg class="icon" width="20px" height="20px" src="img/population-symbol.svg"></svg>
+            <p id="population_text"></p></span></div>
          </div>
     </body>
 </rml>

@@ -19,6 +19,8 @@
 #include "core/components/history.h"
 #include "core/components/market.h"
 #include "core/components/organizations.h"
+#include "core/components/population.h"
+#include "core/components/surface.h"
 #include "core/scripting/functionreg.h"
 
 namespace cqsp::core::scripting {
@@ -34,6 +36,20 @@ void LoadCountryEconomyFunctions(Universe& universe, sol::state_view& script_eng
             gdp += universe.get<components::Market>(market).GDP;
         }
         return gdp;
+    });
+
+    REGISTER_FUNCTION("get_national_population", [&](entt::entity entity) {
+        auto& city_list = universe.get<components::CountryCityList>(entity);
+        // Now sort through the city
+        double population = 0;
+        for (entt::entity market : city_list.province_list) {
+            auto& settlement = universe.get<components::Settlement>(market);
+            for (entt::entity segment : settlement.population) {
+                auto& segment_comp = universe.get<components::PopulationSegment>(segment);
+                population += segment_comp.population;
+            }
+        }
+        return population;
     });
 }
 }  // namespace
