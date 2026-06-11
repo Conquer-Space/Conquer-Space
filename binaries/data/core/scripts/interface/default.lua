@@ -1,1 +1,1 @@
-require("interface.civinfopanel")
+-- require("interface.civinfopanel")

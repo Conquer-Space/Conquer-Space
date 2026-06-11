@@ -23,6 +23,7 @@
 #include "client/components/provincecentering.h"
 #include "client/components/rightclick.h"
 #include "client/scenes/objecteditor/sysfieldviewer.h"
+#include "client/scenes/universe/interface/civilizationwindow.h"
 #include "client/scenes/universe/interface/constructionmenu.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
 #include "client/scenes/universe/interface/explorationwindow.h"
@@ -102,6 +103,7 @@ void UniverseScene::Init() {
     AddRmlUiSystem<systems::rmlui::RightClickWindow>();
     AddRmlUiSystem<systems::rmlui::SearchMenu>();
     AddRmlUiSystem<systems::rmlui::ToolTipWindow>();
+    AddRmlUiSystem<systems::rmlui::CivilizationWindow>();
     AddRmlUiSystem<systems::rmlui::SideMenu>();
 
     // zoom into our capital city if we see one
