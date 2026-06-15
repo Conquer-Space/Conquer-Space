@@ -16,6 +16,7 @@
  */
 #include "client/scenes/universe/interface/productionsummary.h"
 
+#include "client/components/clientctx.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
@@ -27,7 +28,11 @@ using util::NumberToHumanString;
 void ProductionSummary::Init() {}
 
 void ProductionSummary::DoUI(int delta_time) {
-    ImGui::Begin("Production Summary");
+    bool selected = GetUniverse().ctx().at<ctx::SelectedMenu>() == ctx::SelectedMenu::BuildingMenu;
+    if (!selected) {
+        return;
+    }
+    ImGui::Begin("Production Summary", &selected);
     std::vector<ImVec4> colors = {ImVec4(1, 0, 0, 1), ImVec4(0, 1, 0, 1),   ImVec4(0, 0, 1, 1),
                                   ImVec4(1, 1, 0, 1), ImVec4(1, 0, 1, 1),   ImVec4(0, 1, 1, 1),
                                   ImVec4(1, 1, 1, 1), ImVec4(1, 0.5, 0, 1), ImVec4(1, 1, 0.5, 1)};
@@ -114,6 +119,10 @@ void ProductionSummary::DoUI(int delta_time) {
     }
 
     ImGui::End();
+
+    if (!selected) {
+        GetUniverse().ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::NoMenu;
+    }
 }
 
 void ProductionSummary::DoUpdate(int delta_time) {}

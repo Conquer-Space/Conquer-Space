@@ -34,8 +34,11 @@ class SysStarSystemTree : public SysUserInterface {
     void DoChildTree(entt::entity entity);
 
  private:
+    void OrbitFilter();
+    void MainTree();
     int selected_index = 0;
     entt::entity selected_planet;
     entt::sparse_set planets;
+    bool hide_all_orbits = false;
 };
 }  // namespace cqsp::client::systems

@@ -49,6 +49,8 @@ void SideMenu::ClickEventListener::ProcessEvent(Rml::Event& event) {
         universe.ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::EconomyMenu;
     } else if (id == "exploration") {
         universe.ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::ExplorationMenu;
+    } else if (id == "building") {
+        universe.ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::BuildingMenu;
     }
 }
 
