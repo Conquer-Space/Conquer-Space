@@ -93,7 +93,7 @@ enum class SelectedMenu {
     ProjectsMenu,
     ExplorationMenu,
     BuildingMenu,
-    BudgetMenu
+    BudgetMenu,
 };
 
 struct ViewProvince {

@@ -78,10 +78,16 @@
                     <svg class="turnimage" src="img/chart-placeholder.svg" width="32" height="32" id="slow_down"></svg>
                 </div>
             </div>
-            <div id="buildings" class="active_button">
+            <div id="building" class="active_button">
                 <div class="button_frame">
                     <h2 class="button_text">Buildings</h2>
                     <svg class="turnimage" src="img/factory-placeholder.svg" width="32" height="32"></svg>
+                </div>
+            </div>
+            <div id="budget" class="active_button">
+                <div class="button_frame">
+                    <h2 class="button_text">Budget</h2>
+                    <svg class="turnimage" src="img/money-placeholder.svg" width="32" height="32"></svg>
                 </div>
             </div>
             <div id="space" class="active_button">
