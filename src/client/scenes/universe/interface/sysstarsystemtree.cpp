@@ -34,7 +34,9 @@ namespace components = core::components;
 namespace bodies = components::bodies;
 namespace types = components::types;
 using bodies::OrbitalSystem;
+using core::components::types::Orbit;
 using core::util::GetName;
+using ctx::VisibleOrbit;
 
 void SysStarSystemTree::Init() {
     // Sort all the planets in order
@@ -54,32 +56,16 @@ void SysStarSystemTree::DoUI(int delta_time) {
     ImGui::SetNextWindowPos(ImVec2(30, ImGui::GetIO().DisplaySize.y - 30), ImGuiCond_Always, ImVec2(0.f, 1.f));
     ImGui::SetNextWindowSize(ImVec2(200, 400), ImGuiCond_Always);
     ImGui::Begin("Star System", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | window_flags);
-    int index = 0;
-    // Get selected planet
-    // Sort by sma
-    entt::entity current_planet = scene::GetCurrentViewingPlanet(GetUniverse());
-    for (auto entity : planets) {
-        if (!GetUniverse().any_of<OrbitalSystem>(entity) || entity == GetUniverse().sun) {
-            SeePlanetSelectable(entity);
-        } else {
-            std::string planet_name = GetName(GetUniverse(), entity);
-            if (ImGui::TreeNodeEx(planet_name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
-                // If it's double clicked
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-                    // Go to the planet
-                    scene::SeePlanet(GetUniverse(), entity);
-                }
-                // Get children
-                gui::EntityTooltip(GetUniverse(), entity);
-                DoChildTree(entity);
-                ImGui::TreePop();
-            } else {
-                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
-                    scene::SeePlanet(GetUniverse(), entity);
-                }
-                gui::EntityTooltip(GetUniverse(), entity);
-            }
+    if (ImGui::BeginTabBar("###sysstarsystemviewtabbar")) {
+        if (ImGui::BeginTabItem("Star System Tree")) {
+            MainTree();
+            ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Orbit Filter")) {
+            OrbitFilter();
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
     }
     ImGui::End();
 }
@@ -130,6 +116,80 @@ void SysStarSystemTree::DoChildTree(entt::entity entity) {
                     scene::SeePlanet(GetUniverse(), child);
                 }
                 gui::EntityTooltip(GetUniverse(), child);
+            }
+        }
+    }
+}
+
+void SysStarSystemTree::OrbitFilter() {
+    // List out all the types of orbits and then determine if they are visible or not
+    auto orbits = GetUniverse().view<Orbit>();
+    if (ImGui::Checkbox("Hide all orbits", &hide_all_orbits)) {
+        if (hide_all_orbits) {
+            for (entt::entity orb : orbits) {
+                GetUniverse().remove<VisibleOrbit>(orb);
+            }
+        } else {
+            for (entt::entity orb : orbits) {
+                GetUniverse().get_or_emplace<VisibleOrbit>(orb);
+            }
+        }
+    }
+    ImGui::BeginChild("orbitfiltercontainer", ImVec2(250, 400));
+    if (ImGui::BeginTable("orbitfiltertable", 2)) {
+        ImGui::TableSetupColumn("Orbit");
+        ImGui::TableSetupColumn("Visible");
+        ImGui::TableHeadersRow();
+        int i = 0;
+        for (entt::entity orb : orbits) {
+            // Get the name
+            if (GetUniverse().any_of<core::components::bodies::Planet>(orb)) {
+                continue;
+            }
+            ImGui::TableNextRow();
+            std::string name = core::util::GetName(GetUniverse(), orb);
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", name);
+            ImGui::TableSetColumnIndex(1);
+            bool check = GetUniverse().any_of<VisibleOrbit>(orb);
+            ImGui::Checkbox(fmt::format("###Visible orbit{}", i).c_str(), &check);
+            if (check) {
+                GetUniverse().get_or_emplace<VisibleOrbit>(orb);
+            } else {
+                GetUniverse().remove<VisibleOrbit>(orb);
+            }
+            i++;
+        }
+        ImGui::EndTable();
+    }
+    ImGui::EndChild();
+}
+
+void SysStarSystemTree::MainTree() {
+    int index = 0;
+    // Get selected planet
+    // Sort by sma
+    entt::entity current_planet = scene::GetCurrentViewingPlanet(GetUniverse());
+    for (auto entity : planets) {
+        if (!GetUniverse().any_of<OrbitalSystem>(entity) || entity == GetUniverse().sun) {
+            SeePlanetSelectable(entity);
+        } else {
+            std::string planet_name = GetName(GetUniverse(), entity);
+            if (ImGui::TreeNodeEx(planet_name.c_str(), ImGuiTreeNodeFlags_OpenOnArrow)) {
+                // If it's double clicked
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                    // Go to the planet
+                    scene::SeePlanet(GetUniverse(), entity);
+                }
+                // Get children
+                gui::EntityTooltip(GetUniverse(), entity);
+                DoChildTree(entity);
+                ImGui::TreePop();
+            } else {
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)) {
+                    scene::SeePlanet(GetUniverse(), entity);
+                }
+                gui::EntityTooltip(GetUniverse(), entity);
             }
         }
     }

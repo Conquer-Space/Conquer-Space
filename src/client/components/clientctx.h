@@ -91,7 +91,9 @@ enum class SelectedMenu {
     SpaceMenu,
     EconomyMenu,
     ProjectsMenu,
-    ExplorationMenu
+    ExplorationMenu,
+    BuildingMenu,
+    BudgetMenu,
 };
 
 struct ViewProvince {

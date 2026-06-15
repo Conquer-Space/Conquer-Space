@@ -16,6 +16,7 @@
  */
 #include "client/scenes/universe/interface/taxwindow.h"
 
+#include "client/components/clientctx.h"
 #include "core/components/name.h"
 
 namespace cqsp::client::systems {
@@ -27,7 +28,11 @@ void TaxWindow::Init() {
 
 void TaxWindow::DoUI(int delta_time) {
     // Now we can set the taxes or something
-    ImGui::Begin("Taxes");
+    bool selected = GetUniverse().ctx().at<ctx::SelectedMenu>() == ctx::SelectedMenu::BudgetMenu;
+    if (!selected) {
+        return;
+    }
+    ImGui::Begin("Taxes", &selected);
     if (ImGui::BeginTable("tax_table", 2, ImGuiTableFlags_Borders)) {
         ImGui::TableSetupColumn("Good");
         ImGui::TableSetupColumn("Tax (Not a rate it's just absolute value)");
@@ -51,6 +56,9 @@ void TaxWindow::DoUI(int delta_time) {
             idx++;
         }
         ImGui::EndTable();
+    }
+    if (!selected) {
+        GetUniverse().ctx().at<ctx::SelectedMenu>() = ctx::SelectedMenu::NoMenu;
     }
     ImGui::End();
 }
