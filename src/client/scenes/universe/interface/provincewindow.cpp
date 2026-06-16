@@ -135,12 +135,12 @@ void SysProvinceInformation::DisplayWallet(entt::entity entity) {
 
 void SysProvinceInformation::ProvinceIndustryTabs() {
     if (ImGui::BeginTabBar("ProvinceTabs", ImGuiTabBarFlags_None)) {
-        if (ImGui::BeginTabItem("Demographics")) {
-            DemographicsTab();
-            ImGui::EndTabItem();
-        }
         if (ImGui::BeginTabItem("Industries")) {
             IndustryTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Demographics")) {
+            DemographicsTab();
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Infrastructure")) {
@@ -422,6 +422,25 @@ void SysProvinceInformation::InfrastructureTab() {
     ImGui::TextFmt("Construction Capacity: {}/{}", construction.current_construction,
                    construction.construction_capacity);
     ImGui::TextFmt("Construction Cost: ${}", construction.construction_cost);
+    // Also get the zones that we have, and also allocate our allocations
+    if (ImGui::BeginTable("zone_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        // Now then loop through the ghings
+        ImGui::TableSetupColumn("Zoning Type");
+        ImGui::TableSetupColumn("Used");
+        ImGui::TableSetupColumn("Allocated");
+        ImGui::TableHeadersRow();
+        auto& provinces = GetUniverse().get<components::Province>(current_province);
+        for (auto& [entity, zone] : provinces.zoning) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), entity));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", NumberToHumanString(zone.filled));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::TextFmt("{}", NumberToHumanString(zone.allocated));
+        }
+        ImGui::EndTable();
+    }
 }
 
 void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry) {

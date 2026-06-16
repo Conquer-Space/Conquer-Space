@@ -271,6 +271,11 @@
                 job_distribution: {laborer: 1448008}
             }
         ]
+        zoning: {
+            undeveloped: 100000
+            high_density_residental: 5000
+            low_density_residental: 2000
+        }
         industry: [
             {
                 recipe: farming

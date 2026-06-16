@@ -26,4 +26,7 @@
     {
         identifier: office
     }
+    {
+        identifier: infrastructure
+    }
 ]
