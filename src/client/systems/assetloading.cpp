@@ -40,6 +40,7 @@
 #include "core/loading/recipeloader.h"
 #include "core/loading/technology.h"
 #include "core/loading/timezoneloader.h"
+#include "core/loading/zoningloader.h"
 #include "core/scripting/luafunctions.h"
 #include "core/systems/sysuniversegenerator.h"
 #include "engine/asset/assetmanager.h"
@@ -98,6 +99,7 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
 void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     LoadResource<loading::GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
     LoadResource<loading::LaborLoader>(asset_manager, conquer_space.GetUniverse(), "labor");
+    LoadResource<loading::ZoningLoader>(asset_manager, conquer_space.GetUniverse(), "zoning");
     LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");
     LoadResource<loading::PlanetLoader>(asset_manager, conquer_space.GetUniverse(), "planets");
     LoadResource<loading::TimezoneLoader>(asset_manager, conquer_space.GetUniverse(), "timezones");

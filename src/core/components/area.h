@@ -135,4 +135,6 @@ struct ProductionUnit {
      */
     double ProfitMargin() { return profit / (revenue + 0.0001); }
 };
+
+struct ZoningType {};
 }  // namespace cqsp::core::components

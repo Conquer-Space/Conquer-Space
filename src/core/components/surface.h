@@ -64,6 +64,7 @@ struct Province {
     entt::entity planet = entt::null;
     std::vector<entt::entity> cities;
     std::vector<entt::entity> neighbors;
+    std::vector<std::pair<entt::entity, uint64_t>> zoning;
 };
 
 struct ProvinceColor {
