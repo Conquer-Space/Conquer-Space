@@ -1,3 +1,4 @@
+# This file is part of Conquer Space
 [
   {
     identifier: chemical_processing
@@ -16,7 +17,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -40,7 +41,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -64,7 +65,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -80,15 +81,15 @@
     output: {
       copper: 50.0
     }
-    construction: {
-      time: 4 weeks
-      cost: {
-        concrete: 2000000
-      }
-    }
     cost: {
       labor: {
         laborer: 1000
+      }
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -104,15 +105,15 @@
     output: {
       fabric: 1000.0
     }
-    construction: {
-      time: 4 weeks
-      cost: {
-        concrete: 2000000
-      }
-    }
     cost: {
       labor: {
         laborer: 1500
+      }
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -136,7 +137,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -160,7 +161,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -176,15 +177,15 @@
     output: {
       lumber: 4000.0
     }
-    construction: {
-      time: 4 weeks
-      cost: {
-        concrete: 2000000
-      }
-    }
     cost: {
       labor: {
         laborer: 1000
+      }
+    }
+    construction: {
+      time: 4 weeks
+      cost: {
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -208,7 +209,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -233,7 +234,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -260,8 +261,8 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
-        fluid_systems: 50000
+        fluid_systems: 50000.0
+        concrete: 2000000.0
       }
     }
     tags: [
@@ -285,7 +286,10 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
+      }
+      zoning: {
+        heavy_industrial: 5000
       }
     }
     tags: [

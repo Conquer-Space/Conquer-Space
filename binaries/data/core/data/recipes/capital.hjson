@@ -1,3 +1,4 @@
+# This file is part of Conquer Space
 [
   {
     identifier: machinery_production
@@ -16,9 +17,11 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
-      zoning: { heavy_industrial: 10 }
+      zoning: {
+        heavy_industrial: 10
+      }
     }
     tags: [
       factory
@@ -41,7 +44,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [

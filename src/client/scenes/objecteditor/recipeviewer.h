@@ -17,6 +17,8 @@
 #pragma once
 
 #include <array>
+#include <string>
+#include <vector>
 
 #include "client/systems/sysgui.h"
 #include "core/components/resource.h"
@@ -32,6 +34,11 @@ class SysRecipeViewer : public SysUserInterface {
 
  private:
     void RecipeViewerRight();
+    void RecipeHeader();
+    void OutputSection(core::components::Recipe& recipe, const std::vector<std::string>& good_list);
+    double LaborSection(core::components::Recipe& recipe, const std::vector<std::string>& job_list);
+    void ProfitAnalysis(const core::components::Recipe& recipe, double total_job_cost);
+    void ConstructionCostSection(const std::vector<std::string>& good_list);
     void ResetSelection();
     void SaveRecipes();
     void InitializeRecipeFiles();
