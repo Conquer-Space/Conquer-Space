@@ -57,7 +57,7 @@ void SysRecipeViewer::DoUI(int delta_time) {
     if (ImGui::Button("Add Recipe")) {
         CreateRecipe();
     }
-    ImGui::BeginChild("recipe_viewer_left", ImVec2(300, 700));
+    ImGui::BeginChild("recipe_viewer_left", ImVec2(300, -1));
     ImGui::InputText("##recipe_viewer_search_text", search_text.data(), search_text.size());
     std::string search_string(search_text.data());
     std::transform(search_string.begin(), search_string.end(), search_string.begin(),
@@ -87,7 +87,7 @@ void SysRecipeViewer::DoUI(int delta_time) {
     ImGui::EndChild();
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
+    ImGui::BeginChild("recipe_viewer_right", ImVec2(-1, -1));
     RecipeViewerRight();
     ImGui::EndChild();
     ImGui::End();
@@ -336,6 +336,88 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::TextFmt("Expected Profit: {}", util::NumberToHumanString(expected_profit));
     ImGui::TextFmt("P/L ratio: {}", expected_income / expected_cost);
     ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
+
+    ImGui::Separator();
+    ImGui::Text("Construction Cost");
+    auto& construction_cost = GetUniverse().get<components::ConstructionCost>(selected_recipe);
+    ImGui::InputInt("Time (ticks)", &construction_cost.time);
+
+    ImGui::TextFmt("Per-Tick Cost: {}", GetLedgerCost(GetUniverse(), construction_cost.cost));
+    int construction_erase = -1;
+    if (ImGui::BeginTable("construction_cost_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Good");
+        ImGui::TableSetupColumn("Amount (per tick)");
+        ImGui::TableSetupColumn("##construction_del", ImGuiTableColumnFlags_WidthFixed, 24.f);
+        ImGui::TableHeadersRow();
+        int k = 0;
+        for (auto& [entity, amount] : construction_cost.cost) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), entity));
+            if (ImGui::IsItemClicked()) {
+                ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(entity).identifier.c_str());
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::BeginTooltip();
+                ImGui::TextColored(id_copy_color, "Click to copy identifier");
+                ImGui::EndTooltip();
+            }
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SetNextItemWidth(-1);
+            ImGui::PushID(k + 1000);
+            ImGui::InputDouble("##construction_amount", &amount);
+            ImGui::TableSetColumnIndex(2);
+            if (ImGui::SmallButton("-")) construction_erase = k;
+            ImGui::PopID();
+            k++;
+        }
+        ImGui::EndTable();
+    }
+    if (construction_erase >= 0) construction_cost.cost.erase(construction_cost.cost.begin() + construction_erase);
+    ImGui::SetNextItemWidth(180);
+    GoodCombo("##new_construction_good", new_construction_good_idx, good_list);
+    ImGui::SameLine();
+    if (ImGui::Button("+ Construction Cost") && !good_list.empty()) {
+        core::components::GoodEntity ge =
+            GetUniverse().good_map[GetUniverse().goods[good_list[new_construction_good_idx]]];
+        construction_cost.cost.push_back({ge, 1.0});
+        construction_cost.cost.Finalize();
+    }
+
+    ImGui::Text("Zoning Requirements");
+    std::vector<std::string> zoning_list;
+    for (auto& [id, entity] : GetUniverse().zoning) zoning_list.push_back(id);
+    int zoning_erase = -1;
+    if (ImGui::BeginTable("zoning_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Zone Type");
+        ImGui::TableSetupColumn("Amount");
+        ImGui::TableSetupColumn("##zoning_del", ImGuiTableColumnFlags_WidthFixed, 24.f);
+        ImGui::TableHeadersRow();
+        for (int z = 0; z < static_cast<int>(construction_cost.zoning.size()); z++) {
+            auto& [zone_entity, zone_amount] = construction_cost.zoning[z];
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), zone_entity));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SetNextItemWidth(-1);
+            ImGui::PushID(z + 2000);
+            ImGui::InputInt("##zone_amount", &zone_amount);
+            ImGui::TableSetColumnIndex(2);
+            if (ImGui::SmallButton("-")) zoning_erase = z;
+            ImGui::PopID();
+        }
+        ImGui::EndTable();
+    }
+    if (zoning_erase >= 0) construction_cost.zoning.erase(construction_cost.zoning.begin() + zoning_erase);
+    if (!zoning_list.empty()) {
+        ImGui::SetNextItemWidth(180);
+        GoodCombo("##new_zoning_type", new_zoning_idx, zoning_list);
+        ImGui::SameLine();
+        if (ImGui::Button("+ Zoning")) {
+            entt::entity zone_entity = GetUniverse().zoning[zoning_list[new_zoning_idx]];
+            construction_cost.zoning.emplace_back(zone_entity, 1);
+        }
+    }
 }
 
 void SysRecipeViewer::ResetSelection() {
@@ -344,6 +426,8 @@ void SysRecipeViewer::ResetSelection() {
     new_capital_good_idx = 0;
     new_labor_job_idx = 0;
     new_output_good_idx = 0;
+    new_construction_good_idx = 0;
+    new_zoning_idx = 0;
 }
 
 void SysRecipeViewer::InitializeRecipeFiles() {

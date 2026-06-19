@@ -18,6 +18,7 @@
       cost: {
         concrete: 2000000
       }
+      zoning: { heavy_industrial: 10 }
     }
     tags: [
       factory

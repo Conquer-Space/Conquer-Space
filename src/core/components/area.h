@@ -97,6 +97,8 @@ struct ProductionUnit {
     int continuous_gains = 0;
     int stability = 0;
 
+    std::pair<entt::entity, int> consumption;
+
     ProductionType type;
     entt::entity recipe;
 

@@ -45,5 +45,7 @@ class SysRecipeViewer : public SysUserInterface {
     int new_capital_good_idx = 0;
     int new_labor_job_idx = 0;
     int new_output_good_idx = 0;
+    int new_construction_good_idx = 0;
+    int new_zoning_idx = 0;
 };
 }  // namespace cqsp::client::systems
