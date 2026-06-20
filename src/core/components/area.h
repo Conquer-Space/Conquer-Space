@@ -116,6 +116,9 @@ struct ProductionUnit {
     double profit;
     // How much it paid in transport fees
     double transport;
+    // How much in (percent) subsidies you are adding to the output
+    double output_subsidy = 0.0;
+    double output_subsidy_amount = 0.0;
 
     double amount_sold = 0;
 

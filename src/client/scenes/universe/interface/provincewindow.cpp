@@ -147,6 +147,10 @@ void SysProvinceInformation::ProvinceIndustryTabs() {
             InfrastructureTab();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Investment")) {
+            InvestmentTab();
+            ImGui::EndTabItem();
+        }
         const bool has_spaceport = HasSpacePort(current_province);
         if (!has_spaceport) {
             ImGui::BeginDisabled();
@@ -1016,5 +1020,11 @@ void SysProvinceInformation::PopulationSummary() {
     }
     ImGui::TextFmt("Population: {}", NumberToHumanString(population));
     ImGui::Separator();
+}
+
+void SysProvinceInformation::InvestmentTab() {
+    ImGui::TextFmt("Place a dollar amount to invest in specific industry");
+    ImGui::TextFmt("Subsidize output/input for something");
+    ImGui::TextFmt("Inject money into a specific factory/buy money");
 }
 }  // namespace cqsp::client::systems

@@ -25,6 +25,7 @@
 #include "client/scenes/objecteditor/sysfieldviewer.h"
 #include "client/scenes/universe/interface/constructionmenu.h"
 #include "client/scenes/universe/interface/debug/sysdebuggui.h"
+#include "client/scenes/universe/interface/economywindow.h"
 #include "client/scenes/universe/interface/explorationwindow.h"
 #include "client/scenes/universe/interface/imguiinterface.h"
 #include "client/scenes/universe/interface/launchvehiclewindow.h"
@@ -41,24 +42,7 @@
 #include "client/scenes/universe/interface/sysstarsystemtree.h"
 #include "client/scenes/universe/interface/taxwindow.h"
 #include "client/scenes/universe/interface/turnsavewindow.h"
-#include "client/scenes/universe/lua/hovertext.h"
-#include "core/components/area.h"
-#include "core/components/bodies.h"
-#include "core/components/coordinates.h"
-#include "core/components/name.h"
 #include "core/components/organizations.h"
-#include "core/components/player.h"
-#include "core/components/population.h"
-#include "core/components/resource.h"
-#include "core/components/surface.h"
-#include "core/scripting/functionreg.h"
-#include "core/scripting/luafunctions.h"
-#include "engine/graphics/primitives/cube.h"
-#include "engine/graphics/primitives/polygon.h"
-#include "engine/graphics/primitives/uvsphere.h"
-#include "engine/gui.h"
-#include "engine/renderer/renderer.h"
-#include "fmt/format.h"
 #include "glad/glad.h"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/polar_coordinates.hpp"
@@ -91,6 +75,7 @@ void UniverseScene::Init() {
     AddUISystem<systems::MapModeWindow>();
     AddUISystem<systems::LaunchVehicleWindow>();
     AddUISystem<systems::ProductionSummary>();
+    AddUISystem<systems::EconomyWindow>();
     AddUISystem<systems::TaxWindow>();
     AddUISystem<systems::ConstructionMenu>();
 
