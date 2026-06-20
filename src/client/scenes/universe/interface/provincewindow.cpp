@@ -420,6 +420,7 @@ void SysProvinceInformation::FactoryInformation() {
     // Maybe if it's above 1 then we do stuff
     if (ImGui::ArrowButton("###back_button", ImGuiDir_Left)) {
         selected_factory = entt::null;
+        return;
     }
     // Now let's list the details of the factory
     auto& production = GetUniverse().get<components::ProductionUnit>(selected_factory);
