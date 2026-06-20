@@ -119,12 +119,4 @@ struct ResourceConsumption : public ResourceMap {};
 struct ResourceProduction : public ResourceMap {};
 
 struct ResourceStockpile : public ResourceMap {};
-
-struct FailedResourceTransfer {
-    // Ledgers later to show how much
-};
-
-struct FailedResourceProduction {};
-
-struct FailedResourceConsumption {};
 }  // namespace cqsp::core::components
