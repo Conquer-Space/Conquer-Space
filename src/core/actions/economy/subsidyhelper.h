@@ -16,22 +16,9 @@
  */
 #pragma once
 
-#include "client/systems/sysgui.h"
+#include "core/universe.h"
 
-namespace cqsp::client::systems {
-class EconomyWindow : public SysUserInterface {
- public:
-    explicit EconomyWindow(engine::Application& app) : SysUserInterface(app) {}
-    void Init();
-    void DoUI(int delta_time);
-    void DoUpdate(int delta_time);
-
-    void SubsidyWindow();
-
- private:
-    bool show_add_subsidy_window = false;
-    entt::entity selected_subsidy;
-    float subsidy_amount = 0;
-    bool full_subsidy = false;
-};
-}  // namespace cqsp::client::systems
+namespace cqsp::core::actions {
+void ApplySubsidy(Universe& universe, entt::entity country, entt::entity subsidy_target, float amount);
+void RemoveSubsidy();
+}  // namespace cqsp::core::actions

@@ -51,4 +51,8 @@ struct CountryCityList {
 struct MissionQueue {
     std::vector<entt::entity> list;
 };
+
+struct Subsidies {
+    std::map<entt::entity, double> global_subsidy;
+};
 }  // namespace cqsp::core::components
