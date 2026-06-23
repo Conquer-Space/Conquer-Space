@@ -36,6 +36,7 @@
 #include "core/systems/economy/sysfinance.h"
 #include "core/systems/economy/sysinfrastructure.h"
 #include "core/systems/economy/sysinterplanetarytrade.h"
+#include "core/systems/economy/syslabordistribution.h"
 #include "core/systems/economy/syslabormarket.h"
 #include "core/systems/economy/syslaunchvehicleproduction.h"
 #include "core/systems/economy/sysmarket.h"
@@ -61,6 +62,7 @@ void Simulation::CreateSystems() {
     AddSystem<SysSpacePort>();
 
     AddSystem<InfrastructureSim>();
+    AddSystem<SysLaborDistribution>();
     AddSystem<SysPopulationConsumption>();
     AddSystem<SysProduction>();
     AddSystem<SysLaunchVehicleProduction>();
