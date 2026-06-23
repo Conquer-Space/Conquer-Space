@@ -97,6 +97,9 @@ struct ProductionUnit {
     int continuous_gains = 0;
     int stability = 0;
 
+    // Zoning requirements...
+    std::pair<entt::entity, int> consumption;
+
     ProductionType type;
     entt::entity recipe;
 
@@ -114,6 +117,9 @@ struct ProductionUnit {
     double profit;
     // How much it paid in transport fees
     double transport;
+    // How much in (percent) subsidies you are adding to the output
+    double output_subsidy = 0.0;
+    double output_subsidy_amount = 0.0;
 
     double amount_sold = 0;
 
@@ -135,4 +141,6 @@ struct ProductionUnit {
      */
     double ProfitMargin() { return profit / (revenue + 0.0001); }
 };
+
+struct ZoningType {};
 }  // namespace cqsp::core::components

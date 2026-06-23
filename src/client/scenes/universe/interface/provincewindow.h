@@ -35,6 +35,7 @@ class SysProvinceInformation : public SysUserInterface {
     void ProvinceIndustryTabs();
     void DemographicsTab();
     void IndustryTab();
+    void InvestmentTab();
     void SpacePortTab();
     void SpacePortOrdersTab(const entt::entity city);
     void SpacePortResourceTab(const entt::entity city);
@@ -55,6 +56,8 @@ class SysProvinceInformation : public SysUserInterface {
     void PopulationSummary();
     void ColonizationTabs();
 
+    void FactoryInformation();
+
     template <typename T>
     void IndustryTabGenericChild(const std::string& tabname, const std::string& industryname, const ImVec2& size);
 
@@ -71,6 +74,8 @@ class SysProvinceInformation : public SysUserInterface {
     int construction_amount = 1;
     bool show_space_port = false;
     entt::entity selected_project = entt::null;
+
+    entt::entity selected_factory = entt::null;
 
     bool segment_prices = true;
     bool individual_prices = false;

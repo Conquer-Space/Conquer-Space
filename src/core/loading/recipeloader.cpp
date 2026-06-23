@@ -98,6 +98,20 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
         // Then get cost
         const Hjson::Value& cost_map = construction["cost"];
         construction_cost.cost = HjsonToVector(universe, cost_map) / time;
+        // Now fulfill zoning or something
+        if (construction["zoning"].defined()) {
+            const Hjson::Value& zoning = construction["zoning"];
+            // Then set zoning costs
+            for (auto& input_zoning : zoning) {
+                if (!universe.zoning.contains(input_zoning.first)) {
+                    // Ideally we'd like to fail out of here but let's just fail silently here for now
+                    SPDLOG_ERROR("Non-existent zoning {}, skipping!", input_zoning.first);
+                    continue;
+                }
+                construction_cost.zoning.emplace_back(universe.zoning[input_zoning.first],
+                                                      static_cast<int>(input_zoning.second));
+            }
+        }
     } else {
         // Default cost
         auto& id = node.get<components::Identifier>();

@@ -104,6 +104,20 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
             settlement.population.push_back(ParsePopulation(population[i]));
         }
     }
+
+    if (!values["zoning"].empty()) {
+        const Hjson::Value& zoning = values["zoning"];
+        auto& province = node.get<components::Province>();
+        for (int i = 0; i < zoning.size(); i++) {
+            if (!universe.zoning.contains(zoning.key(i))) {
+                continue;
+            }
+            uint64_t area = zoning[i].to_int64();
+            province.zoning.emplace_back(
+                universe.zoning[zoning.key(i)],
+                components::ZoningAllocation {.allocated = static_cast<uint32_t>(area), .filled = 0});
+        }
+    }
     //SPDLOG_INFO("Load Industry");
     node.emplace<components::ResourceMap>();
 

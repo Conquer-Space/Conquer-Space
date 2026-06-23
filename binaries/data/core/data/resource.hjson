@@ -59,4 +59,9 @@
         type: hjson
         hints: {}
     }
+    zoning: {
+        path: real_estate.hjson
+        type: hjson
+        hints: {}
+    }
 }

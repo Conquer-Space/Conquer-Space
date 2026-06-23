@@ -1,3 +1,4 @@
+# This file is part of Conquer Space
 [
   {
     identifier: steel_manufacturing
@@ -17,7 +18,7 @@
     construction: {
       time: 4 weeks
       cost: {
-        concrete: 2000000
+        concrete: 2000000.0
       }
     }
     tags: [

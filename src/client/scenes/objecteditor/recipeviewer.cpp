@@ -14,12 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "recipeviewer.h"
+#include "client/scenes/objecteditor/recipeviewer.h"
 
 #include <imgui_stdlib.h>
 
 #include <filesystem>
 
+#include "client/scenes/objecteditor/editorwidgets.h"
 #include "client/scenes/universe/interface/ledgertable.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "core/components/labor.h"
@@ -39,6 +40,20 @@ namespace {
 struct FileTag {
     std::string file;
 };
+
+std::string SecondsToTimeString(int seconds) {
+    constexpr int YEAR = 60 * 60 * 24 * 365;
+    constexpr int WEEK = 60 * 60 * 24 * 7;
+    constexpr int DAY = 60 * 60 * 24;
+    constexpr int HOUR = 60 * 60;
+    constexpr int MINUTE = 60;
+    if (seconds % YEAR == 0) return fmt::format("{} y", seconds / YEAR);
+    if (seconds % WEEK == 0) return fmt::format("{} weeks", seconds / WEEK);
+    if (seconds % DAY == 0) return fmt::format("{} d", seconds / DAY);
+    if (seconds % HOUR == 0) return fmt::format("{} h", seconds / HOUR);
+    if (seconds % MINUTE == 0) return fmt::format("{} m", seconds / MINUTE);
+    return fmt::format("{} s", seconds);
+}
 }  // namespace
 
 void SysRecipeViewer::Init() { InitializeRecipeFiles(); }
@@ -57,7 +72,7 @@ void SysRecipeViewer::DoUI(int delta_time) {
     if (ImGui::Button("Add Recipe")) {
         CreateRecipe();
     }
-    ImGui::BeginChild("recipe_viewer_left", ImVec2(300, 700));
+    ImGui::BeginChild("recipe_viewer_left", ImVec2(300, -1));
     ImGui::InputText("##recipe_viewer_search_text", search_text.data(), search_text.size());
     std::string search_string(search_text.data());
     std::transform(search_string.begin(), search_string.end(), search_string.begin(),
@@ -87,7 +102,7 @@ void SysRecipeViewer::DoUI(int delta_time) {
     ImGui::EndChild();
     ImGui::EndChild();
     ImGui::SameLine();
-    ImGui::BeginChild("recipe_viewer_right", ImVec2(400, 700));
+    ImGui::BeginChild("recipe_viewer_right", ImVec2(-1, -1));
     RecipeViewerRight();
     ImGui::EndChild();
     ImGui::End();
@@ -95,75 +110,17 @@ void SysRecipeViewer::DoUI(int delta_time) {
 
 void SysRecipeViewer::DoUpdate(int delta_time) {}
 
-namespace {
-double GetLedgerCost(core::Universe& universe, const components::ResourceVector& ledger) {
-    double input_cost = 0;
-    for (auto& [entity, amount] : ledger) {
-        input_cost += universe.get<components::Price>(entity) * amount;
-    }
-    return input_cost;
-}
-}  // namespace
-
-namespace {
-bool GoodCombo(const char* label, int& selected_idx, const std::vector<std::string>& list) {
-    if (list.empty()) return false;
-    if (selected_idx >= static_cast<int>(list.size())) selected_idx = 0;
-    bool changed = false;
-    if (ImGui::BeginCombo(label, list[selected_idx].c_str())) {
-        static char search_buf[128] = {};
-        if (ImGui::IsWindowAppearing()) {
-            memset(search_buf, 0, sizeof(search_buf));
-            ImGui::SetKeyboardFocusHere();
-        }
-        ImGui::InputText("##combo_search", search_buf, sizeof(search_buf));
-        std::string search_lower(search_buf);
-        std::transform(search_lower.begin(), search_lower.end(), search_lower.begin(),
-                       [](unsigned char c) { return std::tolower(c); });
-        for (int i = 0; i < static_cast<int>(list.size()); i++) {
-            if (!search_lower.empty()) {
-                std::string item_lower = list[i];
-                std::transform(item_lower.begin(), item_lower.end(), item_lower.begin(),
-                               [](unsigned char c) { return std::tolower(c); });
-                if (item_lower.find(search_lower) == std::string::npos) continue;
-            }
-            bool is_selected = i == selected_idx;
-            if (ImGui::Selectable(list[i].c_str(), is_selected)) {
-                selected_idx = i;
-                changed = true;
-            }
-            if (is_selected) ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-    }
-    return changed;
-}
-}  // namespace
-
 void SysRecipeViewer::RecipeViewerRight() {
     if (selected_recipe == entt::null) {
         ImGui::Text("Good is invalid!");
         return;
     }
-    ImGui::TextFmt("Name");
-    ImGui::SameLine();
-    ImGui::InputText("###name", &GetUniverse().get<components::Name>(selected_recipe).name);
-    ImGui::TextFmt("Identifier");
-    ImGui::SameLine();
-    ImGui::InputText("###identifier", &GetUniverse().get<components::Identifier>(selected_recipe).identifier);
-    if (ImGui::IsItemClicked()) {
-        ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(selected_recipe).identifier.c_str());
-    }
-    if (ImGui::IsItemHovered()) {
-        ImGui::BeginTooltip();
-        ImGui::TextColored(id_copy_color, "Click to copy identifier");
-        ImGui::EndTooltip();
-    }
+
+    RecipeHeader();
 
     auto& recipe_comp = GetUniverse().get<components::Recipe>(selected_recipe);
     ImGui::TextFmt("Workers per unit of recipe: {}", recipe_comp.workers.GetSum());
 
-    // Build goods and jobs lists once per frame for the combos
     std::vector<std::string> good_list;
     for (auto& [id, entity] : GetUniverse().goods) good_list.push_back(id);
     std::vector<std::string> job_list;
@@ -171,111 +128,65 @@ void SysRecipeViewer::RecipeViewerRight() {
 
     ImGui::Separator();
     ImGui::Text("Input");
-    ImGui::TextFmt("Input Default Cost: {}", GetLedgerCost(GetUniverse(), recipe_comp.input));
-    int input_erase = -1;
-    if (ImGui::BeginTable("input_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Good");
-        ImGui::TableSetupColumn("Amount");
-        ImGui::TableSetupColumn("##input_del", ImGuiTableColumnFlags_WidthFixed, 24.f);
-        ImGui::TableHeadersRow();
-        int i = 0;
-        for (auto& [entity, amount] : recipe_comp.input) {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), entity));
-            if (ImGui::IsItemClicked()) {
-                ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(entity).identifier.c_str());
-            }
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::TextColored(id_copy_color, "Click to copy identifier");
-                ImGui::EndTooltip();
-            }
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SetNextItemWidth(-1);
-            ImGui::PushID(i);
-            ImGui::InputDouble("##input_amount", &amount);
-            ImGui::TableSetColumnIndex(2);
-            if (ImGui::SmallButton("-")) input_erase = i;
-            ImGui::PopID();
-            i++;
-        }
-        ImGui::EndTable();
-    }
-    if (input_erase >= 0) recipe_comp.input.erase(recipe_comp.input.begin() + input_erase);
-    ImGui::SetNextItemWidth(180);
-    GoodCombo("##new_input_good", new_input_good_idx, good_list);
-    ImGui::SameLine();
-    if (ImGui::Button("+ Input") && !good_list.empty()) {
-        core::components::GoodEntity ge = GetUniverse().good_map[GetUniverse().goods[good_list[new_input_good_idx]]];
-        recipe_comp.input.push_back({ge, 1.0});
-        recipe_comp.input.Finalize();
-    }
+    ResourceVectorSection(GetUniverse(), recipe_comp.input, good_list, new_input_good_idx, "input_table", "Amount",
+                          "##new_input_good", "+ Input", id_copy_color);
 
     ImGui::Separator();
     ImGui::Text("Capital Cost");
-    ImGui::TextFmt("Capital Default Cost: {}",
-                   util::NumberToHumanString(GetLedgerCost(GetUniverse(), recipe_comp.capitalcost)));
-    int capital_erase = -1;
-    if (ImGui::BeginTable("capital_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
-        ImGui::TableSetupColumn("Good");
-        ImGui::TableSetupColumn("Amount");
-        ImGui::TableSetupColumn("##capital_del", ImGuiTableColumnFlags_WidthFixed, 24.f);
-        ImGui::TableHeadersRow();
-        int j = 0;
-        for (auto& [entity, amount] : recipe_comp.capitalcost) {
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), entity));
-            if (ImGui::IsItemClicked()) {
-                ImGui::SetClipboardText(GetUniverse().get<components::Identifier>(entity).identifier.c_str());
-            }
-            if (ImGui::IsItemHovered()) {
-                ImGui::BeginTooltip();
-                ImGui::TextColored(id_copy_color, "Click to copy identifier");
-                ImGui::EndTooltip();
-            }
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SetNextItemWidth(-1);
-            ImGui::PushID(j);
-            ImGui::InputDouble("##capital_amount", &amount);
-            ImGui::TableSetColumnIndex(2);
-            if (ImGui::SmallButton("-")) capital_erase = j;
-            ImGui::PopID();
-            j++;
-        }
-        ImGui::EndTable();
-    }
-    if (capital_erase >= 0) recipe_comp.capitalcost.erase(recipe_comp.capitalcost.begin() + capital_erase);
-    ImGui::SetNextItemWidth(180);
-    GoodCombo("##new_capital_good", new_capital_good_idx, good_list);
-    ImGui::SameLine();
-    if (ImGui::Button("+ Capital") && !good_list.empty()) {
-        core::components::GoodEntity ge = GetUniverse().good_map[GetUniverse().goods[good_list[new_capital_good_idx]]];
-        recipe_comp.capitalcost.push_back({ge, 1.0});
-        recipe_comp.capitalcost.Finalize();
+    ResourceVectorSection(GetUniverse(), recipe_comp.capitalcost, good_list, new_capital_good_idx, "capital_table",
+                          "Amount", "##new_capital_good", "+ Capital", id_copy_color);
+
+    ImGui::Separator();
+    OutputSection(recipe_comp, good_list);
+
+    ImGui::Separator();
+    double total_job_cost = LaborSection(recipe_comp, job_list);
+
+    ImGui::Separator();
+    if (GetUniverse().any_of<FileTag>(selected_recipe)) {
+        ImGui::TextFmt("Output File");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputText("###output_file", &GetUniverse().get<FileTag>(selected_recipe).file);
     }
 
     ImGui::Separator();
+    ProfitAnalysis(recipe_comp, total_job_cost);
+
+    ImGui::Separator();
+    ConstructionCostSection(good_list);
+}
+
+void SysRecipeViewer::RecipeHeader() {
+    ImGui::TextFmt("Name");
+    ImGui::SameLine();
+    ImGui::InputText("###name", &GetUniverse().get<components::Name>(selected_recipe).name);
+    ImGui::TextFmt("Identifier");
+    ImGui::SameLine();
+    ImGui::InputText("###identifier", &GetUniverse().get<components::Identifier>(selected_recipe).identifier);
+    IdentifierTooltipOnItem(GetUniverse(), selected_recipe, id_copy_color);
+}
+
+void SysRecipeViewer::OutputSection(components::Recipe& recipe, const std::vector<std::string>& good_list) {
     ImGui::Text("Output");
-    ImGui::TextFmt("Output Cost: {}",
-                   util::NumberToHumanString(GetUniverse().get<components::Price>(recipe_comp.output.entity) *
-                                             recipe_comp.output.amount));
-    // Sync combo index to the current output entity
+    ImGui::TextFmt(
+        "Output Cost: {}",
+        util::NumberToHumanString(GetUniverse().get<components::Price>(recipe.output.entity) * recipe.output.amount));
     if (!good_list.empty()) {
         const std::string& current_output_id =
-            GetUniverse().get<components::Identifier>(recipe_comp.output.entity).identifier;
+            GetUniverse().get<components::Identifier>(recipe.output.entity).identifier;
         auto it = std::find(good_list.begin(), good_list.end(), current_output_id);
         if (it != good_list.end()) new_output_good_idx = static_cast<int>(it - good_list.begin());
     }
     ImGui::SetNextItemWidth(180);
     if (GoodCombo("##output_good", new_output_good_idx, good_list) && !good_list.empty()) {
-        recipe_comp.output.entity = GetUniverse().good_map[GetUniverse().goods[good_list[new_output_good_idx]]];
+        recipe.output.entity = GetUniverse().good_map[GetUniverse().goods[good_list[new_output_good_idx]]];
     }
     ImGui::SameLine();
-    ImGui::InputDouble("###output_amount", &recipe_comp.output.amount);
+    ImGui::InputDouble("###output_amount", &recipe.output.amount);
+}
 
-    ImGui::Separator();
+double SysRecipeViewer::LaborSection(components::Recipe& recipe, const std::vector<std::string>& job_list) {
     double total_job_cost = 0;
     int labor_erase = -1;
     if (ImGui::BeginTable("job_cost_table", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
@@ -284,8 +195,8 @@ void SysRecipeViewer::RecipeViewerRight() {
         ImGui::TableSetupColumn("Total Cost");
         ImGui::TableSetupColumn("##labor_del", ImGuiTableColumnFlags_WidthFixed, 24.f);
         ImGui::TableHeadersRow();
-        for (int i = 0; i < static_cast<int>(recipe_comp.workers.workers.size()); i++) {
-            auto& [job, workers] = recipe_comp.workers.workers[i];
+        for (int i = 0; i < static_cast<int>(recipe.workers.workers.size()); i++) {
+            auto& [job, workers] = recipe.workers.workers[i];
             auto& labor = GetUniverse().get<components::Labor>(job);
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -307,28 +218,22 @@ void SysRecipeViewer::RecipeViewerRight() {
         }
         ImGui::EndTable();
     }
-    if (labor_erase >= 0) recipe_comp.workers.workers.erase(recipe_comp.workers.workers.begin() + labor_erase);
+    if (labor_erase >= 0) recipe.workers.workers.erase(recipe.workers.workers.begin() + labor_erase);
     ImGui::SetNextItemWidth(180);
     GoodCombo("##new_labor_job", new_labor_job_idx, job_list);
     ImGui::SameLine();
     if (ImGui::Button("+ Labor") && !job_list.empty()) {
         entt::entity job = GetUniverse().jobs[job_list[new_labor_job_idx]];
-        recipe_comp.workers.workers.emplace_back(job, 100u);
+        recipe.workers.workers.emplace_back(job, 100u);
     }
+    return total_job_cost;
+}
 
-    ImGui::Separator();
-    if (GetUniverse().any_of<FileTag>(selected_recipe)) {
-        ImGui::TextFmt("Output File");
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(-1);
-        ImGui::InputText("###output_file", &GetUniverse().get<FileTag>(selected_recipe).file);
-    }
-
-    ImGui::Separator();
-    double expected_cost = GetLedgerCost(GetUniverse(), recipe_comp.input) * expected_production +
-                           GetLedgerCost(GetUniverse(), recipe_comp.capitalcost) + total_job_cost;
-    double expected_income = GetUniverse().get<components::Price>(recipe_comp.output.entity) *
-                             recipe_comp.output.amount * expected_production;
+void SysRecipeViewer::ProfitAnalysis(const components::Recipe& recipe, double total_job_cost) {
+    double expected_cost = GetLedgerCost(GetUniverse(), recipe.input) * expected_production +
+                           GetLedgerCost(GetUniverse(), recipe.capitalcost) + total_job_cost;
+    double expected_income =
+        GetUniverse().get<components::Price>(recipe.output.entity) * recipe.output.amount * expected_production;
     double expected_profit = expected_income - expected_cost;
     ImGui::TextFmt("Expected Income: {}", util::NumberToHumanString(expected_income));
     ImGui::TextFmt("Expected Cost: {}", util::NumberToHumanString(expected_cost));
@@ -338,12 +243,58 @@ void SysRecipeViewer::RecipeViewerRight() {
     ImGui::DragFloat("Amount Produced", &expected_production, 1, 0, 10000000);
 }
 
+void SysRecipeViewer::ConstructionCostSection(const std::vector<std::string>& good_list) {
+    ImGui::Text("Construction Cost");
+    auto& construction_cost = GetUniverse().get<components::ConstructionCost>(selected_recipe);
+    ImGui::InputInt("Time (ticks)", &construction_cost.time);
+    ResourceVectorSection(GetUniverse(), construction_cost.cost, good_list, new_construction_good_idx,
+                          "construction_cost_table", "Amount (per tick)", "##new_construction_good",
+                          "+ Construction Cost", id_copy_color);
+
+    ImGui::Text("Zoning Requirements");
+    std::vector<std::string> zoning_list;
+    for (auto& [id, entity] : GetUniverse().zoning) zoning_list.push_back(id);
+    int zoning_erase = -1;
+    if (ImGui::BeginTable("zoning_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Zone Type");
+        ImGui::TableSetupColumn("Amount");
+        ImGui::TableSetupColumn("##zoning_del", ImGuiTableColumnFlags_WidthFixed, 24.f);
+        ImGui::TableHeadersRow();
+        for (int z = 0; z < static_cast<int>(construction_cost.zoning.size()); z++) {
+            auto& [zone_entity, zone_amount] = construction_cost.zoning[z];
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), zone_entity));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SetNextItemWidth(-1);
+            ImGui::PushID(z);
+            ImGui::InputInt("##zone_amount", &zone_amount);
+            ImGui::TableSetColumnIndex(2);
+            if (ImGui::SmallButton("-")) zoning_erase = z;
+            ImGui::PopID();
+        }
+        ImGui::EndTable();
+    }
+    if (zoning_erase >= 0) construction_cost.zoning.erase(construction_cost.zoning.begin() + zoning_erase);
+    if (!zoning_list.empty()) {
+        ImGui::SetNextItemWidth(180);
+        GoodCombo("##new_zoning_type", new_zoning_idx, zoning_list);
+        ImGui::SameLine();
+        if (ImGui::Button("+ Zoning")) {
+            entt::entity zone_entity = GetUniverse().zoning[zoning_list[new_zoning_idx]];
+            construction_cost.zoning.emplace_back(zone_entity, 1);
+        }
+    }
+}
+
 void SysRecipeViewer::ResetSelection() {
     expected_production = 1;
     new_input_good_idx = 0;
     new_capital_good_idx = 0;
     new_labor_job_idx = 0;
     new_output_good_idx = 0;
+    new_construction_good_idx = 0;
+    new_zoning_idx = 0;
 }
 
 void SysRecipeViewer::InitializeRecipeFiles() {
@@ -428,6 +379,18 @@ void SysRecipeViewer::SaveRecipes() {
                 }
             }
 
+            auto& construction_cost = GetUniverse().get<components::ConstructionCost>(recipe);
+            int time_seconds = construction_cost.time * components::StarDate::TIME_INCREMENT;
+            value["construction"]["time"] = SecondsToTimeString(time_seconds);
+            for (auto& [entity, amount] : construction_cost.cost) {
+                value["construction"]["cost"][GetUniverse().get<components::Identifier>(entity).identifier] =
+                    amount * time_seconds;
+            }
+            for (auto& [zone_entity, zone_amount] : construction_cost.zoning) {
+                value["construction"]["zoning"][GetUniverse().get<components::Identifier>(zone_entity).identifier] =
+                    zone_amount;
+            }
+
             switch (recipe_comp.type) {
                 case components::ProductionType::mine:
                     value["tags"].push_back("raw");
@@ -442,7 +405,7 @@ void SysRecipeViewer::SaveRecipes() {
 
             contents.push_back(value);
         }
-        contents.set_comment_before("# This file is part of Conquer Space");
+        contents.set_comment_before("# This file is part of Conquer Space\n");
         if (!file.empty()) {
             Hjson::MarshalToFile(contents, file);
         }

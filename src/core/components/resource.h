@@ -19,6 +19,7 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include <entt/entt.hpp>
@@ -105,6 +106,8 @@ struct ConstructionCost {
     /* Per tick cost */
     ResourceVector cost;
     int time;
+    // You just need to fulfill any of these zoning requirements I guess?
+    std::vector<std::pair<entt::entity, int>> zoning;
 };
 
 struct RecipeCost {
@@ -116,12 +119,4 @@ struct ResourceConsumption : public ResourceMap {};
 struct ResourceProduction : public ResourceMap {};
 
 struct ResourceStockpile : public ResourceMap {};
-
-struct FailedResourceTransfer {
-    // Ledgers later to show how much
-};
-
-struct FailedResourceProduction {};
-
-struct FailedResourceConsumption {};
 }  // namespace cqsp::core::components

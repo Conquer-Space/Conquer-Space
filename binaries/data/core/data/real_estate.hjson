@@ -1,0 +1,32 @@
+[
+    {
+        identifier: undeveloped
+    }
+    {
+        identifier: commercial
+    }
+    {
+        identifier: low_density_residental
+    }
+    {
+        identifier: high_density_residental
+    }
+    {
+        identifier: light_industrial
+    }
+    {
+        identifier: heavy_industrial
+    }
+    {
+        identifier: agricultural
+    }
+    {
+        identifier: abandoned
+    }
+    {
+        identifier: office
+    }
+    {
+        identifier: infrastructure
+    }
+]

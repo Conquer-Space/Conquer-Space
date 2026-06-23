@@ -60,13 +60,6 @@ void RenderEntityType(const Universe& universe, entt::entity entity) {
 }
 
 void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
-    if (universe.all_of<components::FailedResourceTransfer>(entity)) {
-        ImGui::TextFmtColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "Failed resource transfer last tick");
-    }
-    if (universe.all_of<components::FailedResourceProduction>(entity)) {
-        ImGui::TextFmtColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "Failed resource production last tick");
-    }
-
     if (universe.all_of<components::ResourceStockpile>(entity)) {
         ImGui::Separator();
         ImGui::TextFmt("Resources");
@@ -90,6 +83,8 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("State: {}", components::IndustryStateToString(production.state));
         ImGui::TextFmt("Taxes: {}", NumberToHumanString(production.tax_cost));
         ImGui::TextFmt("Continous Gains: {}", production.continuous_gains);
+        ImGui::TextFmt("Output Subsidy: {}% ({})", production.output_subsidy * 100.,
+                       NumberToHumanString(production.output_subsidy_amount));
         ImGui::Separator();
         ImGui::TextFmt("Profit: {}", NumberToHumanString(production.profit));
         ImGui::TextFmt("Revenue: {}", NumberToHumanString(production.revenue));

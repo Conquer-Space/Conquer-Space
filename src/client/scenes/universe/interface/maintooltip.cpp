@@ -19,6 +19,7 @@
 #include "client/components/clientctx.h"
 #include "core/components/coordinates.h"
 #include "core/components/market.h"
+#include "core/components/population.h"
 #include "core/components/surface.h"
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
@@ -96,8 +97,21 @@ void ToolTipWindow::ProvinceTooltipProvider(entt::entity entity) {
     if (GetUniverse().ctx().at<ctx::MapMode>() != ctx::MapMode::GoodPriceMapMode) {
         // We should also get the population and gdp and stuff
         double GDP = GetUniverse().get<core::components::Market>(entity).GDP;
-        tooltip_content->SetInnerRML(fmt::format("<p>{}</p><p>GDP: {}</p>", core::util::GetName(GetUniverse(), entity),
-                                                 cqsp::util::NumberToHumanString(GDP)));
+        // Let's also compute the average SOL
+        // Get the population
+        uint64_t population = 0;
+        double sol = 0;
+        if (GetUniverse().all_of<core::components::Settlement>(entity)) {
+            for (entt::entity entity : GetUniverse().get<core::components::Settlement>(entity).population) {
+                auto& segment = GetUniverse().get<core::components::PopulationSegment>(entity);
+                population += segment.population;
+                sol += segment.standard_of_living * segment.population;
+            }
+        }
+        tooltip_content->SetInnerRML(fmt::format(
+            "<p>{}</p><p>GDP: {}</p><p>Population: {}</p><p>Standard of Living: {}</p>",
+            core::util::GetName(GetUniverse(), entity), cqsp::util::NumberToHumanString(GDP),
+            cqsp::util::NumberToHumanString(population), cqsp::util::NumberToHumanString(sol / population)));
         return;
     }
     const auto& ctx = GetUniverse().ctx().at<ctx::MapModeCtx>();

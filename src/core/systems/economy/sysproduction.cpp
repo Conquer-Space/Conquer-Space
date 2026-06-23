@@ -144,9 +144,22 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
     size.revenue = output.MultiplyAndGetSum(market.price);
     size.profit =
         size.revenue - size.maintenance - size.material_costs - size.wage_cost - size.transport - size.tax_cost;
+    if (size.output_subsidy < 1.0) {
+        size.output_subsidy_amount = size.profit * size.output_subsidy;
+        size.profit += size.output_subsidy_amount;
+    } else {
+        if (size.profit < 0.0) {
+            // Subsidize everything
+            size.output_subsidy_amount = -size.profit;
+            size.profit = 0;
+        } else {
+            size.output_subsidy_amount = 0;
+        }
+    }
+
     wallet += size.profit;
     market.GDP += size.revenue - size.material_costs;
-    tax_income += taxes + income_taxes;
+    tax_income += taxes + income_taxes - size.output_subsidy_amount;
     /*
         Now try to maximize profit
         Maximizing profit is a two fold thing

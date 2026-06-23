@@ -59,11 +59,17 @@ struct CityTimeZone {
     entt::entity time_zone = entt::null;
 };
 
+struct ZoningAllocation {
+    uint32_t allocated;
+    uint32_t filled;
+};
+
 struct Province {
     entt::entity country = entt::null;
     entt::entity planet = entt::null;
     std::vector<entt::entity> cities;
     std::vector<entt::entity> neighbors;
+    std::vector<std::pair<entt::entity, ZoningAllocation>> zoning;
 };
 
 struct ProvinceColor {

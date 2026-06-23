@@ -135,16 +135,20 @@ void SysProvinceInformation::DisplayWallet(entt::entity entity) {
 
 void SysProvinceInformation::ProvinceIndustryTabs() {
     if (ImGui::BeginTabBar("ProvinceTabs", ImGuiTabBarFlags_None)) {
-        if (ImGui::BeginTabItem("Demographics")) {
-            DemographicsTab();
-            ImGui::EndTabItem();
-        }
         if (ImGui::BeginTabItem("Industries")) {
             IndustryTab();
             ImGui::EndTabItem();
         }
+        if (ImGui::BeginTabItem("Demographics")) {
+            DemographicsTab();
+            ImGui::EndTabItem();
+        }
         if (ImGui::BeginTabItem("Infrastructure")) {
             InfrastructureTab();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Investment")) {
+            InvestmentTab();
             ImGui::EndTabItem();
         }
         const bool has_spaceport = HasSpacePort(current_province);
@@ -407,6 +411,62 @@ void SysProvinceInformation::SpacePortTab() {
     }
 }
 
+void SysProvinceInformation::FactoryInformation() {
+    if (!GetUniverse().valid(selected_factory)) {
+        return;
+    }
+    // Set our subsidy amount
+    // Then we also need a negate all negative value subsidy?
+    // Maybe if it's above 1 then we do stuff
+    if (ImGui::ArrowButton("###back_button", ImGuiDir_Left)) {
+        selected_factory = entt::null;
+        return;
+    }
+    // Now let's list the details of the factory
+    auto& production = GetUniverse().get<components::ProductionUnit>(selected_factory);
+    ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), production.recipe));
+    if (production.shortage) {
+        ImGui::TextFmtColored(ImVec4(0.75, 0, 0, 1), "Currently undergoing a shortage!");
+    }
+    ImGui::TextFmt("Size: {}/{} ({})", production.utilization, production.size, production.diff);
+
+    ImGui::Separator();
+    ImGui::TextFmt("Ledger");
+    ImGui::TextFmt("Revenue: {}", util::NumberToHumanString(production.revenue));
+    ImGui::TextFmt("Profit: {}", util::NumberToHumanString(production.profit));
+    ImGui::TextFmt("Subsidies: {}", util::NumberToHumanString(production.output_subsidy_amount));
+    // Add a subsidy bar or something
+    ImGui::SameLine();
+    // Now a slider to add subsidies
+    float subsidy = production.output_subsidy;
+    ImGui::SliderFloat("Set Subsidy Amount", &subsidy, 0, 1.0);
+    production.output_subsidy = subsidy;
+    if (ImGui::IsItemHovered()) {
+        ImGui::SetTooltip("Set to 1 to pay for all losses");
+    }
+    ImGui::TextFmt("Costs: {}", util::NumberToHumanString(production.revenue - production.profit));
+    ImGui::TextFmt("Material Costs: {}", util::NumberToHumanString(production.material_costs));
+    ImGui::TextFmt("Wage Costs: {}", util::NumberToHumanString(production.wage_cost));
+    ImGui::TextFmt("Maintainence Costs: {}", util::NumberToHumanString(production.maintenance));
+    ImGui::TextFmt("Tax Costs: {}", util::NumberToHumanString(production.tax_cost));
+    ImGui::TextFmt("Transport Costs: {}", util::NumberToHumanString(production.transport));
+    ImGui::Separator();
+    ImGui::Text("Hired workers");
+    if (ImGui::BeginTable("joblist", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Worker Type");
+        ImGui::TableSetupColumn("Amount");
+        ImGui::TableHeadersRow();
+        for (auto& [job, amount] : production.workers) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", GetName(GetUniverse(), job));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", amount);
+        }
+        ImGui::EndTable();
+    }
+}
+
 void SysProvinceInformation::InfrastructureTab() {
     auto& infras = GetUniverse().get<infrastructure::CityInfrastructure>(current_province);
     ImGui::TextFmt("Default transport cost per m3: {}", infras.default_purchase_cost);
@@ -422,11 +482,34 @@ void SysProvinceInformation::InfrastructureTab() {
     ImGui::TextFmt("Construction Capacity: {}/{}", construction.current_construction,
                    construction.construction_capacity);
     ImGui::TextFmt("Construction Cost: ${}", construction.construction_cost);
+    // Also get the zones that we have, and also allocate our allocations
+    if (ImGui::BeginTable("zone_table", 3, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
+        // Now then loop through the ghings
+        ImGui::TableSetupColumn("Zoning Type");
+        ImGui::TableSetupColumn("Used");
+        ImGui::TableSetupColumn("Allocated");
+        ImGui::TableHeadersRow();
+        auto& provinces = GetUniverse().get<components::Province>(current_province);
+        for (auto& [entity, zone] : provinces.zoning) {
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), entity));
+            ImGui::TableSetColumnIndex(1);
+            ImGui::TextFmt("{}", NumberToHumanString(zone.filled));
+            ImGui::TableSetColumnIndex(2);
+            ImGui::TextFmt("{}", NumberToHumanString(zone.allocated));
+        }
+        ImGui::EndTable();
+    }
 }
 
 void SysProvinceInformation::IndustryListIndustryRow(const entt::entity industry) {
     ImGui::TableSetColumnIndex(0);
-    ImGui::TextFmt("{}", core::util::GetName(GetUniverse(), industry));
+    bool select = false;
+    if (ImGui::Selectable(fmt::format("{}", core::util::GetName(GetUniverse(), industry)).c_str(), false,
+                          ImGuiSelectableFlags_SpanAllColumns)) {
+        selected_factory = industry;
+    }
     if (ImGui::IsItemHovered()) {
         systems::gui::EntityTooltip(GetUniverse(), industry);
     }
@@ -499,7 +582,12 @@ void SysProvinceInformation::IndustryListWindow() {
     if (!city_factory_info) {
         return;
     }
-    ImGui::Begin("Name##industry_list_window", &city_factory_info);
+    ImGui::Begin("Industry Window##industry_list_window", &city_factory_info);
+    if (selected_factory != entt::null) {
+        FactoryInformation();
+        ImGui::End();
+        return;
+    }
     // Loop through market industry
     if (ImGui::BeginTable("industry_list_table", 9, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg)) {
         ImGui::TableSetupColumn("Production Type");
@@ -997,5 +1085,11 @@ void SysProvinceInformation::PopulationSummary() {
     }
     ImGui::TextFmt("Population: {}", NumberToHumanString(population));
     ImGui::Separator();
+}
+
+void SysProvinceInformation::InvestmentTab() {
+    ImGui::TextFmt("Place a dollar amount to invest in specific industry");
+    ImGui::TextFmt("Subsidize output/input for something");
+    ImGui::TextFmt("Inject money into a specific factory/buy money");
 }
 }  // namespace cqsp::client::systems
