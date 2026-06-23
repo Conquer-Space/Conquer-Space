@@ -113,9 +113,9 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
                 continue;
             }
             uint64_t area = zoning[i].to_int64();
-            province.zoning.push_back(
-                std::make_pair(universe.zoning[zoning.key(i)],
-                               components::ZoningAllocation {.allocated = static_cast<uint32_t>(area), .filled = 0}));
+            province.zoning.emplace_back(
+                universe.zoning[zoning.key(i)],
+                components::ZoningAllocation {.allocated = static_cast<uint32_t>(area), .filled = 0});
         }
     }
     //SPDLOG_INFO("Load Industry");
