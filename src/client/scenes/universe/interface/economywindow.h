@@ -26,9 +26,9 @@ class EconomyWindow : public SysUserInterface {
     void DoUI(int delta_time);
     void DoUpdate(int delta_time);
 
-    void SubsidyWindow();
-
  private:
+    void SubsidyWindow();
+    void SubsidyTab();
     bool show_add_subsidy_window = false;
     entt::entity selected_subsidy;
     float subsidy_amount = 0;
