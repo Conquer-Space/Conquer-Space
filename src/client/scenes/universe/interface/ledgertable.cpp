@@ -61,4 +61,13 @@ void ResourceMapTable(const core::Universe& universe, const core::components::Re
                       const char* name) {
     ResourceMapTable<core::components::ResourceVector>(universe, ledger, name);
 }
+
+void EntityLedgerTable(const core::Universe& universe, const std::vector<std::pair<entt::entity, double>>& ledger,
+                       const char* name) {
+    ResourceMapTable<std::vector<std::pair<entt::entity, double>>>(universe, ledger, name);
+}
+
+void EntityLedgerTable(const core::Universe& universe, const std::map<entt::entity, double>& ledger, const char* name) {
+    ResourceMapTable<std::map<entt::entity, double>>(universe, ledger, name);
+}
 }  // namespace cqsp::client::systems

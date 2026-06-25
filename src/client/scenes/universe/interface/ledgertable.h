@@ -22,4 +22,8 @@
 namespace cqsp::client::systems {
 void ResourceMapTable(const core::Universe& universe, const core::components::ResourceMap& ledger, const char* name);
 void ResourceMapTable(const core::Universe& universe, const core::components::ResourceVector& ledger, const char* name);
+
+void EntityLedgerTable(const core::Universe& universe, const std::vector<std::pair<entt::entity, double>>& ledger,
+                       const char* name);
+void EntityLedgerTable(const core::Universe& universe, const std::map<entt::entity, double>& ledger, const char* name);
 }  // namespace cqsp::client::systems

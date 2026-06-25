@@ -17,12 +17,15 @@
 #include "client/scenes/universe/interface/economywindow.h"
 
 #include "client/components/clientctx.h"
+#include "client/scenes/universe/interface/ledgertable.h"
 #include "core/actions/economy/subsidyhelper.h"
 #include "core/components/organizations.h"
 #include "core/components/resource.h"
+#include "core/components/surface.h"
 #include "core/util/nameutil.h"
 
 namespace cqsp::client::systems {
+namespace components = cqsp::core::components;
 void EconomyWindow::Init() {}
 void EconomyWindow::DoUI(int delta_time) {
     bool selected = GetUniverse().ctx().at<ctx::SelectedMenu>() == ctx::SelectedMenu::EconomyMenu;
@@ -34,6 +37,9 @@ void EconomyWindow::DoUI(int delta_time) {
     SubsidyWindow();
 
     ImGui::Begin("Economy", &selected);
+    // ImGui::TextFmt("Place a dollar amount to invest in specific industry");
+    // ImGui::TextFmt("Inject money into a specific factory/buy money");
+
     // List out the recipes and then subsidize them...
     if (ImGui::BeginTabBar("###economy_tabbar")) {
         if (ImGui::BeginTabItem("Subsidize Industry")) {
@@ -43,12 +49,11 @@ void EconomyWindow::DoUI(int delta_time) {
             show_add_subsidy_window = false;
         }
         if (ImGui::BeginTabItem("Labor")) {
+            LaborTab();
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();
     }
-    ImGui::TextFmt("Place a dollar amount to invest in specific industry");
-    ImGui::TextFmt("Inject money into a specific factory/buy money");
 
     ImGui::End();
     if (!selected) {
@@ -146,5 +151,31 @@ void EconomyWindow::SubsidyWindow() {
     }
     ImGui::EndChild();
     ImGui::End();
+}
+
+void EconomyWindow::LaborTab() {
+    // Now then display various labor stats
+    // Display what we need, and what we might need in the future
+    // Sum together all the jobs and values that we have...
+    // We should just display the job demands and what we are lacking...
+    ImGui::TextFmt("Labor market");
+    entt::entity player = GetUniverse().GetPlayer();
+    auto& city_list = GetUniverse().get<components::CountryCityList>(player);
+    // Get all the summaries of what we want
+    std::map<entt::entity, double> demand_list;
+    std::map<entt::entity, double> supply_list;
+    for (entt::entity province : city_list.province_list) {
+        auto& province_comp = GetUniverse().get<components::Province>(province);
+        // Get market
+        auto& market = GetUniverse().get<components::Market>(province);
+        for (entt::entity labor : GetUniverse().view<components::LaborGood>()) {
+            // If the demand + supply is too high then we should handle that as well
+            demand_list[labor] += market.demand[GetUniverse().good_map[labor]];
+            supply_list[labor] += market.supply[GetUniverse().good_map[labor]];
+        }
+    }
+
+    EntityLedgerTable(GetUniverse(), demand_list, "demand");
+    EntityLedgerTable(GetUniverse(), supply_list, "supply");
 }
 }  // namespace cqsp::client::systems

@@ -36,5 +36,6 @@ class SysLaborDistribution : public ISimulationSystem {
     void HandleJob(components::PopulationSegment& segment, components::Market& market);
     std::vector<components::GoodEntity> labor_goods;
     std::unordered_map<components::GoodEntity, entt::entity> good_labors;
+    std::unordered_map<entt::entity, components::GoodEntity> entity_to_good;
 };
 }  // namespace cqsp::core::systems

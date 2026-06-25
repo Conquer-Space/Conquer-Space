@@ -29,6 +29,7 @@ class EconomyWindow : public SysUserInterface {
  private:
     void SubsidyWindow();
     void SubsidyTab();
+    void LaborTab();
     bool show_add_subsidy_window = false;
     entt::entity selected_subsidy;
     float subsidy_amount = 0;

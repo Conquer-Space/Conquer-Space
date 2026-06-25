@@ -84,6 +84,10 @@ void SysLaborDistribution::HandleJob(components::PopulationSegment& segment, com
     for (auto& [labor, drift] : job_drift) {
         auto labor_count = std::max(1000, static_cast<int>(segment.labor.labor_distribution[labor] * 0.01));
         int drift_delta = std::clamp(drift, static_cast<int>(-labor_count), static_cast<int>(labor_count));
+        if (market.demand[entity_to_good[labor]] == 0 && drift_delta > 0) {
+            // then drift should be zero
+            drift_delta = 0;
+        }
         segment.labor.labor_distribution[labor] += drift_delta;
         // Cap our labor distribution as well...
     }
@@ -114,6 +118,7 @@ void SysLaborDistribution::Init() {
     auto labor_view = GetUniverse().view<components::Labor>();
     for (auto&& [entity, comp] : labor_view.each()) {
         labor_goods.push_back(comp.good);
+        entity_to_good[entity] = comp.good;
         good_labors[comp.good] = entity;
     }
 }
