@@ -280,7 +280,8 @@
     }
     cost: {
       labor: {
-        laborer: 150
+        laborer: 1500
+        engineer: 500
       }
     }
     construction: {

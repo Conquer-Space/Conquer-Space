@@ -13,6 +13,7 @@
     cost: {
       labor: {
         laborer: 1000
+        farmer: 500
       }
     }
     construction: {
@@ -37,6 +38,7 @@
     cost: {
       labor: {
         laborer: 2500
+        farmer: 750
       }
     }
     construction: {
@@ -61,6 +63,7 @@
     cost: {
       labor: {
         laborer: 2500
+        farmer: 750
       }
     }
     construction: {

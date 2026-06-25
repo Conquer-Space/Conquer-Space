@@ -11,7 +11,9 @@
     }
     cost: {
       labor: {
-        laborer: 30000
+        laborer: 24000
+        technician: 5000
+        engineer: 1000
       }
     }
     construction: {
@@ -38,7 +40,9 @@
     }
     cost: {
       labor: {
-        laborer: 30000
+        laborer: 20000
+        technician: 9000
+        engineer: 2000
       }
     }
     construction: {

@@ -12,7 +12,7 @@
     }
     {
         identifier: technician
-        name: Technican
+        name: Technician
         description: Worker capable of handling technical work of a moderate complexity
         good: technician_labor
         tags: []
