@@ -1,5 +1,5 @@
 /* Conquer Space
- * Copyright (C) 2021-2025 Conquer Space
+ * Copyright (C) 2021-2026 Conquer Space
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,28 +16,26 @@
  */
 #pragma once
 
+#include <unordered_map>
+#include <vector>
+
+#include "core/components/market.h"
 #include "core/components/population.h"
-#include "core/components/resource.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/isimulationsystem.h"
 
 namespace cqsp::core::systems {
-class SysPopulationConsumption : public ISimulationSystem {
+class SysLaborDistribution : public ISimulationSystem {
  public:
-    explicit SysPopulationConsumption(Game& game) : ISimulationSystem(game) {}
+    explicit SysLaborDistribution(Game& game) : ISimulationSystem(game) {}
     void DoSystem() override;
     void Init() override;
-    int Interval() const override { return ECONOMIC_TICK; }
+    int Interval() const override { return ECONOMIC_TICK * 7; }
 
  private:
-    void ProcessSettlement(Node& settlement, const components::ResourceConsumption& marginal_propensity_base,
-                           const components::ResourceConsumption& autonomous_consumption_base, const float savings);
-    components::ResourceConsumption marginal_propensity_base;
-    components::ResourceConsumption autonomous_consumption_base;
-    float savings = 0;
-
-    int total_population = 0;
-    int total_employed = 0;
-    double total_sol = 0;
+    void HandleJob(components::PopulationSegment& segment, components::Market& market);
+    std::vector<components::GoodEntity> labor_goods;
+    std::unordered_map<components::GoodEntity, entt::entity> good_labors;
+    std::unordered_map<entt::entity, components::GoodEntity> entity_to_good;
 };
 }  // namespace cqsp::core::systems

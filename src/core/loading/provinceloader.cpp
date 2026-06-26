@@ -257,6 +257,10 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
         const auto& distribution = population_hjson["job_distribution"];
         // Then load stuff
         for (const auto& job : distribution) {
+            if (static_cast<int>(universe.jobs[job.first]) == 0) {
+                // Then alert!
+                SPDLOG_INFO("NULL JOB {}", job.first);
+            }
             segment.labor.labor_distribution.insert(std::make_pair(universe.jobs[job.first], job.second));
         }
     } else {

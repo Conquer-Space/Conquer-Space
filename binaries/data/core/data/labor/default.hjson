@@ -4,6 +4,7 @@
         identifier: laborer
         name: Laborer
         good: basic_labor
+        description: Basic Labor for lower complexity tasks
         tags: [
              // this is the default job for people
             default
@@ -11,8 +12,30 @@
     }
     {
         identifier: technician
-        name: Technican
+        name: Technician
+        description: Worker capable of handling technical work of a moderate complexity
         good: technician_labor
+        tags: []
+    }
+    {
+        identifier: farmer
+        name: Farmer
+        description: Worker who works in a farm
+        good: farmer_labor
+        tags: []
+    }
+    {
+        identifier: engineer
+        name: Engineer
+        description: Worker doing high level technical work and designing
+        good: engineer_labor
+        tags: []
+    }
+    {
+        identifier: clerk
+        name: Clerk
+        description: Worker doing white collar work
+        good: clerk_labor
         tags: []
     }
 ]

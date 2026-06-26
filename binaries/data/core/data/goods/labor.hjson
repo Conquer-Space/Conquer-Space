@@ -19,4 +19,34 @@
       labor
     ]
   }
+  {
+    identifier: farmer_labor
+    name: Farmer
+    price: 5.0 // Really don't know what price is good ngl
+    volume: 0 m3
+    mass: 0 kg
+    tags: [
+      labor
+    ]
+  }
+  {
+    identifier: engineer_labor
+    name: Engineer
+    price: 15.0
+    volume: 0 m3
+    mass: 0 kg
+    tags: [
+      labor
+    ]
+  }
+  {
+    identifier: clerk_labor
+    name: Clerk
+    price: 20.0
+    volume: 0 m3
+    mass: 0 kg
+    tags: [
+      labor
+    ]
+  }
 ]

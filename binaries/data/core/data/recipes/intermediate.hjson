@@ -13,6 +13,8 @@
     cost: {
       labor: {
         laborer: 4000
+        technician: 1000
+        engineer: 500
       }
     }
     construction: {
