@@ -96,6 +96,8 @@ struct ProductionUnit {
     double cumulative_pr = 0;
     int continuous_gains = 0;
     int stability = 0;
+    double expertise = 1;
+    double throughput = 1.;
 
     // Zoning requirements...
     std::pair<entt::entity, int> consumption;
