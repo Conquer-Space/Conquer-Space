@@ -91,6 +91,7 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
 
     // Calculate the greatest possible production
     components::ResourceVector output;
+    size.expertise_gain = StateToExpertiseGain(size.state);
     size.expertise += size.expertise_gain;
     size.expertise = std::clamp(size.expertise, 0., size.max_expertise);
     output.push_back(std::pair(recipe.output.entity, recipe.output.amount * size.utilization * size.expertise));
@@ -478,6 +479,30 @@ void SysProduction::ProductionPreprocessing(entt::entity industry, components::P
     // Force shortage
     if (production.shortage) {
         production.state = components::IndustryState::Shortage;
+    }
+}
+
+/**
+ * In theory this should be a map or something
+ */
+double SysProduction::StateToExpertiseGain(components::IndustryState state) {
+    switch (state) {
+        case components::IndustryState::SteadyState:
+            return 0.0001;
+        case components::IndustryState::MaximumProduction:
+            return 0.0001;
+        case components::IndustryState::MinimumProduction:
+            return 0.0001;
+        case components::IndustryState::Construction:
+            return 0.000;
+        case components::IndustryState::Demolishing:
+            return -0.0001;
+        case components::IndustryState::Shrinking:
+            return -0.0001;
+        case components::IndustryState::Expanding:
+            return -0.0001;
+        case components::IndustryState::Shortage:
+            return 0.00001;
     }
 }
 }  // namespace cqsp::core::systems

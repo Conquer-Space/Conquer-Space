@@ -33,6 +33,9 @@ struct PopulationSegment {
     // Just an index for the amount of marginal propensity that we want to consume...
     double standard_of_living = 1;
     double consumer_confidence = 1;
+    // Years of education?
+    // Helps increase our expertise faster
+    double education = 12;
     PID sol_pid;
     PopulationLabor labor;
 

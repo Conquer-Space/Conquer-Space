@@ -285,6 +285,7 @@ void SysProvinceInformation::DemographicsTab() {
                 }
             }
         }
+        ImGui::TextFmt("Education: {} (provides a bunch of boost to average efficiency)", pop_segment.education);
 
         // Display the data
         ImGui::Separator();

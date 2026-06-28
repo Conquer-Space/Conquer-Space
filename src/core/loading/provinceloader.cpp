@@ -94,7 +94,6 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
         node.emplace<components::CityTimeZone>(tz);
     }
 
-    //SPDLOG_INFO("Load Population");
     auto& settlement = node.emplace<components::Settlement>();
 
     // Load population
@@ -251,6 +250,14 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
     int64_t labor_force = size / 2;
     if (!population_hjson["labor_force"].empty()) {
         labor_force = population_hjson["labor_force"].to_int64();
+    }
+
+    if (!population_hjson["education"].empty()) {
+        segment.education = population_hjson["education"].to_int64();
+    }
+
+    if (!population_hjson["consumer_confidence"].empty()) {
+        segment.consumer_confidence = population_hjson["consumer_confidence"].to_int64();
     }
 
     if (!population_hjson["job_distribution"].empty()) {
