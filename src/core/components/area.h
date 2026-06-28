@@ -97,6 +97,8 @@ struct ProductionUnit {
     int continuous_gains = 0;
     int stability = 0;
     double expertise = 1;
+    double expertise_gain = 0.0001;
+    double max_expertise = 1.5;
     double throughput = 1.;
 
     // Zoning requirements...

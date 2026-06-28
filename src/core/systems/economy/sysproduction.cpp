@@ -91,6 +91,8 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
 
     // Calculate the greatest possible production
     components::ResourceVector output;
+    size.expertise += size.expertise_gain;
+    size.expertise = std::clamp(size.expertise, 0., size.max_expertise);
     output.push_back(std::pair(recipe.output.entity, recipe.output.amount * size.utilization * size.expertise));
 
     bool shortage = false;
