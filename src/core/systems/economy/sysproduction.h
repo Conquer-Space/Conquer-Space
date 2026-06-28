@@ -28,10 +28,15 @@ class SysProduction : public ISimulationSystem {
     int Interval() const override { return ECONOMIC_TICK; }
 
  private:
+    // Settlement-level processing
     void ProcessIndustries(Node& node);
     double ProcessIndustry(Node& industry_node, Node& market_node, components::Market& market, double infra_cost);
+    double ProcessConstruction(Node& industry_node, Node& market_node, components::Market& market);
     void ScaleConstruction(Node& industry_node, double pl_ratio);
+
+    // Industry FSM
     void IndustryFsm();
+    void ProductionPreprocessing(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState SteadyState(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState MaximumProduction(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState MinimumProduction(entt::entity industry, components::ProductionUnit& production);
@@ -40,10 +45,7 @@ class SysProduction : public ISimulationSystem {
     components::IndustryState Shrinking(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState Expanding(entt::entity industry, components::ProductionUnit& production);
     components::IndustryState Shortage(entt::entity industry, components::ProductionUnit& production);
-    double StateToExpertiseGain(components::IndustryState);
-    void ProductionPreprocessing(entt::entity industry, components::ProductionUnit& production);
-
-    double employed = 0;
+    double StateToExpertiseGain(components::IndustryState state);
 
     const EconomyConfig::ProductionConfig& production_config;
 };
