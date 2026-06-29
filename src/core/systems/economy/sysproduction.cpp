@@ -116,7 +116,6 @@ components::IndustryState SysProduction::SteadyState(entt::entity industry, comp
     }
 
     production.diff = 1 + GetUniverse().random->GetRandomNormal(0, 0.0005);
-    production.utilization *= production.diff;
     production.utilization = std::clamp(production.utilization * production.diff,
                                         production_config.factory_min_utilization * production.size, production.size);
     production.utilization = std::max(1., production.utilization);
@@ -198,7 +197,6 @@ components::IndustryState SysProduction::Shrinking(entt::entity industry, compon
     diff = std::min(diff, 1.);
 
     production.diff = diff;
-    production.utilization *= production.diff;
     production.utilization = std::clamp(production.utilization * production.diff,
                                         production_config.GetFactoryMinUtilization(production.size), production.size);
     return components::IndustryState::Shrinking;
@@ -223,7 +221,6 @@ components::IndustryState SysProduction::Expanding(entt::entity industry, compon
     diff += GetUniverse().random->GetRandomNormal(0, 0.0005);
     diff = std::max(diff, 1.);
     production.diff = diff;
-    production.utilization *= production.diff;
     production.utilization = std::clamp(production.utilization * production.diff,
                                         production_config.GetFactoryMinUtilization(production.size), production.size);
     return components::IndustryState::Expanding;
@@ -296,7 +293,7 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
     auto& wallet = industry_node.get<components::Wallet>();
     components::ProductionUnit& size = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(size.recipe);
-    components::Recipe recipe = recipenode.get<components::Recipe>();
+    const components::Recipe& recipe = recipenode.get<components::Recipe>();
 
     // Construction spending: only runs while the industry is actively being built.
     size.construction_cost = 0;
@@ -317,7 +314,8 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
 
     // Output vector: single good, scaled by utilization and expertise multiplier.
     components::ResourceVector output;
-    output.push_back(std::pair(recipe.output.entity, recipe.output.amount * size.utilization * size.expertise));
+    size.amount_sold = recipe.output.amount * size.utilization * size.expertise;
+    output.push_back(std::pair(recipe.output.entity, size.amount_sold));
 
     // Shortage detection: flag if any material input or required labor type is chronically undersupplied.
     bool shortage = false;
@@ -341,14 +339,12 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
 
     // Register this industry's production and labor demand with the market for this tick.
     market.production += output;
-    market.consumption += size.workers;
-    size.amount_sold = recipe.output.amount * size.utilization;
 
     // Purchase inputs and labor from the market; taxes are collected on both transactions.
     auto [material_costs, taxes] = market.PurchaseFromMarket(input);
     size.material_costs = material_costs;
 
-    auto [wage_costs, income_taxes] = market.PurchaseFromMarket(input);
+    auto [wage_costs, income_taxes] = market.PurchaseFromMarket(size.workers);
     size.tax_cost += taxes + income_taxes;
     size.wage_cost = wage_costs;
     size.transport = 0;
@@ -419,7 +415,6 @@ void SysProduction::ScaleConstruction(Node& industry_node, double pl_ratio) {
     ZoneScoped;
     components::ProductionUnit& production_unit = industry_node.get<components::ProductionUnit>();
     Node recipenode = industry_node.Convert(production_unit.recipe);
-    components::Recipe recipe = recipenode.get<components::Recipe>();
     if (pl_ratio <= 0.1 || production_unit.continuous_gains <= production_config.construction_limit ||
         production_unit.utilization < production_unit.size || industry_node.all_of<components::Construction>()) {
         return;
