@@ -99,8 +99,8 @@ struct ProductionUnit {
     int stability = 0;
     double expertise = 1;
 
-    AdditiveModifier expertise_gain = 0.0001;
-    double max_expertise = 1.5;
+    MultiplicativeModifier expertise_gain = 0.0001;
+    AdditiveModifier max_expertise = 1.5;
     double throughput = 1.;
 
     // Zoning requirements...

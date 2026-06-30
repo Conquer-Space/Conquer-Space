@@ -25,24 +25,19 @@
 
 namespace cqsp::core::loading {
 
-namespace {
-components::ModifierTarget ParseTarget(const std::string& target) {
-    if (target == "expertise_gain") {
-        return components::ModifierTarget::ExpertiseGain;
-    }
-    SPDLOG_WARN("Unknown modifier target '{}', defaulting to ExpertiseGain", target);
-    return components::ModifierTarget::ExpertiseGain;
-}
-}  // namespace
-
 ModifierLoader::ModifierLoader(Universe& universe) : HjsonLoader(universe) { default_val["amount"] = 0.0; }
 
 bool ModifierLoader::LoadValue(const Hjson::Value& values, Node& node) {
     std::string target_str = values["target"].to_string();
     double amount = values["amount"].to_double();
 
-    node.emplace<components::Modifier>(amount, ParseTarget(target_str));
+    auto target = components::ModifierTargetFromString(target_str);
+    if (!target) {
+        SPDLOG_WARN("Unknown modifier target '{}', skipping modifier", target_str);
+        return false;
+    }
 
+    node.emplace<components::Modifier>(amount, *target);
     universe.modifiers[node.get<components::Identifier>()] = node;
     return true;
 }

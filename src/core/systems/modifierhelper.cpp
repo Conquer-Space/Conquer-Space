@@ -31,6 +31,9 @@ void VisitModifiableValue(Universe& universe, entt::entity target, components::M
         case components::ModifierTarget::ExpertiseGain:
             fn(universe.get<components::ProductionUnit>(target).expertise_gain);
             break;
+        case components::ModifierTarget::MaxExpertise:
+            fn(universe.get<components::ProductionUnit>(target).max_expertise);
+            break;
     }
 }
 }  // namespace

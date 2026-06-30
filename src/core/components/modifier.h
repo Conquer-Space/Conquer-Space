@@ -19,15 +19,29 @@
 #include <fmt/format.h>
 
 #include <numeric>
+#include <optional>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
 #include <entt/entity/entity.hpp>
 
+// Add a new target here — the enum, to-string, and from-string are all derived from this list.
+// X(EnumName, "string_key")
+#define CQSP_MODIFIER_TARGET_LIST      \
+    X(ExpertiseGain, "expertise_gain") \
+    X(MaxExpertise, "max_expertise")
+
 namespace cqsp::core::components {
-// Lowk hate this method
-enum class ModifierTarget : uint16_t { ExpertiseGain };
+enum class ModifierTarget : uint16_t {
+#define X(name, str) name,
+    CQSP_MODIFIER_TARGET_LIST
+#undef X
+};
+
+std::string_view ModifierTargetToString(ModifierTarget t);
+std::optional<ModifierTarget> ModifierTargetFromString(std::string_view s);
 
 struct Modifier {
     double amount;
