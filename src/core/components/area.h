@@ -99,7 +99,7 @@ struct ProductionUnit {
     int stability = 0;
     double expertise = 1;
 
-    ModifiableValue expertise_gain = 0.0001;
+    AdditiveModifier expertise_gain = 0.0001;
     double max_expertise = 1.5;
     double throughput = 1.;
 

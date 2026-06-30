@@ -30,27 +30,34 @@ namespace cqsp::core::components {
 enum class ModifierTarget : uint16_t { ExpertiseGain };
 
 struct Modifier {
-    // This should be applied to something else?
     double amount;
-    // What we should modify and stuff like that?
     ModifierTarget target;
 };
 
-// A double-like value with a cached breakdown: base + sum = value.
-// Call recalculate() after modifying the modifications vector.
-// Arithmetic operators keep all three fields in sync without re-summing the vector.
+enum class ModifierOp { Additive, Multiplicative };
+
+/**
+ * Modifier value for additive or multiplicative values
+ * Call recalculate() after adding a modifier
+ */
+template <ModifierOp Op = ModifierOp::Multiplicative>
 struct ModifiableValue {
-    double base = 0.0;   // unmodified starting value
-    double sum = 1.0;    // cached sum of all modification amounts
-    double value = 0.0;  // base * sum
+    static constexpr double identity = (Op == ModifierOp::Additive) ? 0.0 : 1.0;
+
+    double base = 0.0;
+    double sum = identity;
+    double value = 0.0;
 
     std::vector<std::pair<entt::entity, double>> modifiers;
 
-    // Call after adding/removing entries in modifications.
     void recalculate() {
-        sum = std::accumulate(modifiers.begin(), modifiers.end(), 1.0,
+        sum = std::accumulate(modifiers.begin(), modifiers.end(), identity,
                               [](double acc, const auto& m) { return acc + m.second; });
-        value = base * sum;
+        if constexpr (Op == ModifierOp::Additive) {
+            value = base + sum;
+        } else {
+            value = base * sum;
+        }
     }
 
     // NOLINTNEXTLINE(google-explicit-constructor)
@@ -64,7 +71,11 @@ struct ModifiableValue {
         requires std::is_arithmetic_v<T>
     ModifiableValue& operator=(T v) {
         base = static_cast<double>(v);
-        value = base * sum;
+        if constexpr (Op == ModifierOp::Additive) {
+            value = base + sum;
+        } else {
+            value = base * sum;
+        }
         return *this;
     }
 
@@ -72,28 +83,28 @@ struct ModifiableValue {
         requires std::is_arithmetic_v<T>
     ModifiableValue& operator+=(T v) {
         base += static_cast<double>(v);
-        value = base * sum;
+        value = _combine();
         return *this;
     }
     template <typename T>
         requires std::is_arithmetic_v<T>
     ModifiableValue& operator-=(T v) {
         base -= static_cast<double>(v);
-        value = base * sum;
+        value = _combine();
         return *this;
     }
     template <typename T>
         requires std::is_arithmetic_v<T>
     ModifiableValue& operator*=(T v) {
         base *= static_cast<double>(v);
-        value = base * sum;
+        value = _combine();
         return *this;
     }
     template <typename T>
         requires std::is_arithmetic_v<T>
     ModifiableValue& operator/=(T v) {
         base /= static_cast<double>(v);
-        value = base * sum;
+        value = _combine();
         return *this;
     }
 
@@ -168,13 +179,26 @@ struct ModifiableValue {
     friend double operator/(T lhs, ModifiableValue rhs) {
         return static_cast<double>(lhs) / rhs.value;
     }
+
+ private:
+    constexpr double _combine() const {
+        if constexpr (Op == ModifierOp::Additive) {
+            return base + sum;
+        } else {
+            return base * sum;
+        }
+    }
 };
+
+typedef ModifiableValue<ModifierOp::Additive> AdditiveModifier;
+typedef ModifiableValue<ModifierOp::Multiplicative> MultiplicativeModifier;
+
 }  // namespace cqsp::core::components
 
-template <>
-struct fmt::formatter<cqsp::core::components::ModifiableValue> : fmt::formatter<double> {
+template <cqsp::core::components::ModifierOp Op>
+struct fmt::formatter<cqsp::core::components::ModifiableValue<Op>> : fmt::formatter<double> {
     template <typename FormatContext>
-    auto format(const cqsp::core::components::ModifiableValue& v, FormatContext& ctx) const {
+    auto format(const cqsp::core::components::ModifiableValue<Op>& v, FormatContext& ctx) const {
         return fmt::formatter<double>::format(static_cast<double>(v), ctx);
     }
 };

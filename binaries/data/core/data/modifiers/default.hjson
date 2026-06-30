@@ -1,7 +1,8 @@
 [
     {
         identifier: production
-        name: T
-        target: 
+        name: Expertise speedup
+        target: expertise_gain
+        amount: 0.1
     }
 ]
