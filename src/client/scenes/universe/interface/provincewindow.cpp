@@ -42,6 +42,7 @@
 #include "core/components/ships.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
+#include "core/systems/modifierhelper.h"
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
@@ -465,6 +466,13 @@ void SysProvinceInformation::FactoryInformation() {
             ImGui::TextFmt("{}", amount);
         }
         ImGui::EndTable();
+    }
+
+    ImGui::TextFmt("Expertise: {}", production.expertise);
+    ImGui::TextFmt("Expertise Gain: {}", production.expertise_gain);
+    ImGui::TextFmt("Max Expertise: {}", production.max_expertise);
+    if (ImGui::Button("Boost Expertise")) {
+        core::systems::ApplyModifier(GetUniverse(), GetUniverse().modifiers["higher_expertise"], selected_factory);
     }
 }
 

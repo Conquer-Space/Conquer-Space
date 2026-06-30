@@ -310,7 +310,7 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
     // Expertise tick: working industries gain mastery over time, boosting output per unit of utilization.
     size.expertise_gain = StateToExpertiseGain(size.state);
     size.expertise += size.expertise_gain;
-    size.expertise = std::clamp(size.expertise, 0., size.max_expertise);
+    size.expertise = std::clamp(static_cast<double>(size.expertise), 0., static_cast<double>(size.max_expertise));
 
     // Output vector: single good, scaled by utilization and expertise multiplier.
     components::ResourceVector output;
