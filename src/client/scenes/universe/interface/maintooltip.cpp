@@ -69,7 +69,7 @@ void ToolTipWindow::Update(double delta_time) {
         std::visit(overloaded {[&](std::monostate) { to_present = false; },
                                [&](entt::entity entity) { to_present = SetEntityTooltip(entity); },
                                [&](const std::string& string) {
-                                   tooltip_content->SetInnerRML(string);
+                                   tooltip_content->SetInnerRML(fmt::format("<p>{}</p>", string));
                                    to_present = true;
                                }},
                    selected_item);
