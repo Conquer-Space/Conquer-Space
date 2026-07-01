@@ -34,6 +34,7 @@
 #include "core/loading/loadgoods.h"
 #include "core/loading/loadnames.h"
 #include "core/loading/loadsatellites.h"
+#include "core/loading/modifierloader.h"
 #include "core/loading/planetloader.h"
 #include "core/loading/projectloader.h"
 #include "core/loading/provinceloader.h"
@@ -98,6 +99,7 @@ void LoadResource(AssetManager& asset_manager, Universe& universe, const std::st
 
 void LoadAllResources(AssetManager& asset_manager, ConquerSpace& conquer_space) {
     LoadResource<loading::GoodLoader>(asset_manager, conquer_space.GetUniverse(), "goods");
+    LoadResource<loading::ModifierLoader>(asset_manager, conquer_space.GetUniverse(), "modifiers");
     LoadResource<loading::LaborLoader>(asset_manager, conquer_space.GetUniverse(), "labor");
     LoadResource<loading::ZoningLoader>(asset_manager, conquer_space.GetUniverse(), "zoning");
     LoadResource<loading::RecipeLoader>(asset_manager, conquer_space.GetUniverse(), "recipes");

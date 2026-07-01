@@ -47,6 +47,7 @@ void SysLaborDistribution::HandleJob(components::PopulationSegment& segment, com
     int workforce = 0;
     double hours_sum = 0;
     double employment_rate_sum = 0;
+    // Compute education level as well and then compute how much contribution we should provide with that
 
     std::map<entt::entity, int> job_drift;
     // Compute job drift

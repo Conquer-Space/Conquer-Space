@@ -83,6 +83,19 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("State: {}", components::IndustryStateToString(production.state));
         ImGui::TextFmt("Taxes: {}", NumberToHumanString(production.tax_cost));
         ImGui::TextFmt("Continous Gains: {}", production.continuous_gains);
+        ImGui::TextFmt("Throughput: {}", production.throughput);
+        ImGui::TextFmt("Expertise: {} (", production.expertise);
+        ImGui::SameLine();
+        if (production.expertise_gain == 0) {
+            ImGui::TextFmt("{}", production.expertise_gain);
+        } else if (production.expertise_gain > 0) {
+            ImGui::TextFmtColored(ImVec4(0, 1, 0, 1), "+{}", production.expertise_gain);
+        } else {
+            ImGui::TextFmtColored(ImVec4(1, 0, 0, 1), "{}", production.expertise_gain);
+        }
+        ImGui::SameLine();
+        ImGui::TextFmt("per day)");
+        ImGui::TextFmt("Max Expertise: {}", production.max_expertise);
         ImGui::TextFmt("Output Subsidy: {}% ({})", production.output_subsidy * 100.,
                        NumberToHumanString(production.output_subsidy_amount));
         ImGui::Separator();

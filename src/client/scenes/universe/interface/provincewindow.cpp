@@ -22,6 +22,7 @@
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/interface/ledgertable.h"
 #include "client/scenes/universe/interface/markettable.h"
+#include "client/scenes/universe/interface/modifiertooltip.h"
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
@@ -42,6 +43,7 @@
 #include "core/components/ships.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
+#include "core/systems/modifierhelper.h"
 #include "core/util/nameutil.h"
 #include "core/util/utilnumberdisplay.h"
 #include "engine/cqspgui.h"
@@ -285,6 +287,7 @@ void SysProvinceInformation::DemographicsTab() {
                 }
             }
         }
+        ImGui::TextFmt("Education: {} (provides a bunch of boost to average efficiency)", pop_segment.education);
 
         // Display the data
         ImGui::Separator();
@@ -464,6 +467,14 @@ void SysProvinceInformation::FactoryInformation() {
             ImGui::TextFmt("{}", amount);
         }
         ImGui::EndTable();
+    }
+
+    ImGui::TextFmt("Expertise: {}", production.expertise);
+    ImGui::TextFmt("Expertise Gain: {}", production.expertise_gain);
+    ImGui::TextFmt("Max Expertise: {}", production.max_expertise);
+    gui::ModifierTooltip(GetUniverse(), production.max_expertise);
+    if (ImGui::Button("Boost Expertise")) {
+        core::systems::ApplyModifier(GetUniverse(), GetUniverse().modifiers["higher_expertise"], selected_factory);
     }
 }
 

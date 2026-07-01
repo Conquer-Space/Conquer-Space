@@ -64,4 +64,9 @@
         type: hjson
         hints: {}
     }
+    modifiers: {
+        path: modifiers
+        type: hjson
+        hints: {}
+    }
 }

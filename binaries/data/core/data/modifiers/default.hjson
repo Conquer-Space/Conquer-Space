@@ -1,0 +1,8 @@
+[
+    {
+        identifier: higher_expertise
+        name: Higher Expertise
+        target: max_expertise
+        amount: 1.0
+    }
+]
