@@ -70,6 +70,8 @@ struct ModifiableValue {
         if constexpr (Op == ModifierOp::Additive) {
             value = base + sum;
         } else {
+            // Then we can't go negative with modifiers?
+            sum = std::max(sum, 0.);
             value = base * sum;
         }
     }

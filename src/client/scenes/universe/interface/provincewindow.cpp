@@ -22,6 +22,7 @@
 #include "client/components/clientctx.h"
 #include "client/scenes/universe/interface/ledgertable.h"
 #include "client/scenes/universe/interface/markettable.h"
+#include "client/scenes/universe/interface/modifiertooltip.h"
 #include "client/scenes/universe/interface/sysstockpileui.h"
 #include "client/scenes/universe/interface/systooltips.h"
 #include "client/scenes/universe/views/starsystemrenderer.h"
@@ -471,6 +472,7 @@ void SysProvinceInformation::FactoryInformation() {
     ImGui::TextFmt("Expertise: {}", production.expertise);
     ImGui::TextFmt("Expertise Gain: {}", production.expertise_gain);
     ImGui::TextFmt("Max Expertise: {}", production.max_expertise);
+    gui::ModifierTooltip(GetUniverse(), production.max_expertise);
     if (ImGui::Button("Boost Expertise")) {
         core::systems::ApplyModifier(GetUniverse(), GetUniverse().modifiers["higher_expertise"], selected_factory);
     }
