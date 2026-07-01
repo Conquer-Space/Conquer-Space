@@ -31,7 +31,7 @@ std::string_view ModifierTargetToString(ModifierTarget t) {
 
 std::optional<ModifierTarget> ModifierTargetFromString(std::string_view s) {
 #define X(name, str) \
-    if (s == str) return ModifierTarget::name;
+    if (s == (str)) return ModifierTarget::name;
     CQSP_MODIFIER_TARGET_LIST
 #undef X
     return std::nullopt;

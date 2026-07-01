@@ -52,9 +52,9 @@ void ModifierTooltip(const core::Universe& universe, const core::components::Mul
     // Then loop through...
     for (auto& [entity, amount] : modifier.modifiers) {
         if (amount > 0) {
-            ImGui::TextFmt("{}: +{}", core::util::GetName(universe, entity), amount * 100);
+            ImGui::TextFmt("{}: +{}%", core::util::GetName(universe, entity), amount * 100);
         } else {
-            ImGui::TextFmt("{}: {}", core::util::GetName(universe, entity), amount * 100);
+            ImGui::TextFmt("{}: {}%", core::util::GetName(universe, entity), amount * 100);
         }
     }
     ImGui::EndTooltip();

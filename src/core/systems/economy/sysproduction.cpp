@@ -240,21 +240,16 @@ components::IndustryState SysProduction::Shortage(entt::entity industry, compone
 double SysProduction::StateToExpertiseGain(components::IndustryState state) {
     switch (state) {
         case components::IndustryState::SteadyState:
-            return 0.0001;
         case components::IndustryState::MaximumProduction:
-            return 0.0001;
         case components::IndustryState::MinimumProduction:
+        case components::IndustryState::Shortage:
             return 0.0001;
         case components::IndustryState::Construction:
             return 0.000;
         case components::IndustryState::Demolishing:
-            return -0.0001;
         case components::IndustryState::Shrinking:
-            return -0.0001;
         case components::IndustryState::Expanding:
             return -0.0001;
-        case components::IndustryState::Shortage:
-            return 0.00001;
     }
 }
 
@@ -310,7 +305,7 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
     // Expertise tick: working industries gain mastery over time, boosting output per unit of utilization.
     size.expertise_gain = StateToExpertiseGain(size.state);
     size.expertise += size.expertise_gain;
-    size.expertise = std::clamp(static_cast<double>(size.expertise), 0., static_cast<double>(size.max_expertise));
+    size.expertise = std::clamp(size.expertise, 0., static_cast<double>(size.max_expertise));
 
     // Output vector: single good, scaled by utilization and expertise multiplier.
     components::ResourceVector output;
