@@ -1,0 +1,7 @@
+{
+    power_plants: {
+        path: powerplant
+        type: hjson
+        hints: {}
+    }
+}

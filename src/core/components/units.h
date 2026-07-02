@@ -24,7 +24,8 @@ enum UnitType {
     Angle,     // Default distance: degree
     Mass,      // Default distance: kilogram
     Volume,    // Default distance: m^3
-    Time       // Default distance: second
+    Time,      // Default distance: second
+    Power      // Default value: Watt (maybe next time we do megawatts or somethign)
 };
 
 enum Distance { LightYear, AstronomicalUnit, Kilometer, Meter, Centimeter, Millimeter };

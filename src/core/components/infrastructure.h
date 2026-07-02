@@ -17,6 +17,7 @@
 #pragma once
 
 #include <entt/entt.hpp>
+#include "core/components/resourceledger.h"
 
 namespace cqsp::core::components::infrastructure {
 // Infrastrucutre provides many benefits
@@ -28,6 +29,11 @@ struct CityInfrastructure {
 
 struct PowerPlant {
     double production;
+    double maximum_production;
+    ResourceVector consumption;
+};
+
+struct PowerGrid {
 };
 
 struct PowerConsumption {

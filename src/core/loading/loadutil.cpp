@@ -247,6 +247,20 @@ double ReadUnit(std::string_view value, UnitType unit_type, bool* correct) {
                 mark_wrong();
             }
             break;
+        case UnitType::Power:
+            if (unit_string == "w" || unit_string == "W") {
+                // Then fine
+            } else if (unit_string == "kW") {
+                read_value *= 1000;
+            } else if (unit_string == "MW") {
+                read_value *= 1000000;
+            } else if (unit_string == "GW") {
+                read_value *= 1000000000;
+            } else if (unit_string == "TW") {
+                read_value *= 1000000000000;
+            } else {
+                mark_wrong();
+            }
     }
     return read_value;
 }

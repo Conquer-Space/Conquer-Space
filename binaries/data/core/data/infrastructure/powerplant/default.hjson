@@ -1,0 +1,13 @@
+[
+    // So most power plants have a way to turn something into steam which then turns it into power
+    // So should we model that? And also model the gradual progression?
+    // Let's just implement that later
+    {
+        identifier: coal_power_plant
+        name: Coal Power Plant
+        output: 100 MW
+        input: {
+            coal: 10000
+        }
+    }
+]
