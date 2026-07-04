@@ -25,6 +25,7 @@ namespace cqsp::core::components::infrastructure {
 struct CityInfrastructure {
     double default_purchase_cost;
     double improvement;
+    std::vector<entt::entity> power_plants;
 };
 
 struct PowerPlant {
@@ -33,13 +34,12 @@ struct PowerPlant {
     ResourceVector consumption;
 };
 
-struct PowerGrid {
+struct PowerPlantRecipe {
+    double maximum_production;
+    ResourceVector consumption;
 };
 
-struct PowerConsumption {
-    double max;
-    double min;
-    double current;
+struct PowerGrid {
 };
 
 struct CityPower {

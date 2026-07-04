@@ -29,6 +29,10 @@ struct IndustrialZone {
     std::vector<entt::entity> industries;
 };
 
+struct PowerPlants {
+    std::vector<entt::entity> power_plants;
+};
+
 struct Construction {
     int progress;
     int maximum;

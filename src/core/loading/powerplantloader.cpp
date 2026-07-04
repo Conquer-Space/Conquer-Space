@@ -19,6 +19,7 @@
 #include "core/components/infrastructure.h"
 #include "core/loading/loadutil.h"
 #include "core/components/units.h"
+#include "core/components/name.h"
 
 namespace cqsp::core::loading {
 using components::types::UnitType;
@@ -29,7 +30,9 @@ bool PowerPlantLoader::LoadValue(const Hjson::Value& values, Node& node) {
     // Then load power plants
     bool power_correct;
     double output = ReadUnit(values["output"].to_string(), UnitType::Power, &power_correct);
-    node.emplace<components::infrastructure::PowerPlant>(output);
+    auto& recipe = node.emplace<components::infrastructure::PowerPlantRecipe>();
+    recipe.maximum_production = output;
+    universe.infrastructure["power:" + node.get<components::Identifier>().identifier] = node;
     return true;
 }
 }  // namespace cqsp::core::loading

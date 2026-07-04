@@ -150,13 +150,20 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
         infrastructure.default_purchase_cost = 100;
     }
     if (!values["infrastructure"].empty()) {
-        SPDLOG_INFO("Has Infrastructure");
+        SPDLOG_TRACE("Has Infrastructure");
         // Load infrastructure
-        if (!values["infrastructure"]["highway"].empty()) {
-            SPDLOG_INFO("Has highway");
-            // Set the stuff
-            auto& highway = node.emplace<components::infrastructure::Highway>();
-            highway.extent = values["infrastructure"]["highway"].to_double();
+        // Check for infrastructure
+        const auto& infrastructure_value = values["infrastructure"];
+        for (int i = 0; i < infrastructure_value.size(); i++) {
+            const auto& structure = infrastructure_value[i];
+            if (structure["class"].to_string() == "power_plant") {
+                // Then we do something ig
+                // Create a new power plant and stuff ig
+                entt::entity power_plant = universe.create();
+                // Add other stuff
+                SPDLOG_INFO("{}", universe.infrastructure["power:" + structure["type"].to_string()]);
+                infrastructure.power_plants.push_back(power_plant);
+            }
         }
     }
 

@@ -201,11 +201,6 @@ void FunctionEconomy(Universe& universe, sol::state_view& script_engine) {
         universe.emplace<components::FactoryProducing>(factory);
     });
 
-    REGISTER_FUNCTION("set_power_consumption", [&](entt::entity factory, double max, double min) {
-        universe.emplace<infrastructure::PowerConsumption>(factory, max, min, 0.f);
-        return factory;
-    });
-
     REGISTER_FUNCTION("add_power_plant", [&](entt::entity city, double productivity) {
         entt::entity entity = universe.create();
         universe.emplace<infrastructure::PowerPlant>(entity, productivity);

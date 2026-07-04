@@ -386,6 +386,13 @@
                 profit: 57857.27624656004
             }
         ]
+        infrastructure: [
+            {
+                class: power_plant
+                type: coal_power_plant
+                // In theory we will also have a lot of other things that make a difference?
+            }
+        ]
         tags: ["log_market"]
     }
     {
@@ -648,7 +655,6 @@
             }
         ]
         transport: 0.05
-        infrastructure: {highway: 0.02}
     }
     {
         identifier: north_carolina

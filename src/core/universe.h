@@ -78,6 +78,7 @@ class Universe : public entt::registry {
     std::map<std::string, entt::entity> jobs;
     std::map<std::string, entt::entity> zoning;
     std::map<std::string, entt::entity> modifiers;
+    std::map<std::string, entt::entity> infrastructure;
 
     // color -> province map
     std::map<entt::entity, std::map<int, entt::entity>> province_colors;
