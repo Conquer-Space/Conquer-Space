@@ -1,0 +1,7 @@
+[
+    {
+        identifier: usa
+        name: United States National Power Grid (US is actually seperated so we'll have to fix this)
+        frequency: 120 V, 60 Hz
+    }
+]

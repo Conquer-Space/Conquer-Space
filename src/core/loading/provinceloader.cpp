@@ -153,18 +153,8 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
         SPDLOG_TRACE("Has Infrastructure");
         // Load infrastructure
         // Check for infrastructure
-        const auto& infrastructure_value = values["infrastructure"];
-        for (int i = 0; i < infrastructure_value.size(); i++) {
-            const auto& structure = infrastructure_value[i];
-            if (structure["class"].to_string() == "power_plant") {
-                // Then we do something ig
-                // Create a new power plant and stuff ig
-                entt::entity power_plant = universe.create();
-                // Add other stuff
-                SPDLOG_INFO("{}", universe.infrastructure["power:" + structure["type"].to_string()]);
-                infrastructure.power_plants.push_back(power_plant);
-            }
-        }
+        LoadInfrastructure(values["infrastructure"], node);
+        // Check for power plants
     }
 
     //SPDLOG_INFO("Load Tags");
@@ -178,6 +168,17 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     node.emplace<components::infrastructure::ConstructionSector>(static_cast<uint32_t>(1000), static_cast<uint32_t>(0),
                                                                  1000.);
     return true;
+}
+
+void ProvinceLoader::LoadInfrastructure(const Hjson::Value& infrastructure, const Node& node) {
+    // Then 
+    if (!infrastructure["power_plants"].empty()) {
+        Hjson::Value power_plants = infrastructure["power_plants"];
+        for (int i = 0; i < power_plants.size(); i++) {
+            
+        }
+    }
+    
 }
 
 void ProvinceLoader::PostLoad(const Node& node) {}

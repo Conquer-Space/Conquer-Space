@@ -32,6 +32,7 @@ bool PowerPlantLoader::LoadValue(const Hjson::Value& values, Node& node) {
     double output = ReadUnit(values["output"].to_string(), UnitType::Power, &power_correct);
     auto& recipe = node.emplace<components::infrastructure::PowerPlantRecipe>();
     recipe.maximum_production = output;
+    recipe.consumption = HjsonToVector(universe, values["input"]);
     universe.infrastructure["power:" + node.get<components::Identifier>().identifier] = node;
     return true;
 }

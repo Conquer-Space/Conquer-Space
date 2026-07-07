@@ -103,13 +103,6 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Revenue: {}", NumberToHumanString(production.revenue));
     }
 
-    if (universe.all_of<components::infrastructure::PowerConsumption>(entity)) {
-        ImGui::Separator();
-        auto& consumption = universe.get<components::infrastructure::PowerConsumption>(entity);
-        ImGui::TextFmt("Power: {}", consumption.current);
-        ImGui::TextFmt("Max Power: {}", consumption.max);
-        ImGui::TextFmt("Min Power: {}", consumption.min);
-    }
     if (universe.all_of<components::Price>(entity)) {
         ImGui::TextFmt("Default Price: {}", universe.get<components::Price>(entity).price);
     }

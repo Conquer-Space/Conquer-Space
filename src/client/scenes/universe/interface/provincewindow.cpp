@@ -490,6 +490,9 @@ void SysProvinceInformation::InfrastructureTab() {
 
     auto& construction = GetUniverse().get<infrastructure::ConstructionSector>(current_province);
 
+    ImGui::TextFmt("Power plants: {}", infras.power_plants.size());
+    // Also do the power output
+    ImGui::TextFmt("Power grid: {}", infras.power_plants.size());
     ImGui::TextFmt("Construction Capacity: {}/{}", construction.current_construction,
                    construction.construction_capacity);
     ImGui::TextFmt("Construction Cost: ${}", construction.construction_cost);

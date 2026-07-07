@@ -26,6 +26,7 @@ struct CityInfrastructure {
     double default_purchase_cost;
     double improvement;
     std::vector<entt::entity> power_plants;
+    entt::entity power_grid;
 };
 
 struct PowerPlant {
