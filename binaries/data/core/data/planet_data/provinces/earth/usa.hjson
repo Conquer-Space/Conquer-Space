@@ -388,7 +388,13 @@
         ]
         infrastructure: {
             power_grid: usa
-            power_plants: []
+            power_plants: [
+                {
+                    type: coal_power_plant
+                    // Then other stuff?
+                    size: 1
+                }
+            ]
             // Then define other stuff
         }
         tags: ["log_market"]

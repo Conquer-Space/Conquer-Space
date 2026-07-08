@@ -41,7 +41,7 @@ class ProvinceLoader : public HjsonLoader {
     Node GetPlanet(const std::string& planet_identifier, const std::string& identifier);
 
     Node ParsePopulation(const Hjson::Value& population_hjson);
-    void LoadInfrastructure(const Hjson::Value& infrastructure, const Node& node);
+    void LoadInfrastructure(const Hjson::Value& value, const Node& node);
 
     std::random_device rd;
     std::mt19937 gen;
