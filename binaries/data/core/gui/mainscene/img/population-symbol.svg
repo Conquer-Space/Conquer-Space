@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="48"
+   height="48"
+   viewBox="0 0 48 48"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   sodipodi:docname="population-symbol.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="8.90625"
+     inkscape:cx="-6.9614035"
+     inkscape:cy="28.350877"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <ellipse
+       style="fill:none;fill-opacity:0.997207;stroke:#ffffff;stroke-width:2.34331;stroke-opacity:1"
+       id="path1"
+       cx="23.691229"
+       cy="13.585964"
+       rx="10.666667"
+       ry="10.891228" />
+    <path
+       style="fill:none;fill-opacity:0.997207;stroke:#ffffff;stroke-width:2.34331;stroke-opacity:1"
+       d="M 19.424561,23.354386 C 7.2982455,36.491228 8.7578948,47.157894 8.7578948,47.157894"
+       id="path2"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-opacity:0.997207;stroke:#ffffff;stroke-width:2.31623;stroke-opacity:1"
+       d="m 29.373135,23.297868 c 11.8408,13.144478 10.190957,24.047195 10.190957,24.047195"
+       id="path2-8"
+       sodipodi:nodetypes="cc" />
+  </g>
+</svg>

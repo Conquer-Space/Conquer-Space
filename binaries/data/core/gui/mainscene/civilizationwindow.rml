@@ -1,0 +1,51 @@
+<rml>
+    <head>
+        <title></title>
+        <link type="text/rcss" href="window.rcss"/>
+        <style>
+             body {
+                height: 80px;
+                top: 0;
+                display: flex;
+                flex-direction: row;
+            }
+            #information_panel {
+                display: flex;
+                flex-direction: column;
+            }
+            .icon {
+                /* Not sure how to make this dynamic...*/
+                top: 4.9px;
+                position: relative;
+
+            }
+            #gdp_text {
+                margin: 0;
+            }
+        </style>
+        <script src="script/civilization_window.lua"></script>
+    </head>
+    <body onload="CivilizationWindow.OnLoad(document)">
+         <div id="flag_container">
+            <!--Flag-->
+            <svg onmouseovercapture="client.SetHoverEntity(core.get_player())" src="../../flags/Flag_of_the_United_States.svg" width="160px" height="80px"></svg>
+         </div>
+         <div id="information_panel">
+            <!-- other information -->
+             <!-- then pressing these buttons also give more information?-->
+             <div id="top_bar"><span n class="item_holder" onmouseovercapture="client.SetHoverText('Budget')">
+
+                <svg class="icon" width="20px" height="20px" src="img/budget-icon.svg"></svg>
+                <p id="budget_text"></p>
+             </span><p>Research</p></div>
+             <div id="bottom_bar">
+                <span class="item_holder" onmouseovercapture="client.SetHoverText('GDP')">
+                <svg class="icon" width="20px" height="20px" src="img/gdp-icon.svg"></svg>
+                <p id="gdp_text"></p>
+                </span>
+            <span class="item_holder" onmouseovercapture="client.SetHoverText('Population')">
+            <svg class="icon" width="20px" height="20px" src="img/population-symbol.svg"></svg>
+            <p id="population_text"></p></span></div>
+         </div>
+    </body>
+</rml>
