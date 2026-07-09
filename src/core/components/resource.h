@@ -90,6 +90,7 @@ struct RecipeWorkers {
 
 struct Recipe {
     ResourceVector input;
+    double power_cost = 0.0;
     RecipeOutput output;
     ProductionType type;
     // The actual factory worker amount is workers * productivity

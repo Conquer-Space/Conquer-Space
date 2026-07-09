@@ -16,6 +16,7 @@
         laborer: 10000
         technician: 5000
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks
@@ -42,6 +43,7 @@
       labor: {
         laborer: 20000
       }
+      power: 15 MW
     }
     construction: {
       time: 4 weeks
@@ -66,6 +68,7 @@
       labor: {
         laborer: 30000
       }
+      power: 10 MW
     }
     construction: {
       time: 4 weeks
@@ -90,6 +93,7 @@
       labor: {
         laborer: 1000
       }
+      power: 15 MW
     }
     construction: {
       time: 4 weeks

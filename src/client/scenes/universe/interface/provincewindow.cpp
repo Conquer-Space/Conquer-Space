@@ -492,6 +492,15 @@ void SysProvinceInformation::InfrastructureTab() {
 
     ImGui::TextFmt("Power plants: {}", infras.power_plants.size());
     ImGui::TextFmt("Power grid: {}", core::util::GetName(GetUniverse(), infras.power_grid));
+    // Loop through components or something
+    double total_power = 0;
+    auto& city_industry = GetUniverse().get<components::IndustrialZone>(current_province);
+    for (entt::entity industry : city_industry.industries) {
+        auto& production = GetUniverse().get<components::ProductionUnit>(industry);
+        total_power += production.power_consumption;
+    }
+    ImGui::TextFmt("Local power consumption: {}", util::NumberToPowerString(total_power));
+
     // Also do the power output
     ImGui::TextFmt("Construction Capacity: {}/{}", construction.current_construction,
                    construction.construction_capacity);

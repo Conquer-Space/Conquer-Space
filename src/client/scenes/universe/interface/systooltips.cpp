@@ -77,6 +77,7 @@ void ResourceTooltipSection(const Universe& universe, entt::entity entity) {
         ImGui::TextFmt("Last Tick Difference: {}", production.diff);
         ImGui::TextFmt("Material Cost: {}", NumberToHumanString(production.material_costs));
         ImGui::TextFmt("Wage Cost: {}", NumberToHumanString(production.wage_cost));
+        ImGui::TextFmt("Power consumption: {} W", NumberToHumanString(production.power_consumption));
         ImGui::TextFmt("Construction Cost: {}", NumberToHumanString(production.construction_cost));
         ImGui::TextFmt("Maintenance Cost: {}", NumberToHumanString(production.maintenance));
         ImGui::TextFmt("Transport Costs: {}", NumberToHumanString(production.transport));

@@ -55,11 +55,11 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
 
     // Check if it has cost
     if (values["cost"].defined()) {
-        Hjson::Value cost_map = values["cost"];
+        const Hjson::Value& cost_map = values["cost"];
         auto& recipe_cost = node.emplace<components::RecipeCost>();
 
         if (cost_map["capital"].defined()) {
-            Hjson::Value capital = cost_map["capital"];
+            const Hjson::Value &capital = cost_map["capital"];
             recipe_component.capitalcost = HjsonToVector(universe, capital);
         }
 
@@ -72,13 +72,19 @@ bool RecipeLoader::LoadValue(const Hjson::Value& values, Node& node) {
         }
 
         if (cost_map["fixed"].defined()) {
-            Hjson::Value fixed = cost_map["fixed"];
+            const Hjson::Value& fixed = cost_map["fixed"];
             recipe_cost.fixed = HjsonToVector(universe, fixed);
         }
 
         if (cost_map["scaling"].defined()) {
-            Hjson::Value scaling = cost_map["scaling"];
+            const Hjson::Value& scaling = cost_map["scaling"];
             recipe_cost.scaling = HjsonToVector(universe, scaling);
+        }
+
+        if (cost_map["power"].defined()) {
+            const Hjson::Value& power = cost_map["power"];
+            bool power_correct;
+            recipe_component.power_cost = ReadUnit(power.to_string(), components::types::UnitType::Power, &power_correct);
         }
     }
 

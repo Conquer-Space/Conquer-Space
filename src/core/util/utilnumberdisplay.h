@@ -47,4 +47,32 @@ inline std::string NumberToHumanString(const T l) {
     }
     return fmt::format("{} {}", d, numbers[exponent - 1]);
 }
+
+/**
+ * Number to unit on power (like watts)
+ */
+template <typename T>
+inline std::string NumberToPowerString(const T l) {
+    T absolute_value = l;
+    // Ensure that it is not a unsigned int
+    if constexpr (!(std::is_same<T, uint64_t>::value || std::is_same<T, uint32_t>::value)) {
+        absolute_value = std::abs(l);
+    }
+    if (absolute_value < static_cast<T>(1000)) {
+        return fmt::format("{}", l);
+    }
+    static const std::string numbers[] = {"kW", "MW",  "GW",  "TW",  "PW", "EW", "ZW", "YW", "QW"};
+    int exponent = static_cast<int>(std::log10(absolute_value) / 3);
+
+    // Now get the number
+    double d = static_cast<T>(l) / pow(10, exponent * 3);
+
+    // Round this to two decimal points
+    const int precision = 100;
+    d = round(d * precision) / precision;
+    if (exponent >= sizeof(numbers) / sizeof(numbers[0])) {
+        return fmt::format("{}", l);
+    }
+    return fmt::format("{} {}", d, numbers[exponent - 1]);
+}
 }  // namespace cqsp::util

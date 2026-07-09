@@ -15,6 +15,7 @@
         technician: 5000
         engineer: 1000
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks
@@ -44,6 +45,7 @@
         technician: 9000
         engineer: 2000
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks

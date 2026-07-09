@@ -339,6 +339,8 @@ double SysProduction::ProcessIndustry(Node& industry_node, Node& market_node, co
     auto [material_costs, taxes] = market.PurchaseFromMarket(input);
     size.material_costs = material_costs;
 
+    size.power_consumption = recipe.power_cost * size.utilization;
+
     auto [wage_costs, income_taxes] = market.PurchaseFromMarket(size.workers);
     size.tax_cost += taxes + income_taxes;
     size.wage_cost = wage_costs;

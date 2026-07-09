@@ -15,6 +15,7 @@
         laborer: 1000
         farmer: 500
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks
@@ -40,6 +41,7 @@
         laborer: 2500
         farmer: 750
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks
@@ -65,6 +67,7 @@
         laborer: 2500
         farmer: 750
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks

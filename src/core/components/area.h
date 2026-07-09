@@ -120,6 +120,7 @@ struct ProductionUnit {
     double material_costs;
     // How much cash it took to maintain the factory
     double maintenance;
+    double power_consumption = 0;
     // How much it paid to people
     double wage_cost;
     double tax_cost;

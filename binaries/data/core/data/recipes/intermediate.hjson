@@ -16,6 +16,7 @@
         technician: 1000
         engineer: 500
       }
+      power: 50 MW
     }
     construction: {
       time: 4 weeks

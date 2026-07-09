@@ -13,6 +13,7 @@
       labor: {
         laborer: 10000
       }
+      power: 30 MW
     }
     construction: {
       time: 4 weeks
@@ -37,6 +38,7 @@
       labor: {
         laborer: 1000
       }
+      power: 20 MW
     }
     construction: {
       time: 4 weeks
@@ -61,6 +63,7 @@
       labor: {
         laborer: 200
       }
+      power: 40 MW
     }
     construction: {
       time: 4 weeks
@@ -85,6 +88,7 @@
       labor: {
         laborer: 1000
       }
+      power: 30 MW
     }
     construction: {
       time: 4 weeks
@@ -109,6 +113,7 @@
       labor: {
         laborer: 1500
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks
@@ -133,6 +138,7 @@
       labor: {
         laborer: 1000
       }
+      power: 15 MW
     }
     construction: {
       time: 4 weeks
@@ -157,6 +163,7 @@
       labor: {
         laborer: 1000
       }
+      power: 20 MW
     }
     construction: {
       time: 4 weeks
@@ -181,6 +188,7 @@
       labor: {
         laborer: 1000
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks
@@ -205,6 +213,7 @@
       labor: {
         laborer: 1000
       }
+      power: 10 MW
     }
     construction: {
       time: 4 weeks
@@ -230,6 +239,7 @@
         laborer: 500
         technician: 100
       }
+      power: 15 MW
     }
     construction: {
       time: 4 weeks
@@ -257,6 +267,7 @@
       labor: {
         laborer: 10000
       }
+      power: 20 MW
     }
     construction: {
       time: 4 weeks
@@ -283,6 +294,7 @@
         laborer: 1500
         engineer: 500
       }
+      power: 5 MW
     }
     construction: {
       time: 4 weeks
