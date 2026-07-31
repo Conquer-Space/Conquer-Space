@@ -19,6 +19,7 @@
 #include "core/components/labor.h"
 #include "core/components/pid.h"
 #include "core/components/resource.h"
+#include "core/components/vectormap.h"
 
 namespace cqsp::core::components {
 struct PopulationSegment {
@@ -31,7 +32,10 @@ struct PopulationSegment {
     uint64_t employed_amount = 0;
     uint64_t unemployment_rate = 0;
     // Just an index for the amount of marginal propensity that we want to consume...
+    // Standard of living for the propensity
     double standard_of_living = 1;
+    // How much cost them to do stuff
+    double cost_of_living = 0;
     double consumer_confidence = 1;
     // Years of education?
     // Helps increase our expertise faster

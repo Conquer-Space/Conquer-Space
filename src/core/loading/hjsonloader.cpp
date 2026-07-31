@@ -53,11 +53,14 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
         try {
             success = LoadValue(value, node);
         } catch (Hjson::index_out_of_bounds& ioob) {
-            auto& id = node.get<components::Identifier>().identifier;
+            auto& id = GetIdentifier(node);
             SPDLOG_WARN("Index out of bounds for {}: {}", id, ioob.what());
         } catch (Hjson::type_mismatch& tm) {
-            auto& id = node.get<components::Identifier>().identifier;
+            auto& id = GetIdentifier(node);
             SPDLOG_WARN("Type mismatch for {}: {}", id, tm.what());
+        } catch (LoadingException& le) {
+            auto& id = GetIdentifier(node);
+            SPDLOG_WARN("Failed to load value for {}: {}", id, le.what());
         }
 
         if (!success) {
@@ -74,6 +77,50 @@ int HjsonLoader::LoadHjson(const Hjson::Value& values) {
     }
 
     return assets;
+}
+
+const std::string& HjsonLoader::GetIdentifier(const Node& node) {
+    return node.get<components::Identifier>().identifier;
+}
+
+double HjsonLoader::LoadDouble(const Hjson::Value& value, const std::string& name, double default_value) {
+    if (value[name].empty() || (value[name].type() != Hjson::Type::Double && value[name].type() != Hjson::Type::Int64)) {
+        return default_value;
+    } else {
+        return value[name].to_double();
+    }
+}
+
+double HjsonLoader::RequiredDouble(const Hjson::Value& value, const std::string& name) {
+    if (value[name].empty() || (value[name].type() != Hjson::Type::Double && value[name].type() != Hjson::Type::Int64)) {
+        throw LoadingException(fmt::format("Field \"{}\" does not exist!", name));
+    } else {
+        return value[name].to_double();
+    }
+}
+
+std::string HjsonLoader::LoadString(const Hjson::Value& value, const std::string& name, const std::string& default_value) {
+    if (value[name].empty() || value[name].type() == Hjson::Type::Vector || value[name].type() == Hjson::Type::Map) {
+        return default_value;
+    } else {
+        return value[name].to_string();
+    }
+}
+
+std::string HjsonLoader::RequiredString(const Hjson::Value& value, const std::string& name) {
+    if (value[name].empty() || value[name].type() == Hjson::Type::Vector || value[name].type() == Hjson::Type::Map) {
+        throw LoadingException(fmt::format("Field \"{}\" does not exist!", name));
+    } else {
+        return value[name].to_string();
+    }
+}
+
+Hjson::Value HjsonLoader::LoadMap(const Hjson::Value& value, const std::string& name) {
+    if (value[name].empty() || value[name].type() != Hjson::Type::Map) {
+        return Hjson::Value();
+    } else {
+        return value[name];
+    }
 }
 
 void TagLoader::ParseTags(const Hjson::Value& tags, Node& node) const {

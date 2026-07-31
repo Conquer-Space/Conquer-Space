@@ -14,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "core/loading/loadgoods.h"
+#include "core/loading/goodloader.h"
 
 #include <spdlog/spdlog.h>
 
 #include <string>
 #include <tuple>
 
+#include "core/components/needs.h"
 #include "core/components/area.h"
 #include "core/components/bodies.h"
 #include "core/components/market.h"
@@ -92,7 +93,6 @@ bool GoodLoader::LoadValue(const Hjson::Value& values, Node& node) {
         node.emplace<components::Unit>(values["unit"].to_string());
     }
 
-    // Basically if it fails at any point, we'll remove the component
     universe.goods[identifier] = node;
     universe.good_prices[node] = price;
     universe.good_vector.push_back(node);

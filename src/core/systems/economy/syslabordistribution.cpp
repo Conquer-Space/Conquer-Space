@@ -46,7 +46,6 @@ void SysLaborDistribution::HandleJob(components::PopulationSegment& segment, com
     segment.labor.labor_hours.clear();
     int workforce = 0;
     double hours_sum = 0;
-    double employment_rate_sum = 0;
     // Compute education level as well and then compute how much contribution we should provide with that
 
     std::map<entt::entity, int> job_drift;
@@ -93,6 +92,8 @@ void SysLaborDistribution::HandleJob(components::PopulationSegment& segment, com
         // Cap our labor distribution as well...
     }
 
+    double employment_rate_sum = 0;
+
     for (auto& [labor, workers] : segment.labor.labor_distribution) {
         // Get the jobs that we are over and then figure out why
         auto& labor_comp = GetUniverse().get<components::Labor>(labor);
@@ -107,7 +108,9 @@ void SysLaborDistribution::HandleJob(components::PopulationSegment& segment, com
         // If we are way over we are also overemployed...
         // Check if we are way over and if we are way over we should dump jobs
         // Also check job drift to higher paying jobs
-        employment_rate_sum += workers * unemployment_rate;
+        if (workers != 0) {
+            employment_rate_sum += workers * unemployment_rate;
+        }
     }
 
     // Now redistribute our workers

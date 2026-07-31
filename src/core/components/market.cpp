@@ -29,16 +29,5 @@ std::pair<double, double> Market::PurchaseFromMarket(const ResourceVector& input
     consumption += input;
     return std::make_pair(cost, tax_cost);
 }
-
-std::pair<double, double> Market::PurchaseFromMarket(const ResourceConsumption& input) {
-    double cost = 0;
-
-    double tax_cost = 0;
-    for (auto& [good, amount] : input) {
-        tax_cost += taxation[good] * price[good] * amount;
-        cost += price[good] * amount;
-    }
-    consumption += input;
-    return std::make_pair(cost, tax_cost);
-}
+\
 }  // namespace cqsp::core::components

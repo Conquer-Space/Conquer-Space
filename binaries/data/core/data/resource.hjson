@@ -69,4 +69,9 @@
         type: hjson
         hints: {}
     }
+    needs: {
+        path: needs
+        type: hjson
+        hints: {}
+    }
 }

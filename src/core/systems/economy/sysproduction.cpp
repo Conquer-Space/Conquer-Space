@@ -101,6 +101,10 @@ void SysProduction::ProductionPreprocessing(entt::entity industry, components::P
     }
 
     if (production.shortage) {
+        // Remove production
+        if (GetUniverse().all_of<components::Construction>(industry)) {
+            GetUniverse().remove<components::Construction>(industry);
+        }
         production.state = components::IndustryState::Shortage;
     }
 }

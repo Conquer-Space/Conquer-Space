@@ -20,12 +20,23 @@
 
 #include <map>
 #include <string_view>
+#include <exception>
 
 #include <glm/glm.hpp>
 
 #include "core/universe.h"
+#include <cstdint>
 
 namespace cqsp::core::loading {
+class LoadingException : public std::exception {
+   std::string msg;
+ public:
+   LoadingException(const std::string& msg) : msg(msg) {}
+   const char* what() const override {
+      return msg.c_str();
+   }
+};
+
 class HjsonLoader {
  public:
     explicit HjsonLoader(Universe& universe) : universe(universe) {}
@@ -35,6 +46,18 @@ class HjsonLoader {
     virtual bool LoadValue(const Hjson::Value& values, Node& node) = 0;
     virtual void PostLoad(const Node& node) {}
     virtual bool NeedIdentifier() { return true; }
+
+    virtual void OnThrow() {}
+
+    double LoadDouble(const Hjson::Value& value, const std::string& name, double default_value = 0.);
+    double RequiredDouble(const Hjson::Value& value, const std::string& name);
+
+    std::string LoadString(const Hjson::Value& value, const std::string& name, const std::string& default_value = "");
+    std::string RequiredString(const Hjson::Value& value, const std::string& name);
+
+    Hjson::Value LoadMap(const Hjson::Value& value, const std::string& name);
+
+    const std::string& GetIdentifier(const Node& node);
 
  protected:
     Universe& universe;

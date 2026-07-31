@@ -116,8 +116,5 @@ struct RecipeCost {
     ResourceVector scaling;
 };
 
-struct ResourceConsumption : public ResourceMap {};
-struct ResourceProduction : public ResourceMap {};
-
 struct ResourceStockpile : public ResourceMap {};
 }  // namespace cqsp::core::components

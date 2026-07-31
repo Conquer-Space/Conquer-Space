@@ -21,14 +21,9 @@
 #include <string>
 #include <vector>
 
-namespace cqsp::core::components {
-/**
-* Class for goods to be accessed through an array
-*/
-enum class GoodEntity : uint32_t { null = static_cast<uint32_t>(-1) };
+#include "core/components/goodentity.h"
 
-// NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange)
-constexpr GoodEntity ToGoodEntity(uint32_t val) { return static_cast<GoodEntity>(val); }
+namespace cqsp::core::components {
 class ResourceLedger;
 class ResourceVector;
 
@@ -251,6 +246,8 @@ class ResourceVector : public std::vector<std::pair<GoodEntity, double>> {
     ResourceVector operator+(const ResourceVector& other) const;
     ResourceVector operator*(const ResourceVector& other) const;
 
+    void operator+=(const ResourceVector& other);
+    
     /// <summary>
     /// Returns the average of all values in the ledger, with
     /// division by zero resulting in infiniy
@@ -267,6 +264,8 @@ class ResourceVector : public std::vector<std::pair<GoodEntity, double>> {
     bool HasGood(const GoodEntity& good) const;
 
     double operator[](const GoodEntity& good) const;
+
+    double& operator[](const GoodEntity& good);
 
     /**
      * Gets the sum of all the goods in this resource ledger.

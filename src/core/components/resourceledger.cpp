@@ -20,6 +20,7 @@
 #include <limits>
 #include <ranges>
 #include <utility>
+#include "resourceledger.h"
 
 #define ITERATE_GOODS(name)                    \
     GoodEntity name = ToGoodEntity(0);         \
@@ -894,6 +895,23 @@ double ResourceVector::operator[](const GoodEntity &good) const {
     }
 }
 
+double& ResourceVector::operator[](const GoodEntity& good) {
+    for (auto& pair : *this) {
+        if (pair.first == good) {
+            return pair.second;
+        }
+    }
+    
+    push_back({good, 0});
+    return back().second;
+}
+
+void ResourceVector::operator+=(const ResourceVector& other) {
+    for (const auto val : other) {
+        (*this)[val.first] += val.second;
+    }
+}
+
 bool ResourceVector::contains(const GoodEntity &entity) const {
     return std::find_if(begin(), end(), [entity](const LedgerPair &_good) { return _good.first == entity; }) != end();
 }
@@ -1012,18 +1030,13 @@ ResourceVector ResourceVector::operator*(const ResourceVector &other) const {
     ResourceVector result;
     result.reserve(this->size() + other.size());
 
-    auto it1 = this->begin();
-    auto it2 = other.begin();
-
-    while (it1 != this->end() && it2 != other.end()) {
-        if (it1->first < it2->first || it2->first < it1->first) {
+    for (const auto& [this_key, this_value] : *this) {
+        // Then 
+        double product = this_value * other[this_key];
+        if (product == 0) {
             continue;
-        } else {
-            // Keys are equal, sum them
-            result.push_back({it1->first, it1->second * it2->second});
-            it1++;
-            it2++;
         }
+        result.emplace_back(this_key, product);
     }
     result.shrink_to_fit();
     return result;

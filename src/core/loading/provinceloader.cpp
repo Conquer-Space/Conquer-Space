@@ -28,6 +28,7 @@
 #include "core/components/population.h"
 #include "core/components/spaceport.h"
 #include "core/components/surface.h"
+#include "core/components/needs.h"
 #include "core/util/color.h"
 #include "core/util/nameutil.h"
 
@@ -58,9 +59,9 @@ ProvinceLoader::ProvinceLoader(Universe& universe) : HjsonLoader(universe), gen(
 }
 
 bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
-    const auto& identifier = node.get<components::Identifier>().identifier;
-    Node planet_node = GetPlanet(values["planet"].to_string(), identifier);
-    Node country_node = GetCountry(values["country"].to_string(), identifier);
+    const auto& identifier = GetIdentifier(node);
+    Node planet_node = GetPlanet(RequiredString(values, "planet"), identifier);
+    Node country_node = GetCountry(LoadString(values, "country", ""), identifier);
     node.emplace<components::Province>(country_node, planet_node);
 
     std::tuple<int, int, int> color_value;
@@ -144,11 +145,8 @@ bool ProvinceLoader::LoadValue(const Hjson::Value& values, Node& node) {
     }
 
     auto& infrastructure = node.emplace<components::infrastructure::CityInfrastructure>();
-    if (!values["transport"].empty()) {
-        infrastructure.default_purchase_cost = values["transport"].to_double();
-    } else {
-        infrastructure.default_purchase_cost = 100;
-    }
+    infrastructure.default_purchase_cost = LoadDouble(values, "transport", 100);
+
     if (!values["infrastructure"].empty()) {
         SPDLOG_TRACE("Has Infrastructure");
         // Load infrastructure
@@ -236,25 +234,11 @@ void ProvinceLoader::ParseIndustry(const Hjson::Value& industry_hjson, Node& nod
         Node factory = actions::CreateFactory(node, rec_ent, size);
         auto& size_comp = factory.get_or_emplace<components::ProductionUnit>();
 
-        if (!ind_val["revenue"].empty()) {
-            size_comp.revenue = ind_val["revenue"].to_double();
-        }
-
-        if (!ind_val["material_costs"].empty()) {
-            size_comp.material_costs = ind_val["material_costs"].to_double();
-        }
-
-        if (!ind_val["profit"].empty()) {
-            size_comp.profit = ind_val["profit"].to_double();
-        }
-
-        if (!ind_val["utilization"].empty()) {
-            size_comp.utilization = ind_val["utilization"].to_double();
-        }
-
-        if (!ind_val["continuous_gains"].empty()) {
-            size_comp.continuous_gains = ind_val["continuous_gains"].to_double();
-        }
+        size_comp.revenue = LoadDouble(ind_val, "revenue");
+        size_comp.material_costs = LoadDouble(ind_val, "material_costs");
+        size_comp.profit = LoadDouble(ind_val, "profit");
+        size_comp.utilization = LoadDouble(ind_val, "utilization");
+        size_comp.continuous_gains = LoadDouble(ind_val, "continous_gains");
     }
 }
 
@@ -264,15 +248,8 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
     auto size = population_hjson["size"].to_int64();
     auto& segment = pop_node.emplace<components::PopulationSegment>();
 
-    double standard_of_living = 0;
-    if (!population_hjson["sol"].empty()) {
-        standard_of_living = population_hjson["sol"].to_double();
-    }
-
-    double balance = 0;
-    if (!population_hjson["balance"].empty()) {
-        balance = population_hjson["balance"].to_double();
-    }
+    double standard_of_living = LoadDouble(population_hjson, "sol", 0);
+    double balance = LoadDouble(population_hjson, "balance", 0);
 
     int64_t labor_force = size / 2;
     if (!population_hjson["labor_force"].empty()) {
@@ -299,6 +276,15 @@ Node ProvinceLoader::ParsePopulation(const Hjson::Value& population_hjson) {
         }
     } else {
         SPDLOG_WARN("Pop doesn't have a job distribution");
+    }
+    auto& consumption = pop_node.emplace<components::PopulationConsumption>();
+
+    for (auto&& [entity, need] : universe.view<components::Need>().each()) {
+        consumption.needs[entity] = need.minimum;
+        auto& need_consmption = consumption.consumption[entity];
+
+        double points = need.fulfillment_goods[need.default_good];
+        need_consmption[need.default_good] = consumption.needs[entity] / points;
     }
 
     segment.population = size;

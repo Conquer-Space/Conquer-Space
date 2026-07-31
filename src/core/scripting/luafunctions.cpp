@@ -213,11 +213,6 @@ void FunctionEconomy(Universe& universe, sol::state_view& script_engine) {
         return actions::CreateCommercialArea(city_node);
     });
 
-    REGISTER_FUNCTION("set_resource_consume", [&](entt::entity entity, entt::entity good, double amount) {
-        auto& consumption = universe.get_or_emplace<components::ResourceConsumption>(entity);
-        consumption[universe.good_map[good]] = amount;
-    });
-
     // TODO(EhWhoAmI): Will have to fix the documentation for this so that it looks neater
     // The macro cannot take lambadas that contain templates that contain commas
     auto lambda = [&]() {
