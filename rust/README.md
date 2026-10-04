@@ -71,6 +71,14 @@ missions, dispatches from the selected port and shows delivery progress. Owned p
 also dispatch missions automatically each daily step. Native manual actions retain
 the source's missing ownership check and other documented spaceport rules.
 
+I or **Markets, industries & science** opens live native inspection. Cycle Earth/Moon,
+owned/all provinces or the hovered province; inspect all 56 goods, paged factories,
+11 science fields and seven technologies. Market details include all original table
+fields and the latest eight Earth price samples. Advance day updates the real simulation;
+Escape closes inspection without returning to selection. The panels are mutually
+exclusive and do not interrupt vehicle text editing. Factory mutation controls and
+interactive history graphs remain to be ported.
+
 For fast renderer-free simulation checks:
 
 ```powershell
@@ -105,14 +113,15 @@ and a spacecraft, queues a native maneuver and advances another day. It writes
 `target/selection.png`, `target/game-view.png`, `target/system-view.png` and
 `target/spacecraft-view.png`, then designs/manufactures/launches a vehicle, dispatches
 a lunar core mission and verifies its delivery. It also writes `target/spaceport-view.png`
-and `target/launched-vehicle.png`, then exits.
+and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.png`,
+`target/industry-inspector.png` and `target/science-inspector.png`, then exits.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay pixels and all six completed
+input. They check glyph layouts, actual text/overlay pixels and all nine completed
 captures. Background tests work while normal game windows are minimized or closed.
 Focused-spacecraft captures also verify texture color variation and ground-track
 pixels. The body-rotation/ground-coordinate helpers are compared against the actual

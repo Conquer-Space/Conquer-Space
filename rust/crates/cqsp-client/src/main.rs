@@ -22,6 +22,7 @@ use bevy::{
 use cqsp_core::{Session, World, default_data_path, intersect_globe, uv_to_direction};
 use cqsp_core::{clock::StarDate, simulation::Simulation};
 use std::{f32::consts::PI, path::PathBuf, time::Duration};
+mod inspection_ui;
 mod spaceport_ui;
 mod system_view;
 use system_view::{FlightAction, Focus, Navigation};
@@ -137,7 +138,7 @@ fn main() -> Result<()> {
             "--smoke" => smoke = true,
             "--help" | "-h" => {
                 println!(
-                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke]\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nO: orbit paths; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
+                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke]\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
                 return Ok(());
             }
@@ -149,6 +150,7 @@ fn main() -> Result<()> {
     let navigation = Navigation::new(&simulation.solar_system);
     let body_textures = system_view::BodyTextures::load(&data, &simulation.solar_system)?;
     let spaceport_ui = spaceport_ui::SpaceportUi::new(&simulation);
+    let inspector = inspection_ui::Inspector::new(&simulation);
     println!(
         "Economy slice: {} goods, {} jobs, {} recipes, {} settlements.",
         simulation.catalog.goods.len(),
@@ -253,6 +255,7 @@ fn main() -> Result<()> {
         .insert_resource(navigation)
         .insert_resource(body_textures)
         .insert_resource(spaceport_ui)
+        .insert_resource(inspector)
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
@@ -267,6 +270,8 @@ fn main() -> Result<()> {
         .add_systems(
             Update,
             (
+                inspection_ui::controls.run_if(interactive),
+                inspection_ui::scroll.run_if(interactive),
                 spaceport_ui::controls.run_if(interactive),
                 spaceport_ui::scroll.run_if(interactive),
                 camera_controls.run_if(earth_controls),
@@ -280,6 +285,7 @@ fn main() -> Result<()> {
                 update_hud,
                 update_economy_hud,
                 spaceport_ui::update,
+                inspection_ui::update,
                 smoke_test,
             )
                 .chain(),
@@ -395,6 +401,7 @@ fn setup(
             system_view::spawn_controls(panel, &font);
         });
     spaceport_ui::spawn(&mut commands, camera, &font);
+    inspection_ui::spawn(&mut commands, camera, &font);
 }
 
 fn ui_font(font: &Handle<Font>, size: f32) -> TextFont {
@@ -415,16 +422,21 @@ fn interactive(smoke: Res<Smoke>) -> bool {
     !smoke.enabled
 }
 
-fn world_input(smoke: Res<Smoke>, ui: Res<spaceport_ui::SpaceportUi>) -> bool {
-    !smoke.enabled && !ui.capture_input
+fn world_input(
+    smoke: Res<Smoke>,
+    ui: Res<spaceport_ui::SpaceportUi>,
+    inspector: Res<inspection_ui::Inspector>,
+) -> bool {
+    !smoke.enabled && !ui.capture_input && !inspector.capture_input
 }
 
 fn earth_controls(
     smoke: Res<Smoke>,
     navigation: Res<Navigation>,
     ui: Res<spaceport_ui::SpaceportUi>,
+    inspector: Res<inspection_ui::Inspector>,
 ) -> bool {
-    !smoke.enabled && !navigation.active && !ui.capture_input
+    !smoke.enabled && !navigation.active && !ui.capture_input && !inspector.capture_input
 }
 
 fn globe_mesh() -> Mesh {
@@ -577,6 +589,7 @@ fn simulation_controls(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut game: ResMut<Game>,
     ui: Option<Res<spaceport_ui::SpaceportUi>>,
+    inspector: Option<Res<inspection_ui::Inspector>>,
 ) {
     if game.session.player_country.is_none() {
         return;
@@ -584,7 +597,8 @@ fn simulation_controls(
     if game.simulation.date == StarDate::default() {
         game.simulation.tick();
     }
-    let keyboard_enabled = ui.is_none_or(|ui| !ui.capture_input);
+    let keyboard_enabled =
+        ui.is_none_or(|ui| !ui.capture_input) && inspector.is_none_or(|ui| !ui.capture_input);
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
         game.paused = !game.paused;
         game.tick_accumulator = 0.0;
@@ -780,6 +794,7 @@ fn verify_capture(
     navigation: Res<Navigation>,
     mut smoke: ResMut<Smoke>,
     ui: Res<spaceport_ui::SpaceportUi>,
+    inspector: Res<inspection_ui::Inspector>,
     camera: Single<(&Camera, &GlobalTransform), With<Camera3d>>,
     markers: Query<(&Focus, &Transform)>,
     game: Res<Game>,
@@ -791,6 +806,7 @@ fn verify_capture(
         .expect("Smoke image")
         .to_rgb8();
     let mut checked = 0;
+    let mut inspection_title = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -819,13 +835,31 @@ fn verify_capture(
             text.0
         );
         checked += 1;
+        inspection_title |= text.0.starts_with("NATIVE INSPECTION");
     }
     assert!(
         checked >= 8,
         "Smoke check: expected visible text nodes, checked {checked}"
     );
     println!("SMOKE: verified rendered pixels for {checked} text blocks.");
-    if navigation.active && !ui.open {
+    assert!(
+        !inspector.open || inspection_title,
+        "Smoke check: inspector header clipped away"
+    );
+    if inspector.open {
+        let mut gold = 0;
+        for y in 40..72 {
+            for x in 60..600 {
+                let [r, g, b] = pixels.get_pixel(x, y).0;
+                gold += usize::from(r > 160 && g > 100 && (b as f32) < r as f32 * 0.8);
+            }
+        }
+        assert!(
+            gold > 20,
+            "Smoke check: missing inspector header pixels ({gold})"
+        );
+    }
+    if navigation.active && !ui.open && !inspector.open {
         let mut orbit_pixels = 0;
         for y in 0..pixels.height() {
             for x in 330..pixels.width() - 330 {
@@ -891,6 +925,40 @@ fn verify_capture(
     smoke.captures += 1;
 }
 
+fn ui_row(parent: &mut ChildSpawnerCommands, children: impl FnOnce(&mut ChildSpawnerCommands)) {
+    parent
+        .spawn(Node {
+            flex_direction: FlexDirection::Row,
+            flex_wrap: FlexWrap::Wrap,
+            flex_shrink: 0.0,
+            column_gap: px(10),
+            row_gap: px(6),
+            ..default()
+        })
+        .with_children(children);
+}
+
+fn ui_button<A: Component>(
+    parent: &mut ChildSpawnerCommands,
+    font: &Handle<Font>,
+    action: A,
+    label: &str,
+) {
+    parent
+        .spawn((
+            action,
+            Button,
+            Node {
+                padding: UiRect::all(px(7)),
+                ..default()
+            },
+            BackgroundColor(Color::srgb(0.15, 0.29, 0.43)),
+        ))
+        .with_children(|parent| {
+            parent.spawn((Text::new(label), ui_font(font, 14.0)));
+        });
+}
+
 fn capture_smoke(commands: &mut Commands, target: &SmokeTarget, name: &str) {
     commands
         .spawn(Screenshot::image(target.0.clone()))
@@ -910,6 +978,7 @@ fn smoke_test(
     target: Option<Res<SmokeTarget>>,
     mut navigation: ResMut<Navigation>,
     mut ui: ResMut<spaceport_ui::SpaceportUi>,
+    mut inspector: ResMut<inspection_ui::Inspector>,
 ) {
     if !smoke.enabled {
         return;
@@ -919,7 +988,7 @@ fn smoke_test(
         return;
     }
     smoke.elapsed = 0.0;
-    if matches!(smoke.stage, 1 | 3 | 5 | 7 | 9 | 11) {
+    if matches!(smoke.stage, 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17) {
         for (text, layout) in &text_layouts {
             assert!(
                 text.0.trim().is_empty() || !layout.glyphs.is_empty(),
@@ -1058,10 +1127,41 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "launched-vehicle.png",
         ),
+        12 => {
+            inspector.apply(inspection_ui::Action::Open, &mut game);
+        }
+        13 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "market-inspector.png",
+        ),
+        14 => {
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Industries),
+                &mut game,
+            );
+            inspector.apply(inspection_ui::Action::Ownership, &mut game);
+        }
+        15 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "industry-inspector.png",
+        ),
+        16 => {
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Science),
+                &mut game,
+            );
+        }
+        17 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "science-inspector.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 6,
-                "Smoke check: all six captures must be verified"
+                smoke.captures, 9,
+                "Smoke check: all nine captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

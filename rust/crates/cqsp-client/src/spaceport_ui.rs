@@ -1,5 +1,5 @@
 //! Native vehicle, spaceport and lunar mission controls; no scripting runtime.
-use super::{Game, ui_font};
+use super::{Game, ui_button as button, ui_font, ui_row as row};
 use anyhow::{Context, Result, ensure};
 use bevy::{
     input::{ButtonState, keyboard::KeyboardInput},
@@ -107,6 +107,9 @@ pub(super) struct SpaceportUi {
     message: String,
 }
 impl SpaceportUi {
+    pub fn editing(&self) -> bool {
+        self.focused.is_some()
+    }
     pub fn new(simulation: &Simulation) -> Self {
         let moon = simulation.solar_system.body_id("moon");
         Self {
@@ -433,32 +436,6 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
             panel.spawn((Label::Feedback, Text::default(), ui_font(font, 15.0), TextColor(Color::srgb(0.9, 0.76, 0.42))));
         });
 }
-fn row(parent: &mut ChildSpawnerCommands, children: impl FnOnce(&mut ChildSpawnerCommands)) {
-    parent
-        .spawn(Node {
-            flex_direction: FlexDirection::Row,
-            flex_wrap: FlexWrap::Wrap,
-            column_gap: px(10),
-            row_gap: px(6),
-            ..default()
-        })
-        .with_children(children);
-}
-fn button(parent: &mut ChildSpawnerCommands, font: &Handle<Font>, action: Action, label: &str) {
-    parent
-        .spawn((
-            action,
-            Button,
-            Node {
-                padding: UiRect::all(px(7)),
-                ..default()
-            },
-            BackgroundColor(Color::srgb(0.15, 0.29, 0.43)),
-        ))
-        .with_children(|parent| {
-            parent.spawn((Text::new(label), ui_font(font, 14.0)));
-        });
-}
 fn field_button(parent: &mut ChildSpawnerCommands, font: &Handle<Font>, field: Field) {
     parent
         .spawn((
@@ -602,14 +579,16 @@ pub(super) fn scroll(
 pub(super) fn update(
     ui: Res<SpaceportUi>,
     game: Res<Game>,
+    inspector: Option<Res<super::inspection_ui::Inspector>>,
     mut panels: Query<(&Panel, &mut Node)>,
     mut labels: Query<(&Label, &mut Text)>,
 ) {
+    let inspecting = inspector.is_some_and(|ui| ui.open);
     for (panel, mut node) in &mut panels {
         let shown = match panel {
             Panel::Overlay => ui.open,
-            Panel::Launcher => !ui.open && game.session.player_country.is_some(),
-            Panel::Background => !ui.open,
+            Panel::Launcher => !ui.open && !inspecting && game.session.player_country.is_some(),
+            Panel::Background => !ui.open && !inspecting,
         };
         let display = if shown { Display::Flex } else { Display::None };
         if node.display != display {
