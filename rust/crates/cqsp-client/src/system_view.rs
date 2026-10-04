@@ -363,6 +363,34 @@ pub(super) fn setup(
             Visibility::Hidden,
         ));
     }
+    commands.insert_resource(MarkerAssets {
+        mesh,
+        ship_material,
+        ships: game.simulation.solar_system.ships.len(),
+    });
+}
+
+#[derive(Resource)]
+pub(super) struct MarkerAssets {
+    mesh: Handle<Mesh>,
+    ship_material: Handle<StandardMaterial>,
+    ships: usize,
+}
+
+pub(super) fn sync_ships(
+    mut commands: Commands,
+    game: Res<Game>,
+    mut assets: ResMut<MarkerAssets>,
+) {
+    for index in assets.ships..game.simulation.solar_system.ships.len() {
+        commands.spawn((
+            Focus::Ship(ShipId(index)),
+            Mesh3d(assets.mesh.clone()),
+            MeshMaterial3d(assets.ship_material.clone()),
+            Visibility::Hidden,
+        ));
+    }
+    assets.ships = game.simulation.solar_system.ships.len();
 }
 
 #[allow(clippy::too_many_arguments)]
@@ -574,6 +602,56 @@ fn orbit_path(orbit: Orbit) -> impl Iterator<Item = bevy::math::DVec3> {
 mod tests {
     use super::*;
     use cqsp_core::{Session, World, default_data_path, simulation::Simulation};
+
+    #[test]
+    fn newly_launched_spacecraft_get_exactly_one_render_marker() -> Result<()> {
+        let data = default_data_path();
+        let world = World::load(&data)?;
+        let simulation = Simulation::load(&data, &world, 42)?;
+        let initial = simulation.solar_system.ships.len() + simulation.solar_system.bodies.len();
+        let mut app = App::new();
+        app.insert_resource(Game {
+            world,
+            simulation,
+            session: Session::default(),
+            hovered: None,
+            political: true,
+            ordered_countries: Vec::new(),
+            paused: true,
+            speed_index: 0,
+            tick_accumulator: 0.0,
+        })
+        .init_resource::<Assets<Mesh>>()
+        .init_resource::<Assets<StandardMaterial>>()
+        .add_systems(Startup, setup)
+        .add_systems(Update, sync_ships);
+        app.update();
+        let mut markers = app.world_mut().query::<&Focus>();
+        assert_eq!(markers.iter(app.world()).count(), initial);
+        let id = {
+            let mut game = app.world_mut().resource_mut::<Game>();
+            let earth = game.simulation.solar_system.body_id("earth").unwrap();
+            game.simulation.solar_system.launch_ship(
+                "New rocket".into(),
+                earth,
+                Orbit {
+                    semi_major_axis: 7000.0,
+                    ..Orbit::default()
+                },
+            )?
+        };
+        app.update();
+        app.update();
+        assert_eq!(markers.iter(app.world()).count(), initial + 1);
+        assert_eq!(
+            markers
+                .iter(app.world())
+                .filter(|focus| **focus == Focus::Ship(id))
+                .count(),
+            1
+        );
+        Ok(())
+    }
 
     #[test]
     fn system_navigation_frames_keep_kilometer_precision_and_cycle_ships() -> Result<()> {

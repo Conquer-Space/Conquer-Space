@@ -55,7 +55,7 @@ fn main() -> Result<()> {
         simulation.validate()?;
         if let Some(output) = &mut csv {
             simulation
-                .planetary_market
+                .earth_market()
                 .write_csv_record(output, simulation.date)?;
         }
     }

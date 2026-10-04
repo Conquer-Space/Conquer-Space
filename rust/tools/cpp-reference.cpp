@@ -2,6 +2,7 @@
 #include <cmath>
 #include <iomanip>
 #include <fstream>
+#include <filesystem>
 #include <initializer_list>
 #include <iostream>
 #include <iterator>
@@ -11,15 +12,123 @@
 #include "core/actions/maneuver/basicmaneuver.h"
 #include "core/actions/maneuver/hohmann.h"
 #include "core/actions/maneuver/rendezvous.h"
+#include "core/actions/maneuver/commands.h"
+#include "core/components/colony.h"
+#include "core/components/name.h"
+#include "core/components/organizations.h"
+#include "core/components/population.h"
+#include "core/components/projects.h"
+#include "core/components/spaceport.h"
+#include "core/components/surface.h"
 #include "core/components/market.h"
 #include "core/components/modifier.h"
 #include "core/components/orbit.h"
 #include "core/components/pid.h"
 #include "core/components/stardate.h"
 #include "core/loading/loadorbit.h"
+#include "core/loading/loadcities.h"
+#include "core/loading/projectloader.h"
 #include "core/systems/economy/economyconfig.h"
+#include <spdlog/spdlog.h>
 
 using namespace cqsp::core::components;
+
+std::vector<Hjson::Value> ReadEntries(const std::filesystem::path& directory) {
+    std::vector<std::filesystem::path> paths;
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(directory)) {
+        if (entry.is_regular_file() && entry.path().extension() == ".hjson") paths.push_back(entry.path());
+    }
+    std::sort(paths.begin(), paths.end());
+    std::vector<Hjson::Value> entries;
+    for (const auto& path : paths) {
+        std::ifstream input(path);
+        auto value = Hjson::Unmarshal(std::string(std::istreambuf_iterator<char>(input), {}));
+        for (int index = 0; index < value.size(); ++index) entries.push_back(value[index]);
+    }
+    return entries;
+}
+
+void PrintSurfaceAssets(const std::filesystem::path& data) {
+    // Prerequisite reference maps only; city/project behavior is executed by the actual loaders.
+    cqsp::core::Universe universe("surface-reference");
+    spdlog::set_level(spdlog::level::off);
+    auto register_entries = [&](const auto& path, auto& map) {
+        for (const auto& entry : ReadEntries(path)) {
+            auto identifier = entry["identifier"].to_string();
+            if (map.contains(identifier)) continue;
+            auto entity = universe.create();
+            universe.emplace<Identifier>(entity, identifier);
+            map.emplace(identifier, entity);
+        }
+    };
+    register_entries(data / "data/planets", universe.planets);
+    register_entries(data / "data/countries", universe.countries);
+    register_entries(data / "data/planet_data/provinces", universe.provinces);
+    register_entries(data / "data/goods", universe.goods);
+    for (const auto& [identifier, planet] : universe.planets) universe.emplace<types::Orbit>(planet);
+    auto sun = universe.planets.at("sun");
+    for (const auto& [identifier, planet] : universe.planets) {
+        universe.get<types::Orbit>(planet).reference_body = identifier == "sun" ? entt::null
+            : identifier == "moon" ? universe.planets.at("earth") : sun;
+    }
+    for (const auto& [identifier, province] : universe.provinces) universe.emplace<Province>(province);
+    for (const auto& [identifier, country] : universe.countries) universe.emplace<CountryCityList>(country);
+    for (const auto& [identifier, good] : universe.goods) {
+        universe.good_map[good] = ToGoodEntity(static_cast<uint32_t>(universe.good_vector.size()));
+        universe.good_vector.push_back(good);
+    }
+    cqsp::core::loading::CityLoader city_loader(universe);
+    for (const auto& entry : ReadEntries(data / "data/cities")) {
+        cqsp::core::Node node(universe);
+        universe.emplace<Identifier>(node, entry["identifier"].to_string());
+        if (!city_loader.LoadValue(entry, node)) throw std::runtime_error("City loader rejected an asset");
+    }
+    std::cout << std::boolalpha << "{\"cities\":[";
+    bool first = true;
+    for (const auto& [identifier, city] : universe.cities) {
+        if (!first) std::cout << ',';
+        auto coordinate = universe.get<types::SurfaceCoordinate>(city);
+        auto province = universe.get<City>(city).province;
+        std::cout << '[' << std::quoted(identifier) << ',' << std::quoted(universe.get<Identifier>(coordinate.planet).identifier) << ',';
+        if (province == entt::null) std::cout << "null";
+        else std::cout << std::quoted(universe.get<Identifier>(province).identifier);
+        std::cout << ',' << coordinate.r_latitude() << ',' << coordinate.r_longitude() << ','
+            << universe.all_of<infrastructure::SpacePort>(city) << ',' << universe.all_of<Market>(city) << ','
+            << universe.all_of<Settlement>(city) << ',' << universe.all_of<IndustrialZone>(city) << ']';
+        first = false;
+    }
+    cqsp::core::loading::ProjectLoader project_loader(universe);
+    std::cout << "],\"projects\":[";
+    first = true;
+    for (const auto& entry : ReadEntries(data / "data/projects")) {
+        cqsp::core::Node node(universe);
+        if (!project_loader.LoadValue(entry, node)) throw std::runtime_error("Project loader rejected an asset");
+        if (!first) std::cout << ',';
+        auto& project = node.get<ProjectTemplate>();
+        std::cout << '[' << std::quoted(entry["identifier"].to_string()) << ',' << project.max_progress << ',';
+        if (node.all_of<HabitationModule>()) std::cout << node.get<HabitationModule>().crew;
+        else std::cout << "null";
+        std::cout << ",{";
+        bool first_good = true;
+        for (const auto& [good, amount] : project.cost) {
+            if (!first_good) std::cout << ',';
+            std::cout << std::quoted(universe.get<Identifier>(universe.GetGood(good)).identifier) << ':' << amount;
+            first_good = false;
+        }
+        std::cout << "}]";
+        first = false;
+    }
+    std::cout << "],\"common_soi\":[";
+    first = true;
+    for (auto [source, target] : { std::pair{"earth", "moon"}, {"moon", "earth"}, {"moon", "mars"},
+            {"earth", "mars"}, {"earth", "earth"}, {"sun", "earth"} }) {
+        if (!first) std::cout << ',';
+        auto common = cqsp::core::systems::commands::GetCommonSOI(universe, universe.planets.at(source), universe.planets.at(target));
+        std::cout << std::quoted(universe.get<Identifier>(common).identifier);
+        first = false;
+    }
+    std::cout << "]}\n";
+}
 
 void PrintVector(const glm::dvec3& vector) {
     std::cout << vector.x << ',' << vector.y << ',' << vector.z;
@@ -105,6 +214,10 @@ int main(int argc, char** argv) {
     }
     if (argc == 2 && std::string(argv[1]) == "--load-orbits") {
         PrintLoadedOrbits();
+        return 0;
+    }
+    if (argc == 3 && std::string(argv[1]) == "--surface-assets") {
+        PrintSurfaceAssets(argv[2]);
         return 0;
     }
     Wallet wallet;

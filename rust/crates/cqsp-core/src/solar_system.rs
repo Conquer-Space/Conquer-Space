@@ -12,7 +12,7 @@ use serde::Deserialize;
 use serde_json::Value;
 use std::{collections::HashMap, f64::consts::TAU, path::Path};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct BodyId(pub usize);
 
 #[derive(Clone, Copy, Debug, Default)]
@@ -236,6 +236,26 @@ impl SolarSystem {
 
     pub fn body_id(&self, identifier: &str) -> Option<BodyId> {
         self.body_ids.get(identifier).copied()
+    }
+    /// Preserve `commands::GetCommonSOI`, including its equal-depth sibling quirk.
+    pub fn common_soi(&self, source: BodyId, target: BodyId) -> BodyId {
+        let hierarchy = |mut id: BodyId| {
+            let mut chain = vec![id];
+            while let Some(parent) = self.bodies[id.0].parent {
+                chain.push(parent);
+                id = parent;
+            }
+            chain
+        };
+        let source = hierarchy(source);
+        let target = hierarchy(target);
+        let length = source.len().min(target.len());
+        for index in 1..length {
+            if source[source.len() - index] != target[target.len() - index] {
+                return source[source.len() - index + 1];
+            }
+        }
+        source[source.len() - length]
     }
     pub fn update(&mut self, time: f64) {
         for &id in &self.update_order {

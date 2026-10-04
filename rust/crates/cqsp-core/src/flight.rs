@@ -1,8 +1,10 @@
 //! Native spacecraft actions and the ten-minute movement/command loop.
 use crate::{
     clock::SECONDS_PER_TICK,
+    economy::Ledger,
     orbit::{Orbit, StateVector, normalize_angle},
     solar_system::{BodyId, CelestialBody, Kinematics},
+    spaceflight::MissionId,
 };
 use anyhow::{Result, ensure};
 use glam::DVec3;
@@ -99,6 +101,8 @@ pub struct Spacecraft {
     pub commands: VecDeque<TriggeredCommand>,
     pub events: Vec<FlightEvent>,
     pub error: Option<String>,
+    pub cargo: Option<Vec<MissionId>>,
+    pub stockpile: Option<Ledger>,
 }
 
 impl Spacecraft {
@@ -114,6 +118,8 @@ impl Spacecraft {
             commands: VecDeque::new(),
             events: Vec::new(),
             error: None,
+            cargo: None,
+            stockpile: None,
         }
     }
     pub fn queue_burn(&mut self, burn: Burn, current_time: f64) -> Result<()> {

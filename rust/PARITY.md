@@ -20,24 +20,24 @@ Successful long runs establish stability, not gameplay parity.
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior; time-zone UI remains |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
 | Goods / jobs / recipes / economy config | Implemented | Original 56 goods, 5 jobs, 22 recipes; defaults, units, construction-cost scaling; full loader differential corpus remains |
-| Settlement / population / industry ingestion | Implemented for Earth | 1,067 map provinces + 24 cities, recursively loaded; source population total 549,700,354; zoning, power grids, resource amenability remain |
+| Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; zoning, power grids, resource amenability remain |
 | Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
 | Construction-sector labor demand | Implemented | `InfrastructureSim` demand and purchase-cost calculation; power infrastructure remains |
 | Population consumption | Implemented | Previous-income/SOL ordering, debt, double demand, labor output, daily summary tests; actual C++ system harness remains |
 | Labor distribution / labor market | Implemented | Weekly hours, integer-truncated drift, daily job demand; entity traversal order and invalid conversions need differential review |
 | Industry state machine / production / construction | Implemented | Eight states, utilization, expertise, labor/material inputs, taxes, subsidies, construction spending; broader transition corpus and original RNG sequence remain |
-| Local markets / shortages / planetary trade | Implemented without spaceports | Price caps, chronic shortage rules, retained trade, imports/exports, daily aggregation; original system harness and spaceport coupling remain |
+| Local markets / shortages / planetary trade | Implemented | Price caps, shortages, retained trade, imports/exports, Earth/Moon markets and spaceport coupling; original system harness remains |
 | Population history | Implemented | Daily domain snapshots; legacy graph UI remains |
 | Market history / CSV / industry export | Implemented for Earth | Daily planetary snapshots, original CSV column schema and production-unit export fields; CSV numeric/date formatting and empty-zone omission are not byte-identical, inspection graphs remain |
-| Spaceports / launch vehicles / interplanetary trade | Not ported | `sysspaceport`, `syslaunchvehicleproduction`, `sysinterplanetarytrade`; shipping actions/UI |
+| Spaceports / launch vehicles / interplanetary trade | Implemented core | LIFO shipments, design/manufacture/launch, unloading, original trade rules and missing-city diagnostics; native screens and whole-system differential tests remain |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
 | Spacecraft movement / trigger commands | Implemented | One overdue burn per tick, burn epoch, front-only trigger queue, SOI conversions, crash/dock states and lunar deorbit tests; whole original-system differential harness and cargo/docking integration remain |
 | Maneuver planning | Reference-tested components | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner and complete Moon-transfer scenario need broader comparisons |
-| Body hierarchy / movement scheduling | Implemented | Ten-minute scheduler, parent-centered/current/next-tick positions and finite-state validation; movement/economy ordering needs review when shipping is coupled |
+| Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented basic native view | Body/ship focus, hierarchy navigation, precise local frames, orbit overlays, inspection, basic native maneuver buttons; simplified/enlarged markers, textured planets/ships, ground tracks, complete controls and universe generation remain |
 | Industry modifiers | Reference-tested components; integration implemented | Additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded, industry gain/cap wiring tested; modifier UI remains |
-| Research / projects / missions | Not ported | Loaders, domain actions, queue management and UI |
+| Research / projects / missions | Project loader reference-tested; vehicle/mission core implemented | Auto/explicit dispatch, five colony stages/core delivery and boundary tests; research, other project workflows and UI remain |
 | Native replacements for scripted UI/events | Partial | Country selection is native; civ info, exploration, side menu and event infrastructure remain |
 | Saves / load / settings / packaging | Not ported | Persist simulation + RNG state, source-independent assets, release installation and compatibility decision |
 
@@ -53,8 +53,11 @@ Successful long runs establish stability, not gameplay parity.
   Rust initializes these explicitly to zero; it does not invent initial income,
   cash, factories or population for settlements without those asset entries.
 - The malformed Arizona revenue `2e+05.0` converts to zero in the original HJSON
-  `Value::to_double`; preserve that result with a diagnostic. Four unknown city
-  recipe references are skipped just like `ProvinceLoader::ParseIndustry`.
+  `Value::to_double`; preserve that result with a diagnostic. City population and
+  recipe fields are ignored: actual `CityLoader::LoadValue` creates no economic
+  Settlement/Market/IndustrialZone. Correcting the earlier Rust loader reduced
+  population from 549,700,354 to 360,099,455 and industries from 22 to 20. Live
+  original loader comparisons guard this distinction.
 - Rust currently uses seeded SmallRng/normal distributions and sorted asset/job
   iteration. C++ uses MT19937/std::normal_distribution and EnTT/unordered traversal.
   Repeated Rust runs are deterministic with the locked dependencies, but are
@@ -94,6 +97,23 @@ Successful long runs establish stability, not gameplay parity.
   still require a compatibility policy.
 - Existing map issues (missing colors/owners, duplicate colors, unmapped land)
   remain visible. Original assets are not rewritten to conceal inconsistencies.
+- Spaceport delivery queues are LIFO and do not consume launch vehicles, purchase
+  goods or enforce launchpad/capacity limits in the source. Manual vehicle launch
+  does consume one manufactured vehicle. Valid/missing project templates both
+  skip construction costs due to the original inverted component guard; project
+  asset durations remain seconds advanced by ticks. Vehicle design keeps the
+  source's reliability/fairing conversions even though its labels are inconsistent.
+- Docking at a city port unloads stockpiles once but retains mission cargo, which
+  can advance colonization again each daily tick without transferring ownership.
+  Province docking consumes mission cargo once and the fifth delivery assigns
+  province ownership. Colony core insertion does not invent population/capacity.
+- Interplanetary orders use planetary production/consumption, not aggregate
+  supply/demand (so the bundled markets normally create none). Deficits are not
+  reduced across sellers, and the first port takes all orders for its body.
+  The original SOI ancestor helper returns the source for equal-depth sibling
+  bodies; this quirk is live reference-tested. Missing destination cities fail
+  with diagnostics instead of undefined `front()` access; failed deliveries are
+  still popped and missions retain their in-progress marker like the source.
 
 ## Verification
 
@@ -120,8 +140,11 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 51 unit tests
-plus four differential tests (three live tests require the reference executable).
+365 market-history records and CSV/industry export checks. There are 60 unit tests
+plus five differential tests (four live tests require the reference executable).
+The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
+lands on a lunar province and verifies unloading at the following daily economic
+step. Manufactured vehicle launches and dynamically added render markers are tested.
 
 The client smoke test renders to a fixed 1280×800 GPU image with Winit disabled:
 no OS window is created, so minimizing/using the desktop cannot resize its viewport

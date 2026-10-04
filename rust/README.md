@@ -11,8 +11,10 @@ ten-minute ticks, with parent-centered positions and next-tick predictions. Kepl
 propagation, orbital burns and state-vector conversion are C++ reference-tested.
 Spacecraft now execute timed burns, trigger queues, SOI transitions, crashes and
 landing commands. A native system view exposes body/ship selection, orbital paths,
-inspection and basic maneuver controls. Spaceports, cargo, saves and much of the UI
-remain unported. See
+inspection and basic maneuver controls. Spaceports now dispatch missions and cargo,
+manufacture/launch vehicles and progress lunar colonization. The core includes 250
+Moon provinces and native mission actions; their player-facing screens, saves and
+much of the remaining UI are still being ported. See
 [PARITY.md](PARITY.md) for status, evidence, compatibility gaps and acceptance gates.
 The existing CMake/Visual Studio project is unchanged.
 
@@ -104,11 +106,15 @@ Actual C++ component outputs are tested by the recorded fixture. To also compare
 cargo test -p cqsp-core --test cpp_reference -- --include-ignored
 ```
 
-The live reference suite also loads all 75 orbital definitions through the original
+The live reference suite also executes the original city/project loaders and SOI
+ancestry helper. Cities intentionally do not consume/produce or count their unused
+population fields, matching the C++ loader. Initial economic population is
+360,099,455 (an earlier Rust milestone incorrectly included ignored city data).
+It loads all 75 orbital definitions through the original
 C++ HJSON loader and checks all 74 moving orbits at seven times spanning 50 years.
 It compares actual original sources, not an independent formula replica.
 
-Next: spaceports/launch vehicles/cargo, remaining native interfaces and broader
+Next: spaceport/mission screens, remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.
 Original asset irregularities are reported rather than silently inventing ownership.
 Build output is contained in the ignored `target/` directory and can be deleted to reclaim

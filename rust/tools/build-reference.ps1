@@ -15,13 +15,18 @@ New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
 Push-Location $outputDirectory
 try {
     & cl.exe /nologo /std:c++20 /utf-8 /EHsc /MT /Gy /DFMT_HEADER_ONLY /DGLM_ENABLE_EXPERIMENTAL `
-        "/I$repoRoot/src" "/I$DependencyInclude" "/I$repoRoot/lib/hjson-cpp/include/hjson" "/Fe$outputDirectory/cpp-reference.exe" `
+        "/I$repoRoot/src" "/I$DependencyInclude" "/I$repoRoot/lib/hjson-cpp/include/hjson" "/I$repoRoot/lib/tracy/tracy/public" "/Fe$outputDirectory/cpp-reference.exe" `
         "$PSScriptRoot/cpp-reference.cpp" "$repoRoot/src/core/components/market.cpp" `
         "$repoRoot/src/core/components/resourceledger.cpp" "$repoRoot/src/core/components/pid.cpp" `
         "$repoRoot/src/core/components/stardate.cpp" "$repoRoot/src/core/systems/economy/economyconfig.cpp" `
         "$repoRoot/src/core/components/orbit.cpp" "$repoRoot/src/core/loading/loadorbit.cpp" "$repoRoot/src/core/loading/loadutil.cpp" `
         "$repoRoot/src/core/actions/maneuver/basicmaneuver.cpp" "$repoRoot/src/core/actions/maneuver/hohmann.cpp" `
         "$repoRoot/src/core/actions/maneuver/rendezvous.cpp" `
+        "$repoRoot/src/core/actions/maneuver/commands.cpp" "$repoRoot/src/core/universe.cpp" `
+        "$repoRoot/src/core/loading/hjsonloader.cpp" "$repoRoot/src/core/loading/loadcities.cpp" `
+        "$repoRoot/src/core/loading/projectloader.cpp" "$repoRoot/src/core/util/color.cpp" `
+        "$repoRoot/src/core/actions/factoryconstructaction.cpp" "$repoRoot/src/core/actions/maneuver/transfers.cpp" `
+        "$repoRoot/src/core/util/nameutil.cpp" `
         "$repoRoot/lib/hjson-cpp/src/hjson_decode.cpp" "$repoRoot/lib/hjson-cpp/src/hjson_encode.cpp" `
         "$repoRoot/lib/hjson-cpp/src/hjson_parsenumber.cpp" "$repoRoot/lib/hjson-cpp/src/hjson_value.cpp" /link /OPT:REF /INCREMENTAL:NO
     if ($LASTEXITCODE -ne 0) { throw 'C++ reference compilation failed' }

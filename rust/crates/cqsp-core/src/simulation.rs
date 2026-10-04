@@ -1,4 +1,4 @@
-//! Earth economy slice. Missing legacy systems are tracked in rust/PARITY.md.
+//! Native economic scheduling and surface/spaceflight integration.
 use crate::{
     World,
     catalog::Catalog,
@@ -11,19 +11,41 @@ use crate::{
     },
     modifiers::ModifierCatalog,
     read_entries,
-    solar_system::SolarSystem,
+    solar_system::{BodyId, SolarSystem},
+    spaceflight::{
+        ColonizationTarget, Colony, LaunchVehicle, Mission, MissionId, PlanetaryMarket,
+        ProjectTemplate, SpacePort, VehicleId,
+    },
 };
 use anyhow::{Context, Result, ensure};
 use rand::{SeedableRng, rngs::SmallRng};
 use rand_distr::{Distribution, Normal};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use std::{collections::HashMap, path::Path};
+use std::{
+    collections::{BTreeMap, HashMap},
+    path::Path,
+};
+
+#[derive(Clone, Copy, Debug)]
+pub enum SurfaceKind {
+    Province,
+    City {
+        province: Option<usize>,
+        latitude: f64,
+        longitude: f64,
+    },
+}
 
 pub struct Settlement {
     pub identifier: String,
     pub name: String,
     pub country: Option<usize>,
+    pub body: BodyId,
+    pub kind: SurfaceKind,
+    pub spaceport: Option<SpacePort>,
+    pub colonization: Option<ColonizationTarget>,
+    pub colony: Option<Colony>,
     pub populations: Vec<Population>,
     pub industries: Vec<Industry>,
     pub market: Market,
@@ -32,6 +54,15 @@ pub struct Settlement {
 }
 
 impl Settlement {
+    pub fn is_province(&self) -> bool {
+        matches!(self.kind, SurfaceKind::Province)
+    }
+    pub fn province(&self) -> Option<usize> {
+        match self.kind {
+            SurfaceKind::Province => None,
+            SurfaceKind::City { province, .. } => province,
+        }
+    }
     fn reset(&mut self) {
         self.market.reset();
         self.construction.current = 0;
@@ -48,6 +79,8 @@ impl Settlement {
 pub struct CountryEconomy {
     pub wallet: Option<Wallet>,
     pub income_taxes: f64,
+    pub vehicles: Vec<VehicleId>,
+    pub missions: Vec<MissionId>,
 }
 
 #[derive(Default, Debug, Clone, Serialize)]
@@ -68,7 +101,10 @@ pub struct Simulation {
     /// Map provinces come first, matching World::provinces indices; then cities.
     pub settlements: Vec<Settlement>,
     pub countries: Vec<CountryEconomy>,
-    pub planetary_market: Market,
+    pub planetary_markets: BTreeMap<BodyId, PlanetaryMarket>,
+    pub vehicles: Vec<LaunchVehicle>,
+    pub project_templates: Vec<ProjectTemplate>,
+    pub missions: Vec<Mission>,
     pub history: Vec<Summary>,
     pub market_history: MarketHistory,
     pub diagnostics: Vec<String>,
@@ -80,6 +116,8 @@ pub struct Simulation {
 impl Simulation {
     pub fn load(data: &Path, world: &World, seed: u64) -> Result<Self> {
         let catalog = Catalog::load(data)?;
+        let solar_system = SolarSystem::load(data)?;
+        let project_templates = ProjectTemplate::load(data, &catalog)?;
         let country_ids: HashMap<_, _> = world
             .countries
             .iter()
@@ -100,19 +138,20 @@ impl Simulation {
         let modifiers = ModifierCatalog::load(data)?;
         diagnostics.extend(modifiers.diagnostics.iter().cloned());
         let mut settlements = Vec::new();
-        let provinces =
-            read_entries::<SettlementEntry>(&data.join("data/planet_data/provinces/earth"))?;
-        let cities = read_entries::<SettlementEntry>(&data.join("data/cities/earth"))?;
-        for entry in provinces
+        let provinces = read_entries::<SettlementEntry>(&data.join("data/planet_data/provinces"))?;
+        let cities = read_entries::<SettlementEntry>(&data.join("data/cities"))?;
+        let mut city_provinces = Vec::new();
+        for (entry, city) in provinces
             .into_iter()
             .filter(|entry| !entry.is_template())
-            .chain(cities)
+            .map(|entry| (entry, false))
+            .chain(cities.into_iter().map(|entry| (entry, true)))
         {
-            ensure!(
-                entry.planet.as_deref() == Some("earth"),
-                "{}: Earth slice cannot load another planet",
-                entry.identifier
-            );
+            let body = entry
+                .planet
+                .as_deref()
+                .and_then(|name| solar_system.body_id(name))
+                .with_context(|| format!("{}: unknown settlement body", entry.identifier))?;
             let country = entry
                 .country
                 .as_ref()
@@ -120,10 +159,11 @@ impl Simulation {
             let populations = entry
                 .population
                 .into_iter()
+                .filter(|_| !city) // CityLoader ignores economic asset fields.
                 .map(|entry| Population::load(entry, &catalog))
                 .collect::<Result<Vec<_>>>()?;
             let mut industries = Vec::new();
-            for industry in entry.industry {
+            for industry in entry.industry.into_iter().filter(|_| !city) {
                 let Some(recipe) = catalog.recipe(&industry.recipe) else {
                     diagnostics.push(format!(
                         "{}: unknown recipe {}; skipped like the C++ loader",
@@ -158,10 +198,31 @@ impl Simulation {
                 factory.continuous_gains = industry.continuous_gains.unwrap_or(0.0) as i32;
                 industries.push(factory);
             }
+            let kind = if city {
+                city_provinces.push((settlements.len(), entry.province));
+                let coordinates = entry.coordinates.unwrap_or_default();
+                SurfaceKind::City {
+                    province: None,
+                    latitude: coordinates.latitude.to_radians(),
+                    longitude: coordinates.longitude.to_radians(),
+                }
+            } else {
+                SurfaceKind::Province
+            };
             settlements.push(Settlement {
                 name: entry.name.unwrap_or_else(|| entry.identifier.clone()),
                 identifier: entry.identifier,
                 country,
+                body,
+                kind,
+                spaceport: (city
+                    && entry.spaceport.is_some_and(|value| {
+                        value != Value::Null
+                            && !value.as_object().is_some_and(|object| object.is_empty())
+                    }))
+                .then(|| SpacePort::new(body, catalog.goods.len())),
+                colonization: None,
+                colony: None,
                 populations,
                 industries,
                 market: Market::new(
@@ -172,6 +233,25 @@ impl Simulation {
                 construction: ConstructionSector::default(),
                 job_demands: vec![0.0; catalog.jobs.len()],
             });
+        }
+        for (city, identifier) in city_provinces {
+            let province = identifier.as_ref().and_then(|identifier| {
+                settlements.iter().position(|settlement| {
+                    settlement.is_province() && settlement.identifier == *identifier
+                })
+            });
+            if identifier.is_some() && province.is_none() {
+                diagnostics.push(format!(
+                    "{}: unknown city province {:?}",
+                    settlements[city].identifier, identifier
+                ));
+            }
+            if let SurfaceKind::City {
+                province: parent, ..
+            } = &mut settlements[city].kind
+            {
+                *parent = province;
+            }
         }
         for (index, province) in world.provinces.iter().enumerate() {
             ensure!(
@@ -191,19 +271,24 @@ impl Simulation {
                 marginal.push((good, consumption.marginal_propensity * DAY as f64));
             }
         }
-        let planetary_market = Market::new(
-            &catalog.base_prices,
-            &catalog.labor_goods,
-            catalog.config.market_config,
-        );
+        let planetary_markets = settlements
+            .iter()
+            .map(|settlement| settlement.body)
+            .collect::<std::collections::BTreeSet<_>>()
+            .into_iter()
+            .map(|body| (body, PlanetaryMarket::new(&catalog)))
+            .collect();
         Ok(Self {
             date: StarDate::default(),
-            solar_system: SolarSystem::load(data)?,
+            solar_system,
             catalog,
             modifiers,
             settlements,
             countries,
-            planetary_market,
+            planetary_markets,
+            vehicles: Vec::new(),
+            project_templates,
+            missions: Vec::new(),
             history: Vec::new(),
             market_history: MarketHistory::default(),
             diagnostics,
@@ -215,21 +300,32 @@ impl Simulation {
 
     pub fn tick(&mut self) {
         self.date.advance();
-        self.solar_system.update(self.date.seconds());
-        if !self.date.due(DAY) {
-            return;
+        if self.date.due(DAY) {
+            self.economic_tick();
         }
+        // SysOrbit is last: arrivals are unloaded at the following economic tick.
+        self.solar_system.update(self.date.seconds());
+    }
+
+    fn economic_tick(&mut self) {
         for country in &mut self.countries {
             if let Some(wallet) = &mut country.wallet {
                 wallet.reset();
             }
         }
-        self.planetary_market.reset();
+        for planetary in self.planetary_markets.values_mut() {
+            planetary.market.reset();
+        }
         for settlement in &mut self.settlements {
             settlement.reset();
         }
+        self.process_spaceports();
         let default_labor = self.catalog.jobs[self.catalog.default_job.0].good;
-        for settlement in &mut self.settlements {
+        for settlement in self
+            .settlements
+            .iter_mut()
+            .filter(|settlement| settlement.is_province())
+        {
             settlement
                 .construction
                 .purchase_labor(&mut settlement.market, default_labor);
@@ -277,26 +373,63 @@ impl Simulation {
             }
         }
         for settlement in &mut self.settlements {
+            if settlement.province().is_some()
+                && let Some(port) = &mut settlement.spaceport
+            {
+                port.manufacture();
+            }
+        }
+        for settlement in self
+            .settlements
+            .iter_mut()
+            .filter(|settlement| settlement.is_province())
+        {
+            if let Some(port) = &mut settlement.spaceport {
+                port.process_market(&mut settlement.market);
+            }
             settlement
                 .market
                 .process(&self.catalog.base_prices, self.catalog.config.market_config);
         }
-        self.planetary_market.gdp = 0.0;
-        self.planetary_market.trade.clear();
-        for settlement in &self.settlements {
-            self.planetary_market
-                .supply
-                .add_ledger(&settlement.market.production);
-            self.planetary_market
-                .demand
-                .add_ledger(&settlement.market.consumption);
-            self.planetary_market.gdp += settlement.market.gdp;
+        for planetary in self.planetary_markets.values_mut() {
+            planetary.market.gdp = 0.0;
+            planetary.market.trade.clear();
+        }
+        for settlement in self
+            .settlements
+            .iter()
+            .filter(|settlement| settlement.is_province())
+        {
+            let market = &mut self
+                .planetary_markets
+                .get_mut(&settlement.body)
+                .unwrap()
+                .market;
+            market.supply.add_ledger(&settlement.market.production);
+            market.demand.add_ledger(&settlement.market.consumption);
+            if let Some(port) = &settlement.spaceport {
+                market.supply.add_ledger(&port.output_resources_rate);
+                market.demand.add_ledger(&port.demanded_resources_rate);
+            }
+            market.gdp += settlement.market.gdp;
         }
         // Legacy planetary pricing hard-codes 0.75 and does not update its S/D ratios.
-        self.planetary_market
-            .determine_prices(&self.catalog.base_prices, 0.75);
+        for planetary in self.planetary_markets.values_mut() {
+            planetary
+                .market
+                .determine_prices(&self.catalog.base_prices, 0.75);
+        }
+        for settlement in self
+            .settlements
+            .iter_mut()
+            .filter(|settlement| settlement.is_province())
+        {
+            settlement
+                .market
+                .trade_with(&self.planetary_markets[&settlement.body].market);
+        }
+        self.process_interplanetary_trade();
         for settlement in &mut self.settlements {
-            settlement.market.trade_with(&self.planetary_market);
             for (index, job) in self.catalog.jobs.iter().enumerate() {
                 settlement.job_demands[index] = (settlement.market.supply[job.good]
                     - 2.0 * settlement.market.demand[job.good])
@@ -304,8 +437,19 @@ impl Simulation {
             }
         }
         self.history.push(self.summary(None));
-        self.market_history
-            .record(self.date, &self.planetary_market);
+        self.market_history.record(
+            self.date,
+            &self.planetary_markets[&self.solar_system.body_id("earth").unwrap()].market,
+        );
+    }
+
+    pub fn earth_market(&self) -> &Market {
+        &self.planetary_markets[&self.solar_system.body_id("earth").expect("Loaded Earth")].market
+    }
+    pub(crate) fn normal(&mut self, mean: f64, deviation: f64) -> f64 {
+        Normal::new(mean, deviation)
+            .unwrap()
+            .sample(&mut self.random)
     }
 
     /// Runs real ten-minute ticks, including tick zero on the first call.
@@ -419,10 +563,21 @@ struct SettlementEntry {
     country: Option<String>,
     planet: Option<String>,
     color: Option<Value>,
+    province: Option<String>,
+    coordinates: Option<CoordinatesEntry>,
+    #[serde(rename = "space-port")]
+    spaceport: Option<Value>,
     #[serde(default)]
     population: Vec<PopulationEntry>,
     #[serde(default)]
     industry: Vec<IndustryEntry>,
+}
+#[derive(Deserialize, Default)]
+struct CoordinatesEntry {
+    #[serde(default)]
+    latitude: f64,
+    #[serde(default)]
+    longitude: f64,
 }
 impl SettlementEntry {
     fn is_template(&self) -> bool {
@@ -444,7 +599,14 @@ mod tests {
         simulation.tick();
         assert_eq!(simulation.date.tick(), 0);
         assert_eq!(simulation.history.len(), 1);
-        assert_eq!(simulation.summary(None).population, 549_700_354);
+        // Cities have no Settlement/Market/PopulationSegment in the original loader.
+        assert!(
+            simulation
+                .settlements
+                .iter()
+                .filter(|settlement| !settlement.is_province())
+                .all(|city| city.populations.is_empty() && city.industries.is_empty())
+        );
         let earth = simulation.solar_system.body_id("earth").unwrap();
         let before = simulation.solar_system.bodies[earth.0]
             .kinematics
@@ -470,7 +632,7 @@ mod tests {
         assert_eq!(simulation.market_history.0[1].date, simulation.date);
         assert_eq!(
             simulation.market_history.0[1].supply,
-            simulation.planetary_market.supply
+            simulation.earth_market().supply
         );
         assert!(
             simulation

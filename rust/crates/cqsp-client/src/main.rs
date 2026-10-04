@@ -267,6 +267,7 @@ fn main() -> Result<()> {
                 selection_controls.run_if(interactive),
                 simulation_controls.run_if(interactive),
                 system_view::controls.run_if(interactive),
+                system_view::sync_ships,
                 system_view::update,
                 update_globe,
                 update_hud,

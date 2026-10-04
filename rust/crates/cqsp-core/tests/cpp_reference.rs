@@ -1,10 +1,12 @@
 //! Differential checks against the actual legacy components (upstream 74b678f).
 use cqsp_core::{
+    World,
     clock::{DAY, StarDate},
     default_data_path,
     economy::{GoodId, Ledger, Market, MarketConfig, Pid, ProductionConfig, Wallet},
     modifiers::{ModifiableValue, ModifierId, ModifierOp},
     orbit::Orbit,
+    simulation::{Simulation, SurfaceKind},
     solar_system::SolarSystem,
 };
 use glam::DVec3;
@@ -194,21 +196,35 @@ fn orbit_elements(orbit: Orbit) -> [f64; 9] {
 }
 
 fn compare(actual: &Value, expected: &Value) {
-    let actual = actual.as_object().unwrap();
-    let expected = expected.as_object().unwrap();
-    assert_eq!(actual.len(), expected.len());
-    for (key, expected) in expected {
-        let actual = actual[key].as_array().unwrap();
-        let expected = expected.as_array().unwrap();
-        assert_eq!(actual.len(), expected.len(), "{key}");
-        for (index, (actual, expected)) in actual.iter().zip(expected).enumerate() {
-            let (actual, expected) = (actual.as_f64().unwrap(), expected.as_f64().unwrap());
-            assert!(
-                (actual - expected).abs() <= 1e-12 * expected.abs().max(1.0),
-                "{key}[{index}]: Rust {actual}, C++ {expected}"
-            );
+    fn visit(actual: &Value, expected: &Value, path: &str) {
+        match (actual, expected) {
+            (Value::Number(a), Value::Number(b)) => {
+                let (a, b) = (a.as_f64().unwrap(), b.as_f64().unwrap());
+                assert!(
+                    (a - b).abs() <= 1e-12 * b.abs().max(1.0),
+                    "{path}: Rust {a}, C++ {b}"
+                );
+            }
+            (Value::Array(a), Value::Array(b)) => {
+                assert_eq!(a.len(), b.len(), "{path}");
+                for (index, (a, b)) in a.iter().zip(b).enumerate() {
+                    visit(a, b, &format!("{path}[{index}]"));
+                }
+            }
+            (Value::Object(a), Value::Object(b)) => {
+                assert_eq!(
+                    a.keys().collect::<Vec<_>>(),
+                    b.keys().collect::<Vec<_>>(),
+                    "{path}"
+                );
+                for (key, b) in b {
+                    visit(&a[key], b, &format!("{path}.{key}"));
+                }
+            }
+            _ => assert_eq!(actual, expected, "{path}"),
         }
     }
+    visit(actual, expected, "$");
 }
 
 #[test]
@@ -231,6 +247,9 @@ fn reference_output(mode: Option<&str>, input: &str) -> Value {
     let mut command = Command::new(executable);
     if let Some(mode) = mode {
         command.arg(mode);
+        if mode == "--surface-assets" {
+            command.arg(default_data_path());
+        }
     }
     let mut reference = command
         .stdin(Stdio::piped())
@@ -251,6 +270,83 @@ fn reference_output(mode: Option<&str>, input: &str) -> Value {
         String::from_utf8_lossy(&output.stderr)
     );
     serde_json::from_slice(&output.stdout).unwrap()
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares the actual C++ city/project loaders"]
+fn surface_assets_match_live_cpp_loaders_and_common_soi() {
+    let data = default_data_path();
+    let simulation = Simulation::load(&data, &World::load(&data).unwrap(), 42).unwrap();
+    let mut cities: Vec<_> = simulation
+        .settlements
+        .iter()
+        .filter_map(|site| {
+            let SurfaceKind::City {
+                province,
+                latitude,
+                longitude,
+            } = site.kind
+            else {
+                return None;
+            };
+            Some(json!([
+                site.identifier,
+                simulation.solar_system.bodies[site.body.0].identifier,
+                province.map(|index| &simulation.settlements[index].identifier),
+                latitude,
+                longitude,
+                site.spaceport.is_some(),
+                false,
+                false,
+                false
+            ]))
+        })
+        .collect();
+    cities.sort_by(|a, b| a[0].as_str().cmp(&b[0].as_str()));
+    let projects: Vec<_> = simulation
+        .project_templates
+        .iter()
+        .map(|template| {
+            let cost = template
+                .cost
+                .iter()
+                .map(|(good, amount)| {
+                    (
+                        simulation.catalog.goods[good.0].identifier.clone(),
+                        json!(amount),
+                    )
+                })
+                .collect::<serde_json::Map<_, _>>();
+            json!([
+                template.identifier,
+                template.max_progress,
+                template.crew,
+                cost
+            ])
+        })
+        .collect();
+    let system = &simulation.solar_system;
+    let common: Vec<_> = [
+        ("earth", "moon"),
+        ("moon", "earth"),
+        ("moon", "mars"),
+        ("earth", "mars"),
+        ("earth", "earth"),
+        ("sun", "earth"),
+    ]
+    .into_iter()
+    .map(|(source, target)| {
+        let id = system.common_soi(
+            system.body_id(source).unwrap(),
+            system.body_id(target).unwrap(),
+        );
+        system.bodies[id.0].identifier.as_str()
+    })
+    .collect();
+    compare(
+        &json!({"cities": cities, "projects": projects, "common_soi": common}),
+        &reference_output(Some("--surface-assets"), ""),
+    );
 }
 
 #[test]

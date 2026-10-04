@@ -7,6 +7,7 @@ pub mod modifiers;
 pub mod orbit;
 pub mod simulation;
 pub mod solar_system;
+pub mod spaceflight;
 pub mod units;
 use anyhow::{Context, Result, bail, ensure};
 use serde::Deserialize;
