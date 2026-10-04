@@ -11,6 +11,8 @@ use cqsp_core::{
     solar_system::BodyId,
 };
 use std::{collections::BTreeSet, fmt::Write};
+#[path = "budget_ui.rs"]
+pub(super) mod budget;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Tab {
@@ -22,6 +24,7 @@ pub(super) enum Tab {
     Construction,
     Infrastructure,
     Science,
+    Budget,
 }
 #[derive(Component, Clone, Copy)]
 pub(super) enum Action {
@@ -49,6 +52,11 @@ pub(super) enum Action {
     ChartWindow,
     ChartFit,
     NextDay,
+    TaxGood,
+    AbsoluteTax(f32),
+    FullSubsidy,
+    ApplySubsidy,
+    RemoveSubsidy,
 }
 #[derive(Component)]
 pub(super) enum Panel {
@@ -59,6 +67,7 @@ pub(super) enum Panel {
     ConstructionActions,
     HistoryActions,
     ConsumptionPlots,
+    BudgetActions,
 }
 #[derive(Component)]
 pub(super) enum Label {
@@ -169,6 +178,7 @@ pub(super) struct Inspector {
     plot_drag: Option<Vec2>,
     plot_cursor: Option<(f64, f64)>,
     plot_pointer_over: bool,
+    budget: budget::Budget,
 }
 impl Inspector {
     pub fn new(game: &cqsp_core::simulation::Simulation) -> Self {
@@ -200,9 +210,13 @@ impl Inspector {
             plot_drag: None,
             plot_cursor: None,
             plot_pointer_over: false,
+            budget: budget::Budget::new(game.catalog.goods.len()),
         }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) {
+        if matches!(action, Action::Close | Action::Tab(_) | Action::TaxGood) {
+            self.budget.release();
+        }
         if matches!(
             action,
             Action::Tab(_)
@@ -328,7 +342,7 @@ impl Inspector {
                             .max(1);
                         cycle(&mut self.page, count, previous);
                     }
-                    Tab::Construction => {
+                    Tab::Construction | Tab::Budget => {
                         cycle(
                             &mut self.recipe,
                             game.simulation.catalog.recipes.len(),
@@ -419,6 +433,17 @@ impl Inspector {
                 game.tick_accumulator = 0.0;
                 game.simulation.advance_day();
             }
+            Action::TaxGood => cycle(&mut self.good, game.simulation.catalog.goods.len(), false),
+            Action::AbsoluteTax(amount) => {
+                if self.tab == Tab::Budget {
+                    self.budget.set_tax(amount, game, self.good);
+                }
+            }
+            Action::FullSubsidy | Action::ApplySubsidy | Action::RemoveSubsidy => {
+                if self.tab == Tab::Budget {
+                    self.budget.apply(action, game, self.recipe);
+                }
+            }
         }
     }
     fn sites<'a>(
@@ -478,6 +503,7 @@ impl Inspector {
             Tab::Civilization => self.civilization(game),
             Tab::History => self.history(game),
             Tab::Infrastructure => self.infrastructure(game),
+            Tab::Budget => self.budget.content(game, self.good, self.recipe),
             Tab::Markets => {
                 let market = self
                     .province
@@ -1526,6 +1552,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     (Tab::Construction, "Construction"),
                     (Tab::Infrastructure, "Infrastructure"),
                     (Tab::Science, "Science"),
+                    (Tab::Budget, "Budget"),
                 ] {
                     button(bar, font, Action::Tab(tab), name);
                 }
@@ -1557,6 +1584,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                 button(bar, font, Action::Next, "Next item / page");
                 button(bar, font, Action::NextTechnology, "Next technology");
             });
+            budget::spawn(panel, font);
             panel
                 .spawn((
                     Panel::FactoryActions,
@@ -1833,6 +1861,7 @@ pub(super) fn update(
             Panel::DemographicActions => inspector.open && inspector.tab == Tab::Demographics,
             Panel::ConstructionActions => inspector.open && inspector.tab == Tab::Construction,
             Panel::HistoryActions => inspector.is_history(),
+            Panel::BudgetActions => inspector.open && inspector.tab == Tab::Budget,
             Panel::ConsumptionPlots => {
                 inspector.is_demographics() && inspector.segment(&game, 0).is_some()
             }
@@ -1878,7 +1907,7 @@ mod tests {
     use bevy::input::keyboard::KeyboardInput;
     use cqsp_core::{Session, World, clock::DAY, default_data_path, simulation::Simulation};
 
-    fn app() -> Result<App> {
+    pub(super) fn app() -> Result<App> {
         let data = default_data_path();
         let world = World::load(&data)?;
         let simulation = Simulation::load(&data, &world, 42)?;
@@ -1924,6 +1953,7 @@ mod tests {
                     controls,
                     chart_controls,
                     pie_controls,
+                    budget::controls,
                     spaceport_ui::controls,
                     super::super::simulation_controls,
                     super::super::selection_controls.run_if(super::super::world_input),
@@ -1932,12 +1962,13 @@ mod tests {
                     update,
                     update_plot,
                     update_pies,
+                    budget::update,
                 )
                     .chain(),
             );
         Ok(app)
     }
-    fn apply(app: &mut App, action: Action) {
+    pub(super) fn apply(app: &mut App, action: Action) {
         app.world_mut()
             .resource_scope(|world, mut inspector: Mut<Inspector>| {
                 inspector.apply(action, &mut world.resource_mut::<Game>());

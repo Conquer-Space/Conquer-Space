@@ -15,6 +15,7 @@
 #include "core/actions/maneuver/rendezvous.h"
 #include "core/actions/maneuver/commands.h"
 #include "core/actions/factoryconstructaction.h"
+#include "core/actions/economy/subsidyhelper.h"
 #include "core/components/colony.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
@@ -610,6 +611,70 @@ void PrintFactoryCreation() {
             static_cast<double>(job.progress), static_cast<double>(job.maximum), static_cast<double>(job.levels),
             static_cast<double>(province.get<IndustrialZone>().industries.size()),
             factory.all_of<Mine>() ? 1.0 : 0.0, factory.all_of<Factory>() ? 1.0 : 0.0, factory.all_of<Service>() ? 1.0 : 0.0}));
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintSubsidies() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("subsidy-reference");
+    const auto input = ReadInput();
+    const int count = static_cast<int>(input["recipes"].to_int64());
+    std::vector<entt::entity> recipes, countries, provinces;
+    for (int index = 0; index < count; ++index) {
+        cqsp::core::Node recipe(universe);
+        recipe.emplace<Recipe>();
+        recipes.push_back(recipe.entity());
+    }
+    for (int index = 0; index < 3; ++index) {
+        cqsp::core::Node country(universe);
+        country.emplace<CountryCityList>(); country.emplace<Subsidies>();
+        countries.push_back(country.entity());
+        cqsp::core::Node province(universe);
+        province.emplace<IndustrialZone>(); province.emplace<Province>();
+        provinces.push_back(province.entity());
+        for (int recipe = 0; recipe < count; ++recipe) {
+            cqsp::core::actions::CreateFactory(province, cqsp::core::Node(universe, recipes[recipe]), 1);
+        }
+    }
+    universe.get<CountryCityList>(countries[0]).province_list = {provinces[0], provinces[2]};
+    universe.get<CountryCityList>(countries[1]).province_list = {provinces[1]};
+    // Deliberately stale ownership: ApplySubsidy must still use the initial list.
+    universe.get<Province>(provinces[0]).country = countries[1];
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int index = 0; index < input["actions"].size(); ++index) {
+        const auto& action = input["actions"][index];
+        const auto recipe = recipes[static_cast<int>(action["recipe"].to_int64())];
+        const auto country = countries[static_cast<int>(action["country"].to_int64())];
+        const auto kind = action["kind"].to_string();
+        if (kind == "apply") {
+            cqsp::core::actions::ApplySubsidy(universe, country, recipe, static_cast<float>(action["amount"].to_double()));
+        } else if (kind == "remove") {
+            // This erase is the original UI delete button, not RemoveSubsidy's empty stub.
+            universe.get<Subsidies>(country).global_subsidy.erase(recipe);
+        } else if (kind == "create") {
+            auto province = provinces[static_cast<int>(action["site"].to_int64())];
+            cqsp::core::actions::CreateFactory(cqsp::core::Node(universe, province), cqsp::core::Node(universe, recipe), 1);
+        } else throw std::runtime_error("Unknown subsidy fixture action");
+        Hjson::Value snapshot(Hjson::Type::Map), policies(Hjson::Type::Vector), factories(Hjson::Type::Vector);
+        for (auto entity : countries) {
+            Hjson::Value values(Hjson::Type::Vector);
+            const auto& ledger = universe.get<Subsidies>(entity).global_subsidy;
+            for (auto recipe_entity : recipes) {
+                auto found = ledger.find(recipe_entity);
+                values.push_back(found == ledger.end() ? Hjson::Value(Hjson::Type::Null) : Number(found->second));
+            }
+            policies.push_back(values);
+        }
+        for (auto province : provinces) {
+            Hjson::Value values(Hjson::Type::Vector);
+            for (auto factory : universe.get<IndustrialZone>(province).industries) {
+                values.push_back(Number(universe.get<ProductionUnit>(factory).output_subsidy));
+            }
+            factories.push_back(values);
+        }
+        snapshot["policies"] = policies; snapshot["factories"] = factories;
+        output.push_back(snapshot);
     }
     WriteJson(output); std::cout << '\n';
 }
@@ -1393,6 +1458,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--civilizations") { PrintCivilizations(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--planet-histories") { PrintPlanetHistories(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--factory-creation") { PrintFactoryCreation(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--subsidies") { PrintSubsidies(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--timezones") { PrintTimeZones(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--random") { PrintRandom(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }

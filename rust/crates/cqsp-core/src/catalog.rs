@@ -47,7 +47,7 @@ pub struct Job {
     pub good: GoodId,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub struct RecipeId(pub usize);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

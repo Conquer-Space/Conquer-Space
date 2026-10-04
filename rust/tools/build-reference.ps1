@@ -34,6 +34,7 @@ try {
         "$repoRoot/src/core/loading/loadcountries.cpp" "$repoRoot/src/core/loading/provinceloader.cpp" `
         "$repoRoot/src/core/systems/history/sysmarkethistory.cpp" `
         "$repoRoot/src/core/actions/factoryconstructaction.cpp" "$repoRoot/src/core/actions/maneuver/transfers.cpp" `
+        "$repoRoot/src/core/actions/economy/subsidyhelper.cpp" `
         "$repoRoot/src/core/util/nameutil.cpp" `
         "$repoRoot/src/core/game.cpp" "$repoRoot/src/core/scripting/scripting.cpp" `
         "$repoRoot/src/core/actions/shiplaunchaction.cpp" "$repoRoot/src/core/systems/movement/sysorbit.cpp" `

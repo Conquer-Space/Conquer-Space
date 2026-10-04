@@ -288,6 +288,7 @@ fn main() -> Result<()> {
                     inspection_ui::controls.run_if(interactive),
                     inspection_ui::chart_controls.run_if(interactive),
                     inspection_ui::pie_controls.run_if(interactive),
+                    inspection_ui::budget::controls.run_if(interactive),
                 )
                     .chain(),
                 inspection_ui::scroll.run_if(interactive),
@@ -307,6 +308,7 @@ fn main() -> Result<()> {
                 inspection_ui::update,
                 inspection_ui::update_plot,
                 inspection_ui::update_pies,
+                inspection_ui::budget::update,
                 smoke_test,
             )
                 .chain(),
@@ -1364,10 +1366,43 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "infrastructure-inspector.png",
         ),
+        34 => {
+            let country = game.session.player_country.expect("Started smoke player");
+            let province = game.simulation.countries[country].provinces[0];
+            game.hovered = Some(province);
+            inspector.apply(inspection_ui::Action::Hovered, &mut game);
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Construction),
+                &mut game,
+            );
+            inspector.apply(inspection_ui::Action::ConstructFactory, &mut game);
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Budget),
+                &mut game,
+            );
+            inspector.apply(inspection_ui::Action::FullSubsidy, &mut game);
+            inspector.apply(inspection_ui::Action::ApplySubsidy, &mut game);
+            inspector.apply(inspection_ui::Action::AbsoluteTax(2.5), &mut game);
+            let site = &game.simulation.settlements[province];
+            assert_eq!(site.industries.last().unwrap().output_subsidy, 1.0);
+            assert_eq!(game.simulation.countries[country].subsidies.len(), 1);
+            assert!(
+                game.simulation
+                    .settlements
+                    .iter()
+                    .filter(|site| site.is_province())
+                    .all(|site| site.market.taxation[cqsp_core::economy::GoodId(0)] == 2.5)
+            );
+        }
+        35 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "budget-inspector.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 17,
-                "Smoke check: all seventeen captures must be verified"
+                smoke.captures, 18,
+                "Smoke check: all eighteen captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

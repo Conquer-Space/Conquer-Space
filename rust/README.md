@@ -118,6 +118,14 @@ outside-image drag capture, and right-click/**Fit pies** reset. Changing scope/p
 resets the view; daily data refresh retains it. Plot wheels do not scroll the panel.
 Spaceport inspection
 also shows loaded fixed-offset local time, retaining the source clock's quirks.
+
+Budget exposes every good's absolute 0–5 tax slider and all 22 recipe subsidy
+policies, with a 0–100% slider/full-subsidy lock and apply/remove buttons. Taxes
+affect all province markets globally, not just the player. Subsidies target existing
+factories in the country's initial province list; new factories do not inherit them
+and removing the policy row leaves existing factory values unchanged, like upstream.
+National labor totals also use that initial list. Dragging outside a slider retains
+capture until release; closing the screen releases it without advancing the game.
 Infrastructure inspects province transport costs, zoning allocations and power/grid
 bindings. The original Illinois coal plant and New York transport cost load directly
 from the assets. Plants retain zero production and empty fuel records like the source;
@@ -174,9 +182,9 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all seventeen completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all eighteen completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all seventeen PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all eighteen PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.

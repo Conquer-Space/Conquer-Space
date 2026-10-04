@@ -95,6 +95,7 @@ pub struct CountryEconomy {
     pub vehicles: Vec<VehicleId>,
     pub missions: Vec<MissionId>,
     pub research: i32,
+    pub subsidies: BTreeMap<RecipeId, f64>,
 }
 
 #[derive(Default, Debug, Clone, Serialize)]
@@ -504,6 +505,70 @@ impl Simulation {
     pub fn earth_market(&self) -> &Market {
         &self.planetary_markets[&self.solar_system.body_id("earth").expect("Loaded Earth")].market
     }
+    /// The original tax UI applies an absolute float amount to every IndustrialZone market.
+    pub fn set_good_tax(&mut self, good: GoodId, amount: f32) -> Result<usize> {
+        ensure!(good.0 < self.catalog.goods.len(), "Unknown taxable good");
+        ensure!(amount.is_finite(), "Tax must be finite");
+        let mut updated = 0;
+        for site in self
+            .settlements
+            .iter_mut()
+            .filter(|site| site.is_province())
+        {
+            site.market.taxation[good] = f64::from(amount);
+            updated += 1;
+        }
+        Ok(updated)
+    }
+    /// ApplySubsidy uses the initial CountryCityList, not current province ownership.
+    pub fn apply_subsidy(
+        &mut self,
+        country: usize,
+        recipe: RecipeId,
+        amount: f32,
+    ) -> Result<usize> {
+        ensure!(
+            recipe.0 < self.catalog.recipes.len(),
+            "Unknown subsidy recipe"
+        );
+        ensure!(amount.is_finite(), "Subsidy must be finite");
+        let country = self
+            .countries
+            .get_mut(country)
+            .context("Unknown subsidy country")?;
+        ensure!(
+            country.provinces.iter().all(|&province| self
+                .settlements
+                .get(province)
+                .is_some_and(Settlement::is_province)),
+            "Invalid subsidy province list"
+        );
+        country.subsidies.insert(recipe, f64::from(amount));
+        let mut updated = 0;
+        for &province in &country.provinces {
+            for industry in &mut self.settlements[province].industries {
+                if industry.recipe == recipe {
+                    industry.output_subsidy = f64::from(amount);
+                    updated += 1;
+                }
+            }
+        }
+        Ok(updated)
+    }
+    /// The original delete button erases only the policy row; factory values survive.
+    pub fn remove_subsidy(&mut self, country: usize, recipe: RecipeId) -> Result<bool> {
+        ensure!(
+            recipe.0 < self.catalog.recipes.len(),
+            "Unknown subsidy recipe"
+        );
+        Ok(self
+            .countries
+            .get_mut(country)
+            .context("Unknown subsidy country")?
+            .subsidies
+            .remove(&recipe)
+            .is_some())
+    }
     /// Native equivalent of the original province Construction tab's button.
     pub fn construct_factory(
         &mut self,
@@ -725,6 +790,137 @@ mod tests {
     fn load(seed: u64) -> Result<Simulation> {
         let data = crate::default_data_path();
         Simulation::load(&data, &World::load(&data)?, seed)
+    }
+    #[test]
+    fn national_subsidies_use_initial_lists_and_do_not_inherit_or_clear_factory_values()
+    -> Result<()> {
+        let mut simulation = load(42)?;
+        let country = simulation
+            .countries
+            .iter()
+            .position(|country| !country.provinces.is_empty())
+            .unwrap();
+        let province = simulation.countries[country].provinces[0];
+        let other = simulation
+            .settlements
+            .iter()
+            .position(|site| site.is_province() && site.country != Some(country))
+            .unwrap();
+        simulation.countries[country].provinces = vec![province];
+        simulation.settlements[province].country = simulation.settlements[other].country;
+        let recipe = RecipeId(0);
+        let factory = simulation.construct_factory(province, recipe, 1)?;
+        let different = simulation.construct_factory(province, RecipeId(1), 1)?;
+        let foreign = simulation.construct_factory(other, recipe, 1)?;
+        let matches = simulation.settlements[province]
+            .industries
+            .iter()
+            .filter(|industry| industry.recipe == recipe)
+            .count();
+        assert_eq!(simulation.apply_subsidy(country, recipe, 0.2)?, matches);
+        assert_eq!(
+            simulation.countries[country].subsidies[&recipe],
+            f64::from(0.2_f32)
+        );
+        assert_eq!(
+            simulation.settlements[province].industries[factory].output_subsidy,
+            f64::from(0.2_f32)
+        );
+        assert_eq!(
+            simulation.settlements[province].industries[different].output_subsidy,
+            0.0
+        );
+        assert_eq!(
+            simulation.settlements[other].industries[foreign].output_subsidy,
+            0.0
+        );
+        let future = simulation.construct_factory(province, recipe, 1)?;
+        assert_eq!(
+            simulation.settlements[province].industries[future].output_subsidy,
+            0.0
+        );
+        assert!(simulation.remove_subsidy(country, recipe)?);
+        assert!(!simulation.remove_subsidy(country, recipe)?);
+        assert_eq!(
+            simulation.settlements[province].industries[factory].output_subsidy,
+            f64::from(0.2_f32)
+        );
+        for (country, recipe, amount) in [
+            (usize::MAX, recipe, 1.0),
+            (country, RecipeId(usize::MAX), 1.0),
+            (country, recipe, f32::NAN),
+            (country, recipe, f32::INFINITY),
+        ] {
+            assert!(simulation.apply_subsidy(country, recipe, amount).is_err());
+        }
+        assert!(simulation.countries[country].subsidies.is_empty());
+        simulation.countries[country].provinces.push(usize::MAX);
+        assert!(simulation.apply_subsidy(country, recipe, 1.0).is_err());
+        assert!(simulation.countries[country].subsidies.is_empty());
+        assert!(simulation.remove_subsidy(usize::MAX, recipe).is_err());
+        assert!(
+            simulation
+                .remove_subsidy(country, RecipeId(usize::MAX))
+                .is_err()
+        );
+        Ok(())
+    }
+    #[test]
+    fn absolute_good_taxes_are_global_to_provinces_only() -> Result<()> {
+        let mut simulation = load(42)?;
+        let good = GoodId(0);
+        let provinces = simulation
+            .settlements
+            .iter()
+            .filter(|site| site.is_province())
+            .count();
+        assert_eq!(simulation.set_good_tax(good, 2.3)?, provinces);
+        assert_eq!(provinces, 1317);
+        for site in &simulation.settlements {
+            assert_eq!(
+                site.market.taxation[good],
+                if site.is_province() {
+                    f64::from(2.3_f32)
+                } else {
+                    0.0
+                }
+            );
+            assert!(
+                site.market.taxation.values()[1..]
+                    .iter()
+                    .all(|&tax| tax == 0.0)
+            );
+        }
+        assert!(
+            simulation
+                .planetary_markets
+                .values()
+                .all(|planet| planet.market.taxation.sum() == 0.0)
+        );
+        for (good, amount) in [
+            (GoodId(usize::MAX), 0.0),
+            (good, f32::NAN),
+            (good, f32::NEG_INFINITY),
+        ] {
+            assert!(simulation.set_good_tax(good, amount).is_err());
+        }
+        assert!(
+            simulation
+                .settlements
+                .iter()
+                .filter(|site| site.is_province())
+                .all(|site| site.market.taxation[good] == f64::from(2.3_f32))
+        );
+        // Core actions preserve finite raw values; slider bounds belong to the UI.
+        simulation.set_good_tax(good, -0.5)?;
+        assert!(
+            simulation
+                .settlements
+                .iter()
+                .filter(|site| site.is_province())
+                .all(|site| site.market.taxation[good] == -0.5)
+        );
+        Ok(())
     }
     #[test]
     fn civilization_metadata_and_all_body_histories_preserve_source_scope() -> Result<()> {

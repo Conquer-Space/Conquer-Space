@@ -263,6 +263,86 @@ fn manual_factory_creation_matches_original_action() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual ApplySubsidy and UI ledger deletion"]
+fn national_recipe_subsidies_match_original_action_and_removal() {
+    use cqsp_core::catalog::RecipeId;
+    let data = default_data_path();
+    let mut simulation = Simulation::load(&data, &World::load(&data).unwrap(), 42).unwrap();
+    let count = simulation.catalog.recipes.len();
+    for site in 0..3 {
+        simulation.settlements[site].industries.clear();
+        for recipe in 0..count {
+            simulation
+                .construct_factory(site, RecipeId(recipe), 1)
+                .unwrap();
+        }
+    }
+    simulation.countries[0].provinces = vec![0, 2];
+    simulation.countries[1].provinces = vec![1];
+    simulation.countries[2].provinces.clear();
+    simulation.settlements[0].country = Some(1);
+    let mut actions = Vec::new();
+    for recipe in 0..count {
+        for amount in [0.0_f32, 0.2, 0.333_333_34, 1.0, -0.25, 1.5] {
+            actions.push(json!({"kind":"apply","country":0,"recipe":recipe,"amount":amount}));
+        }
+        actions.push(json!({"kind":"create","country":0,"recipe":recipe,"site":0}));
+        actions.push(json!({"kind":"remove","country":0,"recipe":recipe}));
+        actions.push(json!({"kind":"apply","country":1,"recipe":recipe,"amount":0.7}));
+        actions.push(json!({"kind":"apply","country":2,"recipe":recipe,"amount":0.9}));
+        actions.push(json!({"kind":"apply","country":0,"recipe":recipe,"amount":0.4}));
+        actions.push(json!({"kind":"remove","country":0,"recipe":recipe}));
+        actions.push(json!({"kind":"remove","country":0,"recipe":recipe}));
+    }
+    let mut output = Vec::new();
+    for action in &actions {
+        let recipe = RecipeId(action["recipe"].as_u64().unwrap() as usize);
+        let country = action["country"].as_u64().unwrap() as usize;
+        match action["kind"].as_str().unwrap() {
+            "apply" => {
+                simulation
+                    .apply_subsidy(country, recipe, action["amount"].as_f64().unwrap() as f32)
+                    .unwrap();
+            }
+            "remove" => {
+                simulation.remove_subsidy(country, recipe).unwrap();
+            }
+            "create" => {
+                simulation
+                    .construct_factory(action["site"].as_u64().unwrap() as usize, recipe, 1)
+                    .unwrap();
+            }
+            _ => unreachable!(),
+        }
+        let policies: Vec<_> = simulation.countries[..3]
+            .iter()
+            .map(|country| {
+                (0..count)
+                    .map(|recipe| country.subsidies.get(&RecipeId(recipe)).copied())
+                    .collect::<Vec<_>>()
+            })
+            .collect();
+        let factories: Vec<_> = simulation.settlements[..3]
+            .iter()
+            .map(|site| {
+                site.industries
+                    .iter()
+                    .map(|industry| industry.output_subsidy)
+                    .collect::<Vec<_>>()
+            })
+            .collect();
+        output.push(json!({"policies":policies,"factories":factories}));
+    }
+    compare(
+        &json!(output),
+        &reference_output(
+            Some("--subsidies"),
+            &json!({"recipes":count,"actions":actions}).to_string(),
+        ),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual country/province/city metadata loaders"]
 fn civilization_wallet_capital_capability_and_owned_lists_match_original() {
     let data = default_data_path();

@@ -42,6 +42,7 @@ Successful long runs establish stability, not gameplay parity.
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
 | Industry modifiers / factory controls | Reference-tested components; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded and industry gain/cap wiring tested |
+| National subsidies / absolute taxes / labor view | Subsidy action reference-tested; native integration | 286 snapshots across all 22 recipes through actual ApplySubsidy, initial lists/stale ownership, fractional/full/raw finite amounts, future factories and repeated UI ledger erasure; native sliders, full lock, one-shot controls and national labor ledgers; global province-only taxes source-mapped and Rust-tested, not actual ImGui execution |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
 | Native replacements for scripted UI/events | Partial | Country selection and civilization/economy/history inspection are native; exploration, side menu and event infrastructure remain |
@@ -111,6 +112,13 @@ Successful long runs establish stability, not gameplay parity.
   Only bodies with a Settlements component participate in planetary/interplanetary
   trade. Other bodies keep base prices and unchanged ratios while daily reset clears
   their supply/demand; their zero-economic history is still recorded and inspectable.
+- The original tax slider sets an absolute float amount (0–5), not a percentage,
+  on all IndustrialZone markets globally. Cities and planetary markets are excluded.
+  National recipe subsidies use the initial CountryCityList rather than current
+  ownership. Applying affects only existing matching factories; new ones do not
+  inherit the recorded policy. Deleting a policy row leaves factory values unchanged.
+  Rust validates malformed IDs/non-finite amounts before mutation; finite raw core
+  amounts are preserved while native sliders enforce the original UI bounds.
 - The original HJSON orbit loader ignores `epoch` and its optional/copy constructor
   initializes true anomaly to mean anomaly; both are reference-tested and preserved.
   The unregistered legacy `satellites.txt` TLE file is not loaded. Signed retrograde
@@ -211,8 +219,8 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 112 unit tests
-and 25 passing differential tests. Twenty-four live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 116 unit tests
+and 26 passing differential tests. Twenty-five live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -308,8 +316,15 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Seventeen verified captures include the spaceport panel, newly
+native screen actions. Eighteen captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
+The budget capture applies a national subsidy to a newly constructed player factory
+and verifies the chosen absolute tax across all provinces before rendering. Native
+input tests cover all goods/recipes, outside-slider drag capture, clamping, invalid
+coordinates, the full-subsidy lock, release/close isolation, one-shot apply, ledger-only
+removal and no daily advancement. National labor reads initial-list demand/supply,
+not ownership-filtered aggregates. The C++ subsidy corpus executes the actual action;
+ledger deletion copies the original UI erase, without claiming ImGui was executed.
 Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
 day advancement, live label refresh, panel exclusivity and closing-frame isolation.
@@ -381,7 +396,7 @@ size and write time against this run; successful rendering alone cannot conceal 
 failed disk write.
 The updated release bundle has also passed all seventeen captures, including both
 consumption modes and panned/zoomed pies, from the external working directory with
-no asset override. All 25 differential tests pass in debug and release.
+no asset override. All 26 differential tests pass in debug and release.
 The original Save::SaveGame returns an empty HJSON value, while metadata only stores
 date/UUID/version. A full simulation/RNG snapshot would be a new feature, not behavior
 already implemented upstream. Metadata/load-menu/settings parity remains open.
