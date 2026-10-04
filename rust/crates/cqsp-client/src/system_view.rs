@@ -75,6 +75,7 @@ pub(super) struct Navigation {
     pub show_ground_tracks: bool,
     pub target_radius: f64,
     pub message: String,
+    surface: bool,
     yaw: f32,
     pitch: f32,
     distance: f32,
@@ -89,12 +90,22 @@ impl Navigation {
             show_ground_tracks: true,
             target_radius: 14000.0,
             message: String::new(),
+            surface: false,
             yaw: 0.4,
             pitch: 0.9,
             distance: 3.5,
         }
     }
     fn frame(&self, system: &SolarSystem) -> SceneFrame {
+        if self.surface
+            && let Focus::Body(id) = self.focus
+        {
+            return SceneFrame {
+                parent: id,
+                center: system.bodies[id.0].kinematics.absolute_position(),
+                span: system.bodies[id.0].radius,
+            };
+        }
         let (parent, span) = match self.focus {
             Focus::Body(id) => {
                 let body = &system.bodies[id.0];
@@ -122,11 +133,44 @@ impl Navigation {
     }
     pub fn select(&mut self, focus: Focus, system: &SolarSystem) {
         self.focus = focus;
+        self.surface = false;
         self.distance = 3.5;
         self.message.clear();
         if let Focus::Ship(id) = focus {
             self.target_radius = system.ships[id.0].orbit.apoapsis().abs() * 1.25;
         }
+    }
+    pub fn is_surface_focus(&self) -> bool {
+        self.surface
+    }
+    /// Original FocusOnProvince does nothing if no SurfaceCoordinate was generated.
+    pub fn focus_province(&mut self, province: usize, game: &Game) -> bool {
+        let Some(site) = game
+            .simulation
+            .settlements
+            .get(province)
+            .filter(|site| site.is_province())
+        else {
+            return false;
+        };
+        let Some([latitude, longitude]) = site.province_center else {
+            return false;
+        };
+        let system = &game.simulation.solar_system;
+        self.select(Focus::Body(site.body), system);
+        self.active = true;
+        self.surface = true;
+        self.pitch = latitude as f32;
+        self.yaw = longitude as f32;
+        self.distance = ((system.bodies[site.body.0].radius + 800.0)
+            / system.bodies[site.body.0].radius) as f32;
+        self.message = format!(
+            "{} · {:.2}°, {:.2}° · 800 km above the surface",
+            site.name,
+            latitude.to_degrees(),
+            longitude.to_degrees()
+        );
+        true
     }
     pub fn cycle_ship(&mut self, system: &SolarSystem, previous: bool) {
         let parent = match self.focus {
@@ -148,13 +192,20 @@ impl Navigation {
         let next = cycle_index(current, ships.len(), previous);
         self.select(ships[next], system);
     }
-    fn transform(&self) -> Transform {
+    fn transform(&self, system: &SolarSystem, time: f64) -> Transform {
         let position = Vec3::new(
             self.yaw.cos() * self.pitch.cos(),
             self.pitch.sin(),
             self.yaw.sin() * self.pitch.cos(),
         ) * self.distance;
-        Transform::from_translation(position).looking_at(Vec3::ZERO, Vec3::Y)
+        let rotation = if self.surface
+            && let Focus::Body(id) = self.focus
+        {
+            render_rotation(&system.bodies[id.0], time)
+        } else {
+            Quat::IDENTITY
+        };
+        Transform::from_translation(rotation * position).looking_at(Vec3::ZERO, rotation * Vec3::Y)
     }
     pub fn focus_label(&self, system: &SolarSystem) -> String {
         match self.focus {
@@ -549,8 +600,8 @@ pub(super) fn controls(
         navigation.pitch = (navigation.pitch + vertical * time.delta_secs()).clamp(-1.5, 1.5);
     }
     if scroll.delta.y != 0.0 {
-        navigation.distance =
-            (navigation.distance * (-scroll.delta.y * 0.08).exp()).clamp(0.3, 20.0);
+        navigation.distance = (navigation.distance * (-scroll.delta.y * 0.08).exp())
+            .clamp(if navigation.surface { 1.01 } else { 0.3 }, 20.0);
     }
     if mouse.just_pressed(MouseButton::Left)
         && let Some(cursor) = window
@@ -595,7 +646,7 @@ pub(super) fn update(
     let system = &game.simulation.solar_system;
     let frame = navigation.frame(system);
     **camera = if navigation.active {
-        navigation.transform()
+        navigation.transform(system, game.simulation.date.seconds())
     } else {
         globe.transform()
     };
@@ -622,7 +673,11 @@ pub(super) fn update(
         let (position, radius) = match focus {
             Focus::Body(id) => (
                 system.bodies[id.0].kinematics.absolute_position(),
-                (system.bodies[id.0].radius / frame.span).clamp(0.018, 0.6) as f32,
+                if navigation.surface && id == frame.parent {
+                    1.0
+                } else {
+                    (system.bodies[id.0].radius / frame.span).clamp(0.018, 0.6) as f32
+                },
             ),
             Focus::Ship(id) => (
                 system.ships[id.0].kinematics.absolute_position(),
@@ -864,6 +919,59 @@ mod tests {
                 .count(),
             1
         );
+        Ok(())
+    }
+
+    #[test]
+    fn province_focus_keeps_exact_map_center_and_800_km_altitude_in_the_rotating_body_frame()
+    -> Result<()> {
+        let app = super::super::inspection_ui::tests::app()?;
+        let game = app.world().resource::<Game>();
+        let system = &game.simulation.solar_system;
+        let mut navigation = Navigation::new(system);
+        for name in ["earth", "moon"] {
+            let body = system.body_id(name).unwrap();
+            let province = game
+                .simulation
+                .settlements
+                .iter()
+                .position(|site| site.body == body && site.province_center.is_some())
+                .unwrap();
+            assert!(navigation.focus_province(province, game));
+            assert!(navigation.active && navigation.surface);
+            assert_eq!(navigation.frame(system).span, system.bodies[body.0].radius);
+            let [latitude, longitude] = game.simulation.settlements[province]
+                .province_center
+                .unwrap();
+            for time in [0.0, 86400.0, 86400.0 * 365.0] {
+                let camera = navigation.transform(system, time);
+                let expected_distance = 1.0 + 800.0 / system.bodies[body.0].radius;
+                assert!((camera.translation.length() as f64 - expected_distance).abs() < 2e-6);
+                let position = bevy::math::DVec3::new(
+                    camera.translation.x as f64,
+                    camera.translation.z as f64,
+                    camera.translation.y as f64,
+                );
+                let ground = system.bodies[body.0].ground_track(position, time).unwrap();
+                assert!((ground[0] - latitude).abs() < 2e-6);
+                assert!((ground[1] - longitude).abs() < 2e-6);
+                assert!(camera.rotation.is_finite());
+            }
+        }
+        let previous = navigation.focus;
+        let distance = navigation.distance;
+        let missing = game
+            .simulation
+            .settlements
+            .iter()
+            .position(|site| site.is_province() && site.province_center.is_none())
+            .unwrap();
+        assert!(!navigation.focus_province(missing, game));
+        assert!(!navigation.focus_province(usize::MAX, game));
+        assert_eq!(navigation.focus, previous);
+        assert_eq!(navigation.distance, distance);
+        navigation.select(Focus::Body(system.sun), system);
+        assert!(!navigation.surface);
         Ok(())
     }
 

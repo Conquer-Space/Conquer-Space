@@ -1965,6 +1965,10 @@ pub(crate) mod tests {
                     (
                         super::super::event_ui::controls,
                         super::super::event_ui::scroll,
+                        super::super::search_ui::controls
+                            .run_if(super::super::event_ui::input_available),
+                        super::super::search_ui::scroll
+                            .run_if(super::super::event_ui::input_available),
                         (
                             super::super::application_ui::controls,
                             super::super::application_ui::scroll,
@@ -1983,7 +1987,8 @@ pub(crate) mod tests {
                             super::super::save_ui::scroll.run_if(super::super::menu_input),
                         )
                             .chain()
-                            .run_if(super::super::event_ui::input_available),
+                            .run_if(super::super::event_ui::input_available)
+                            .run_if(super::super::search_ui::input_available),
                     )
                         .chain(),
                     super::super::simulation_controls,
@@ -1991,6 +1996,7 @@ pub(crate) mod tests {
                         super::super::save_ui::update,
                         super::super::application_ui::update,
                         super::super::event_ui::update,
+                        super::super::search_ui::update,
                     )
                         .chain(),
                     spaceport_ui::update,

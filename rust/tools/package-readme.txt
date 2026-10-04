@@ -11,6 +11,8 @@ availability on another PC is not established by local package verification.
 Keep the entire assets directory beside both executables.
 
 Use cqsp-client.exe --help for controls, or --paths to inspect asset resolution.
+Left Ctrl+P opens native body/province search. Enter zooms to a mapped province;
+clicking a result focuses its planet. Unnamed provinces remain excluded upstream.
 Escape opens the pause menu after starting. Options provides the original 15
 resolution presets and fullscreen; audio is intentionally unavailable. Save
 preferences writes only %LOCALAPPDATA%/ConquerSpaceRust/settings.hjson; --settings

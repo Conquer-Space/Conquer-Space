@@ -23,7 +23,7 @@ try {
         Copy-Item -LiteralPath (Join-Path $binaryFolder $binary) -Destination $packageRoot
     }
     $coreSource = Join-Path $repoRoot 'binaries/data/core'
-    foreach ($directory in @('data', 'gfx')) {
+    foreach ($directory in @('data', 'gfx', 'map')) {
         Copy-Item -LiteralPath (Join-Path $coreSource $directory) -Destination (Join-Path $coreFolder $directory) -Recurse
     }
     Copy-Item -LiteralPath (Join-Path $coreSource 'resource.hjson') -Destination $coreFolder

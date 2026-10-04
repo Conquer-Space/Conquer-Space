@@ -480,7 +480,10 @@ pub(super) fn controls(
         events.clear();
         return;
     }
-    if ui.focused.is_none() && keyboard.just_pressed(KeyCode::KeyP) {
+    if ui.focused.is_none()
+        && keyboard.just_pressed(KeyCode::KeyP)
+        && !keyboard.pressed(KeyCode::ControlLeft)
+    {
         ui.open = !ui.open;
     }
     for (action, interaction) in &buttons {

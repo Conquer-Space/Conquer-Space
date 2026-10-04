@@ -10,6 +10,8 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 #include "core/actions/maneuver/basicmaneuver.h"
 #include "core/actions/maneuver/hohmann.h"
 #include "core/actions/maneuver/rendezvous.h"
@@ -1571,7 +1573,86 @@ void PrintEventQueues() {
     }
     WriteJson(output);
 }
+void PrintProvinceSearch() {
+    std::cout << std::setprecision(17);
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("province-search-reference");
+    const auto input = ReadInput();
+    std::map<entt::entity, int> indices;
+    const int body_count = input["bodies"].size();
+    for (int index = 0; index < body_count; ++index) {
+        auto entity = universe.create();
+        const auto& row = input["bodies"][index];
+        universe.planets[row["identifier"].to_string()] = entity;
+        universe.emplace<bodies::Body>(entity);
+        universe.emplace<Name>(entity, row["name"].to_string());
+        indices[entity] = index;
+    }
+    cqsp::core::loading::ProvinceLoader loader(universe);
+    loader.LoadHjson(input["provinces"]);
+    std::map<std::string, size_t> next;
+    std::vector<entt::entity> provinces;
+    for (int index = 0; index < input["provinces"].size(); ++index) {
+        const auto planet = input["provinces"][index]["planet"].to_string();
+        auto entity = universe.get<Settlements>(universe.planets[planet]).provinces[next[planet]++];
+        provinces.push_back(entity);
+        indices[entity] = index + body_count;
+    }
+    // Actual loader color bindings; centroid accumulation is source-mapped from
+    // PlanetProvinceLoader::BuildPlanetTexture/BuildIndexMap (no renderer/OpenGL).
+    for (int index = 0; index < input["maps"].size(); ++index) {
+        const auto& row = input["maps"][index];
+        int width, height, components;
+        auto* image = stbi_load(row["path"].to_string().c_str(), &width, &height, &components, 3);
+        if (!image) throw std::runtime_error("Could not decode province fixture image");
+        auto planet = universe.planets.at(row["identifier"].to_string());
+        std::map<entt::entity, int> mass;
+        std::map<entt::entity, glm::vec2> weights;
+        for (int pixel = 0; pixel < width * height; ++pixel) {
+            const int color = ProvinceColor::toInt(image[pixel * 3], image[pixel * 3 + 1], image[pixel * 3 + 2]);
+            auto found = universe.province_colors[planet].find(color);
+            if (found == universe.province_colors[planet].end()) continue;
+            auto entity = found->second;
+            if (!mass.contains(entity)) weights[entity] = glm::vec2(0);
+            ++mass[entity];
+            weights[entity] += glm::vec2(pixel % width, pixel / width);
+        }
+        stbi_image_free(image);
+        for (const auto& [entity, count] : mass) {
+            auto center = weights[entity] / static_cast<float>(count);
+            center = glm::vec2(center.x / width, center.y / height);
+            universe.emplace<types::SurfaceCoordinate>(entity, (0.5 - center.y) * 180, (center.x - 0.5) * 360);
+        }
+    }
+    Hjson::Value output, centers(Hjson::Type::Vector), matches(Hjson::Type::Vector);
+    for (auto entity : provinces) {
+        auto* center = universe.try_get<types::SurfaceCoordinate>(entity);
+        centers.push_back(center ? Numbers({center->r_latitude(), center->r_longitude()}) : Hjson::Value(Hjson::Type::Null));
+    }
+    auto lower = [](std::string value) {
+        std::transform(value.begin(), value.end(), value.begin(), [](unsigned char c) { return std::tolower(c); });
+        return value;
+    };
+    for (int index = 0; index < input["queries"].size(); ++index) {
+        auto query = lower(input["queries"][index].to_string());
+        std::vector<int> found;
+        if (!query.empty()) {
+            for (auto&& [entity, body, name] : universe.view<bodies::Body, Name>().each())
+                if (lower(name.name).find(query) != std::string::npos) found.push_back(indices.at(entity));
+            for (auto&& [entity, province, name] : universe.view<Province, Name>().each())
+                if (lower(name.name).find(query) != std::string::npos) found.push_back(indices.at(entity));
+        }
+        // Membership comparison only: native results use stable body/province asset order.
+        std::sort(found.begin(), found.end());
+        Hjson::Value result(Hjson::Type::Vector);
+        for (int id : found) result.push_back(id);
+        matches.push_back(result);
+    }
+    output["centers"] = centers; output["matches"] = matches;
+    WriteJson(output);
+}
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--province-search") { PrintProvinceSearch(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--event-queues") { PrintEventQueues(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--graphics-defaults") {
         cqsp::client::ClientOptions options;

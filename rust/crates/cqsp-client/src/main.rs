@@ -35,6 +35,7 @@ mod inspection_ui;
 mod pie;
 mod playback_ui;
 mod save_ui;
+mod search_ui;
 mod spaceport_ui;
 mod system_view;
 use system_view::{FlightAction, Focus, Navigation};
@@ -168,6 +169,9 @@ fn main() -> Result<()> {
                     "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--saves DIRECTORY] [--settings FILE] [--smoke] [--paths]\n--paths: print resolved asset/save/settings locations without launching\n--saves: override the Rust-specific metadata save location\n--settings: override the Rust-specific display preferences file\n--smoke: offscreen verification with isolated metadata/preferences fixtures\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start/back; Esc: pause menu\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
                 println!("B: owned-province construction painting; Esc cancels painting");
+                println!(
+                    "Left Ctrl+P: body/province search; Enter zooms, clicking focuses the planet"
+                );
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -318,6 +322,7 @@ fn main() -> Result<()> {
         .insert_resource(menu)
         .init_resource::<construction_ui::ConstructionTool>()
         .init_resource::<event_ui::Events>()
+        .init_resource::<search_ui::Search>()
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
@@ -336,6 +341,12 @@ fn main() -> Result<()> {
                 (
                     event_ui::controls.run_if(interactive),
                     event_ui::scroll.run_if(interactive),
+                    search_ui::controls
+                        .run_if(interactive)
+                        .run_if(event_ui::input_available),
+                    search_ui::scroll
+                        .run_if(interactive)
+                        .run_if(event_ui::input_available),
                     (
                         application_ui::controls.run_if(interactive),
                         application_ui::scroll.run_if(interactive),
@@ -349,7 +360,8 @@ fn main() -> Result<()> {
                         inspection_ui::budget::controls.run_if(application_input),
                     )
                         .chain()
-                        .run_if(event_ui::input_available),
+                        .run_if(event_ui::input_available)
+                        .run_if(search_ui::input_available),
                 )
                     .chain(),
                 (
@@ -361,11 +373,13 @@ fn main() -> Result<()> {
                     selection_controls.run_if(world_input),
                 )
                     .chain()
-                    .run_if(event_ui::input_available),
+                    .run_if(event_ui::input_available)
+                    .run_if(search_ui::input_available),
                 simulation_controls.run_if(interactive),
                 system_view::controls
                     .run_if(world_input)
-                    .run_if(event_ui::input_available),
+                    .run_if(event_ui::input_available)
+                    .run_if(search_ui::input_available),
                 system_view::sync_ships,
                 system_view::update,
                 update_globe,
@@ -377,6 +391,7 @@ fn main() -> Result<()> {
                     construction_ui::update,
                     application_ui::update,
                     event_ui::update,
+                    search_ui::update,
                 )
                     .chain(),
                 spaceport_ui::update,
@@ -508,6 +523,7 @@ fn setup(
         &game.simulation.catalog.recipes,
     );
     application_ui::spawn(&mut commands, camera, &font);
+    search_ui::spawn(&mut commands, camera, &font);
     let event_image = images.add(initial.event.clone());
     event_ui::spawn(
         &mut commands,
@@ -772,6 +788,7 @@ fn simulation_controls(
     menu: Option<Res<application_ui::Menu>>,
     construction: Option<Res<construction_ui::ConstructionTool>>,
     events: Option<Res<event_ui::Events>>,
+    search: Option<Res<search_ui::Search>>,
 ) {
     if game.session.player_country.is_none()
         || event_ui::pending(&game).is_some()
@@ -789,7 +806,8 @@ fn simulation_controls(
     }
     let keyboard_enabled = ui.is_none_or(|ui| !ui.capture_input)
         && inspector.is_none_or(|ui| !ui.capture_input)
-        && construction.is_none_or(|tool| !tool.capture_input);
+        && construction.is_none_or(|tool| !tool.capture_input)
+        && search.is_none_or(|search| !search.capture_input);
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
         game.playback_action(playback_ui::Action::Toggle);
     }
@@ -1001,6 +1019,7 @@ fn verify_capture(
     construction: Res<construction_ui::ConstructionTool>,
     menu: Res<application_ui::Menu>,
     event_images: Query<(&ComputedNode, &UiGlobalTransform), With<event_ui::EventImage>>,
+    search: Res<search_ui::Search>,
 ) {
     let pixels = capture
         .image
@@ -1016,6 +1035,7 @@ fn verify_capture(
     let mut graphics_title = false;
     let mut recipe_title = false;
     let mut event_heading = false;
+    let mut search_heading = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -1044,7 +1064,7 @@ fn verify_capture(
             text.0
         );
         checked += 1;
-        if text.0 == "EVENT" {
+        if text.0 == "EVENT" || text.0 == "SEARCH BODIES / PROVINCES" {
             let mut gold = 0;
             for y in min.y..max.y {
                 for x in min.x..max.x {
@@ -1052,7 +1072,11 @@ fn verify_capture(
                     gold += usize::from(r > 160 && g > 100 && (b as f32) < r as f32 * 0.8);
                 }
             }
-            assert!(gold > 20, "Smoke check: event heading glyphs missing");
+            assert!(
+                gold > 20,
+                "Smoke check: native heading glyphs missing: {}",
+                text.0
+            );
         }
         inspection_title |= text.0.starts_with("NATIVE INSPECTION");
         save_title |= text.0.starts_with("SAVE / LOAD · METADATA ONLY");
@@ -1061,6 +1085,7 @@ fn verify_capture(
         graphics_title |= text.0 == "DISPLAY OPTIONS · SILENT";
         recipe_title |= text.0 == "SEARCH CONSTRUCTION RECIPES";
         event_heading |= text.0 == "EVENT";
+        search_heading |= text.0 == "SEARCH BODIES / PROVINCES";
     }
     assert!(
         checked
@@ -1100,6 +1125,14 @@ fn verify_capture(
                 colors.len()
             );
         }
+        smoke.captures += 1;
+        return;
+    }
+    if search.open {
+        assert!(
+            search_heading,
+            "Smoke check: body/province search header missing"
+        );
         smoke.captures += 1;
         return;
     }
@@ -1228,6 +1261,28 @@ fn verify_capture(
         println!("SMOKE: verified both policy slider fill bars.");
     }
     if navigation.active && !ui.open && !inspector.open && !saves.open && !menu.is_open() {
+        if navigation.is_surface_focus() {
+            let mut colors = std::collections::HashSet::new();
+            for y in 250..550 {
+                for x in 400..880 {
+                    colors.insert(pixels.get_pixel(x, y).0);
+                }
+            }
+            assert!(
+                colors.len() > 1000,
+                "Smoke check: focused province texture missing"
+            );
+            assert!(
+                navigation.message.contains("800 km"),
+                "Smoke check: province altitude missing"
+            );
+            println!(
+                "SMOKE: verified rotating province surface ({} colors).",
+                colors.len()
+            );
+            smoke.captures += 1;
+            return;
+        }
         let mut orbit_pixels = 0;
         for y in 0..pixels.height() {
             for x in 330..pixels.width() - 330 {
@@ -1353,6 +1408,7 @@ fn smoke_test(
     mut construction: ResMut<construction_ui::ConstructionTool>,
     mut menu: ResMut<application_ui::Menu>,
     mut events: ResMut<event_ui::Events>,
+    mut search: ResMut<search_ui::Search>,
 ) {
     if !smoke.enabled {
         return;
@@ -1780,6 +1836,56 @@ fn smoke_test(
                 .choose(&mut game, None)
                 .expect("Acknowledge actionless native event");
             assert!(event_ui::pending(&game).is_none());
+            search.open = true;
+            search.set_query("MoOn", &game.simulation);
+        }
+        45 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "search-body.png",
+        ),
+        46 => {
+            let moon = game.simulation.solar_system.body_id("moon").unwrap();
+            search.activate(
+                cqsp_core::search::SearchTarget::Body(moon),
+                false,
+                &game,
+                &mut navigation,
+            );
+            assert!(!search.open && navigation.active && navigation.focus == Focus::Body(moon));
+            search.open = true;
+            search.set_query("ILLINOIS", &game.simulation);
+        }
+        47 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "search-province.png",
+        ),
+        48 => {
+            let province = game
+                .simulation
+                .settlements
+                .iter()
+                .position(|site| site.identifier == "illinois" && site.is_province())
+                .unwrap();
+            search.activate(
+                cqsp_core::search::SearchTarget::Province(province),
+                true,
+                &game,
+                &mut navigation,
+            );
+            assert!(!search.open && navigation.is_surface_focus());
+            assert_eq!(
+                navigation.focus,
+                Focus::Body(game.simulation.solar_system.body_id("earth").unwrap())
+            );
+        }
+        49 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "province-focus.png",
+        ),
+        50 => {
             let tick = game.simulation.date.tick();
             menu.apply(application_ui::Action::OpenPause)
                 .expect("Open smoke pause menu");
@@ -1788,12 +1894,12 @@ fn smoke_test(
             assert_eq!(game.simulation.date.tick(), tick);
             assert!(game.session.player_country.is_some());
         }
-        45 => capture_smoke(
+        51 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "pause-menu.png",
         ),
-        46 => {
+        52 => {
             menu.apply(application_ui::Action::OpenGraphics)
                 .expect("Open smoke display options");
             menu.apply(application_ui::Action::Next)
@@ -1808,12 +1914,12 @@ fn smoke_test(
             );
             assert!(menu.settings.full_screen);
         }
-        47 => capture_smoke(
+        53 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "display-options.png",
         ),
-        48 => {
+        54 => {
             menu.apply(application_ui::Action::CloseGraphics)
                 .expect("Return to pause");
             assert_eq!(menu.screen, application_ui::Screen::Pause);
@@ -1838,12 +1944,12 @@ fn smoke_test(
                 )
                 .expect("Save isolated smoke metadata");
         }
-        49 => capture_smoke(
+        55 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "metadata-browser.png",
         ),
-        50 => {
+        56 => {
             let uuid = game.simulation.uuid.clone();
             let tick = game.simulation.date.tick();
             saves
@@ -1863,8 +1969,8 @@ fn smoke_test(
         }
         _ => {
             assert_eq!(
-                smoke.captures, 25,
-                "Smoke check: all twenty-five captures must be verified"
+                smoke.captures, 28,
+                "Smoke check: all twenty-eight captures must be verified"
             );
             assert!(!construction.armed, "Load must cancel stale painting");
             println!("SMOKE: complete.");

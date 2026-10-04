@@ -20,6 +20,84 @@ use std::{
 };
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual province color bindings and source-mapped centroids/search"]
+fn province_centers_and_search_membership_match_original_bindings() {
+    use cqsp_core::{read_entries, search::SearchTarget};
+    let data = default_data_path();
+    let simulation = Simulation::load(&data, &World::load(&data).unwrap(), 42).unwrap();
+    let bodies: Vec<_> = simulation
+        .solar_system
+        .bodies
+        .iter()
+        .map(|body| json!({"identifier":body.identifier,"name":body.name}))
+        .collect();
+    let provinces: Vec<_> = read_entries::<Value>(&data.join("data/planet_data/provinces"))
+        .unwrap()
+        .into_iter()
+        .filter(|value| value["color"] != "color")
+        .map(|mut value| {
+            value
+                .as_object_mut()
+                .unwrap()
+                .retain(|key, _| ["identifier", "name", "planet", "color"].contains(&key.as_str()));
+            value
+        })
+        .collect();
+    let mut queries = vec![
+        String::new(),
+        "a".into(),
+        "MOoN".into(),
+        "NAVSTAR".into(),
+        "Kennedy Space Center".into(),
+        "not-a-loaded-name".into(),
+    ];
+    queries.extend(
+        simulation
+            .solar_system
+            .bodies
+            .iter()
+            .map(|body| body.name.to_ascii_uppercase()),
+    );
+    queries.extend(
+        simulation
+            .settlements
+            .iter()
+            .filter(|site| site.is_province())
+            .map(|site| site.name.to_ascii_uppercase()),
+    );
+    let body_count = bodies.len();
+    let matches: Vec<_> = queries
+        .iter()
+        .map(|query| {
+            let mut ids: Vec<_> = simulation
+                .search(query)
+                .into_iter()
+                .map(|target| match target {
+                    SearchTarget::Body(id) => id.0,
+                    SearchTarget::Province(id) => body_count + id,
+                })
+                .collect();
+            ids.sort_unstable();
+            ids
+        })
+        .collect();
+    let centers: Vec<_> = simulation
+        .settlements
+        .iter()
+        .filter(|site| site.is_province())
+        .map(|site| site.province_center)
+        .collect();
+    let input = json!({"bodies":bodies,"provinces":provinces,"queries":queries,"maps":[
+        {"identifier":"earth","path":data.join("data/planet_data/earth/map/countryprovinces2k.png")},
+        {"identifier":"moon","path":data.join("map/moon/province_map.png")},
+    ]});
+    compare(
+        &json!({"centers":centers,"matches":matches}),
+        &reference_output(Some("--province-search"), &input.to_string()),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual goods/labor/zoning/recipe/config loaders"]
 fn economic_catalog_and_defaults_match_original_loaders() {
     use cqsp_core::{

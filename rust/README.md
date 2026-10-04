@@ -95,6 +95,16 @@ Enter or the sidebar button starts/returns to selection; Escape opens the pause 
 M toggles terrain/political maps, R resets the camera, F12 writes `target/conquer-space.png`.
 Closing the window exits normally.
 
+Left Ctrl+P opens native body/province search. Empty queries have no results;
+ASCII case-insensitive substring matching requires the source's actual Name
+component, so unnamed provinces, cities and spacecraft stay out. Up/Down clamp
+selection, PageUp/PageDown move ten rows, and results scroll into view. Clicking
+a province focuses its planet; Enter zooms to its map centroid at radius + 800 km.
+A province with no mapped center cannot move the camera. Escape, Ctrl+P and any
+outside mouse-button click close search without passing that action to other UI.
+Search captures shortcuts but does not pause running time. Native key-press edges,
+stable asset ordering and the bounded UTF-8 query editor are not exact RmlUi parity.
+
 The game starts paused. Space pauses/resumes; N advances to the next economy day;
 minus/equal or the native slower/faster buttons select the original eleven speeds.
 The game defaults to index 3 (100 ms per tick). Positive settings wait 1,000/500/333/
@@ -235,15 +245,18 @@ and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.
 It also captures `target/event-choice.png` and `target/event-notice.png`, checking
 the original texture, action/Ok behavior and full-queue clearing without enabling
 the disabled tutorial in normal play.
+Three additional captures exercise body/province search and the rotating close
+surface view: `target/search-body.png`, `target/search-province.png` and
+`target/province-focus.png`.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-five completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-eight completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all twenty-five PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all twenty-eight PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.

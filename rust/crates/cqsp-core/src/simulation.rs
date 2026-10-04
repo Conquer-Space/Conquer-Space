@@ -42,11 +42,15 @@ pub enum SurfaceKind {
 pub struct Settlement {
     pub identifier: String,
     pub name: String,
+    /// SearchMenu requires an actual Name component, not the UI's identifier fallback.
+    pub named: bool,
     pub country: Option<usize>,
     /// Governed is separate from Province.country; colony delivery changes only the latter.
     pub governor: Option<usize>,
     pub body: BodyId,
     pub kind: SurfaceKind,
+    /// Map-derived province latitude/longitude in radians; absent for unmapped provinces.
+    pub province_center: Option<[f64; 2]>,
     pub time_zone: Option<TimeZoneId>,
     pub is_capital: bool,
     pub zoning: BTreeMap<String, ZoningAllocation>,
@@ -62,6 +66,9 @@ pub struct Settlement {
 }
 
 impl Settlement {
+    pub fn searchable(&self) -> bool {
+        self.is_province() && self.named
+    }
     pub fn is_province(&self) -> bool {
         matches!(self.kind, SurfaceKind::Province)
     }
@@ -170,6 +177,7 @@ impl Simulation {
         let provinces = read_entries::<SettlementEntry>(&data.join("data/planet_data/provinces"))?;
         let cities = read_entries::<SettlementEntry>(&data.join("data/cities"))?;
         let mut city_provinces = Vec::new();
+        let mut province_colors = BTreeMap::<BodyId, HashMap<[u8; 3], usize>>::new();
         for (entry, city) in provinces
             .into_iter()
             .filter(|entry| !entry.is_template())
@@ -247,6 +255,17 @@ impl Simulation {
                     longitude: coordinates.longitude.to_radians(),
                 }
             } else {
+                // ProvinceLoader's missing color calls HexToRgb("") and binds black.
+                let color = entry
+                    .color
+                    .as_ref()
+                    .map(crate::parse_color)
+                    .transpose()?
+                    .unwrap_or([0, 0, 0]);
+                province_colors
+                    .entry(body)
+                    .or_default()
+                    .insert(color, settlements.len());
                 SurfaceKind::Province
             };
             let is_capital = !city && entry.tags.iter().any(|tag| tag == "capital");
@@ -269,12 +288,14 @@ impl Simulation {
                 )
             };
             settlements.push(Settlement {
+                named: entry.name.is_some(),
                 name: entry.name.unwrap_or_else(|| entry.identifier.clone()),
                 identifier: entry.identifier,
                 country,
                 governor: country,
                 body,
                 kind,
+                province_center: None,
                 time_zone,
                 is_capital,
                 zoning: if city {
@@ -311,6 +332,15 @@ impl Simulation {
                 } else {
                     countries[country].provinces.push(index);
                 }
+            }
+        }
+        for (body, colors) in province_colors {
+            let Some(map) = &solar_system.bodies[body.0].terrain.province_map else {
+                continue;
+            };
+            let map = crate::surface::load_province_map(data, map)?;
+            for (province, center) in crate::surface::province_centers(&map, &colors) {
+                settlements[province].province_center = Some(center);
             }
         }
         for (city, identifier) in city_provinces {

@@ -47,7 +47,7 @@ Successful long runs establish stability, not gameplay parity.
 | National subsidies / absolute taxes / labor view | Subsidy action reference-tested; native integration | 286 snapshots across all 22 recipes through actual ApplySubsidy, initial lists/stale ownership, fractional/full/raw finite amounts, future factories and repeated UI ledger erasure; native sliders, full lock, one-shot controls and national labor ledgers; global province-only taxes source-mapped and Rust-tested, not actual ImGui execution |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
-| Native replacements for scripted UI/events | Native event queues/modals and several interfaces implemented | Country selection and civilization/economy/history inspection are native; player queue/front-only display, actionless Ok, typed tutorial effects, hover text and full-queue clearing; tutorial stays disabled. Body/province search, side-menu mappings and further interface detail remain; exploration has no registered functional workflow upstream |
+| Native replacements for scripted UI/events | Native event queues/modals/search and several interfaces implemented | Country selection and civilization/economy/history inspection are native; player queue/front-only display, actionless Ok, typed tutorial effects, hover text and full-queue clearing; tutorial stays disabled. Native named-body/province search, source-derived map centroids and click-versus-Enter focus; side-menu mappings and further interface detail remain; exploration has no registered functional workflow upstream |
 | Saves / load / settings / packaging | Metadata/default graphics reference-tested; native menus and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; CLI/native metadata browser, fresh-asset reset/tick, atomic replacement, six-hex identity separate from economy RNG; source-mapped pause menu, 15 resolution presets, fullscreen/window restoration, isolated Rust preferences. Other application settings and live native-window acceptance remain. Locked bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
 
 ## Compatibility decisions and known gaps
@@ -481,12 +481,43 @@ and sol callback types with source-mapped SysEvent acknowledgement branches; it
 does not execute ImGui, FunctionEvent parsing or the disabled script registration.
 Only the C++ harness links Lua; Rust's known effects are native.
 
-The current release bundle passed all 25 fresh offscreen captures from an external
+The event milestone's release bundle passed all 25 fresh offscreen captures from an external
 working directory, including both event dialogs and their rendered gold headings.
-The workspace has 141 unit tests; all 31 differential tests pass in both debug and
+That milestone had 141 unit tests; all 31 differential tests passed in both debug and
 release (30 live C++ comparisons and one recorded corpus). No native game window or
 audio device is created by these checks. The earlier 365-day packaged stability run
 uses the same simulation changes; it is not a claim of complete gameplay parity.
+
+Native body/province search uses the actual Name-component eligibility rule; an
+identifier fallback displayed elsewhere does not make an unnamed province searchable.
+Empty queries return no results, body results precede provinces, and ASCII substring
+matching is case-insensitive. Selection starts unset, arrows clamp, pages move ten
+rows, and query changes reset selection/scroll. Clicking focuses the associated body;
+Enter on a province uses its map-derived center and radius + 800 km. Unmapped centers
+leave navigation unchanged. The close surface camera stays in the rotating body frame.
+Native search captures other shortcuts/closing clicks but running time continues.
+The query editor has a 4,096-byte UTF-8-safe bound; cursor/IME editing and native
+press edges/layout are not exact RmlUi/input-phase parity. Results use stable asset
+order rather than original EnTT view order. Centers are loaded eagerly instead of
+waiting for the original renderer to visit a planet.
+
+The new C++ corpus compares all 1,317 province centers using actual ProvinceLoader
+color bindings (including missing-color black and last-definition wins), source-mapped
+row-major GLM float accumulation and actual SurfaceCoordinate conversion. It checks
+search membership for 1,334 queries across every natural-body/province display name
+plus empty, mixed-case, absent, city and spacecraft cases. It executes original
+Body/Province/Name views with source-mapped SearchMenu matching, not RmlUi or OpenGL.
+Flat pixel means intentionally do not correct dateline wrapping or add half pixels.
+Three ECS tests cover editing, clamps/pages, click/Enter distinctions, stale actions,
+shortcut/closing-frame isolation, outside clicks and no-center guards. A camera test
+checks Earth/Moon rotation and altitude at three epochs. The Moon map is now bundled.
+The search milestone passes 147 unit tests and all 32 differential tests in debug
+and release (31 live plus the recorded corpus). Both debug and release produced
+all 28 fresh offscreen images; the release run used an external working directory
+with executable-relative assets and no overrides. The updated release bundle also
+passed a 365-day renderer-free simulation. Visual inspection confirms the search
+headings/results and the Illinois surface view; the smoke checks gold glyphs and
+10,733 distinct center-surface texture colors. Audio/Lua remain excluded.
 
 ## Next acceptance gates
 
@@ -500,7 +531,7 @@ uses the same simulation changes; it is not a claim of complete gameplay parity.
 3. Extend native spaceport screens with filtering/inspection detail and dispatch
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
-   supported project/modifier controls, body/province search, side-menu mappings
+   supported project/modifier controls, side-menu mappings, star-system tree/orbit filter
    and further market/history inspection. Distinguish source stubs from implemented workflows.
 5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.
