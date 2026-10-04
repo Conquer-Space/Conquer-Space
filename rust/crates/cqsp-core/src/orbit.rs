@@ -273,9 +273,10 @@ impl Orbit {
             eccentric - eccentricity * eccentric.sin()
         } else {
             let eccentric = 2.0
-                * ((true_anomaly / 2.0).tan()
-                    * ((eccentricity - 1.0) / (eccentricity + 1.0)).sqrt())
-                .atanh();
+                * legacy_atanh(
+                    (true_anomaly / 2.0).tan()
+                        * ((eccentricity - 1.0) / (eccentricity + 1.0)).sqrt(),
+                );
             eccentricity * eccentric.sinh() - eccentric
         };
         let orbit = Self {
@@ -326,6 +327,21 @@ fn rotate_vector(rotation: DQuat, vector: DVec3) -> DVec3 {
     let axis = DVec3::new(rotation.x, rotation.y, rotation.z);
     let cross = axis.cross(vector);
     vector + (cross * rotation.w + axis.cross(cross)) * 2.0
+}
+
+fn legacy_atanh(value: f64) -> f64 {
+    // Rust uses a log1p expression; the original MSVC CRT rounds differently.
+    // That last bit changes the apsis timing after a near-circular lunar burn.
+    #[cfg(all(windows, target_env = "msvc"))]
+    {
+        unsafe extern "C" {
+            fn atanh(value: f64) -> f64;
+        }
+        // SAFETY: the CRT function accepts every double and has no pointer arguments.
+        unsafe { atanh(value) }
+    }
+    #[cfg(not(all(windows, target_env = "msvc")))]
+    value.atanh()
 }
 
 pub fn normalize_angle(angle: f64) -> f64 {

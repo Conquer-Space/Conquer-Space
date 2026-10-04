@@ -135,14 +135,15 @@ Successful long runs establish stability, not gameplay parity.
   rounding leaves an arbitrary apsis, so the lunar test compares physical state
   within 1 m / 1 mm/s instead of w/M0/v. Other sampled elements retain the 1e-12
   tolerance. This is not bit-identical circular-frame or every-tick trajectory parity.
-- The new strict seeded lunar corpus exposes a remaining near-circular gap.
-  With seed zero, circularization produces residual eccentricities of roughly
-  1.1e-13 (Rust) and 4.9e-14 (C++): positions agree within a meter, but the arbitrary
-  periapsis directions differ by 0.0187 radians. The subsequent deorbit burns
-  differ by 20.7 seconds; landing occurs at ticks 751/752 respectively, and unloading
-  remains tick 864. No timing tolerance has been silently accepted. The explicit
-  seeded-lunar test currently fails and records maneuver timing on every tick;
-  exact-source compatibility versus stable degenerate-orbit behavior needs a decision.
+- The strict seeded lunar corpus now matches every sampled numeric bit on Windows
+  MSVC for seeds 0, 1, 42, 5489 and UINT32_MAX, including near-circular apsis elements,
+  maneuver times, queues, exact landing ticks and daily unloading. Rust's `atanh`
+  uses a log1p expression unlike the original CRT; a last-bit mean-anomaly difference
+  at lunar SOI entry previously amplified into a one-tick landing difference.
+  Windows MSVC recovery now calls the platform CRT's pure-double math function;
+  other targets use Rust's function and are not claimed bit-identical. JSON diagnostic
+  decoding also needs `float_roundtrip` to avoid introducing one-bit reference errors.
+  The seeded gate was strengthened to exact bits, not relaxed to a timing tolerance.
 - Preserve the movement loop's late-burn epoch and starting-parent center/future
   center for the SOI-transition tick. `ForceMatchPlanes` retains the source's
   zero-burn trigger hack. The source's unimplemented Impulse/InterceptAndCircularize
@@ -195,9 +196,7 @@ cargo clippy --workspace --all-targets -- -D warnings
 ./tools/verify-silent.ps1
 cargo run -p cqsp-core --bin cqsp-sim -- --days 365 --seed 42
 ./tools/build-reference.ps1
-cargo test -p cqsp-core --test cpp_reference -- --include-ignored --skip seeded_lunar_launch_trajectories_and_delivery_match_original_systems
-# Known failing acceptance gate; run explicitly to reproduce the documented gap:
-cargo test -p cqsp-core --test cpp_reference seeded_lunar_launch_trajectories_and_delivery_match_original_systems -- --include-ignored
+cargo test -p cqsp-core --test cpp_reference -- --include-ignored
 cargo run -p cqsp-client -- --smoke
 ```
 
@@ -212,15 +211,14 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 99 unit tests
-and 23 differential tests: 22 pass, while the explicit seeded lunar acceptance
-gate currently fails. Twenty-two live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 100 unit tests
+and 23 passing differential tests. Twenty-two live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
 22 recipes × two seeds × nine industry cases × 12 steps. The original component
-and controlled lunar tolerances are unchanged; the new failing seeded lunar gate
-is excluded explicitly from the passing-corpus command above, not marked successful.
+and controlled lunar tolerances are unchanged; the seeded lunar gate checks exact
+numeric bits on the installed Windows MSVC target, including every flight tick.
 Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
 invalid-province/template guards. These are controlled subsystem scenarios, not a
 seed-identical run of the entire original economy.
@@ -318,8 +316,8 @@ which do not create native windows.
    grids, mixed-direction labor and combined tick ordering. All recipes and seeded
    production are now covered. Controlled
    labor, construction demand, shortages, taxes/subsidies and trade are covered.
-2. Resolve the strict seeded lunar near-circular timing gap, then extend spacecraft
-   comparisons to return flights, SOI edge ordering and different launch epochs.
+2. Extend spacecraft comparisons to return flights, SOI edge ordering and different
+   launch epochs; the five-seed outbound lunar timing gap is resolved.
 3. Extend native spaceport screens with filtering/inspection detail and dispatch
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete

@@ -1303,7 +1303,7 @@ fn lunar_trajectory_and_delivery_match_original_systems() {
 }
 
 #[test]
-#[ignore = "Known parity gap: seed zero lands at Rust tick 751 versus C++ 752; run explicitly to reproduce"]
+#[ignore = "Run tools/build-reference.ps1 first; runs seeded C++ SysOrbit and SysSpacePort"]
 fn seeded_lunar_launch_trajectories_and_delivery_match_original_systems() {
     for seed in [0, 1, 42, 5489, u32::MAX as u64] {
         lunar_mission_case(Some(seed));
@@ -1461,6 +1461,21 @@ fn lunar_mission_case(seed: Option<u64>) {
         reference["delivery"][0]
     );
     for (row, expected) in samples.iter().zip(expected) {
+        if seed.is_some() && cfg!(all(windows, target_env = "msvc")) {
+            // The installed MSVC runtime is the exact seeded-flight target,
+            // including the tiny residual apsis and the next maneuver's time.
+            for column in 0..19 {
+                assert_eq!(
+                    row[column].as_f64().unwrap().to_bits(),
+                    expected[column].as_f64().unwrap().to_bits(),
+                    "Lunar trajectory seed {seed:?}, tick {}, column {column}: Rust {}, C++ {}",
+                    row[0],
+                    row[column],
+                    expected[column]
+                );
+            }
+            continue;
+        }
         if expected[3].as_f64().unwrap() < 1e-12 {
             // A circular orbit has no defined apsis: compiler rounding chooses
             // different w/M0/v for residual e~1e-13. Compare its physical state

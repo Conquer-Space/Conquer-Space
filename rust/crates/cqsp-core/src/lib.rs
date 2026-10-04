@@ -384,6 +384,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn diagnostic_json_round_trips_preserve_numeric_bits() {
+        let mut random = crate::random::LegacyRandom::new(0);
+        for _ in 0..1000 {
+            let sample = random.normal(0.0, 1.0);
+            let decoded: f64 =
+                serde_json::from_str(&serde_json::to_string(&sample).unwrap()).unwrap();
+            assert_eq!(sample.to_bits(), decoded.to_bits(), "JSON changed {sample}");
+        }
+    }
+
+    #[test]
     fn globe_coordinates_round_trip() {
         for uv in [[0.5, 0.5], [0.1, 0.3], [0.9, 0.8]] {
             let result = direction_to_uv(uv_to_direction(uv));

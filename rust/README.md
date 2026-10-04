@@ -161,7 +161,7 @@ Actual C++ component outputs are tested by the recorded fixture. To also compare
 
 ```powershell
 ./tools/build-reference.ps1
-cargo test -p cqsp-core --test cpp_reference -- --include-ignored --skip seeded_lunar_launch_trajectories_and_delivery_match_original_systems
+cargo test -p cqsp-core --test cpp_reference -- --include-ignored
 ```
 
 The live reference suite also executes the original city/project loaders and SOI
@@ -205,11 +205,11 @@ signed remainder and fractional-hour truncation rather than adding DST behavior.
 All 22 recipes additionally pass seeded production-system comparisons with two
 seeds across all eight states. Six seeds compare 12,000 raw engine words and 30,000
 mixed normal/integer distribution sequences against the actual original StdRandom.
-A strict seeded lunar test exposes an unresolved near-circular timing discrepancy:
-seed zero lands at Rust tick 751 versus C++ 752, while both unload at tick 864.
-The passing-corpus command above explicitly excludes that acceptance gate. Run it
-with `cargo test -p cqsp-core --test cpp_reference seeded_lunar_launch_trajectories_and_delivery_match_original_systems -- --include-ignored`
-to reproduce the failure; this is not accepted parity.
+Five seeded lunar flights now match every sampled numeric bit on Windows MSVC,
+including residual circular-orbit elements, maneuver times, landing and unloading.
+Recovery uses the original platform CRT's `atanh` rounding; diagnostic JSON parsing
+preserves numeric bits. No timing tolerance was introduced. Other runtime targets
+are not claimed bit-identical; broader flight and whole-economy comparisons remain.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.
