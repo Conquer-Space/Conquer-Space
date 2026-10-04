@@ -27,7 +27,7 @@ Successful long runs establish stability, not gameplay parity.
 | Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
-| Native demographics / factory construction | Implemented; creation action reference-tested | Paged population, employment, jobs, spending/income, education, wallets and consumption toggles; all 22 recipes, cost/revenue preview and 1–1,000 factory count; 66 CreateFactory comparisons, one-shot button and invalid/non-mutating guards; consumption plots remain |
+| Native demographics / factory construction | Implemented; creation action reference-tested | Paged population, employment, jobs, spending/income, education, wallets and consumption toggles; two native pies per page with colored values, hover and hide/show legends; source float values, double normalization and hidden-angle behavior; all 22 recipes, cost/revenue preview and 1–1,000 factory count; 66 CreateFactory comparisons, one-shot button and invalid/non-mutating guards |
 | Labor distribution / labor market | Reference-tested controlled system scenario | Actual SysLaborDistribution/SysLaborMarket: six cases and 12 weekly steps, drift caps/truncation, wages, zero demand, empty/tiny workforces, weekly hours and daily job demand; mixed-direction unordered traversal and invalid conversions remain |
 | Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, two seeds, nine cases spanning all eight states and 12 steps (4,752 seeded samples), plus injected noise, shortage interruption, construction completion, taxes/subsidies; combined tick ordering and larger FSM boundary grids remain |
 | Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
@@ -211,7 +211,7 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 106 unit tests
+365 market-history records per body and CSV/industry export checks. There are 110 unit tests
 and 24 passing differential tests. Twenty-three live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
@@ -296,14 +296,25 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Fifteen verified captures include the spaceport panel, newly
+native screen actions. Sixteen verified captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
 day advancement, live label refresh, panel exclusivity and closing-frame isolation.
 Scroll layouts retain their header/navigation rows when content overflows.
 Demographics pages cycle all segments and consumption modes without altering the
-population. Construction tests cover every recipe, bounded count adjustments,
+population. Two native consumption pies per page use source float values and double
+normalization, a counterclockwise 90-degree start and colored two-decimal value legends.
+Hover reports good/value/share; clicking a legend hides that slice without changing
+the angular allocations or the simulation. Image assets are reused across pages,
+daily updates and modes; hidden/missing segments do not leave stale hover state.
+Renderer-free tests check all four value modes, float conversion, normalization,
+one-shot hide/show, hover, image reuse, empty scopes and non-mutation. GPU captures
+check visible slices and legend text in both cost/per-capita and count/whole-segment
+modes, including one hidden entry. Empty/negative/non-finite pies retain ledger text
+without undefined geometry. This is native functionality, not an ImPlot pixel match;
+arbitrary pie-axis pan/zoom and original unordered legend traversal remain distinct.
+Construction tests cover every recipe, bounded count adjustments,
 one-shot creation, the original idle record and rejection without partial mutation.
 Civilization pages check governor filtering independently of province ownership and
 retain the initial province balance list. All eight chart series, 56 goods, 11 bodies
@@ -340,13 +351,18 @@ Package verification must also run the simulator and offscreen GPU smoke from a
 different working directory with no --data override. A successful local launch does
 not prove CRT/graphics-driver availability on another PC; no installer or completed
 redistribution-license audit is claimed.
-Both dev and release bundles have passed 365 daily simulator steps and all fifteen
-GPU captures from a different working directory with no asset override. The optimized
+Both dev and release bundles have passed 365 daily simulator steps and the then-current
+fifteen GPU captures from a different working directory with no asset override. The optimized
 C++ differential suite also passes all 24 tests, including bit-exact seeded lunar
 flights. Release clients use the Windows GUI subsystem (PE subsystem 2), matching
 the original release without an extra console. The supplied run-smoke.ps1 redirects
 and drains both output pipes and waits for the offscreen client to exit; no native
 window is created. Pipe non-launching --paths/--help output in PowerShell too.
+The wrapper now also rejects missing/stale captures by checking each expected PNG's
+size and write time against this run; successful rendering alone cannot conceal a
+failed disk write.
+The updated release bundle has also passed all sixteen captures, including both
+consumption modes, from the external working directory with no asset override.
 The original Save::SaveGame returns an empty HJSON value, while metadata only stores
 date/UUID/version. A full simulation/RNG snapshot would be a new feature, not behavior
 already implemented upstream. Metadata/load-menu/settings parity remains open.

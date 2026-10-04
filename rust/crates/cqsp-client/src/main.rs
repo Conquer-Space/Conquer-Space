@@ -26,6 +26,7 @@ use cqsp_core::{clock::StarDate, simulation::Simulation};
 use std::{f32::consts::PI, path::PathBuf, time::Duration};
 mod chart;
 mod inspection_ui;
+mod pie;
 mod spaceport_ui;
 mod system_view;
 use system_view::{FlightAction, Focus, Navigation};
@@ -283,8 +284,12 @@ fn main() -> Result<()> {
         .add_systems(
             Update,
             (
-                inspection_ui::controls.run_if(interactive),
-                inspection_ui::chart_controls.run_if(interactive),
+                (
+                    inspection_ui::controls.run_if(interactive),
+                    inspection_ui::chart_controls.run_if(interactive),
+                    inspection_ui::pie_controls.run_if(interactive),
+                )
+                    .chain(),
                 inspection_ui::scroll.run_if(interactive),
                 spaceport_ui::controls.run_if(interactive),
                 spaceport_ui::scroll.run_if(interactive),
@@ -301,6 +306,7 @@ fn main() -> Result<()> {
                 spaceport_ui::update,
                 inspection_ui::update,
                 inspection_ui::update_plot,
+                inspection_ui::update_pies,
                 smoke_test,
             )
                 .chain(),
@@ -416,7 +422,12 @@ fn setup(
             system_view::spawn_controls(panel, &font);
         });
     spaceport_ui::spawn(&mut commands, camera, &font);
-    inspection_ui::spawn(&mut commands, camera, &font);
+    inspection_ui::spawn(
+        &mut commands,
+        camera,
+        &font,
+        game.simulation.catalog.goods.len(),
+    );
 }
 
 fn ui_font(font: &Handle<Font>, size: f32) -> TextFont {
@@ -818,6 +829,7 @@ fn verify_capture(
     camera: Single<(&Camera, &GlobalTransform), With<Camera3d>>,
     markers: Query<(&Focus, &Transform)>,
     plots: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PlotImage>>,
+    pies: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PieImage>>,
     game: Res<Game>,
 ) {
     let pixels = capture
@@ -879,6 +891,36 @@ fn verify_capture(
             gold > 20,
             "Smoke check: missing inspector header pixels ({gold})"
         );
+    }
+    if inspector.is_demographics() {
+        let mut verified = 0;
+        for (node, transform) in &pies {
+            if node.is_empty() {
+                continue;
+            }
+            let center = transform.affine().translation;
+            let min = (center - node.size() / 2.0).max(Vec2::ZERO).as_uvec2();
+            let max = (center + node.size() / 2.0)
+                .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
+                .as_uvec2();
+            let mut colored = 0;
+            for y in min.y..max.y {
+                for x in min.x..max.x {
+                    let pixel = pixels.get_pixel(x, y).0;
+                    colored += usize::from((0..10).any(|index| pixel == pie::color(index)[..3]));
+                }
+            }
+            assert!(
+                colored > 1000,
+                "Smoke check: consumption pie missing ({colored} colored pixels)"
+            );
+            verified += 1;
+        }
+        assert_eq!(
+            verified, 2,
+            "Smoke check: both paged population pies must be visible"
+        );
+        println!("SMOKE: verified rendered slices in both consumption pies.");
     }
     if inspector.is_history() {
         let (node, transform) = plots.single().expect("History plot node");
@@ -1034,7 +1076,7 @@ fn smoke_test(
     smoke.elapsed = 0.0;
     if matches!(
         smoke.stage,
-        1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21 | 23 | 25 | 27
+        1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21 | 23 | 25 | 27 | 29 | 31
     ) {
         for (text, layout) in &text_layouts {
             assert!(
@@ -1217,6 +1259,25 @@ fn smoke_test(
             "demographics-inspector.png",
         ),
         20 => {
+            inspector.apply(inspection_ui::Action::PerCapita, &mut game);
+            inspector.apply(inspection_ui::Action::ConsumptionCost, &mut game);
+            let good = game
+                .simulation
+                .settlements
+                .iter()
+                .flat_map(|site| &site.populations)
+                .next()
+                .unwrap()
+                .consumption[0]
+                .0;
+            inspector.apply(inspection_ui::Action::ConsumptionSlice(good), &mut game);
+        }
+        21 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "demographics-count-inspector.png",
+        ),
+        22 => {
             let province = game
                 .simulation
                 .settlements
@@ -1241,21 +1302,21 @@ fn smoke_test(
                 .validate()
                 .expect("Smoke check: valid constructed factory");
         }
-        21 => capture_smoke(
+        23 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "construction-inspector.png",
         ),
-        22 => inspector.apply(
+        24 => inspector.apply(
             inspection_ui::Action::Tab(inspection_ui::Tab::Civilization),
             &mut game,
         ),
-        23 => capture_smoke(
+        25 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "civilization-inspector.png",
         ),
-        24 => {
+        26 => {
             inspector.apply(
                 inspection_ui::Action::Tab(inspection_ui::Tab::History),
                 &mut game,
@@ -1263,22 +1324,22 @@ fn smoke_test(
             inspector.apply(inspection_ui::Action::Next, &mut game);
             inspector.apply(inspection_ui::Action::ChartWindow, &mut game);
         }
-        25 => capture_smoke(
+        27 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "history-inspector.png",
         ),
-        26 => {
+        28 => {
             // The late price series sits at its minimum; keep that band in view.
             inspector.zoom_plot(&game, (0.5, 0.0), 0.5);
             inspector.pan_plot(&game, (0.1, 0.1));
         }
-        27 => capture_smoke(
+        29 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "history-zoomed-inspector.png",
         ),
-        28 => {
+        30 => {
             game.hovered = game
                 .simulation
                 .settlements
@@ -1290,15 +1351,15 @@ fn smoke_test(
                 &mut game,
             );
         }
-        29 => capture_smoke(
+        31 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "infrastructure-inspector.png",
         ),
         _ => {
             assert_eq!(
-                smoke.captures, 15,
-                "Smoke check: all fifteen captures must be verified"
+                smoke.captures, 16,
+                "Smoke check: all sixteen captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

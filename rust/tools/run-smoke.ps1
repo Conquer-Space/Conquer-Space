@@ -11,6 +11,7 @@ $start.UseShellExecute = $false
 $start.CreateNoWindow = $true
 $start.RedirectStandardOutput = $true
 $start.RedirectStandardError = $true
+$started = [DateTime]::UtcNow
 $process = [Diagnostics.Process]::Start($start)
 try {
     # Drain both pipes concurrently to avoid deadlocks; this also waits for GUI-subsystem release builds.
@@ -21,4 +22,15 @@ try {
     $errors = $stderr.GetAwaiter().GetResult()
     if ($errors) { Write-Host $errors }
     if ($process.ExitCode -ne 0) { throw "Offscreen smoke failed with exit code $($process.ExitCode)" }
+    foreach ($capture in @(
+        'selection', 'game-view', 'system-view', 'spacecraft-view', 'spaceport-view', 'launched-vehicle',
+        'market-inspector', 'industry-inspector', 'science-inspector', 'demographics-inspector',
+        'demographics-count-inspector', 'construction-inspector', 'civilization-inspector',
+        'history-inspector', 'history-zoomed-inspector', 'infrastructure-inspector'
+    )) {
+        $path = Join-Path $start.WorkingDirectory "target/$capture.png"
+        $file = Get-Item -LiteralPath $path -ErrorAction Stop
+        if ($file.Length -lt 100 -or $file.LastWriteTimeUtc -lt $started) { throw "Missing or stale capture: $path" }
+    }
+    Write-Host 'All 16 offscreen PNG captures were written by this run.'
 } finally { $process.Dispose() }

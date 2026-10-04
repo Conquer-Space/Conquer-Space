@@ -5,8 +5,12 @@ use bevy::{
     prelude::*,
     ui::RelativeCursorPosition,
 };
-use cqsp_core::{economy::GoodId, solar_system::BodyId};
-use std::fmt::Write;
+use cqsp_core::{
+    economy::{GoodId, population::Population},
+    simulation::Settlement,
+    solar_system::BodyId,
+};
+use std::{collections::BTreeSet, fmt::Write};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Tab {
@@ -37,6 +41,7 @@ pub(super) enum Action {
     BoostExpertise,
     PerCapita,
     ConsumptionCost,
+    ConsumptionSlice(GoodId),
     FactoryCount(i32),
     ConstructFactory,
     ChartGood,
@@ -52,11 +57,14 @@ pub(super) enum Panel {
     DemographicActions,
     ConstructionActions,
     HistoryActions,
+    ConsumptionPlots,
 }
 #[derive(Component)]
 pub(super) enum Label {
     Scope,
     Content,
+    ConsumptionTitle(usize),
+    ConsumptionGood { segment: usize, good: GoodId },
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -113,6 +121,18 @@ struct PlotKey {
 pub(super) struct PlotImage {
     key: Option<PlotKey>,
 }
+#[derive(Component)]
+pub(super) struct PieCard(usize);
+#[derive(Component)]
+pub(super) struct PieLegend {
+    segment: usize,
+    good: GoodId,
+}
+#[derive(Component)]
+pub(super) struct PieImage {
+    segment: usize,
+    key: Option<Vec<(GoodId, u32, bool)>>,
+}
 
 #[derive(Resource)]
 pub(super) struct Inspector {
@@ -129,6 +149,8 @@ pub(super) struct Inspector {
     technology: usize,
     per_capita: bool,
     consumption_cost: bool,
+    hidden_consumption: BTreeSet<GoodId>,
+    pie_hover: [Option<GoodId>; 2],
     recipe: usize,
     factory_count: i32,
     message: String,
@@ -155,6 +177,8 @@ impl Inspector {
             technology: 0,
             per_capita: true,
             consumption_cost: true,
+            hidden_consumption: BTreeSet::new(),
+            pie_hover: [None; 2],
             recipe: 0,
             factory_count: 1,
             message: String::new(),
@@ -334,6 +358,11 @@ impl Inspector {
             Action::NextFactory | Action::Subsidy(_) | Action::BoostExpertise => {}
             Action::PerCapita => self.per_capita = !self.per_capita,
             Action::ConsumptionCost => self.consumption_cost = !self.consumption_cost,
+            Action::ConsumptionSlice(good) => {
+                if !self.hidden_consumption.remove(&good) {
+                    self.hidden_consumption.insert(good);
+                }
+            }
             Action::FactoryCount(change) => {
                 self.factory_count = self.factory_count.saturating_add(change).clamp(1, 1000)
             }
@@ -594,16 +623,121 @@ impl Inspector {
             }
         }
     }
+    pub(super) fn is_demographics(&self) -> bool {
+        self.open && self.tab == Tab::Demographics
+    }
+    fn demographic_segments<'a>(
+        &self,
+        game: &'a Game,
+    ) -> impl Iterator<Item = (&'a Settlement, &'a Population)> {
+        self.sites(game).flat_map(|(_, site)| {
+            site.populations
+                .iter()
+                .map(move |population| (site, population))
+        })
+    }
+    fn segment<'a>(
+        &self,
+        game: &'a Game,
+        index: usize,
+    ) -> Option<(&'a Settlement, &'a Population)> {
+        self.demographic_segments(game).nth(self.page * 2 + index)
+    }
+    fn consumption_values<'a>(
+        &self,
+        site: &'a Settlement,
+        population: &'a Population,
+    ) -> impl Iterator<Item = (GoodId, f64)> + 'a {
+        let (per_capita, cost) = (self.per_capita, self.consumption_cost);
+        population.consumption.iter().map(move |&(good, amount)| {
+            let quantity = if per_capita {
+                amount / population.size as f64
+            } else {
+                amount
+            };
+            (
+                good,
+                if cost {
+                    quantity * site.market.price[good]
+                } else {
+                    quantity
+                },
+            )
+        })
+    }
+    fn pie_title(&self, game: &Game, segment: usize) -> String {
+        let Some((site, _)) = self.segment(game, segment) else {
+            return String::new();
+        };
+        let values = self.pie_samples(game, segment);
+        let pie = super::pie::Pie::new(&values.iter().map(|&(_, value)| value).collect::<Vec<_>>());
+        let details = if let Some(pie) = pie {
+            self.pie_hover[segment]
+                .and_then(|good| values.iter().position(|&(id, _)| id == good))
+                .map_or(
+                    "Click legend: hide/show · hover a slice for its value".into(),
+                    |index| {
+                        format!(
+                            "{}: {:.2} · {:.2}%",
+                            game.simulation.catalog.goods[values[index].0.0].name,
+                            values[index].1,
+                            pie.fractions[index] * 100.0
+                        )
+                    },
+                )
+        } else if values.is_empty() {
+            "No consumption samples yet".into()
+        } else {
+            "No positive finite pie; invalid/zero values remain in the ledger".into()
+        };
+        format!(
+            "{} · {} · {}\n{}",
+            site.name,
+            if self.per_capita {
+                "per capita"
+            } else {
+                "whole segment"
+            },
+            if self.consumption_cost {
+                "cost"
+            } else {
+                "count"
+            },
+            details
+        )
+    }
+    fn pie_legend(&self, game: &Game, segment: usize, good: GoodId) -> String {
+        let Some((site, population)) = self.segment(game, segment) else {
+            return String::new();
+        };
+        let Some((_, value)) = self
+            .consumption_values(site, population)
+            .find(|&(id, _)| id == good)
+        else {
+            return String::new();
+        };
+        format!(
+            "[{}] {}: {:.2}",
+            if self.hidden_consumption.contains(&good) {
+                " "
+            } else {
+                "x"
+            },
+            game.simulation.catalog.goods[good.0].name,
+            value as f32
+        )
+    }
+    fn pie_samples(&self, game: &Game, segment: usize) -> Vec<(GoodId, f32)> {
+        self.segment(game, segment)
+            .map_or_else(Vec::new, |(site, population)| {
+                self.consumption_values(site, population)
+                    .map(|(good, value)| (good, value as f32))
+                    .collect()
+            })
+    }
     fn demographics(&self, game: &Game) -> String {
         let simulation = &game.simulation;
-        let groups: Vec<_> = self
-            .sites(game)
-            .flat_map(|(_, site)| {
-                site.populations
-                    .iter()
-                    .map(move |population| (site, population))
-            })
-            .collect();
+        let groups: Vec<_> = self.demographic_segments(game).collect();
         let people = groups
             .iter()
             .map(|(_, population)| population.size)
@@ -662,17 +796,7 @@ impl Inspector {
                     "count"
                 }
             );
-            for &(good, amount) in &population.consumption {
-                let quantity = if self.per_capita {
-                    amount / population.size as f64
-                } else {
-                    amount
-                };
-                let value = if self.consumption_cost {
-                    quantity * site.market.price[good]
-                } else {
-                    quantity
-                };
+            for (good, value) in self.consumption_values(site, population) {
                 let _ = write!(
                     text,
                     "{}: {}  ",
@@ -1134,13 +1258,122 @@ pub(super) fn update_plot(
     }
 }
 
+pub(super) fn pie_controls(
+    game: Res<Game>,
+    mut inspector: ResMut<Inspector>,
+    plots: Query<(&PieImage, &RelativeCursorPosition)>,
+) {
+    let mut hovered = [None; 2];
+    if inspector.is_demographics() {
+        for (image, cursor) in &plots {
+            let Some(point) = cursor.normalized.filter(|_| cursor.cursor_over) else {
+                continue;
+            };
+            let values = inspector.pie_samples(&game, image.segment);
+            let samples: Vec<_> = values.iter().map(|&(_, value)| value).collect();
+            hovered[image.segment] = super::pie::Pie::new(&samples)
+                .and_then(|pie| pie.at((point.x as f64 + 0.5, point.y as f64 + 0.5)))
+                .map(|index| values[index].0)
+                .filter(|good| !inspector.hidden_consumption.contains(good));
+        }
+    }
+    if inspector.pie_hover != hovered {
+        inspector.pie_hover = hovered;
+    }
+}
+
+pub(super) fn update_pies(
+    inspector: Res<Inspector>,
+    game: Res<Game>,
+    mut images: ResMut<Assets<Image>>,
+    mut cards: Query<(&PieCard, &mut Node), Without<PieLegend>>,
+    mut legends: Query<(&PieLegend, &mut Node, &mut BackgroundColor), Without<PieCard>>,
+    mut plots: Query<(&mut PieImage, &mut ImageNode)>,
+) {
+    let values: [Vec<(GoodId, f32)>; 2] =
+        std::array::from_fn(|segment| inspector.pie_samples(&game, segment));
+    for (card, mut node) in &mut cards {
+        let display = if inspector.is_demographics() && inspector.segment(&game, card.0).is_some() {
+            Display::Flex
+        } else {
+            Display::None
+        };
+        if node.display != display {
+            node.display = display;
+        }
+    }
+    for (legend, mut node, mut background) in &mut legends {
+        let index = values[legend.segment]
+            .iter()
+            .position(|&(good, _)| good == legend.good);
+        let display = if index.is_some() {
+            Display::Flex
+        } else {
+            Display::None
+        };
+        if node.display != display {
+            node.display = display;
+        }
+        if let Some(index) = index {
+            let [r, g, b, a] = if inspector.hidden_consumption.contains(&legend.good) {
+                super::pie::BACKGROUND
+            } else {
+                super::pie::color(index)
+            };
+            let color = Color::srgba_u8(r, g, b, a);
+            if background.0 != color {
+                background.0 = color;
+            }
+        }
+    }
+    if !inspector.is_demographics() {
+        return;
+    }
+    for (mut plot, mut node) in &mut plots {
+        if inspector.segment(&game, plot.segment).is_none() {
+            continue;
+        }
+        let key: Vec<_> = values[plot.segment]
+            .iter()
+            .map(|&(good, value)| {
+                (
+                    good,
+                    value.to_bits(),
+                    inspector.hidden_consumption.contains(&good),
+                )
+            })
+            .collect();
+        if plot.key.as_ref() == Some(&key) {
+            continue;
+        }
+        let samples: Vec<_> = values[plot.segment]
+            .iter()
+            .map(|&(_, value)| value)
+            .collect();
+        let hidden: Vec<_> = key.iter().map(|&(_, _, hidden)| hidden).collect();
+        let image = super::rgba_image(
+            super::pie::SIZE,
+            super::pie::SIZE,
+            super::pie::render(&samples, &hidden),
+        );
+        if plot.key.is_some()
+            && let Some(mut existing) = images.get_mut(&node.image)
+        {
+            *existing = image;
+        } else {
+            node.image = images.add(image);
+        }
+        plot.key = Some(key);
+    }
+}
+
 fn cycle(index: &mut usize, count: usize, previous: bool) {
     if count > 0 {
         *index = (*index + if previous { count - 1 } else { 1 }) % count;
     }
 }
 
-pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>) {
+pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>, goods: usize) {
     commands
         .spawn((
             Panel::Launcher,
@@ -1309,6 +1542,92 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     button(bar, font, Action::ChartWindow, "All / last 128 / last 32");
                     button(bar, font, Action::ChartFit, "Fit chart");
                 });
+            panel
+                .spawn((
+                    Panel::ConsumptionPlots,
+                    Node {
+                        display: Display::None,
+                        flex_direction: FlexDirection::Row,
+                        flex_wrap: FlexWrap::Wrap,
+                        column_gap: px(16),
+                        row_gap: px(12),
+                        flex_shrink: 0.0,
+                        ..default()
+                    },
+                ))
+                .with_children(|plots| {
+                    for segment in 0..2 {
+                        plots
+                            .spawn((
+                                PieCard(segment),
+                                Node {
+                                    display: Display::None,
+                                    flex_direction: FlexDirection::Column,
+                                    row_gap: px(6),
+                                    flex_basis: px(420),
+                                    flex_grow: 1.0,
+                                    min_width: px(0),
+                                    ..default()
+                                },
+                            ))
+                            .with_children(|card| {
+                                card.spawn((
+                                    Label::ConsumptionTitle(segment),
+                                    Text::default(),
+                                    ui_font(font, 14.0),
+                                ));
+                                card.spawn(Node {
+                                    flex_direction: FlexDirection::Row,
+                                    column_gap: px(8),
+                                    ..default()
+                                })
+                                .with_children(|row| {
+                                    row.spawn((
+                                        PieImage { segment, key: None },
+                                        RelativeCursorPosition::default(),
+                                        ImageNode::default(),
+                                        Node {
+                                            width: px(200),
+                                            height: px(200),
+                                            flex_shrink: 0.0,
+                                            ..default()
+                                        },
+                                    ));
+                                    row.spawn(Node {
+                                        flex_direction: FlexDirection::Column,
+                                        row_gap: px(2),
+                                        flex_grow: 1.0,
+                                        min_width: px(0),
+                                        ..default()
+                                    })
+                                    .with_children(|legend| {
+                                        for index in 0..goods {
+                                            let good = GoodId(index);
+                                            legend
+                                                .spawn((
+                                                    PieLegend { segment, good },
+                                                    Action::ConsumptionSlice(good),
+                                                    Button,
+                                                    Node {
+                                                        display: Display::None,
+                                                        padding: UiRect::all(px(3)),
+                                                        ..default()
+                                                    },
+                                                    BackgroundColor(Color::BLACK),
+                                                ))
+                                                .with_children(|entry| {
+                                                    entry.spawn((
+                                                        Label::ConsumptionGood { segment, good },
+                                                        Text::default(),
+                                                        ui_font(font, 12.0),
+                                                    ));
+                                                });
+                                        }
+                                    });
+                                });
+                            });
+                    }
+                });
             panel.spawn((
                 Label::Content,
                 Text::default(),
@@ -1419,6 +1738,9 @@ pub(super) fn update(
             Panel::DemographicActions => inspector.open && inspector.tab == Tab::Demographics,
             Panel::ConstructionActions => inspector.open && inspector.tab == Tab::Construction,
             Panel::HistoryActions => inspector.is_history(),
+            Panel::ConsumptionPlots => {
+                inspector.is_demographics() && inspector.segment(&game, 0).is_some()
+            }
             Panel::Launcher => {
                 game.session.player_country.is_some() && !ports.open && !inspector.open
             }
@@ -1438,6 +1760,12 @@ pub(super) fn update(
                         text.0 = match label {
                             Label::Scope => inspector.scope(&game),
                             Label::Content => inspector.content(&game),
+                            Label::ConsumptionTitle(segment) => {
+                                inspector.pie_title(&game, *segment)
+                            }
+                            Label::ConsumptionGood { segment, good } => {
+                                inspector.pie_legend(&game, *segment, *good)
+                            }
                         };
                     } else {
                         text.set_changed();
@@ -1500,6 +1828,7 @@ mod tests {
                 (
                     controls,
                     chart_controls,
+                    pie_controls,
                     spaceport_ui::controls,
                     super::super::simulation_controls,
                     super::super::selection_controls.run_if(super::super::world_input),
@@ -1507,6 +1836,7 @@ mod tests {
                     spaceport_ui::update,
                     update,
                     update_plot,
+                    update_pies,
                 )
                     .chain(),
             );
@@ -1886,6 +2216,148 @@ mod tests {
                 .content(app.world().resource::<Game>())
                 .contains("No population segments")
         );
+        Ok(())
+    }
+
+    #[test]
+    fn consumption_pies_keep_source_float_values_hover_hidden_angles_and_owned_images() -> Result<()>
+    {
+        let mut app = app()?;
+        let cards: Vec<_> = (0..2)
+            .map(|segment| {
+                app.world_mut()
+                    .spawn((PieCard(segment), Node::default()))
+                    .id()
+            })
+            .collect();
+        let plots: Vec<_> = (0..2)
+            .map(|segment| {
+                app.world_mut()
+                    .spawn((
+                        PieImage { segment, key: None },
+                        RelativeCursorPosition::default(),
+                        ImageNode::default(),
+                    ))
+                    .id()
+            })
+            .collect();
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::Demographics));
+        apply(&mut app, Action::Ownership);
+        apply(&mut app, Action::NextDay);
+        app.update();
+        let handles: Vec<_> = plots
+            .iter()
+            .map(|&plot| app.world().get::<ImageNode>(plot).unwrap().image.clone())
+            .collect();
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 2);
+        for &card in &cards {
+            assert_eq!(
+                app.world().get::<Node>(card).unwrap().display,
+                Display::Flex
+            );
+        }
+        let game = app.world().resource::<Game>();
+        let inspector = app.world().resource::<Inspector>();
+        let (site, population) = inspector.segment(game, 0).unwrap();
+        let before_population = format!("{population:?}");
+        let samples = inspector.pie_samples(game, 0);
+        let (good, amount) = population.consumption[0];
+        let price = site.market.price[good];
+        let size = population.size as f64;
+        assert_eq!(samples[0], (good, (amount / size * price) as f32));
+        let fractions =
+            crate::pie::Pie::new(&samples.iter().map(|&(_, value)| value).collect::<Vec<_>>())
+                .unwrap()
+                .fractions;
+        let angle = std::f64::consts::FRAC_PI_2 + fractions[0] * std::f64::consts::PI;
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plots[0])
+            .unwrap()
+            .normalized = Some(Vec2::new(
+            (angle.cos() * 0.2) as f32,
+            (-angle.sin() * 0.2) as f32,
+        ));
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plots[0])
+            .unwrap()
+            .cursor_over = true;
+        app.update();
+        let inspector = app.world().resource::<Inspector>();
+        assert_eq!(inspector.pie_hover[0], Some(good));
+        assert!(
+            inspector
+                .pie_title(app.world().resource::<Game>(), 0)
+                .contains(&format!("{:.2}%", fractions[0] * 100.0))
+        );
+        let image_data = |app: &App| {
+            app.world()
+                .resource::<Assets<Image>>()
+                .get(&handles[0])
+                .unwrap()
+                .data
+                .clone()
+        };
+        let shown = image_data(&app);
+        let button = app
+            .world_mut()
+            .spawn((Action::ConsumptionSlice(good), Interaction::Pressed))
+            .id();
+        app.update();
+        let hidden = image_data(&app);
+        assert_ne!(hidden, shown);
+        assert!(
+            app.world()
+                .resource::<Inspector>()
+                .hidden_consumption
+                .contains(&good)
+        );
+        assert_eq!(app.world().resource::<Inspector>().pie_hover[0], None);
+        app.update();
+        assert_eq!(image_data(&app), hidden); // Unchanged pressed state must not toggle again.
+        *app.world_mut().get_mut::<Interaction>(button).unwrap() = Interaction::None;
+        app.update();
+        *app.world_mut().get_mut::<Interaction>(button).unwrap() = Interaction::Pressed;
+        app.update();
+        assert_eq!(image_data(&app), shown);
+        for (action, expected) in [
+            (Action::ConsumptionCost, (amount / size) as f32),
+            (Action::PerCapita, amount as f32),
+            (Action::ConsumptionCost, (amount * price) as f32),
+        ] {
+            apply(&mut app, action);
+            app.update();
+            let inspector = app.world().resource::<Inspector>();
+            let game = app.world().resource::<Game>();
+            assert_eq!(inspector.pie_samples(game, 0)[0], (good, expected));
+            assert_eq!(
+                format!("{:?}", inspector.segment(game, 0).unwrap().1),
+                before_population
+            );
+        }
+        for _ in 0..20 {
+            apply(&mut app, Action::Next);
+            app.update();
+        }
+        for (index, &plot) in plots.iter().enumerate() {
+            assert_eq!(
+                app.world().get::<ImageNode>(plot).unwrap().image,
+                handles[index]
+            );
+        }
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 2);
+        apply(&mut app, Action::Planet);
+        app.update();
+        for &card in &cards {
+            assert_eq!(
+                app.world().get::<Node>(card).unwrap().display,
+                Display::None
+            );
+        }
+        assert_eq!(app.world().resource::<Inspector>().pie_hover, [None; 2]);
+        apply(&mut app, Action::Close);
+        app.update();
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 2);
         Ok(())
     }
 
