@@ -10,6 +10,7 @@ use crate::{
         population::{Population, PopulationEntry},
     },
     modifiers::ModifierCatalog,
+    random::LegacyRandom,
     read_entries,
     science::ScienceCatalog,
     solar_system::{BodyId, SolarSystem},
@@ -19,8 +20,6 @@ use crate::{
     },
 };
 use anyhow::{Context, Result, ensure};
-use rand::{SeedableRng, rngs::SmallRng};
-use rand_distr::{Distribution, Normal};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::{
@@ -113,7 +112,7 @@ pub struct Simulation {
     pub diagnostics: Vec<String>,
     autonomous: Vec<(GoodId, f64)>,
     marginal: Vec<(GoodId, f64)>,
-    random: SmallRng,
+    random: LegacyRandom,
 }
 
 impl Simulation {
@@ -300,7 +299,7 @@ impl Simulation {
             diagnostics,
             autonomous,
             marginal,
-            random: SmallRng::seed_from_u64(seed),
+            random: LegacyRandom::new(seed),
         })
     }
 
@@ -354,11 +353,7 @@ impl Simulation {
                 industry.advance_state(
                     &self.catalog.recipes[industry.recipe.0],
                     self.catalog.config.production_config,
-                    |mean, deviation| {
-                        Normal::new(mean, deviation)
-                            .unwrap()
-                            .sample(&mut self.random)
-                    },
+                    |mean, deviation| self.random.normal(mean, deviation),
                 );
             }
         }
@@ -432,9 +427,7 @@ impl Simulation {
         &self.planetary_markets[&self.solar_system.body_id("earth").expect("Loaded Earth")].market
     }
     pub(crate) fn normal(&mut self, mean: f64, deviation: f64) -> f64 {
-        Normal::new(mean, deviation)
-            .unwrap()
-            .sample(&mut self.random)
+        self.random.normal(mean, deviation)
     }
 
     /// Runs real ten-minute ticks, including tick zero on the first call.

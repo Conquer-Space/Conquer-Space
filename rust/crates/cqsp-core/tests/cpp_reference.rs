@@ -199,6 +199,46 @@ fn compare(actual: &Value, expected: &Value) {
     compare_with_tolerance(actual, expected, 1e-12);
 }
 
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual StdRandom and MSVC distributions"]
+fn random_stream_and_mixed_distributions_match_original_msvc() {
+    use cqsp_core::random::LegacyRandom;
+    let seeds = [0_u64, 1, 42, 5489, i32::MAX as u64, u32::MAX as u64];
+    let words = 2000;
+    let samples = 5000;
+    let reference = reference_output(
+        Some("--random"),
+        &json!({"seeds": seeds, "words": words, "samples": samples}).to_string(),
+    );
+    for (index, seed) in seeds.into_iter().enumerate() {
+        let mut engine = LegacyRandom::new(seed);
+        let raw: Vec<_> = (0..words).map(|_| engine.next_u32()).collect();
+        assert_eq!(
+            json!(raw),
+            reference[index]["words"],
+            "MT19937 words at seed {seed}"
+        );
+        let canonical: Vec<_> = (0..1000).map(|_| engine.canonical()).collect();
+        compare(&json!(canonical), &reference[index]["canonical"]);
+        let mut random = LegacyRandom::new(seed);
+        let mixed: Vec<_> = (0..samples)
+            .map(|_| {
+                json!([
+                    random.normal(0.0, 1.0),
+                    random.normal(0.0, 0.000005),
+                    random.normal(6900.0, 60.0),
+                    random.normal_int(-5.5, 20.0),
+                    random.int(-13, 27),
+                    random.int(i32::MIN, i32::MAX),
+                    random.int(-5, -5),
+                    random.int(i32::MIN, 1),
+                ])
+            })
+            .collect();
+        compare(&json!(mixed), &reference[index]["mixed"]);
+    }
+}
+
 fn compare_with_tolerance(actual: &Value, expected: &Value, tolerance: f64) {
     fn visit(actual: &Value, expected: &Value, path: &str, tolerance: f64) {
         match (actual, expected) {
@@ -909,10 +949,22 @@ fn surface_assets_match_live_cpp_loaders_and_common_soi() {
 #[test]
 #[ignore = "Run tools/build-reference.ps1 first; runs the actual C++ SysOrbit and SysSpacePort"]
 fn lunar_trajectory_and_delivery_match_original_systems() {
+    lunar_mission_case(None);
+}
+
+#[test]
+#[ignore = "Known parity gap: seed zero lands at Rust tick 751 versus C++ 752; run explicitly to reproduce"]
+fn seeded_lunar_launch_trajectories_and_delivery_match_original_systems() {
+    for seed in [0, 1, 42, 5489, u32::MAX as u64] {
+        lunar_mission_case(Some(seed));
+    }
+}
+
+fn lunar_mission_case(seed: Option<u64>) {
     use cqsp_core::{flight::FlightStatus, spaceflight::ColonizationStep};
     let data = default_data_path();
     let world = World::load(&data).unwrap();
-    let mut simulation = Simulation::load(&data, &world, 42).unwrap();
+    let mut simulation = Simulation::load(&data, &world, seed.unwrap_or(42)).unwrap();
     let system = &simulation.solar_system;
     let sun = system.sun;
     let earth = system.body_id("earth").unwrap();
@@ -941,7 +993,7 @@ fn lunar_trajectory_and_delivery_match_original_systems() {
         .into();
     let reference = reference_output(
         Some("--lunar-mission"),
-        &json!({"bodies": bodies}).to_string(),
+        &json!({"bodies": bodies, "seed": seed}).to_string(),
     );
     let country = world
         .countries
@@ -957,26 +1009,32 @@ fn lunar_trajectory_and_delivery_match_original_systems() {
     let mission = simulation
         .queue_colonization_mission(target, country, true)
         .unwrap();
-    simulation.missions[mission.0].in_progress = true;
     let radius = simulation.solar_system.bodies[earth.0].radius;
-    let ship = simulation
-        .solar_system
-        .launch_ship(
-            "Colony Core Transport Vehicle".into(),
-            earth,
-            Orbit {
-                semi_major_axis: radius * 1.08 + radius * 0.01 * 0.4,
-                eccentricity: 0.000005 * 0.4,
-                inclination: 0.05 * 0.4,
-                periapsis_argument: 0.1,
-                ..Orbit::default()
-            },
-        )
-        .unwrap();
-    simulation.solar_system.ships[ship.0]
-        .land_on_moon(moon, &simulation.solar_system.bodies[moon.0], target, 0.0)
-        .unwrap();
-    simulation.solar_system.ships[ship.0].cargo = Some(vec![mission]);
+    let ship = if seed.is_some() {
+        // The first daily step automatically dispatches through the actual port system.
+        cqsp_core::solar_system::ShipId(simulation.solar_system.ships.len())
+    } else {
+        simulation.missions[mission.0].in_progress = true;
+        let ship = simulation
+            .solar_system
+            .launch_ship(
+                "Colony Core Transport Vehicle".into(),
+                earth,
+                Orbit {
+                    semi_major_axis: radius * 1.08 + radius * 0.01 * 0.4,
+                    eccentricity: 0.000005 * 0.4,
+                    inclination: 0.05 * 0.4,
+                    periapsis_argument: 0.1,
+                    ..Orbit::default()
+                },
+            )
+            .unwrap();
+        simulation.solar_system.ships[ship.0]
+            .land_on_moon(moon, &simulation.solar_system.bodies[moon.0], target, 0.0)
+            .unwrap();
+        simulation.solar_system.ships[ship.0].cargo = Some(vec![mission]);
+        ship
+    };
     let mut samples = Vec::new();
     let mut landing_tick = None;
     let mut unload_tick = None;
@@ -992,7 +1050,7 @@ fn lunar_trajectory_and_delivery_match_original_systems() {
             }
             continue;
         }
-        if tick % 24 == 0 || tick < 10 {
+        if tick % if seed.is_some() { 1 } else { 24 } == 0 || tick < 10 {
             let orbit = craft.orbit;
             let p = craft.kinematics.state.position;
             let v = craft.kinematics.state.velocity;
@@ -1020,7 +1078,8 @@ fn lunar_trajectory_and_delivery_match_original_systems() {
                 v.y,
                 v.z,
                 craft.maneuvers.len(),
-                craft.commands.len()
+                craft.commands.len(),
+                craft.maneuvers.front().map_or(-1.0, |burn| burn.time)
             ]));
         }
     }
@@ -1045,7 +1104,12 @@ fn lunar_trajectory_and_delivery_match_original_systems() {
         usize::from(simulation.missions[mission.0].in_progress)
     ]);
     let expected = reference["samples"].as_array().unwrap();
-    assert_eq!(samples.len(), expected.len());
+    assert_eq!(
+        samples.len(),
+        expected.len(),
+        "Lunar trajectory seed {seed:?}; landing Rust {landing_tick:?}, C++ {}",
+        reference["delivery"][0]
+    );
     for (row, expected) in samples.iter().zip(expected) {
         if expected[3].as_f64().unwrap() < 1e-12 {
             // A circular orbit has no defined apsis: compiler rounding chooses
@@ -1264,12 +1328,28 @@ fn manufacturing_boundaries_match_original_system() {
 #[test]
 #[ignore = "Run tools/build-reference.ps1 first; runs the actual eight-state production system with controlled noise"]
 fn industry_states_construction_taxes_and_subsidies_match_original_system() {
+    production_case("farming", None);
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; runs original seeded production for all 22 recipes"]
+fn every_recipe_with_original_random_stream_matches_production_system() {
+    let catalog = cqsp_core::catalog::Catalog::load(&default_data_path()).unwrap();
+    assert_eq!(catalog.recipes.len(), 22);
+    for recipe in &catalog.recipes {
+        for seed in [42, u32::MAX as u64] {
+            production_case(&recipe.identifier, Some(seed));
+        }
+    }
+}
+
+fn production_case(identifier: &str, seed: Option<u64>) {
     use cqsp_core::{
         catalog::Catalog,
         economy::industry::{Construction, ConstructionSector, Industry, IndustryState},
     };
     let catalog = Catalog::load(&default_data_path()).unwrap();
-    let id = catalog.recipe("farming").unwrap();
+    let id = catalog.recipe(identifier).unwrap();
     let recipe = &catalog.recipes[id.0];
     let config = catalog.config.production_config;
     let states = [
@@ -1360,7 +1440,7 @@ fn industry_states_construction_taxes_and_subsidies_match_original_system() {
     let days = 12;
     let reference = reference_output(Some("--production"), &json!({
         "prices": catalog.base_prices.values(), "config": [config.profit_multiplier, config.max_factory_delta, config.factory_min_utilization],
-        "cases": cases, "days": days, "shortage_good": shortage_good.0,
+        "cases": cases, "days": days, "shortage_good": shortage_good.0, "seed": seed,
         "recipe": {"input": entries(&recipe.input), "capital": entries(&recipe.capital), "output": [recipe.output.0.0 as f64, recipe.output.1],
             "power": recipe.power, "workers": workers, "construction_time": recipe.construction_ticks, "construction_cost": entries(&recipe.construction_cost)}
     }).to_string());
@@ -1381,6 +1461,7 @@ fn industry_states_construction_taxes_and_subsidies_match_original_system() {
         .collect();
     let mut taxes = vec![0.0; states.len()];
     let mut samples = Vec::new();
+    let mut random = cqsp_core::random::LegacyRandom::new(seed.unwrap_or(42));
     for day in 0..days {
         for (market, (industry, sector)) in markets
             .iter_mut()
@@ -1400,7 +1481,13 @@ fn industry_states_construction_taxes_and_subsidies_match_original_system() {
                         0.0
                     };
             }
-            industry.advance_state(recipe, config, |mean, sd| mean + sd * 0.4);
+        }
+        // EnTT traverses the fixture's ProductionUnit pool in reverse insertion order.
+        // This controls subsystem RNG assignment, not whole-game registry parity.
+        for industry in industries.iter_mut().rev() {
+            industry.advance_state(recipe, config, |mean, sd| {
+                seed.map_or_else(|| mean + sd * 0.4, |_| random.normal(mean, sd))
+            });
         }
         let rows: Vec<_> = industries.iter_mut().enumerate().map(|(index, industry)| {
             taxes[index] += industry.produce(&catalog, &mut markets[index], &mut sectors[index]);

@@ -25,7 +25,8 @@ Successful long runs establish stability, not gameplay parity.
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
 | Labor distribution / labor market | Reference-tested controlled system scenario | Actual SysLaborDistribution/SysLaborMarket: six cases and 12 weekly steps, drift caps/truncation, wages, zero demand, empty/tiny workforces, weekly hours and daily job demand; mixed-direction unordered traversal and invalid conversions remain |
-| Industry state machine / production / construction | Reference-tested controlled system scenario | Actual SysProduction: nine cases spanning all eight states, 12 steps, injected noise, shortage interruption, construction completion, taxes and partial/full subsidies; broader recipe/transition corpus and original RNG sequence remain |
+| Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, two seeds, nine cases spanning all eight states and 12 steps (4,752 seeded samples), plus injected noise, shortage interruption, construction completion, taxes/subsidies; combined tick ordering and larger FSM boundary grids remain |
+| Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
 | Local markets / shortages / planetary trade | Reference-tested controlled system scenario | Actual SysMarket/SysPlanetaryTrade/MarketReset: three provinces, 12 daily steps, retained imports/exports, configurable local versus hard-coded planetary pricing, zero demand, shortage recovery, labor access and port depletion; whole-economy traversal remains |
 | Population history | Controlled scenario reference-tested | Population/SOL/employment summaries match actual original daily history; legacy graph UI remains |
 | Market history / CSV / industry export | Implemented for Earth; native inspection | Daily planetary snapshots, all original market table fields, eight-sample price history and paged province/industry filters; original CSV column schema and production-unit export fields; byte-identical formatting and interactive graphs remain |
@@ -36,7 +37,7 @@ Successful long runs establish stability, not gameplay parity.
 | Maneuver planning | Reference-tested components | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner and complete Moon-transfer scenario need broader comparisons |
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
-| Industry modifiers | Reference-tested components; integration implemented | Additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded, industry gain/cap wiring tested; modifier UI remains |
+| Industry modifiers / factory controls | Reference-tested components; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded and industry gain/cap wiring tested |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
 | Native replacements for scripted UI/events | Partial | Country selection is native; civ info, exploration, side menu and event infrastructure remain |
@@ -59,10 +60,16 @@ Successful long runs establish stability, not gameplay parity.
   Settlement/Market/IndustrialZone. Correcting the earlier Rust loader reduced
   population from 549,700,354 to 360,099,455 and industries from 22 to 20. Live
   original loader comparisons guard this distinction.
-- Rust currently uses seeded SmallRng/normal distributions and sorted asset/job
-  iteration. C++ uses MT19937/std::normal_distribution and EnTT/unordered traversal.
-  Repeated Rust runs are deterministic with the locked dependencies, but are
-  **not** seed-identical to C++. Injected noise tests isolate production rules.
+- Rust now uses the original MT19937 stream and MSVC 14.51 distribution rules.
+  Each normal call discards its second polar sample like StdRandom; canonical
+  doubles and integer rejection follow the installed Visual Studio headers.
+  Seeds truncate to 32 bits. Six-seed live tests cover raw words, small/large
+  normal scales, rounded normals, signed/full/fixed integer ranges and rejection.
+  Asset/job iteration is still sorted rather than EnTT/unordered traversal, so
+  whole-economy sample assignment is **not** seed-identical to C++. Seeded production
+  scenarios explicitly match the fixture's reverse insertion order without
+  pretending that establishes the full registry ordering. Other C++ standard-library
+  distribution implementations have not been adopted as compatibility targets.
 - Negative/non-finite/out-of-range unemployment float-to-unsigned conversions are
   undefined in C++; Rust records `None` and counts it in diagnostics. Employment
   totals use wide saturating arithmetic instead of overflowing the C++ `int`.
@@ -108,6 +115,14 @@ Successful long runs establish stability, not gameplay parity.
   rounding leaves an arbitrary apsis, so the lunar test compares physical state
   within 1 m / 1 mm/s instead of w/M0/v. Other sampled elements retain the 1e-12
   tolerance. This is not bit-identical circular-frame or every-tick trajectory parity.
+- The new strict seeded lunar corpus exposes a remaining near-circular gap.
+  With seed zero, circularization produces residual eccentricities of roughly
+  1.1e-13 (Rust) and 4.9e-14 (C++): positions agree within a meter, but the arbitrary
+  periapsis directions differ by 0.0187 radians. The subsequent deorbit burns
+  differ by 20.7 seconds; landing occurs at ticks 751/752 respectively, and unloading
+  remains tick 864. No timing tolerance has been silently accepted. The explicit
+  seeded-lunar test currently fails and records maneuver timing on every tick;
+  exact-source compatibility versus stable degenerate-orbit behavior needs a decision.
 - Preserve the movement loop's late-burn epoch and starting-parent center/future
   center for the SOI-transition tick. `ForceMatchPlanes` retains the source's
   zero-burn trigger hack. The source's unimplemented Impulse/InterceptAndCircularize
@@ -155,7 +170,9 @@ cargo clippy --workspace --all-targets -- -D warnings
 ./tools/verify-silent.ps1
 cargo run -p cqsp-core --bin cqsp-sim -- --days 365 --seed 42
 ./tools/build-reference.ps1
-cargo test -p cqsp-core --test cpp_reference -- --include-ignored
+cargo test -p cqsp-core --test cpp_reference -- --include-ignored --skip seeded_lunar_launch_trajectories_and_delivery_match_original_systems
+# Known failing acceptance gate; run explicitly to reproduce the documented gap:
+cargo test -p cqsp-core --test cpp_reference seeded_lunar_launch_trajectories_and_delivery_match_original_systems -- --include-ignored
 cargo run -p cqsp-client -- --smoke
 ```
 
@@ -170,10 +187,15 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 79 unit tests
-plus 14 differential tests (13 live tests require the reference executable).
+365 market-history records and CSV/industry export checks. There are 83 unit tests
+and 17 differential tests: 16 pass, while the explicit seeded lunar acceptance
+gate currently fails. Sixteen live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
+An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
+22 recipes × two seeds × nine industry cases × 12 steps. The original component
+and controlled lunar tolerances are unchanged; the new failing seeded lunar gate
+is excluded explicitly from the passing-corpus command above, not marked successful.
 Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
 invalid-province/template guards. These are controlled subsystem scenarios, not a
 seed-identical run of the entire original economy.
@@ -227,11 +249,12 @@ which do not create native windows.
 
 ## Next acceptance gates
 
-1. Extend the existing population/production system corpus to all recipes, larger
-   FSM boundary grids, mixed-direction labor and combined tick ordering. Controlled
+1. Extend the existing population/production system corpus to larger FSM boundary
+   grids, mixed-direction labor and combined tick ordering. All recipes and seeded
+   production are now covered. Controlled
    labor, construction demand, shortages, taxes/subsidies and trade are covered.
-2. Extend the spacecraft system harness to return flights, SOI edge ordering,
-   different launch epochs and the near-circular post-burn trajectory.
+2. Resolve the strict seeded lunar near-circular timing gap, then extend spacecraft
+   comparisons to return flights, SOI edge ordering and different launch epochs.
 3. Extend native spaceport screens with filtering/inspection detail and dispatch
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete

@@ -14,7 +14,7 @@ $outputDirectory = Join-Path $repoRoot 'rust/target/cpp-reference'
 New-Item -ItemType Directory -Force -Path $outputDirectory | Out-Null
 Push-Location $outputDirectory
 try {
-    & cl.exe /nologo /std:c++20 /utf-8 /EHsc /MT /Gy /DFMT_HEADER_ONLY /DGLM_ENABLE_EXPERIMENTAL `
+    & cl.exe /nologo /MP2 /std:c++20 /utf-8 /EHsc /MT /Gy /DFMT_HEADER_ONLY /DGLM_ENABLE_EXPERIMENTAL `
         "/I$repoRoot/src" "/I$DependencyInclude" "/I$DependencyInclude/luajit" "/I$repoRoot/lib/sol2/include" "/I$repoRoot/lib/hjson-cpp/include/hjson" "/I$repoRoot/lib/tracy/tracy/public" "/Fe$outputDirectory/cpp-reference.exe" `
         "$PSScriptRoot/cpp-reference.cpp" "$repoRoot/src/core/components/market.cpp" `
         "$repoRoot/src/core/components/resourceledger.cpp" "$repoRoot/src/core/components/pid.cpp" `

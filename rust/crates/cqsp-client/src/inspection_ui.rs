@@ -1,4 +1,4 @@
-//! Native read-only market, industry and science inspection.
+//! Native economy/science inspection and original factory controls.
 use super::{Game, human_number, spaceport_ui, ui_button as button, ui_font, ui_row as row};
 use bevy::{
     input::mouse::{AccumulatedMouseScroll, MouseScrollUnit},
@@ -26,12 +26,16 @@ pub(super) enum Action {
     Previous,
     Next,
     NextTechnology,
+    NextFactory,
+    Subsidy(f32),
+    BoostExpertise,
     NextDay,
 }
 #[derive(Component)]
 pub(super) enum Panel {
     Launcher,
     Overlay,
+    FactoryActions,
 }
 #[derive(Component)]
 pub(super) enum Label {
@@ -49,6 +53,7 @@ pub(super) struct Inspector {
     owned: bool,
     good: usize,
     page: usize,
+    factory: usize,
     field: usize,
     technology: usize,
 }
@@ -63,11 +68,23 @@ impl Inspector {
             owned: true,
             good: 0,
             page: 0,
+            factory: 0,
             field: 0,
             technology: 0,
         }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) {
+        if matches!(
+            action,
+            Action::Tab(_)
+                | Action::Planet
+                | Action::PreviousProvince
+                | Action::NextProvince
+                | Action::Hovered
+                | Action::Ownership
+        ) {
+            self.factory = 0;
+        }
         match action {
             Action::Open => self.open = true,
             Action::Close => self.open = false,
@@ -127,19 +144,9 @@ impl Inspector {
                         previous,
                     ),
                     Tab::Industries => {
-                        let count = self
-                            .province
-                            .map_or_else(
-                                || {
-                                    self.provinces(game)
-                                        .map(|(_, site)| site.industries.len())
-                                        .sum::<usize>()
-                                },
-                                |index| game.simulation.settlements[index].industries.len(),
-                            )
-                            .div_ceil(4)
-                            .max(1);
+                        let count = self.factories(game).count().div_ceil(4).max(1);
                         cycle(&mut self.page, count, previous);
+                        self.factory = self.page * 4;
                     }
                     Tab::Science => cycle(
                         &mut self.field,
@@ -153,12 +160,56 @@ impl Inspector {
                 game.simulation.science.technologies.len(),
                 false,
             ),
+            Action::NextFactory if self.tab == Tab::Industries => {
+                let count = self.factories(game).count();
+                cycle(&mut self.factory, count, false);
+                self.page = self.factory / 4;
+            }
+            Action::Subsidy(change) if self.tab == Tab::Industries && change.is_finite() => {
+                let selected = self.factories(game).nth(self.factory);
+                if let Some((site, factory)) = selected {
+                    let industry = &mut game.simulation.settlements[site].industries[factory];
+                    // The original slider edits a float before assigning its double field.
+                    industry.output_subsidy =
+                        (industry.output_subsidy as f32 + change).clamp(0.0, 1.0) as f64;
+                }
+            }
+            Action::BoostExpertise if self.tab == Tab::Industries => {
+                let selected = self.factories(game).nth(self.factory);
+                if let Some((site, factory)) = selected {
+                    let simulation = &mut game.simulation;
+                    if let Some((index, modifier)) = simulation
+                        .modifiers
+                        .entries
+                        .iter()
+                        .enumerate()
+                        .find(|(_, modifier)| modifier.identifier == "higher_expertise")
+                    {
+                        simulation.settlements[site].industries[factory]
+                            .apply_modifier(cqsp_core::modifiers::ModifierId(index), modifier);
+                    }
+                }
+            }
+            Action::NextFactory | Action::Subsidy(_) | Action::BoostExpertise => {}
             Action::NextDay => {
                 game.paused = true;
                 game.tick_accumulator = 0.0;
                 game.simulation.advance_day();
             }
         }
+    }
+    fn factories(&self, game: &Game) -> impl Iterator<Item = (usize, usize)> {
+        let selected = self.province;
+        self.province
+            .into_iter()
+            .chain(
+                self.provinces(game)
+                    .filter_map(move |(index, _)| selected.is_none().then_some(index)),
+            )
+            .flat_map(move |site| {
+                (0..game.simulation.settlements[site].industries.len())
+                    .map(move |factory| (site, factory))
+            })
     }
     fn provinces<'a>(
         &self,
@@ -289,16 +340,20 @@ impl Inspector {
                 if industries.is_empty() {
                     text.push_str("No industries in this scope.\n");
                 }
-                for (site, industry) in industries.iter().skip(self.page * 4).take(4) {
+                for (index, (site, industry)) in
+                    industries.iter().enumerate().skip(self.page * 4).take(4)
+                {
                     let _ = writeln!(
                         text,
-                        "{} · {}\n{:?} · capacity {:.1} · utilization {:.1} · expertise {:.4}\nRevenue {} · materials {} · wages {} · profit {}\nTax {} · construction {} · subsidy {:.0}% · power {}\n",
+                        "{}{} · {}\n{:?} · capacity {:.1} · utilization {:.1} · expertise {:.4} / {:.1}\nRevenue {} · materials {} · wages {} · profit {}\nTax {} · construction {} · subsidy {:.0}% · power {}\n",
+                        if index == self.factory { "> " } else { "" },
                         site.name,
                         simulation.catalog.recipes[industry.recipe.0].name,
                         industry.state,
                         industry.size,
                         industry.utilization,
                         industry.expertise,
+                        industry.max_expertise.value(),
                         human_number(industry.revenue),
                         human_number(industry.material_costs),
                         human_number(industry.wage_cost),
@@ -309,9 +364,28 @@ impl Inspector {
                         human_number(industry.power_consumption)
                     );
                 }
-                text.push_str(
-                    "Inspection only: this screen does not alter factory state or apply modifiers.",
-                );
+                if let Some((site, factory)) = self.factories(game).nth(self.factory) {
+                    let industry = &simulation.settlements[site].industries[factory];
+                    let _ = writeln!(
+                        text,
+                        "Selected factory {}/{} · expertise gain {:.6} · subsidy payment {}\nWallet {} · balance change {} · maintenance {}",
+                        self.factory + 1,
+                        industries.len(),
+                        industry.expertise_gain.value(),
+                        human_number(industry.subsidy_amount),
+                        human_number(industry.wallet.balance),
+                        human_number(industry.wallet.change),
+                        human_number(industry.maintenance)
+                    );
+                    for &(good, amount) in &industry.workers {
+                        let _ = write!(
+                            text,
+                            "{}: {}  ",
+                            simulation.catalog.goods[good.0].name,
+                            human_number(amount)
+                        );
+                    }
+                }
                 text
             }
             Tab::Science => {
@@ -446,6 +520,24 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                 button(bar, font, Action::Next, "Next good / page / field");
                 button(bar, font, Action::NextTechnology, "Next technology");
             });
+            panel
+                .spawn((
+                    Panel::FactoryActions,
+                    Node {
+                        flex_direction: FlexDirection::Row,
+                        flex_wrap: FlexWrap::Wrap,
+                        flex_shrink: 0.0,
+                        column_gap: px(10),
+                        row_gap: px(6),
+                        ..default()
+                    },
+                ))
+                .with_children(|bar| {
+                    button(bar, font, Action::NextFactory, "Select next factory");
+                    button(bar, font, Action::Subsidy(-0.1), "Subsidy -10%");
+                    button(bar, font, Action::Subsidy(0.1), "Subsidy +10%");
+                    button(bar, font, Action::BoostExpertise, "Boost expertise");
+                });
             panel.spawn((
                 Label::Content,
                 Text::default(),
@@ -536,6 +628,11 @@ pub(super) fn update(
     for (entity, panel, mut node) in &mut panels {
         let shown = match panel {
             Panel::Overlay => inspector.open,
+            Panel::FactoryActions => {
+                inspector.open
+                    && inspector.tab == Tab::Industries
+                    && inspector.factories(&game).next().is_some()
+            }
             Panel::Launcher => {
                 game.session.player_country.is_some() && !ports.open && !inspector.open
             }
@@ -852,6 +949,85 @@ mod tests {
                 .iter()
                 .map(|country| country.research)
                 .sum::<i32>(),
+            0
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn factory_controls_preserve_original_subsidy_and_duplicate_modifier_rules() -> Result<()> {
+        let mut app = app()?;
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::Industries));
+        apply(&mut app, Action::Ownership);
+        let inspector = app.world().resource::<Inspector>();
+        let ids: Vec<_> = inspector
+            .factories(app.world().resource::<Game>())
+            .collect();
+        assert_eq!(ids.len(), 20);
+        let (site, factory) = ids[0];
+        app.world_mut()
+            .spawn((Action::BoostExpertise, Interaction::Pressed));
+        app.update();
+        app.update();
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[site].industries[factory]
+                .max_expertise
+                .value(),
+            2.5
+        );
+        apply(&mut app, Action::BoostExpertise);
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[site].industries[factory]
+                .max_expertise
+                .value(),
+            3.5
+        );
+        for _ in 0..15 {
+            apply(&mut app, Action::Subsidy(0.1));
+        }
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[site].industries[factory]
+                .output_subsidy,
+            1.0
+        );
+        for _ in 0..15 {
+            apply(&mut app, Action::Subsidy(-0.1));
+        }
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[site].industries[factory]
+                .output_subsidy,
+            0.0
+        );
+        apply(&mut app, Action::NextFactory);
+        apply(&mut app, Action::Subsidy(0.1));
+        let (next_site, next_factory) = ids[1];
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[next_site].industries
+                [next_factory]
+                .output_subsidy,
+            0.1_f32 as f64
+        );
+        for _ in 1..20 {
+            apply(&mut app, Action::NextFactory);
+        }
+        assert_eq!(app.world().resource::<Inspector>().factory, 0);
+        apply(&mut app, Action::Tab(Tab::Science));
+        apply(&mut app, Action::BoostExpertise);
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[site].industries[factory]
+                .max_expertise
+                .value(),
+            3.5
+        );
+        apply(&mut app, Action::Planet);
+        apply(&mut app, Action::Tab(Tab::Industries));
+        apply(&mut app, Action::BoostExpertise);
+        assert_eq!(
+            app.world()
+                .resource::<Inspector>()
+                .factories(app.world().resource::<Game>())
+                .count(),
             0
         );
         Ok(())

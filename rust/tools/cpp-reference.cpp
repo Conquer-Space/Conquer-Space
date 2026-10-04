@@ -50,6 +50,7 @@
 #include "core/systems/economy/sysinfrastructure.h"
 #include "core/systems/movement/sysorbit.h"
 #include "core/util/orbit/groundtrack.h"
+#include "core/util/random/stdrandom.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/null_sink.h>
 
@@ -115,6 +116,13 @@ class ControlledRandom : public cqsp::core::util::IRandom {
     int GetRandomNormalInt(double mean, double sd) override { return static_cast<int>(std::round(GetRandomNormal(mean, sd))); }
     double GetRandomNormal(double mean, double sd) override { return mean + sd * 0.4; }
 };
+
+std::unique_ptr<cqsp::core::util::IRandom> ReferenceRandom(const Hjson::Value& seed) {
+    if (seed.type() == Hjson::Type::Undefined || seed.type() == Hjson::Type::Null) {
+        return std::make_unique<ControlledRandom>();
+    }
+    return std::make_unique<cqsp::core::util::StdRandom>(static_cast<int>(seed.to_int64()));
+}
 
 void RegisterGoods(cqsp::core::Universe& universe, const Hjson::Value& goods) {
     for (int index = 0; index < goods.size(); ++index) {
@@ -395,8 +403,9 @@ void PrintLunarMission() {
     spdlog::set_level(spdlog::level::off);
     cqsp::core::Game game;
     auto& universe = game.GetUniverse();
-    universe.random = std::make_unique<ControlledRandom>();
     auto input = ReadInput();
+    universe.random = ReferenceRandom(input["seed"]);
+    const bool seeded = input["seed"].type() != Hjson::Type::Null && input["seed"].type() != Hjson::Type::Undefined;
     std::vector<entt::entity> body_entities;
     for (int index = 0; index < input["bodies"].size(); ++index) {
         const auto& row = input["bodies"][index];
@@ -450,7 +459,7 @@ void PrintLunarMission() {
             if (!universe.all_of<ships::CargoHold>(ship)) { unload_tick = tick; break; }
             continue;
         }
-        if (tick % 24 == 0 || tick < 10) {
+        if (seeded || tick % 24 == 0 || tick < 10) {
             if (!first) std::cout << ',';
             const auto& orbit = universe.get<types::Orbit>(ship);
             const auto& position = universe.get<types::Kinematics>(ship);
@@ -459,7 +468,8 @@ void PrintLunarMission() {
                 << orbit.semi_major_axis << ',' << orbit.eccentricity << ',' << orbit.inclination << ',' << orbit.LAN << ','
                 << orbit.w << ',' << orbit.M0 << ',' << orbit.epoch << ',' << orbit.v << ',';
             PrintVector(position.position); std::cout << ','; PrintVector(position.velocity);
-            std::cout << ',' << queue.maneuvers.size() << ',' << queue.commands.size() << ']';
+            std::cout << ',' << queue.maneuvers.size() << ',' << queue.commands.size() << ','
+                << (queue.maneuvers.empty() ? -1.0 : queue.maneuvers.front().time) << ']';
             first = false;
         }
     }
@@ -576,8 +586,8 @@ void PrintProduction() {
     spdlog::set_level(spdlog::level::off);
     cqsp::core::Game game;
     auto& universe = game.GetUniverse();
-    universe.random = std::make_unique<ControlledRandom>();
     auto input = ReadInput();
+    universe.random = ReferenceRandom(input["seed"]);
     const int count = input["prices"].size();
     auto recipe_entity = universe.create();
     auto& recipe = universe.emplace<Recipe>(recipe_entity);
@@ -845,8 +855,44 @@ void PrintLoadedOrbits() {
     std::cout << "]}\n";
 }
 
+void PrintRandom() {
+    auto input = ReadInput();
+    Hjson::Value result(Hjson::Type::Vector);
+    for (int index = 0; index < input["seeds"].size(); ++index) {
+        auto seed = static_cast<uint32_t>(input["seeds"][index].to_int64());
+        std::mt19937 engine(seed);
+        cqsp::core::util::StdRandom random(static_cast<int>(seed));
+        Hjson::Value row(Hjson::Type::Map);
+        row["words"] = Hjson::Value(Hjson::Type::Vector);
+        for (int sample = 0; sample < input["words"].to_int64(); ++sample) {
+            row["words"].push_back(static_cast<int64_t>(engine()));
+        }
+        row["canonical"] = Hjson::Value(Hjson::Type::Vector);
+        for (int sample = 0; sample < 1000; ++sample) {
+            row["canonical"].push_back(std::generate_canonical<double, 53>(engine));
+        }
+        row["mixed"] = Hjson::Value(Hjson::Type::Vector);
+        for (int sample = 0; sample < input["samples"].to_int64(); ++sample) {
+            Hjson::Value values(Hjson::Type::Vector);
+            values.push_back(random.GetRandomNormal(0, 1));
+            values.push_back(random.GetRandomNormal(0, 0.000005));
+            values.push_back(random.GetRandomNormal(6900, 60));
+            values.push_back(random.GetRandomNormalInt(-5.5, 20));
+            values.push_back(random.GetRandomInt(-13, 27));
+            values.push_back(random.GetRandomInt(INT_MIN, INT_MAX));
+            values.push_back(random.GetRandomInt(-5, -5));
+            // Large odd range exercises rejection in the integer distribution.
+            values.push_back(random.GetRandomInt(INT_MIN, 1));
+            row["mixed"].push_back(values);
+        }
+        result.push_back(row);
+    }
+    WriteJson(result);
+}
+
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
+    if (argc == 2 && std::string(argv[1]) == "--random") { PrintRandom(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--interplanetary") { PrintInterplanetary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--labor") { PrintLabor(); return 0; }

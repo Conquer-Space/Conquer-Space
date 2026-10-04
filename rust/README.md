@@ -76,8 +76,11 @@ owned/all provinces or the hovered province; inspect all 56 goods, paged factori
 11 science fields and seven technologies. Market details include all original table
 fields and the latest eight Earth price samples. Advance day updates the real simulation;
 Escape closes inspection without returning to selection. The panels are mutually
-exclusive and do not interrupt vehicle text editing. Factory mutation controls and
-interactive history graphs remain to be ported.
+exclusive and do not interrupt vehicle text editing. Select next factory identifies
+the `>`-marked factory, changes its subsidy in ten-percent steps (bounded 0–100%)
+or applies the original **Boost expertise** modifier. Repeated boosts retain the
+original duplicate contributions. Wallet, maintenance, subsidy payment and hired
+worker details are shown; interactive history graphs remain to be ported.
 
 For fast renderer-free simulation checks:
 
@@ -88,8 +91,11 @@ cargo run -p cqsp-core --bin cqsp-sim -- --days 0 --science-json target/science.
 ```
 
 This checks daily economy/orbital state and prints JSON, including body positions.
-The scope is explicitly partial; deterministic
-Rust runs are not yet identical to the original C++ random sequence.
+The scope is explicitly partial. Rust uses the original MT19937 stream and Visual
+Studio 2026/MSVC 14.51 distribution rules, including discarded spare normal samples.
+Seeds use their low 32 bits, matching the original int/engine conversion.
+Whole-economy runs still differ because asset/registry traversal assigns samples
+in a different order; deterministic random values alone do not establish full parity.
 Daily planetary market snapshots are retained alongside population summaries.
 The optional CSV keeps the legacy market logger's columns; the industry JSON keeps
 its production-unit fields. Exports refuse to overwrite existing files. These are
@@ -136,7 +142,7 @@ Actual C++ component outputs are tested by the recorded fixture. To also compare
 
 ```powershell
 ./tools/build-reference.ps1
-cargo test -p cqsp-core --test cpp_reference -- --include-ignored
+cargo test -p cqsp-core --test cpp_reference -- --include-ignored --skip seeded_lunar_launch_trajectories_and_delivery_match_original_systems
 ```
 
 The live reference suite also executes the original city/project loaders and SOI
@@ -163,6 +169,14 @@ and small/empty workforces. Undefined unemployment conversions are not accepted
 as portable behavior; unordered mixed-direction drift still needs broader coverage.
 Science-field and technology definitions also compare against the actual source
 loaders, including defaults and directed/duplicate graph-reference handling.
+All 22 recipes additionally pass seeded production-system comparisons with two
+seeds across all eight states. Six seeds compare 12,000 raw engine words and 30,000
+mixed normal/integer distribution sequences against the actual original StdRandom.
+A strict seeded lunar test exposes an unresolved near-circular timing discrepancy:
+seed zero lands at Rust tick 751 versus C++ 752, while both unload at tick 864.
+The passing-corpus command above explicitly excludes that acceptance gate. Run it
+with `cargo test -p cqsp-core --test cpp_reference seeded_lunar_launch_trajectories_and_delivery_match_original_systems -- --include-ignored`
+to reproduce the failure; this is not accepted parity.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.

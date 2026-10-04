@@ -1141,6 +1141,8 @@ fn smoke_test(
                 &mut game,
             );
             inspector.apply(inspection_ui::Action::Ownership, &mut game);
+            inspector.apply(inspection_ui::Action::Subsidy(0.1), &mut game);
+            inspector.apply(inspection_ui::Action::BoostExpertise, &mut game);
         }
         15 => capture_smoke(
             &mut commands,
