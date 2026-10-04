@@ -19,6 +19,7 @@ Successful long runs establish stability, not gameplay parity.
 | Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus and settings |
 | Civilization metadata / native view | Loader reference-tested; native integration | All 199 countries' wallet/capability/research/tax fields, initial city/province lists and capital tags through actual loaders; native capital, wallet/taxes, paged governed sites/province balances and mission queue; governor and province ownership remain distinct |
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
+| Playback / time controls | Original settings reference-tested; source-mapped native pacing | Eleven actual clientctx settings and default index 3/paused state; float millisecond intervals, strict greater-than gate, one 1/2/5/10-tick batch per frame, no backlog catch-up; native pause/slow/fast buttons and keyboard/overlay guards; not execution of full original ManageTick/Application |
 | Time-zone definitions / city bindings | Loader and clock reference-tested; native display | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
 | Goods / jobs / zoning / recipes / economy config | Loader reference-tested | Actual original loaders compare all 56 goods, five jobs, ten zoning definitions and 22 recipes; controlled defaults, physical units, invalid-good rejection, duplicate good lookup, first default-job tag, recipe type/tag precedence, missing resources/zoning, empty-map merge and construction-cost scaling |
@@ -219,8 +220,8 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 118 unit tests
-and 27 passing differential tests in debug and release. Twenty-six live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 119 unit tests
+and 28 passing differential tests in debug and release. Twenty-seven live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -373,6 +374,15 @@ window-dependent center-ray failure is avoided by targeting the fixed render ima
 Repeated offscreen runs have passed; live desktop input/resize still needs separate
 manual acceptance. Keyboard navigation and one-shot button actions have ECS tests
 which do not create native windows.
+Playback settings compare the actual clientctx header's eleven-value table and
+PauseOptions defaults. Native scheduling maps ManageTick's float division, strict
+elapsed-time boundary and one-batch-per-frame behavior; it no longer uses invented
+1x/4x/16x/64x rates or a time backlog. Unit/ECS checks cover all speed bounds,
+fractional float thresholds, late frames, pause/resume, one-shot buttons, overlay
+visibility/input isolation and no simulation work in country selection. This does
+not execute the entire original Application/ManageTick method or assert interpolation
+renderer parity. The speed-zero exactly-one-second boundary deliberately does not
+tick; a 1,000-second frame at maximum speed executes ten ticks, not a backlog.
 
 `tools/package.ps1` builds with Cargo.lock, verifies silence and writes a new bundle
 under target/packages on every run; it does not overwrite an older package, install

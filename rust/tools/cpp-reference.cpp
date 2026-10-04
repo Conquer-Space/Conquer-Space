@@ -17,6 +17,7 @@
 #include "core/actions/factoryconstructaction.h"
 #include "core/actions/economy/subsidyhelper.h"
 #include "core/util/save/save.h"
+#include "client/components/clientctx.h"
 #include "core/components/colony.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
@@ -1473,6 +1474,16 @@ void PrintRandom() {
 }
 
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--playback-settings") {
+        cqsp::client::ctx::PauseOptions defaults;
+        Hjson::Value output(Hjson::Type::Map), speeds(Hjson::Type::Vector);
+        for (int speed : cqsp::client::ctx::tick_speeds) speeds.push_back(speed);
+        output["speeds"] = speeds;
+        output["default_index"] = defaults.tick_speed;
+        output["running"] = defaults.to_tick;
+        output["tick_once"] = defaults.tick_once;
+        WriteJson(output); std::cout << '\n'; return 0;
+    }
     std::cout << std::setprecision(17);
     if (argc == 2 && std::string(argv[1]) == "--catalog") { PrintCatalog(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--infrastructure") { PrintInfrastructure(); return 0; }

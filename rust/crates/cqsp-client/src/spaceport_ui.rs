@@ -278,7 +278,7 @@ impl SpaceportUi {
             }
             Action::NextDay => {
                 game.paused = true;
-                game.tick_accumulator = 0.0;
+                game.last_tick = 0.0;
                 simulation.advance_day();
             }
         }
@@ -665,7 +665,7 @@ mod tests {
                 ordered_countries: Vec::new(),
                 paused: true,
                 speed_index: 0,
-                tick_accumulator: 0.0,
+                last_tick: 0.0,
             })
             .init_resource::<Time>()
             .init_resource::<ButtonInput<KeyCode>>()

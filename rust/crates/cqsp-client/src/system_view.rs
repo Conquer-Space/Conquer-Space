@@ -795,7 +795,7 @@ mod tests {
             ordered_countries: Vec::new(),
             paused: true,
             speed_index: 0,
-            tick_accumulator: 0.0,
+            last_tick: 0.0,
         })
         .init_resource::<Assets<Mesh>>()
         .init_resource::<Assets<StandardMaterial>>()
@@ -884,7 +884,7 @@ mod tests {
             ordered_countries: Vec::new(),
             paused: true,
             speed_index: 0,
-            tick_accumulator: 0.0,
+            last_tick: 0.0,
         };
         navigation.apply(FlightAction::Hohmann, &mut game)?;
         assert_eq!(game.simulation.solar_system.ships[id.0].maneuvers.len(), 2);
@@ -947,7 +947,7 @@ mod tests {
             ordered_countries: Vec::new(),
             paused: true,
             speed_index: 0,
-            tick_accumulator: 0.0,
+            last_tick: 0.0,
         })
         .insert_resource(navigation)
         .init_resource::<Time>()

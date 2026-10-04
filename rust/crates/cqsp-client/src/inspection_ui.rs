@@ -430,7 +430,7 @@ impl Inspector {
             Action::ChartFit => {}
             Action::NextDay => {
                 game.paused = true;
-                game.tick_accumulator = 0.0;
+                game.last_tick = 0.0;
                 game.simulation.advance_day();
             }
             Action::TaxGood => cycle(&mut self.good, game.simulation.catalog.goods.len(), false),
@@ -1942,7 +1942,7 @@ mod tests {
                 ordered_countries: Vec::new(),
                 paused: true,
                 speed_index: 0,
-                tick_accumulator: 0.0,
+                last_tick: 0.0,
             })
             .init_resource::<Time>()
             .init_resource::<Assets<Image>>()

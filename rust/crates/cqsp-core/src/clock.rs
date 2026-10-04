@@ -6,6 +6,54 @@ pub const HOUR: u64 = 6;
 pub const DAY: u64 = 24 * HOUR;
 pub const WEEK: u64 = 7 * DAY;
 
+/// Original client PauseOptions/ManageTick: float millisecond intervals and one batch per frame.
+#[derive(Clone, Copy, Debug)]
+pub struct PlaybackSpeed(i32);
+impl PlaybackSpeed {
+    pub const DEFAULT_INDEX: usize = 3;
+    pub const ALL: [Self; 11] = [
+        Self(1000),
+        Self(500),
+        Self(333),
+        Self(100),
+        Self(50),
+        Self(10),
+        Self(1),
+        Self(-1),
+        Self(-2),
+        Self(-5),
+        Self(-10),
+    ];
+    pub fn milliseconds(self) -> i32 {
+        self.0
+    }
+    pub fn interval(self) -> f64 {
+        f64::from(self.0.max(1) as f32 / 1000.0)
+    }
+    pub fn batch(self) -> usize {
+        if self.0 < 0 {
+            self.0.unsigned_abs() as usize
+        } else {
+            1
+        }
+    }
+    pub fn ticks_after(self, elapsed: f64) -> usize {
+        if elapsed.is_finite() && elapsed > self.interval() {
+            self.batch()
+        } else {
+            0
+        }
+    }
+    pub fn label(self) -> String {
+        format!(
+            "{:.0} ms / {} tick{}",
+            self.interval() * 1000.0,
+            self.batch(),
+            if self.batch() == 1 { "" } else { "s" }
+        )
+    }
+}
+
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq, Eq)]
 pub struct StarDate {
     tick: u64,
@@ -99,6 +147,28 @@ fn days_in_year(year: u32) -> u64 {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn playback_preserves_float_threshold_strict_boundary_and_no_frame_catch_up() {
+        assert_eq!(PlaybackSpeed::DEFAULT_INDEX, 3);
+        for (speed, milliseconds) in PlaybackSpeed::ALL
+            .into_iter()
+            .zip([1000, 500, 333, 100, 50, 10, 1, -1, -2, -5, -10])
+        {
+            assert_eq!(speed.milliseconds(), milliseconds);
+            let interval = f64::from(milliseconds.max(1) as f32 / 1000.0_f32);
+            assert_eq!(speed.interval().to_bits(), interval.to_bits());
+            assert_eq!(speed.ticks_after(interval), 0);
+            assert_eq!(
+                speed.ticks_after(f64::from_bits(interval.to_bits() + 1)),
+                speed.batch()
+            );
+            assert_eq!(speed.ticks_after(1000.0), speed.batch());
+            for elapsed in [0.0, -1.0, f64::NAN, f64::INFINITY] {
+                assert_eq!(speed.ticks_after(elapsed), 0);
+            }
+        }
+    }
 
     #[test]
     fn first_tick_is_zero_and_weekly_systems_are_due() {

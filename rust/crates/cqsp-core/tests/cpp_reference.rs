@@ -375,6 +375,20 @@ fn save_metadata_only_matches_original_and_ignores_versions() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; reads actual clientctx tick_speeds and PauseOptions"]
+fn playback_settings_match_original_client_context() {
+    use cqsp_core::clock::PlaybackSpeed;
+    let speeds: Vec<_> = PlaybackSpeed::ALL
+        .into_iter()
+        .map(PlaybackSpeed::milliseconds)
+        .collect();
+    compare(
+        &json!({"speeds":speeds,"default_index":PlaybackSpeed::DEFAULT_INDEX,"running":false,"tick_once":false}),
+        &reference_output(Some("--playback-settings"), ""),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual country/province/city metadata loaders"]
 fn civilization_wallet_capital_capability_and_owned_lists_match_original() {
     let data = default_data_path();

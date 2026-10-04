@@ -66,7 +66,12 @@ M toggles terrain/political maps, R resets the camera, F12 writes `target/conque
 Closing the window exits normally.
 
 The game starts paused. Space pauses/resumes; N advances to the next economy day;
-minus/equal select 1x/4x/16x/64x tick speeds. The right panel shows country/global
+minus/equal or the native slower/faster buttons select the original eleven speeds.
+The game defaults to index 3 (100 ms per tick). Positive settings wait 1,000/500/333/
+100/50/10/1 ms, while the final four wait 1 ms and execute 1/2/5/10 ticks per frame.
+Like upstream, a long frame executes one batch and discards excess elapsed time;
+it does not accumulate a catch-up backlog. The bottom pause/play button matches
+Space. These controls hide and cannot fire behind open overlays. The right panel shows country/global
 economic totals and the hovered province's local market. Returning to selection
 pauses and preserves the in-memory simulation; it does not create a new game.
 

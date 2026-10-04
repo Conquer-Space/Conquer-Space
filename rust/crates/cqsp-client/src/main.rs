@@ -22,11 +22,15 @@ use bevy::{
     winit::WinitPlugin,
 };
 use cqsp_core::{Session, World, default_data_path, intersect_globe, uv_to_direction};
-use cqsp_core::{clock::StarDate, simulation::Simulation};
+use cqsp_core::{
+    clock::{PlaybackSpeed, StarDate},
+    simulation::Simulation,
+};
 use std::{f32::consts::PI, path::PathBuf, time::Duration};
 mod chart;
 mod inspection_ui;
 mod pie;
+mod playback_ui;
 mod spaceport_ui;
 mod system_view;
 use system_view::{FlightAction, Focus, Navigation};
@@ -41,7 +45,7 @@ struct Game {
     simulation: Simulation,
     paused: bool,
     speed_index: usize,
-    tick_accumulator: f64,
+    last_tick: f64,
 }
 
 #[derive(Resource)]
@@ -262,8 +266,8 @@ fn main() -> Result<()> {
             ordered_countries,
             simulation,
             paused: true,
-            speed_index: 0,
-            tick_accumulator: 0.0,
+            speed_index: PlaybackSpeed::DEFAULT_INDEX,
+            last_tick: 0.0,
         })
         .insert_resource(Orbit::default())
         .insert_resource(navigation)
@@ -303,7 +307,7 @@ fn main() -> Result<()> {
                 system_view::update,
                 update_globe,
                 update_hud,
-                update_economy_hud,
+                (update_economy_hud, playback_ui::update).chain(),
                 spaceport_ui::update,
                 inspection_ui::update,
                 inspection_ui::update_plot,
@@ -424,6 +428,7 @@ fn setup(
             system_view::spawn_controls(panel, &font);
         });
     spaceport_ui::spawn(&mut commands, camera, &font);
+    playback_ui::spawn(&mut commands, camera, &font);
     inspection_ui::spawn(
         &mut commands,
         camera,
@@ -586,7 +591,7 @@ fn selection_controls(
     if keyboard.just_pressed(KeyCode::Escape) {
         game.session.return_to_selection();
         game.paused = true;
-        game.tick_accumulator = 0.0;
+        game.last_tick = 0.0;
     }
     let pressed = button
         .iter()
@@ -595,7 +600,7 @@ fn selection_controls(
         if game.session.player_country.is_some() {
             game.session.return_to_selection();
             game.paused = true;
-            game.tick_accumulator = 0.0;
+            game.last_tick = 0.0;
         } else {
             game.session.start();
         }
@@ -615,11 +620,10 @@ fn selection_controls(
     }
 }
 
-const SIMULATION_SPEEDS: [f64; 4] = [1.0, 4.0, 16.0, 64.0];
-
 fn simulation_controls(
     time: Res<Time>,
     keyboard: Res<ButtonInput<KeyCode>>,
+    buttons: Query<(&playback_ui::Action, &Interaction), Changed<Interaction>>,
     mut game: ResMut<Game>,
     ui: Option<Res<spaceport_ui::SpaceportUi>>,
     inspector: Option<Res<inspection_ui::Inspector>>,
@@ -633,28 +637,32 @@ fn simulation_controls(
     let keyboard_enabled =
         ui.is_none_or(|ui| !ui.capture_input) && inspector.is_none_or(|ui| !ui.capture_input);
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
-        game.paused = !game.paused;
-        game.tick_accumulator = 0.0;
+        game.playback_action(playback_ui::Action::Toggle);
     }
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Minus) {
-        game.speed_index = game.speed_index.saturating_sub(1);
+        game.playback_action(playback_ui::Action::Slower);
     }
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Equal) {
-        game.speed_index = (game.speed_index + 1).min(SIMULATION_SPEEDS.len() - 1);
+        game.playback_action(playback_ui::Action::Faster);
     }
     if keyboard_enabled && keyboard.just_pressed(KeyCode::KeyN) {
         game.paused = true;
-        game.tick_accumulator = 0.0;
+        game.last_tick = time.elapsed_secs_f64();
         game.simulation.advance_day();
     }
-    if !game.paused {
-        game.tick_accumulator += time.delta_secs_f64() * SIMULATION_SPEEDS[game.speed_index];
-        // Cap work per rendered frame without throwing away pending simulation time.
-        for _ in 0..32 {
-            if game.tick_accumulator < 0.25 {
-                break;
+    if keyboard_enabled {
+        for (action, interaction) in &buttons {
+            if *interaction == Interaction::Pressed {
+                game.playback_action(*action);
             }
-            game.tick_accumulator -= 0.25;
+        }
+    }
+    let now = time.elapsed_secs_f64();
+    let ticks = PlaybackSpeed::ALL[game.speed_index].ticks_after(now - game.last_tick);
+    if !game.paused && ticks != 0 {
+        // Source scheduling drops excess elapsed time rather than catching up a backlog.
+        game.last_tick = now;
+        for _ in 0..ticks {
             game.simulation.tick();
         }
     }
@@ -795,12 +803,13 @@ fn update_economy_hud(
         )
     });
     hud.0 = format!(
-        "{} {:02}:{:02} · {}\nSpeed: {}x\n\nCOUNTRY\nPopulation: {}\nIndustries: {}\nGDP: {}\n\nGLOBAL\nPopulation: {}\nEmployed: {}\nLiving standard: {:.2}\n\nSpace: pause / resume\nN: next economy day\n- / =: change speed{}",
+        "{} {:02}:{:02} · {}\nSpeed {}: {}\n\nCOUNTRY\nPopulation: {}\nIndustries: {}\nGDP: {}\n\nGLOBAL\nPopulation: {}\nEmployed: {}\nLiving standard: {:.2}\n\nSpace: pause / resume\nN: next economy day\n- / =: change speed{}",
         date.display(),
         date.hour(0.0),
         date.minute(),
         if game.paused { "Paused" } else { "Running" },
-        SIMULATION_SPEEDS[game.speed_index],
+        game.speed_index,
+        PlaybackSpeed::ALL[game.speed_index].label(),
         human_number(owned.population as f64),
         owned.industries,
         human_number(owned.gdp),
@@ -1466,7 +1475,7 @@ mod tests {
             ordered_countries: Vec::new(),
             paused: true,
             speed_index: 0,
-            tick_accumulator: 0.0,
+            last_tick: 0.0,
         })
         .insert_resource(navigation)
         .init_resource::<Time>()
@@ -1502,7 +1511,7 @@ mod tests {
         assert!(!app.world().resource::<Game>().paused);
         assert_eq!(
             app.world().resource::<Game>().simulation.date.tick(),
-            cqsp_core::clock::DAY + 4
+            cqsp_core::clock::DAY // Exactly one second is not greater than the speed-zero interval.
         );
         app.world_mut()
             .resource_mut::<ButtonInput<KeyCode>>()
@@ -1514,7 +1523,7 @@ mod tests {
         assert_eq!(app.world().resource::<Game>().speed_index, 1);
         assert_eq!(
             app.world().resource::<Game>().simulation.date.tick(),
-            cqsp_core::clock::DAY + 20
+            cqsp_core::clock::DAY + 1
         );
         app.world_mut()
             .resource_mut::<Game>()
@@ -1523,11 +1532,102 @@ mod tests {
         app.update();
         assert_eq!(
             app.world().resource::<Game>().simulation.date.tick(),
-            cqsp_core::clock::DAY + 20
+            cqsp_core::clock::DAY + 1
         );
         assert_eq!(
             app.world().get::<Text>(country_text).unwrap().0,
             expected_country
+        );
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut().resource_mut::<Game>().session.start();
+        app.world_mut().resource_mut::<Game>().paused = true;
+        let faster = app
+            .world_mut()
+            .spawn((playback_ui::Action::Faster, Interaction::Pressed))
+            .id();
+        app.update();
+        app.update();
+        assert_eq!(
+            app.world().resource::<Game>().speed_index,
+            2,
+            "Button must fire once"
+        );
+        for index in 3..=10 {
+            *app.world_mut().get_mut::<Interaction>(faster).unwrap() = Interaction::None;
+            app.update();
+            *app.world_mut().get_mut::<Interaction>(faster).unwrap() = Interaction::Pressed;
+            app.update();
+            assert_eq!(app.world().resource::<Game>().speed_index, index);
+        }
+        let game = app.world().resource::<Game>();
+        let inspector = inspection_ui::Inspector::new(&game.simulation);
+        let ports = spaceport_ui::SpaceportUi::new(&game.simulation);
+        app.insert_resource(inspector)
+            .insert_resource(ports)
+            .add_systems(Update, playback_ui::update.after(simulation_controls));
+        let panel = app
+            .world_mut()
+            .spawn((playback_ui::Panel, Node::default()))
+            .id();
+        let status = app
+            .world_mut()
+            .spawn((playback_ui::Status, Text::default()))
+            .id();
+        app.update();
+        assert_eq!(
+            app.world().get::<Node>(panel).unwrap().display,
+            Display::Flex
+        );
+        assert!(
+            app.world()
+                .get::<Text>(status)
+                .unwrap()
+                .contains("speed 10")
+        );
+        app.world_mut()
+            .resource_mut::<inspection_ui::Inspector>()
+            .open = true;
+        app.world_mut()
+            .resource_mut::<inspection_ui::Inspector>()
+            .capture_input = true;
+        let toggle = app
+            .world_mut()
+            .spawn((playback_ui::Action::Toggle, Interaction::Pressed))
+            .id();
+        app.update();
+        assert!(
+            app.world().resource::<Game>().paused,
+            "Hidden playback controls cannot fire"
+        );
+        assert_eq!(
+            app.world().get::<Node>(panel).unwrap().display,
+            Display::None
+        );
+        app.world_mut()
+            .resource_mut::<inspection_ui::Inspector>()
+            .open = false;
+        app.world_mut()
+            .resource_mut::<inspection_ui::Inspector>()
+            .capture_input = false;
+        *app.world_mut().get_mut::<Interaction>(toggle).unwrap() = Interaction::None;
+        app.update();
+        *app.world_mut().get_mut::<Interaction>(toggle).unwrap() = Interaction::Pressed;
+        app.world_mut()
+            .resource_mut::<Time>()
+            .advance_by(Duration::from_secs(1000));
+        let date = app.world().resource::<Game>().simulation.date.tick();
+        app.update();
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            date + 10,
+            "Long frame executes one batch, not a time backlog"
+        );
+        app.update();
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            date + 10
         );
         Ok(())
     }
