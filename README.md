@@ -9,6 +9,12 @@ Discord: https://discord.gg/h5r77Sa
 
 The project is still in intensive development.
 
+### Rust / Bevy port
+
+The separate [Rust workspace](rust/README.md) contains the first runnable port milestone:
+an Earth globe, province picking, and country selection without Lua. It is not yet the
+full game; the existing C++ build below remains available.
+
 ### Compiling
 Clone the repo with
 `git clone --recursive --shallow-submodules https://github.com/Conquer-Space/Conquer-Space`

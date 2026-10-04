@@ -1,0 +1,21 @@
+[workspace]
+members = ["crates/cqsp-core", "crates/cqsp-client"]
+resolver = "3"
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.95"
+license = "GPL-3.0-or-later"
+
+[workspace.dependencies]
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde-hjson = { version = "1.1", default-features = false }
+image = { version = "0.25", default-features = false, features = ["png", "jpeg"] }
+
+[profile.dev]
+debug = 1
+
+[profile.dev.package."*"]
+opt-level = 2

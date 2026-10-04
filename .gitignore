@@ -35,3 +35,6 @@ NodeEditor.json
 
 *_market.csv
 output/
+
+# Rust port build artifacts
+/rust/target/
