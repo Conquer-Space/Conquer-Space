@@ -13,8 +13,8 @@ Spacecraft now execute timed burns, trigger queues, SOI transitions, crashes and
 landing commands. A native system view exposes body/ship selection, orbital paths,
 inspection and basic maneuver controls. Spaceports now dispatch missions and cargo,
 manufacture/launch vehicles and progress lunar colonization. The core includes 250
-Moon provinces and native spaceport/vehicle/mission screens; saves and much of the
-remaining UI are still being ported. See
+Moon provinces, native spaceport/vehicle/mission screens and an upstream-compatible
+metadata save/load browser; much of the remaining UI is still being ported. See
 [PARITY.md](PARITY.md) for status, evidence, compatibility gaps and acceptance gates.
 The existing CMake/Visual Studio project is unchanged.
 
@@ -58,6 +58,15 @@ Headless metadata-only save tools are available through `cqsp-sim`:
 not restore economy, ships, country selection, histories or RNG state. Re-saving
 updates the same country/UUID folder with an atomic metadata replacement. Paths
 are explicit, and no original C++ save directories are touched by default.
+
+The native **Save / load metadata** button is available before country selection.
+It pauses simulation work while open without changing your pause setting. Save
+requires a started country; Previous/Next select a folder, and Load rebuilds fresh
+assets, applies date/UUID and ticks once, matching the original loading scene.
+It returns to country selection, not the previously played state. The default is
+`%LOCALAPPDATA%/ConquerSpaceRust/saves`; `--saves DIRECTORY` overrides it.
+Neither opening the browser nor `--paths` creates folders. Offscreen smoke writes
+only isolated fixtures under `target/`, never your normal save directory.
 
 Right-drag or arrow keys orbit the globe; wheel zooms; left-click selects a province's
 country. Tab/Shift+Tab cycle countries (including ones too small to click on the 2K map).

@@ -52,10 +52,15 @@ pub(super) fn update(
     game: Res<Game>,
     ports: Res<SpaceportUi>,
     inspector: Res<Inspector>,
+    saves: Option<Res<super::save_ui::Saves>>,
     mut panels: Query<&mut Node, With<Panel>>,
     mut labels: Query<&mut Text, With<Status>>,
 ) {
-    let display = if game.session.player_country.is_some() && !ports.open && !inspector.open {
+    let display = if game.session.player_country.is_some()
+        && !ports.open
+        && !inspector.open
+        && saves.is_none_or(|saves| !saves.open)
+    {
         Display::Flex
     } else {
         Display::None

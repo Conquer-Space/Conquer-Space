@@ -47,7 +47,7 @@ Successful long runs establish stability, not gameplay parity.
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
 | Native replacements for scripted UI/events | Partial | Country selection and civilization/economy/history inspection are native; exploration, side menu and event infrastructure remain |
-| Saves / load / settings / packaging | Metadata component reference-tested; CLI/store and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; explicit CLI metadata save/list/load, atomic replacement, six-hex identity separate from economy RNG; native menus/settings remain. Locked dev/release bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
+| Saves / load / settings / packaging | Metadata component reference-tested; native browser, CLI/store and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; explicit CLI and native metadata save/list/load, fresh-asset loading-scene reset/tick, atomic replacement, six-hex identity separate from economy RNG; application settings and pause menu remain. Locked dev/release bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
 
 ## Compatibility decisions and known gaps
 
@@ -317,7 +317,7 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Eighteen captures include the spaceport panel, newly
+native screen actions. Nineteen captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 The budget capture applies a national subsidy to a newly constructed player factory
 and verifies the chosen absolute tax across all provinces before rendering. Native
@@ -410,7 +410,7 @@ no asset override. All 26 differential tests pass in debug and release.
 The original Save::SaveGame returns an empty HJSON value, while metadata only stores
 date/UUID/version. A full simulation/RNG snapshot would be a new feature, not behavior
 already implemented upstream. The core/CLI/store now preserves this limited behavior;
-native load-menu/settings parity remains open. Thirteen reference cases execute actual
+native application settings and pause-menu parity remain open. Thirteen reference cases execute actual
 GetMetadata/LoadMetadata, including numeric truncation, uint32 wrapping, ignored
 versions, UUID conversion and invalid nonnumeric dates. The load browser defaults
 missing dates to -1, whereas LoadMetadata itself rejects them. Typed validation rejects
@@ -418,6 +418,15 @@ out-of-range/invalid UUID inputs before mutation rather than exposing undefined 
 or partial writes. CLI tests saved/listed/reloaded a two-day metadata file, advanced a
 fresh simulation one day and atomically replaced metadata in the same folder. Only
 the agent-owned target/metadata-cli-check fixture was written; C++ saves were untouched.
+The native metadata browser now saves/refreshes/pages folders, including before
+country selection. Loading follows UniverseLoadingScene's fresh assets, metadata
+application and one tick, then resets country selection, navigation, inspection,
+ports and pause state. Extra ship markers are pruned and can be recreated without
+duplicates. Four ECS tests cover modal time/shortcut capture, closing-frame isolation,
+one-shot disk writes, all ten fixture folders, scroll isolation and invalid-load
+non-mutation. A nineteenth GPU capture checks the explicit metadata-only warning;
+the smoke then loads it and checks date/UUID, default ships and session reset.
+Fixtures are isolated under target/; no normal Rust or original C++ saves are written.
 
 ## Next acceptance gates
 
@@ -432,6 +441,6 @@ the agent-owned target/metadata-cli-check fixture was written; C++ saves were un
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
    research, projects, modifier controls, event queues and market/history inspection.
-5. Verify original metadata/load-menu behavior, application settings, package runtime
+5. Verify remaining pause/menu behavior, application settings, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.
    Full parity requires documented scenario-level comparisons, not file counts.

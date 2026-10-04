@@ -31,6 +31,7 @@ mod chart;
 mod inspection_ui;
 mod pie;
 mod playback_ui;
+mod save_ui;
 mod spaceport_ui;
 mod system_view;
 use system_view::{FlightAction, Focus, Navigation};
@@ -138,6 +139,7 @@ fn main() -> Result<()> {
     let mut data = default_data_path();
     let mut smoke = false;
     let mut print_paths = false;
+    let mut saves_root = None;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -146,9 +148,14 @@ fn main() -> Result<()> {
             }
             "--smoke" => smoke = true,
             "--paths" => print_paths = true,
+            "--saves" => {
+                saves_root = Some(PathBuf::from(
+                    args.next().context("--saves needs a directory")?,
+                ))
+            }
             "--help" | "-h" => {
                 println!(
-                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke] [--paths]\n--paths: print resolved asset directories without launching\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
+                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--saves DIRECTORY] [--smoke] [--paths]\n--paths: print resolved asset/save directories without launching\n--saves: override the Rust-specific metadata save location\n--smoke: offscreen verification with isolated metadata fixtures\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
                 return Ok(());
             }
@@ -159,14 +166,22 @@ fn main() -> Result<()> {
         "assets/client",
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("assets"),
     );
+    let saves_root = if smoke {
+        std::env::current_dir()?
+            .join("target")
+            .join(format!("metadata-smoke-{}", cqsp_core::save::new_uuid()))
+    } else {
+        saves_root.map_or_else(save_ui::default_root, Ok)?
+    };
     if print_paths {
         println!(
             "{}",
-            serde_json::json!({"data":data,"client_assets":assets})
+            serde_json::json!({"data":data,"client_assets":assets,"saves":saves_root})
         );
         return Ok(());
     }
     let world = World::load(&data)?;
+    let saves = save_ui::Saves::new(data.clone(), saves_root);
     let simulation = Simulation::load(&data, &world, 42)?;
     let navigation = Navigation::new(&simulation.solar_system);
     let body_textures = system_view::BodyTextures::load(&data, &simulation.solar_system)?;
@@ -274,6 +289,7 @@ fn main() -> Result<()> {
         .insert_resource(body_textures)
         .insert_resource(spaceport_ui)
         .insert_resource(inspector)
+        .insert_resource(saves)
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
@@ -289,15 +305,17 @@ fn main() -> Result<()> {
             Update,
             (
                 (
-                    inspection_ui::controls.run_if(interactive),
-                    inspection_ui::chart_controls.run_if(interactive),
-                    inspection_ui::pie_controls.run_if(interactive),
-                    inspection_ui::budget::controls.run_if(interactive),
+                    save_ui::controls.run_if(interactive),
+                    save_ui::scroll.run_if(interactive),
+                    inspection_ui::controls.run_if(application_input),
+                    inspection_ui::chart_controls.run_if(application_input),
+                    inspection_ui::pie_controls.run_if(application_input),
+                    inspection_ui::budget::controls.run_if(application_input),
                 )
                     .chain(),
-                inspection_ui::scroll.run_if(interactive),
-                spaceport_ui::controls.run_if(interactive),
-                spaceport_ui::scroll.run_if(interactive),
+                inspection_ui::scroll.run_if(application_input),
+                spaceport_ui::controls.run_if(application_input),
+                spaceport_ui::scroll.run_if(application_input),
                 camera_controls.run_if(earth_controls),
                 pick_province.run_if(earth_controls),
                 selection_controls.run_if(world_input),
@@ -307,7 +325,7 @@ fn main() -> Result<()> {
                 system_view::update,
                 update_globe,
                 update_hud,
-                (update_economy_hud, playback_ui::update).chain(),
+                (update_economy_hud, playback_ui::update, save_ui::update).chain(),
                 spaceport_ui::update,
                 inspection_ui::update,
                 inspection_ui::update_plot,
@@ -429,6 +447,7 @@ fn setup(
         });
     spaceport_ui::spawn(&mut commands, camera, &font);
     playback_ui::spawn(&mut commands, camera, &font);
+    save_ui::spawn(&mut commands, camera, &font);
     inspection_ui::spawn(
         &mut commands,
         camera,
@@ -454,13 +473,20 @@ fn screenshot_path(name: &str) -> Result<PathBuf> {
 fn interactive(smoke: Res<Smoke>) -> bool {
     !smoke.enabled
 }
+fn application_input(smoke: Res<Smoke>, saves: Option<Res<save_ui::Saves>>) -> bool {
+    !smoke.enabled && saves.is_none_or(|saves| !saves.capture_input)
+}
 
 fn world_input(
     smoke: Res<Smoke>,
     ui: Res<spaceport_ui::SpaceportUi>,
     inspector: Res<inspection_ui::Inspector>,
+    saves: Option<Res<save_ui::Saves>>,
 ) -> bool {
-    !smoke.enabled && !ui.capture_input && !inspector.capture_input
+    !smoke.enabled
+        && !ui.capture_input
+        && !inspector.capture_input
+        && saves.is_none_or(|saves| !saves.capture_input)
 }
 
 fn earth_controls(
@@ -468,8 +494,13 @@ fn earth_controls(
     navigation: Res<Navigation>,
     ui: Res<spaceport_ui::SpaceportUi>,
     inspector: Res<inspection_ui::Inspector>,
+    saves: Option<Res<save_ui::Saves>>,
 ) -> bool {
-    !smoke.enabled && !navigation.active && !ui.capture_input && !inspector.capture_input
+    !smoke.enabled
+        && !navigation.active
+        && !ui.capture_input
+        && !inspector.capture_input
+        && saves.is_none_or(|saves| !saves.capture_input)
 }
 
 fn globe_mesh() -> Mesh {
@@ -627,12 +658,16 @@ fn simulation_controls(
     mut game: ResMut<Game>,
     ui: Option<Res<spaceport_ui::SpaceportUi>>,
     inspector: Option<Res<inspection_ui::Inspector>>,
+    saves: Option<Res<save_ui::Saves>>,
 ) {
     if game.session.player_country.is_none() {
         return;
     }
     if game.simulation.date == StarDate::default() {
         game.simulation.tick();
+    }
+    if saves.is_some_and(|saves| saves.open || saves.capture_input) {
+        return;
     }
     let keyboard_enabled =
         ui.is_none_or(|ui| !ui.capture_input) && inspector.is_none_or(|ui| !ui.capture_input);
@@ -843,6 +878,7 @@ fn verify_capture(
     pies: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PieImage>>,
     policy_fills: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::budget::Fill>>,
     game: Res<Game>,
+    saves: Res<save_ui::Saves>,
 ) {
     let pixels = capture
         .image
@@ -852,6 +888,7 @@ fn verify_capture(
         .to_rgb8();
     let mut checked = 0;
     let mut inspection_title = false;
+    let mut save_title = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -881,12 +918,17 @@ fn verify_capture(
         );
         checked += 1;
         inspection_title |= text.0.starts_with("NATIVE INSPECTION");
+        save_title |= text.0.starts_with("SAVE / LOAD · METADATA ONLY");
     }
     assert!(
         checked >= 8,
         "Smoke check: expected visible text nodes, checked {checked}"
     );
     println!("SMOKE: verified rendered pixels for {checked} text blocks.");
+    assert!(
+        !saves.open || save_title,
+        "Smoke check: metadata browser header clipped away"
+    );
     assert!(
         !inspector.open || inspection_title,
         "Smoke check: inspector header clipped away"
@@ -983,7 +1025,7 @@ fn verify_capture(
         assert_eq!(verified, 2, "Smoke check: both policy sliders must render");
         println!("SMOKE: verified both policy slider fill bars.");
     }
-    if navigation.active && !ui.open && !inspector.open {
+    if navigation.active && !ui.open && !inspector.open && !saves.open {
         let mut orbit_pixels = 0;
         for y in 0..pixels.height() {
             for x in 330..pixels.width() - 330 {
@@ -1105,6 +1147,7 @@ fn smoke_test(
     mut navigation: ResMut<Navigation>,
     mut ui: ResMut<spaceport_ui::SpaceportUi>,
     mut inspector: ResMut<inspection_ui::Inspector>,
+    mut saves: ResMut<save_ui::Saves>,
 ) {
     if !smoke.enabled {
         return;
@@ -1437,10 +1480,53 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "budget-inspector.png",
         ),
+        36 => {
+            saves
+                .apply(
+                    save_ui::Action::Open,
+                    &mut game,
+                    &mut navigation,
+                    &mut inspector,
+                    &mut ui,
+                )
+                .expect("Open smoke metadata browser");
+            saves
+                .apply(
+                    save_ui::Action::Save,
+                    &mut game,
+                    &mut navigation,
+                    &mut inspector,
+                    &mut ui,
+                )
+                .expect("Save isolated smoke metadata");
+        }
+        37 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "metadata-browser.png",
+        ),
+        38 => {
+            let uuid = game.simulation.uuid.clone();
+            let tick = game.simulation.date.tick();
+            saves
+                .apply(
+                    save_ui::Action::Load,
+                    &mut game,
+                    &mut navigation,
+                    &mut inspector,
+                    &mut ui,
+                )
+                .expect("Load isolated smoke metadata");
+            assert_eq!(game.simulation.uuid, uuid);
+            assert_eq!(game.simulation.date.tick(), tick + 1);
+            assert_eq!(game.simulation.solar_system.ships.len(), 64);
+            assert!(game.session.player_country.is_none());
+            assert!(game.paused && !navigation.active && !inspector.open && !ui.open);
+        }
         _ => {
             assert_eq!(
-                smoke.captures, 18,
-                "Smoke check: all eighteen captures must be verified"
+                smoke.captures, 19,
+                "Smoke check: all nineteen captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

@@ -1849,6 +1849,7 @@ pub(super) fn update(
     inspector: Res<Inspector>,
     ports: Res<spaceport_ui::SpaceportUi>,
     game: Res<Game>,
+    saves: Option<Res<super::save_ui::Saves>>,
     mut panels: Query<(Entity, &Panel, &mut Node)>,
     children: Query<&Children>,
     mut texts: Query<(&mut Text, Option<&Label>)>,
@@ -1869,7 +1870,10 @@ pub(super) fn update(
                 inspector.is_demographics() && inspector.segment(&game, 0).is_some()
             }
             Panel::Launcher => {
-                game.session.player_country.is_some() && !ports.open && !inspector.open
+                game.session.player_country.is_some()
+                    && !ports.open
+                    && !inspector.open
+                    && saves.as_ref().is_none_or(|saves| !saves.open)
             }
         };
         let display = if shown { Display::Flex } else { Display::None };
@@ -1904,13 +1908,13 @@ pub(super) fn update(
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     use anyhow::Result;
     use bevy::input::keyboard::KeyboardInput;
     use cqsp_core::{Session, World, clock::DAY, default_data_path, simulation::Simulation};
 
-    pub(super) fn app() -> Result<App> {
+    pub(crate) fn app() -> Result<App> {
         let data = default_data_path();
         let world = World::load(&data)?;
         let simulation = Simulation::load(&data, &world, 42)?;
@@ -1953,14 +1957,17 @@ mod tests {
             .add_systems(
                 Update,
                 (
-                    controls,
-                    chart_controls,
-                    pie_controls,
-                    budget::controls,
-                    spaceport_ui::controls,
+                    super::super::save_ui::controls,
+                    controls.run_if(super::super::application_input),
+                    chart_controls.run_if(super::super::application_input),
+                    pie_controls.run_if(super::super::application_input),
+                    budget::controls.run_if(super::super::application_input),
+                    spaceport_ui::controls.run_if(super::super::application_input),
                     super::super::simulation_controls,
                     super::super::selection_controls.run_if(super::super::world_input),
-                    scroll,
+                    scroll.run_if(super::super::application_input),
+                    super::super::save_ui::scroll,
+                    super::super::save_ui::update,
                     spaceport_ui::update,
                     update,
                     update_plot,

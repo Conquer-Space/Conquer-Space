@@ -453,7 +453,13 @@ pub(super) fn sync_ships(
     mut commands: Commands,
     game: Res<Game>,
     mut assets: ResMut<MarkerAssets>,
+    markers: Query<(Entity, &Focus)>,
 ) {
+    for (entity, focus) in &markers {
+        if matches!(focus, Focus::Ship(id) if id.0 >= game.simulation.solar_system.ships.len()) {
+            commands.entity(entity).despawn();
+        }
+    }
     for index in assets.ships..game.simulation.solar_system.ships.len() {
         commands.spawn((
             Focus::Ship(ShipId(index)),
@@ -819,6 +825,36 @@ mod tests {
             )?
         };
         app.update();
+        app.update();
+        assert_eq!(markers.iter(app.world()).count(), initial + 1);
+        assert_eq!(
+            markers
+                .iter(app.world())
+                .filter(|focus| **focus == Focus::Ship(id))
+                .count(),
+            1
+        );
+        app.world_mut()
+            .resource_mut::<Game>()
+            .simulation
+            .solar_system
+            .ships
+            .truncate(id.0);
+        app.update();
+        assert_eq!(markers.iter(app.world()).count(), initial);
+        let replacement = {
+            let mut game = app.world_mut().resource_mut::<Game>();
+            let earth = game.simulation.solar_system.body_id("earth").unwrap();
+            game.simulation.solar_system.launch_ship(
+                "Replacement".into(),
+                earth,
+                Orbit {
+                    semi_major_axis: 7000.0,
+                    ..Orbit::default()
+                },
+            )?
+        };
+        assert_eq!(replacement, id);
         app.update();
         assert_eq!(markers.iter(app.world()).count(), initial + 1);
         assert_eq!(
