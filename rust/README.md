@@ -13,8 +13,8 @@ Spacecraft now execute timed burns, trigger queues, SOI transitions, crashes and
 landing commands. A native system view exposes body/ship selection, orbital paths,
 inspection and basic maneuver controls. Spaceports now dispatch missions and cargo,
 manufacture/launch vehicles and progress lunar colonization. The core includes 250
-Moon provinces and native mission actions; their player-facing screens, saves and
-much of the remaining UI are still being ported. See
+Moon provinces and native spaceport/vehicle/mission screens; saves and much of the
+remaining UI are still being ported. See
 [PARITY.md](PARITY.md) for status, evidence, compatibility gaps and acceptance gates.
 The existing CMake/Visual Studio project is unchanged.
 
@@ -56,6 +56,17 @@ brackets adjust their target radius by 10%. Distances are center-to-center kilom
 not altitude. Body/ship markers are enlarged for visibility; this is not yet the
 original textured system renderer or the complete spacecraft interface.
 
+P or the **Spaceports & missions** button opens the native space screen. Design a
+vehicle, select a port and manufacture it (90 daily steps), then set orbit parameters
+and launch the last stored vehicle. Click fields to edit; Ctrl+A replaces, Tab moves
+and Enter finishes. Scroll if the panel exceeds your viewport. Escape first ends
+editing, then closes the panel without leaving the game. World shortcuts are blocked
+while this screen is open; the simulation keeps running if you left it unpaused.
+The lunar panel cycles all 250 provinces, begins colonization, queues stage/core
+missions, dispatches from the selected port and shows delivery progress. Owned ports
+also dispatch missions automatically each daily step. Native manual actions retain
+the source's missing ownership check and other documented spaceport rules.
+
 For fast renderer-free simulation checks:
 
 ```powershell
@@ -84,14 +95,16 @@ The GPU smoke check casts a real camera ray into Delhi, asserts that India is se
 enters the game view, validates seven daily economy steps, navigates to the system
 and a spacecraft, queues a native maneuver and advances another day. It writes
 `target/selection.png`, `target/game-view.png`, `target/system-view.png` and
-`target/spacecraft-view.png`, then exits.
+`target/spacecraft-view.png`, then designs/manufactures/launches a vehicle, dispatches
+a lunar core mission and verifies its delivery. It also writes `target/spaceport-view.png`
+and `target/launched-vehicle.png`, then exits.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay pixels and all four completed
+input. They check glyph layouts, actual text/overlay pixels and all six completed
 captures. Background tests work while normal game windows are minimized or closed.
 
 ## Layout and next milestone
@@ -118,7 +131,7 @@ colony delivery. Sampled non-degenerate states/queues and exact landing/unload t
 match Rust; a nearly circular sample compares physical state instead of its
 rounding-dependent apsis (details and tolerances in `PARITY.md`).
 
-Next: spaceport/mission screens, remaining native interfaces and broader
+Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.
 Original asset irregularities are reported rather than silently inventing ownership.
 Build output is contained in the ignored `target/` directory and can be deleted to reclaim

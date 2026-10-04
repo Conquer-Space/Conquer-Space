@@ -22,6 +22,7 @@ use bevy::{
 use cqsp_core::{Session, World, default_data_path, intersect_globe, uv_to_direction};
 use cqsp_core::{clock::StarDate, simulation::Simulation};
 use std::{f32::consts::PI, path::PathBuf, time::Duration};
+mod spaceport_ui;
 mod system_view;
 use system_view::{FlightAction, Focus, Navigation};
 
@@ -136,7 +137,7 @@ fn main() -> Result<()> {
             "--smoke" => smoke = true,
             "--help" | "-h" => {
                 println!(
-                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke]\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nO: orbit paths; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
+                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke]\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nO: orbit paths; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
                 return Ok(());
             }
@@ -146,6 +147,7 @@ fn main() -> Result<()> {
     let world = World::load(&data)?;
     let simulation = Simulation::load(&data, &world, 42)?;
     let navigation = Navigation::new(&simulation.solar_system);
+    let spaceport_ui = spaceport_ui::SpaceportUi::new(&simulation);
     println!(
         "Economy slice: {} goods, {} jobs, {} recipes, {} settlements.",
         simulation.catalog.goods.len(),
@@ -248,6 +250,7 @@ fn main() -> Result<()> {
         })
         .insert_resource(Orbit::default())
         .insert_resource(navigation)
+        .insert_resource(spaceport_ui)
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
@@ -262,16 +265,19 @@ fn main() -> Result<()> {
         .add_systems(
             Update,
             (
+                spaceport_ui::controls.run_if(interactive),
+                spaceport_ui::scroll.run_if(interactive),
                 camera_controls.run_if(earth_controls),
                 pick_province.run_if(earth_controls),
-                selection_controls.run_if(interactive),
+                selection_controls.run_if(world_input),
                 simulation_controls.run_if(interactive),
-                system_view::controls.run_if(interactive),
+                system_view::controls.run_if(world_input),
                 system_view::sync_ships,
                 system_view::update,
                 update_globe,
                 update_hud,
                 update_economy_hud,
+                spaceport_ui::update,
                 smoke_test,
             )
                 .chain(),
@@ -343,7 +349,7 @@ fn setup(
     }
     let camera = camera.id();
     commands.remove_resource::<InitialAssets>();
-    commands.spawn((Node {
+    commands.spawn((spaceport_ui::Panel::Background, Node {
         position_type: PositionType::Absolute, left: px(24), top: px(24), width: px(292),
         padding: UiRect::all(px(20)), flex_direction: FlexDirection::Column, row_gap: px(18), border_radius: BorderRadius::all(px(12)), ..default()
     }, UiTargetCamera(camera), BackgroundColor(Color::srgba(0.025, 0.05, 0.09, 0.95))))
@@ -362,6 +368,7 @@ fn setup(
         });
     commands
         .spawn((
+            spaceport_ui::Panel::Background,
             Node {
                 position_type: PositionType::Absolute,
                 right: px(24),
@@ -385,6 +392,7 @@ fn setup(
             ));
             system_view::spawn_controls(panel, &font);
         });
+    spaceport_ui::spawn(&mut commands, camera, &font);
 }
 
 fn ui_font(font: &Handle<Font>, size: f32) -> TextFont {
@@ -405,8 +413,16 @@ fn interactive(smoke: Res<Smoke>) -> bool {
     !smoke.enabled
 }
 
-fn earth_controls(smoke: Res<Smoke>, navigation: Res<Navigation>) -> bool {
-    !smoke.enabled && !navigation.active
+fn world_input(smoke: Res<Smoke>, ui: Res<spaceport_ui::SpaceportUi>) -> bool {
+    !smoke.enabled && !ui.capture_input
+}
+
+fn earth_controls(
+    smoke: Res<Smoke>,
+    navigation: Res<Navigation>,
+    ui: Res<spaceport_ui::SpaceportUi>,
+) -> bool {
+    !smoke.enabled && !navigation.active && !ui.capture_input
 }
 
 fn globe_mesh() -> Mesh {
@@ -558,6 +574,7 @@ fn simulation_controls(
     time: Res<Time>,
     keyboard: Res<ButtonInput<KeyCode>>,
     mut game: ResMut<Game>,
+    ui: Option<Res<spaceport_ui::SpaceportUi>>,
 ) {
     if game.session.player_country.is_none() {
         return;
@@ -565,17 +582,18 @@ fn simulation_controls(
     if game.simulation.date == StarDate::default() {
         game.simulation.tick();
     }
-    if keyboard.just_pressed(KeyCode::Space) {
+    let keyboard_enabled = ui.is_none_or(|ui| !ui.capture_input);
+    if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
         game.paused = !game.paused;
         game.tick_accumulator = 0.0;
     }
-    if keyboard.just_pressed(KeyCode::Minus) {
+    if keyboard_enabled && keyboard.just_pressed(KeyCode::Minus) {
         game.speed_index = game.speed_index.saturating_sub(1);
     }
-    if keyboard.just_pressed(KeyCode::Equal) {
+    if keyboard_enabled && keyboard.just_pressed(KeyCode::Equal) {
         game.speed_index = (game.speed_index + 1).min(SIMULATION_SPEEDS.len() - 1);
     }
-    if keyboard.just_pressed(KeyCode::KeyN) {
+    if keyboard_enabled && keyboard.just_pressed(KeyCode::KeyN) {
         game.paused = true;
         game.tick_accumulator = 0.0;
         game.simulation.advance_day();
@@ -758,6 +776,7 @@ fn verify_capture(
     text_nodes: Query<(&Text, &ComputedNode, &UiGlobalTransform)>,
     navigation: Res<Navigation>,
     mut smoke: ResMut<Smoke>,
+    ui: Res<spaceport_ui::SpaceportUi>,
 ) {
     let pixels = capture
         .image
@@ -800,7 +819,7 @@ fn verify_capture(
         "Smoke check: expected visible text nodes, checked {checked}"
     );
     println!("SMOKE: verified rendered pixels for {checked} text blocks.");
-    if navigation.active {
+    if navigation.active && !ui.open {
         let mut orbit_pixels = 0;
         for y in 0..pixels.height() {
             for x in 330..pixels.width() - 330 {
@@ -839,6 +858,7 @@ fn smoke_test(
     text_layouts: Query<(&Text, &bevy::text::TextLayoutInfo)>,
     target: Option<Res<SmokeTarget>>,
     mut navigation: ResMut<Navigation>,
+    mut ui: ResMut<spaceport_ui::SpaceportUi>,
 ) {
     if !smoke.enabled {
         return;
@@ -848,7 +868,7 @@ fn smoke_test(
         return;
     }
     smoke.elapsed = 0.0;
-    if matches!(smoke.stage, 1 | 3 | 5 | 7) {
+    if matches!(smoke.stage, 1 | 3 | 5 | 7 | 9 | 11) {
         for (text, layout) in &text_layouts {
             assert!(
                 text.0.trim().is_empty() || !layout.glyphs.is_empty(),
@@ -938,10 +958,59 @@ fn smoke_test(
                 "spacecraft-view.png",
             );
         }
+        8 => {
+            use spaceport_ui::Action;
+            ui.open = true;
+            ui.apply(Action::Design, &mut game)
+                .expect("Smoke native vehicle design");
+            ui.apply(Action::Manufacture, &mut game)
+                .expect("Smoke native manufacturing");
+            for _ in 0..90 {
+                ui.apply(Action::NextDay, &mut game).unwrap();
+            }
+            let ship = cqsp_core::solar_system::ShipId(game.simulation.solar_system.ships.len());
+            ui.apply(Action::Launch, &mut game)
+                .expect("Smoke manufactured vehicle launch");
+            navigation.select(Focus::Ship(ship), &game.simulation.solar_system);
+            ui.apply(Action::Colonize, &mut game)
+                .expect("Smoke lunar target");
+            ui.apply(Action::QueueCore, &mut game)
+                .expect("Smoke colony core mission");
+            ui.apply(Action::Dispatch, &mut game)
+                .expect("Smoke manual mission dispatch");
+            for _ in 0..20 {
+                ui.apply(Action::NextDay, &mut game).unwrap();
+            }
+            assert!(
+                game.simulation
+                    .settlements
+                    .iter()
+                    .any(|site| site.colony.is_some())
+            );
+            game.simulation
+                .validate()
+                .expect("Smoke spaceport / mission validation");
+            println!(
+                "SMOKE: native design, 90-day manufacturing, launch and lunar colony delivery passed."
+            );
+        }
+        9 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "spaceport-view.png",
+        ),
+        10 => {
+            ui.open = false;
+        }
+        11 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "launched-vehicle.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 4,
-                "Smoke check: all four captures must be verified"
+                smoke.captures, 6,
+                "Smoke check: all six captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

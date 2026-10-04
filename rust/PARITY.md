@@ -29,7 +29,7 @@ Successful long runs establish stability, not gameplay parity.
 | Local markets / shortages / planetary trade | Implemented | Price caps, shortages, retained trade, imports/exports, Earth/Moon markets and spaceport coupling; original system harness remains |
 | Population history | Implemented | Daily domain snapshots; legacy graph UI remains |
 | Market history / CSV / industry export | Implemented for Earth | Daily planetary snapshots, original CSV column schema and production-unit export fields; CSV numeric/date formatting and empty-zone omission are not byte-identical, inspection graphs remain |
-| Spaceports / launch vehicles / interplanetary trade | Implemented core | LIFO shipments, design/manufacture/launch, unloading, original trade rules and missing-city diagnostics; native screens and whole-system differential tests remain |
+| Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen | Editable designs/orbit parameters, project progress, manufacture/launch, LIFO cargo queues, selected ports/vehicles/goods; manufacturing/trade whole-system differential tests remain |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
 | Spacecraft movement / trigger commands | Implemented; lunar delivery reference-tested | Actual original SysOrbit/SysSpacePort scenario compares sampled states, queues, landing/unload ticks and colony core/stage; broader SOI, return flights and command boundary corpus remain |
@@ -37,7 +37,7 @@ Successful long runs establish stability, not gameplay parity.
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented basic native view | Body/ship focus, hierarchy navigation, precise local frames, orbit overlays, inspection, basic native maneuver buttons; simplified/enlarged markers, textured planets/ships, ground tracks, complete controls and universe generation remain |
 | Industry modifiers | Reference-tested components; integration implemented | Additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded, industry gain/cap wiring tested; modifier UI remains |
-| Research / projects / missions | Project loader reference-tested; vehicle/mission core implemented | Auto/explicit dispatch, five colony stages/core delivery and boundary tests; research, other project workflows and UI remain |
+| Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Native replacements for scripted UI/events | Partial | Country selection is native; civ info, exploration, side menu and event infrastructure remain |
 | Saves / load / settings / packaging | Not ported | Persist simulation + RNG state, source-independent assets, release installation and compatibility decision |
 
@@ -146,7 +146,7 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 62 unit tests
+365 market-history records and CSV/industry export checks. There are 66 unit tests
 plus six differential tests (five live tests require the reference executable).
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
@@ -160,7 +160,11 @@ The client smoke test renders to a fixed 1280×800 GPU image with Winit disabled
 no OS window is created, so minimizing/using the desktop cannot resize its viewport
 or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
-maneuver, advances another day and saves four verified captures before exiting.
+maneuver and advances another day. It then designs a vehicle, manufactures it over
+90 daily steps, launches it and dispatches/delivers a lunar core mission using the
+native screen actions. Six verified captures include the spaceport panel and newly
+launched vehicle. Text editing, Unicode deletion, shortcut isolation, one-shot
+buttons, scrolling and invalid-design non-mutation have renderer-free ECS tests.
 Text checks cover both glyph layouts and bright pixels inside visible text blocks;
 system captures also check orbit-overlay pixels. Synchronous pipeline preparation
 and sibling-label refresh address the previous missing-text captures. The previous
@@ -176,8 +180,8 @@ which do not create native windows.
    transition boundaries, construction shortages and taxation/subsidy cases.
 2. Extend the spacecraft system harness to return flights, SOI edge ordering,
    different launch epochs and the near-circular post-burn trajectory.
-3. Complete spaceport/vehicle/mission screens and differential manufacturing/trade
-   boundaries; lunar province delivery is now checked against the actual systems.
+3. Extend native spaceport screens with filtering/inspection detail and differential
+   manufacturing/trade boundaries; lunar province delivery is now reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
    research, projects, modifier controls, event queues and market/history inspection.
 5. Verify saves/reloads, application settings, asset packaging and input/UI flows.
