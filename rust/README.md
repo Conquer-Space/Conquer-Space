@@ -76,6 +76,7 @@ For fast renderer-free simulation checks:
 ```powershell
 cargo run -p cqsp-core --bin cqsp-sim -- --days 365 --seed 42
 cargo run -p cqsp-core --bin cqsp-sim -- --days 30 --market-csv target/market.csv --industries-json target/industries.json
+cargo run -p cqsp-core --bin cqsp-sim -- --days 0 --science-json target/science.json
 ```
 
 This checks daily economy/orbital state and prints JSON, including body positions.
@@ -85,6 +86,9 @@ Daily planetary market snapshots are retained alongside population summaries.
 The optional CSV keeps the legacy market logger's columns; the industry JSON keeps
 its production-unit fields. Exports refuse to overwrite existing files. These are
 diagnostic exports, not complete save files.
+The science export contains the original 11 fields and seven technologies, including
+parent/adjacent relationships, action strings and difficulty. The source has no
+automatic research progression system; these definitions do not invent one.
 
 ## Verification
 
@@ -148,6 +152,8 @@ Weekly labor, daily labor-market signals and construction-sector purchases are
 compared against original systems across drift limits, wage changes, zero demand
 and small/empty workforces. Undefined unemployment conversions are not accepted
 as portable behavior; unordered mixed-direction drift still needs broader coverage.
+Science-field and technology definitions also compare against the actual source
+loaders, including defaults and directed/duplicate graph-reference handling.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.

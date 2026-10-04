@@ -285,6 +285,54 @@ fn matches_recorded_cpp_components() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual science-field/technology loaders"]
+fn science_definitions_and_reference_rules_match_original_loaders() {
+    use cqsp_core::science::ScienceCatalog;
+    let data = default_data_path();
+    let read = |folder: &str| {
+        let mut files: Vec<_> = fs::read_dir(data.join(folder))
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .collect();
+        files.sort();
+        files
+            .into_iter()
+            .filter(|path| {
+                path.extension()
+                    .is_some_and(|extension| extension == "hjson")
+            })
+            .flat_map(|path| {
+                serde_hjson::from_str::<Vec<Value>>(&fs::read_to_string(path).unwrap()).unwrap()
+            })
+            .collect::<Vec<_>>()
+    };
+    let scenarios = [
+        (read("data/science/fields"), read("data/science/technology")),
+        (
+            vec![
+                json!({"name":"A", "identifier":"a", "parent":["b","b","a","missing"]}),
+                json!({"name":"B", "identifier":"b", "adjacent":["a"]}),
+                json!({"identifier":"skipped"}),
+            ],
+            vec![
+                json!({"name":"T", "identifier":"t", "fields":["a","a","b"], "difficulty":10.9, "tags":["test"]}),
+                json!({"name":"Defaults", "identifier":"defaults"}),
+            ],
+        ),
+    ];
+    for (fields, technologies) in scenarios {
+        let science = ScienceCatalog::from_entries(&fields, &technologies).unwrap();
+        compare(
+            &science.definitions_json(),
+            &reference_output(
+                Some("--science"),
+                &json!({"fields":fields, "technologies":technologies}).to_string(),
+            ),
+        );
+    }
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; requires the legacy C++ dependencies and Visual Studio"]
 fn matches_live_cpp_components() {
     compare(&snapshot(), &reference_output(None, ""));

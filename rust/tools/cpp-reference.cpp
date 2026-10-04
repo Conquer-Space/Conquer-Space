@@ -23,6 +23,8 @@
 #include "core/components/spaceport.h"
 #include "core/components/ships.h"
 #include "core/components/surface.h"
+#include "core/components/science.h"
+#include "core/components/tags.h"
 #include "core/components/market.h"
 #include "core/components/modifier.h"
 #include "core/components/orbit.h"
@@ -31,6 +33,8 @@
 #include "core/loading/loadorbit.h"
 #include "core/loading/loadcities.h"
 #include "core/loading/projectloader.h"
+#include "core/loading/fields.h"
+#include "core/loading/technology.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/economy/sysspaceport.h"
 #include "core/systems/economy/syslaunchvehicleproduction.h"
@@ -344,6 +348,46 @@ void PrintGroundTracks() {
         auto ground = cqsp::core::util::GetGroundTrack(rotation, position);
         output.push_back(Numbers({rotation.x, rotation.y, rotation.z, rotation.w, ground.r_latitude(), ground.r_longitude()}));
     }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintScience() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("science-reference");
+    auto input = ReadInput();
+    cqsp::core::loading::LoadFields(universe, input["fields"]);
+    cqsp::core::loading::LoadTechnologies(universe, input["technologies"]);
+    auto names = [&](const auto& entities) {
+        Hjson::Value values(Hjson::Type::Vector);
+        for (auto entity : entities) values.push_back(universe.get<Identifier>(entity).identifier);
+        return values;
+    };
+    auto strings = [](const auto& items) {
+        Hjson::Value values(Hjson::Type::Vector);
+        for (const auto& item : items) values.push_back(item);
+        return values;
+    };
+    auto metadata = [&](entt::entity entity) {
+        Hjson::Value value(Hjson::Type::Map);
+        value["name"] = universe.get<Name>(entity).name;
+        value["description"] = universe.all_of<Description>(entity) ? Hjson::Value(universe.get<Description>(entity).description) : Hjson::Value(Hjson::Type::Null);
+        return value;
+    };
+    Hjson::Value output(Hjson::Type::Map), fields(Hjson::Type::Map), technologies(Hjson::Type::Map);
+    for (const auto& [identifier, entity] : universe.fields) {
+        auto value = metadata(entity);
+        const auto& field = universe.get<science::Field>(entity);
+        value["parents"] = names(field.parents); value["adjacent"] = names(field.adjacent);
+        fields[identifier] = value;
+    }
+    for (const auto& [identifier, entity] : universe.technologies) {
+        auto value = metadata(entity);
+        const auto& tech = universe.get<science::Technology>(entity);
+        value["fields"] = names(tech.fields); value["actions"] = strings(tech.actions); value["difficulty"] = tech.difficulty;
+        value["tags"] = universe.all_of<Tags>(entity) ? strings(universe.get<Tags>(entity).tags) : Hjson::Value(Hjson::Type::Vector);
+        technologies[identifier] = value;
+    }
+    output["fields"] = fields; output["technologies"] = technologies;
     WriteJson(output); std::cout << '\n';
 }
 
@@ -807,6 +851,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--interplanetary") { PrintInterplanetary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--labor") { PrintLabor(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--ground-tracks") { PrintGroundTracks(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--science") { PrintScience(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--population") { PrintPopulation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--manufacturing") { PrintManufacturing(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production") { PrintProduction(); return 0; }

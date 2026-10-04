@@ -5,6 +5,7 @@ pub mod economy;
 pub mod flight;
 pub mod modifiers;
 pub mod orbit;
+pub mod science;
 pub mod simulation;
 pub mod solar_system;
 pub mod spaceflight;

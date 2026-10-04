@@ -11,6 +11,7 @@ use crate::{
     },
     modifiers::ModifierCatalog,
     read_entries,
+    science::ScienceCatalog,
     solar_system::{BodyId, SolarSystem},
     spaceflight::{
         ColonizationTarget, Colony, LaunchVehicle, Mission, MissionId, PlanetaryMarket,
@@ -81,6 +82,7 @@ pub struct CountryEconomy {
     pub income_taxes: f64,
     pub vehicles: Vec<VehicleId>,
     pub missions: Vec<MissionId>,
+    pub research: i32,
 }
 
 #[derive(Default, Debug, Clone, Serialize)]
@@ -98,6 +100,7 @@ pub struct Simulation {
     pub solar_system: SolarSystem,
     pub catalog: Catalog,
     pub modifiers: ModifierCatalog,
+    pub science: ScienceCatalog,
     /// Map provinces come first, matching World::provinces indices; then cities.
     pub settlements: Vec<Settlement>,
     pub countries: Vec<CountryEconomy>,
@@ -137,6 +140,8 @@ impl Simulation {
         let mut diagnostics = catalog.diagnostics.clone();
         let modifiers = ModifierCatalog::load(data)?;
         diagnostics.extend(modifiers.diagnostics.iter().cloned());
+        let science = ScienceCatalog::load(data)?;
+        diagnostics.extend(science.diagnostics.iter().cloned());
         let mut settlements = Vec::new();
         let provinces = read_entries::<SettlementEntry>(&data.join("data/planet_data/provinces"))?;
         let cities = read_entries::<SettlementEntry>(&data.join("data/cities"))?;
@@ -283,6 +288,7 @@ impl Simulation {
             solar_system,
             catalog,
             modifiers,
+            science,
             settlements,
             countries,
             planetary_markets,

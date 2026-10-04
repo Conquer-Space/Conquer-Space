@@ -13,6 +13,7 @@ fn main() -> Result<()> {
     let mut seed = 42_u64;
     let mut market_csv = None;
     let mut industries_json = None;
+    let mut science_json = None;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -29,9 +30,14 @@ fn main() -> Result<()> {
                     args.next().context("--industries-json needs a path")?,
                 ))
             }
+            "--science-json" => {
+                science_json = Some(PathBuf::from(
+                    args.next().context("--science-json needs a path")?,
+                ))
+            }
             "--help" | "-h" => {
                 println!(
-                    "Usage: cqsp-sim [--data PATH] [--days NUMBER] [--seed NUMBER]\n                [--market-csv NEW_PATH] [--industries-json NEW_PATH]\nRuns the partial Earth economy and orbital propagation; prints JSON and checks every daily step. Exports never overwrite existing files."
+                    "Usage: cqsp-sim [--data PATH] [--days NUMBER] [--seed NUMBER]\n                [--market-csv NEW_PATH] [--industries-json NEW_PATH] [--science-json NEW_PATH]\nRuns the partial Earth economy and orbital propagation; prints JSON and checks every daily step. Exports never overwrite existing files."
                 );
                 return Ok(());
             }
@@ -68,6 +74,12 @@ fn main() -> Result<()> {
         writeln!(output)?;
         output.flush()?;
     }
+    if let Some(path) = &science_json {
+        let mut output = create_export(path)?;
+        serde_json::to_writer_pretty(&mut output, &simulation.science.definitions_json())?;
+        writeln!(output)?;
+        output.flush()?;
+    }
     let orbital_positions = ["earth", "moon", "mars"].map(|identifier| {
         let id = simulation.solar_system.body_id(identifier).unwrap();
         let body = &simulation.solar_system.bodies[id.0];
@@ -80,6 +92,7 @@ fn main() -> Result<()> {
             "scope": "partial-earth-economy-and-orbits", "seed":seed, "daily_steps":days,
             "date":simulation.date.display(), "goods":simulation.catalog.goods.len(),
             "jobs":simulation.catalog.jobs.len(), "recipes":simulation.catalog.recipes.len(),
+            "science_fields":simulation.science.fields.len(), "technologies":simulation.science.technologies.len(),
             "settlements":simulation.settlements.len(), "summary":simulation.summary(None),
             "celestial_bodies":simulation.solar_system.bodies.len(),
             "spacecraft":simulation.solar_system.ships.len(),

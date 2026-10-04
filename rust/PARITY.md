@@ -38,6 +38,7 @@ Successful long runs establish stability, not gameplay parity.
 | Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
 | Industry modifiers | Reference-tested components; integration implemented | Additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded, industry gain/cap wiring tested; modifier UI remains |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
+| Science fields / technologies | Loader reference-tested | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native inspection remains |
 | Native replacements for scripted UI/events | Partial | Country selection is native; civ info, exploration, side menu and event infrastructure remain |
 | Saves / load / settings / packaging | Not ported | Persist simulation + RNG state, source-independent assets, release installation and compatibility decision |
 
@@ -76,6 +77,13 @@ Successful long runs establish stability, not gameplay parity.
 - `scripts/events/default.lua` defines a tutorial chain but explicitly disables
   registration. Native event machinery is still required for supported events;
   do not activate the disabled chain accidentally.
+- Science fields preserve directed parent/adjacent links; adjacency is not made
+  symmetric and repeated parents are not deduplicated. Technology fields are sets,
+  difficulty is an integer (default ten), and actions remain data strings. Countries
+  start with zero research. CreateSystems contains no research progression system,
+  so the Rust port must not invent automatic progress or unlock effects. The unused
+  `scienceprojects.hjson` is not registered in the source asset manifest. Invalid
+  technology field references fail clearly instead of creating default entities.
 - The original HJSON orbit loader ignores `epoch` and its optional/copy constructor
   initializes true anomaly to mean anomaly; both are reference-tested and preserved.
   The unregistered legacy `satellites.txt` TLE file is not loaded. Signed retrograde
@@ -162,8 +170,8 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 71 unit tests
-plus 13 differential tests (12 live tests require the reference executable).
+365 market-history records and CSV/industry export checks. There are 73 unit tests
+plus 14 differential tests (13 live tests require the reference executable).
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
@@ -184,6 +192,10 @@ epochs, including retrograde and zero-rotation bodies. Renderer-free tests check
 texture dimensions, axis reflection, surface path radii, escape-path rejection and
 the ground-track toggle. GPU captures check actual texture color variation and
 magenta ground-track pixels in the focused spacecraft's parent-body region.
+Science comparisons execute the actual loaders on the bundled definitions and a
+controlled graph with duplicate/self/missing references, duplicate technology fields,
+tags, fractional difficulty and defaults. `cqsp-sim --science-json NEW_PATH` exports
+the loaded definitions without overwriting existing files; this is not a game save.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking
