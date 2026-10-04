@@ -947,6 +947,139 @@ void PrintManufacturing() {
     WriteJson(output); std::cout << '\n';
 }
 
+Hjson::Value IndustryValues(cqsp::core::Universe& universe, entt::entity industry) {
+    const auto& value = universe.get<ProductionUnit>(industry);
+    auto& wallet = universe.get<Wallet>(industry);
+    return Numbers({static_cast<double>(value.state), value.size, value.utilization, value.diff,
+        value.shortage ? 1.0 : 0.0, value.cumulative_pr, static_cast<double>(value.continuous_gains), static_cast<double>(value.stability),
+        value.expertise, value.revenue, value.material_costs, value.wage_cost, value.tax_cost, value.construction_cost,
+        value.profit, value.output_subsidy_amount, value.amount_sold, value.power_consumption,
+        wallet.GetBalance(), wallet.GetChange(), wallet.GetGDPChange()});
+}
+
+void ReadResourceVector(const Hjson::Value& values, ResourceVector& target) {
+    for (int index = 0; index < values.size(); ++index) {
+        target.emplace_back(ToGoodEntity(values[index][0].to_double()), values[index][1].to_double());
+    }
+}
+
+void PrintCombinedEconomy() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    universe.random = ReferenceRandom(input["seed"]);
+    RegisterGoods(universe, input["goods"]);
+    const int count = universe.GoodCount();
+    for (int index = 0; index < count; ++index) {
+        if (input["goods"][index][2].type() == Hjson::Type::Null) continue;
+        auto entity = universe.good_vector[index];
+        universe.emplace<ConsumerGood>(entity, input["goods"][index][2].to_double(), input["goods"][index][3].to_double());
+        universe.consumergoods.push_back(entity);
+    }
+    auto& market_config = universe.economy_config.market_config;
+    market_config.base_price_deviation = input["market_config"][0].to_double();
+    market_config.shortage_level = input["market_config"][1].to_double();
+    market_config.default_market_access = input["market_config"][2].to_double();
+    auto& config = universe.economy_config.production_config;
+    config.profit_multiplier = input["production_config"][0].to_double();
+    config.max_factory_delta = input["production_config"][1].to_double();
+    config.factory_min_utilization = input["production_config"][2].to_double();
+    config.construction_limit = input["production_config"][3].to_double();
+    config.underutilization_limit = input["production_config"][4].to_double();
+    auto job = universe.create();
+    universe.emplace<Labor>(job).good = ToGoodEntity(input["labor_good"].to_double());
+    universe.default_job = job;
+    auto country = universe.create();
+    universe.emplace<OrganizationIncome>(country);
+    auto planet = universe.create();
+    universe.emplace<Market>(planet, count);
+    universe.emplace<PlanetaryMarket>(planet, count);
+    universe.emplace<MarketHistory>(planet, count);
+    auto province = universe.create();
+    universe.emplace<Province>(province, country);
+    universe.emplace<Settlement>(province);
+    universe.emplace<IndustrialZone>(province);
+    universe.emplace<infrastructure::CityInfrastructure>(province);
+    auto& sector = universe.emplace<infrastructure::ConstructionSector>(province);
+    sector.construction_capacity = input["sector"][0].to_double();
+    sector.construction_cost = input["sector"][1].to_double();
+    universe.emplace<Market>(province, count);
+    universe.emplace<Settlements>(planet).provinces.push_back(province);
+    auto population = universe.create();
+    universe.get<Settlement>(province).population.push_back(population);
+    auto& segment = universe.emplace<PopulationSegment>(population);
+    const auto& pop = input["population"];
+    segment.population = pop[0].to_double(); segment.standard_of_living = pop[1].to_double();
+    segment.income = pop[3].to_double(); segment.spending = pop[4].to_double();
+    segment.labor.labor_distribution[job] = pop[5].to_double();
+    universe.emplace<Wallet>(population) = pop[2].to_double();
+    auto recipe_entity = universe.create();
+    auto& recipe = universe.emplace<Recipe>(recipe_entity);
+    const auto& recipe_input = input["recipe"];
+    ReadResourceVector(recipe_input["input"], recipe.input); ReadResourceVector(recipe_input["capital"], recipe.capitalcost);
+    recipe.output = {ToGoodEntity(recipe_input["output"][0].to_double()), recipe_input["output"][1].to_double()};
+    recipe.power_cost = recipe_input["power"].to_double();
+    recipe.workers.workers.emplace_back(job, static_cast<uint32_t>(recipe_input["workers"].to_int64()));
+    auto& cost = universe.emplace<ConstructionCost>(recipe_entity);
+    cost.time = recipe_input["construction_time"].to_double(); ReadResourceVector(recipe_input["construction_cost"], cost.cost);
+    auto industry = universe.create();
+    universe.get<IndustrialZone>(province).industries.push_back(industry);
+    universe.emplace<Wallet>(industry);
+    universe.emplace<Employer>(industry);
+    auto& production = universe.emplace<ProductionUnit>(industry);
+    const auto& initial = input["industry"];
+    production.recipe = recipe_entity; production.size = initial[1].to_double(); production.utilization = initial[2].to_double();
+    production.state = static_cast<IndustryState>(initial[0].to_int64()); production.output_subsidy = initial[3].to_double();
+    if (initial[4].type() != Hjson::Type::Null) universe.emplace<Construction>(industry,
+        static_cast<int>(initial[4][0].to_int64()), static_cast<int>(initial[4][1].to_int64()), static_cast<int>(initial[4][2].to_int64()));
+    using namespace cqsp::core::systems;
+    SysWalletReset wallets(game); SysMarketReset reset(game); InfrastructureSim infrastructure(game);
+    SysLaborDistribution labor(game); SysPopulationConsumption consumption(game); SysProduction factories(game);
+    SysMarket local(game); SysPlanetaryTrade trade(game); SysLaborMarket demand(game);
+    history::SysMarketHistory history(game);
+    labor.Init(); consumption.Init(); local.Init(); trade.Init(); demand.Init();
+    auto& market = universe.get<Market>(province);
+    for (int good = 0; good < count; ++good) market.taxation[ToGoodEntity(good)] = input["taxation"][good].to_double();
+    Hjson::Value output(Hjson::Type::Vector);
+    bool unemployment_defined = false;
+    for (int day = 0; day < input["days"].to_int64(); ++day) {
+        universe.date.SetDate(day * StarDate::DAY);
+        wallets.DoSystem(); reset.DoSystem(); infrastructure.DoSystem();
+        if (universe.date.GetDate() % labor.Interval() == 0) {
+            double workforce = segment.labor.labor_distribution[job];
+            double employment = workforce / market.sd_ratio[universe.get<Labor>(job).good];
+            double rate = (1.0 - employment) / workforce;
+            unemployment_defined = std::isfinite(rate) && rate >= 0.0 && rate < std::pow(2.0, 64);
+            labor.DoSystem();
+        }
+        consumption.DoSystem(); factories.DoSystem(); local.DoSystem(); trade.DoSystem(); demand.DoSystem(); history.DoSystem();
+        Hjson::Value row(Hjson::Type::Map);
+        auto& wallet = universe.get<Wallet>(population);
+        row["population"] = Numbers({wallet.GetBalance(), wallet.GetChange(), wallet.GetGDPChange(), segment.standard_of_living,
+            segment.income, segment.spending, segment.average_wage, segment.sol_pid.proportional, segment.sol_pid.integral,
+            segment.sol_pid.derivative, static_cast<double>(segment.employed_amount), static_cast<double>(segment.labor.labor_distribution[job])});
+        row["unemployment"] = unemployment_defined ? Hjson::Value(segment.unemployment_rate) : Hjson::Value(Hjson::Type::Null);
+        row["market"] = MarketValues(market, count); row["planet"] = MarketValues(universe.get<Market>(planet), count);
+        row["industry"] = IndustryValues(universe, industry);
+        row["construction"] = Hjson::Value(Hjson::Type::Null);
+        if (universe.all_of<Construction>(industry)) {
+            auto& value = universe.get<Construction>(industry);
+            row["construction"] = Numbers({static_cast<double>(value.progress), static_cast<double>(value.maximum), static_cast<double>(value.levels)});
+        }
+        row["sector"] = Numbers({static_cast<double>(sector.construction_capacity), static_cast<double>(sector.current_construction), sector.construction_cost});
+        row["taxes"] = universe.get<OrganizationIncome>(country).income_taxes;
+        const auto& population_history = universe.ctx().at<PopulationHistory>();
+        row["history"] = Numbers({population_history.population.back(), population_history.sol.back(), population_history.employment.back(), population_history.employment_rate.back()});
+        for (const auto& [labor_job, amount] : universe.get<Settlement>(province).job_demands) {
+            if (labor_job == job) row["job_demand"] = amount;
+        }
+        row["market_history_length"] = static_cast<int64_t>(universe.get<MarketHistory>(planet).gdp.size());
+        output.push_back(row);
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
 void PrintProduction() {
     spdlog::set_level(spdlog::level::off);
     cqsp::core::Game game;
@@ -956,12 +1089,9 @@ void PrintProduction() {
     const int count = input["prices"].size();
     auto recipe_entity = universe.create();
     auto& recipe = universe.emplace<Recipe>(recipe_entity);
-    auto read_vector = [](const Hjson::Value& values, ResourceVector& target) {
-        for (int index = 0; index < values.size(); ++index) target.emplace_back(ToGoodEntity(values[index][0].to_double()), values[index][1].to_double());
-    };
     const auto& recipe_input = input["recipe"];
-    read_vector(recipe_input["input"], recipe.input);
-    read_vector(recipe_input["capital"], recipe.capitalcost);
+    ReadResourceVector(recipe_input["input"], recipe.input);
+    ReadResourceVector(recipe_input["capital"], recipe.capitalcost);
     recipe.output = {ToGoodEntity(recipe_input["output"][0].to_double()), recipe_input["output"][1].to_double()};
     recipe.power_cost = recipe_input["power"].to_double();
     for (int index = 0; index < recipe_input["workers"].size(); ++index) {
@@ -971,7 +1101,7 @@ void PrintProduction() {
     }
     auto& cost = universe.emplace<ConstructionCost>(recipe_entity);
     cost.time = recipe_input["construction_time"].to_double();
-    read_vector(recipe_input["construction_cost"], cost.cost);
+    ReadResourceVector(recipe_input["construction_cost"], cost.cost);
     auto& config = universe.economy_config.production_config;
     config.profit_multiplier = input["config"][0].to_double();
     config.max_factory_delta = input["config"][1].to_double();
@@ -1022,15 +1152,9 @@ void PrintProduction() {
         Hjson::Value rows(Hjson::Type::Vector);
         for (int index = 0; index < industries.size(); ++index) {
             auto industry = industries[index];
-            const auto& value = universe.get<ProductionUnit>(industry);
-            auto& wallet = universe.get<Wallet>(industry);
             const auto& market = universe.get<Market>(provinces[index]);
             Hjson::Value row(Hjson::Type::Map);
-            row["industry"] = Numbers({static_cast<double>(value.state), value.size, value.utilization, value.diff,
-                value.shortage ? 1.0 : 0.0, value.cumulative_pr, static_cast<double>(value.continuous_gains), static_cast<double>(value.stability),
-                value.expertise, value.revenue, value.material_costs, value.wage_cost, value.tax_cost, value.construction_cost,
-                value.profit, value.output_subsidy_amount, value.amount_sold, value.power_consumption,
-                wallet.GetBalance(), wallet.GetChange(), wallet.GetGDPChange()});
+            row["industry"] = IndustryValues(universe, industry);
             row["construction"] = Hjson::Value(Hjson::Type::Null);
             if (universe.all_of<Construction>(industry)) {
                 const auto& job = universe.get<Construction>(industry);
@@ -1277,6 +1401,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--ground-tracks") { PrintGroundTracks(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--science") { PrintScience(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--population") { PrintPopulation(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--combined-economy") { PrintCombinedEconomy(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--manufacturing") { PrintManufacturing(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production") { PrintProduction(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--orbit-grid") {

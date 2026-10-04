@@ -24,7 +24,7 @@ Successful long runs establish stability, not gameplay parity.
 | Goods / jobs / zoning / recipes / economy config | Loader reference-tested | Actual original loaders compare all 56 goods, five jobs, ten zoning definitions and 22 recipes; controlled defaults, physical units, invalid-good rejection, duplicate good lookup, first default-job tag, recipe type/tag precedence, missing resources/zoning, empty-map merge and construction-cost scaling |
 | Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; full economic province-loader comparison and resource amenability remain |
 | Province zoning / transport / power / grids | Bundled bindings reference-tested; native inspection | Actual power/grid/province loaders compare all 1,317 province records plus defaults, empty infrastructure, zero/negative size/cost, missing grid, unknown zoning and uint32 wrapping; plant capacity only, zero production/empty fuel and no invented city records; malformed unit/scalar conversions and nondeterministic resource amenability remain |
-| Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
+| Wallet and market resets | Combined controlled tick scenario reference-tested | Actual Rust tick loop against original resets/labor/consumption/production/markets/trade/history, all 22 recipes and seven weekly boundaries; full multi-site traversal remains |
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
 | Native demographics / factory construction | Implemented; creation action reference-tested | Paged population, employment, jobs, spending/income, education, wallets and consumption toggles; two native pies per page with colored values, hover and hide/show legends; source float values, double normalization and hidden-angle behavior; all 22 recipes, cost/revenue preview and 1–1,000 factory count; 66 CreateFactory comparisons, one-shot button and invalid/non-mutating guards |
@@ -212,7 +212,7 @@ orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
 365 market-history records per body and CSV/industry export checks. There are 110 unit tests
-and 24 passing differential tests. Twenty-three live tests require the reference executable.
+and 25 passing differential tests. Twenty-four live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -237,6 +237,18 @@ epochs, including retrograde and zero-rotation bodies. Renderer-free tests check
 texture dimensions, axis reflection, surface path radii, escape-path rejection and
 the ground-track toggle. GPU captures check actual texture color variation and
 magenta ground-track pixels in the focused spacecraft's parent-body region.
+Combined economy comparisons run the real Rust Simulation::tick over 665,390
+ten-minute ticks: all 22 recipes × five seeded/state/capacity/subsidy cases × 43
+daily samples (4,730 snapshots and 770 weekly labor boundaries). The original
+reset/infrastructure/labor/consumption/production/local-market/planetary-trade/
+labor-market/history systems run in source order; the weekly guard reads the actual
+labor system's Interval(). Every market ledger, industry state/wallet, construction
+record/cost, taxes, job demand, population/PID/history and market-history length is
+compared with the existing 1e-12 tolerance. This isolates ordering with one province,
+one population, one industry and one job; each original recipe retains its commodity
+vectors but deliberately uses the controlled job/count. It does not establish full
+asset traversal or compare spaceports, manufacturing, interplanetary shipments or
+orbital state in this corpus. Undefined unemployment conversions remain excluded.
 Science comparisons execute the actual loaders on the bundled definitions and a
 controlled graph with duplicate/self/missing references, duplicate technology fields,
 tags, fractional difficulty and defaults. `cqsp-sim --science-json NEW_PATH` exports

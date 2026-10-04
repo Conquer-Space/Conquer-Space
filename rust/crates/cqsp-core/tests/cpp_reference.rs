@@ -1961,6 +1961,162 @@ fn population_consumption_and_history_match_original_daily_systems() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares the actual combined daily economy and weekly labor schedule"]
+fn combined_economy_ticks_match_original_ordered_systems() {
+    use cqsp_core::{
+        catalog::{Catalog, JobId},
+        clock::WEEK,
+        economy::industry::{Construction, ConstructionSector, Industry, IndustryState},
+        spaceflight::PlanetaryMarket,
+    };
+    let data = default_data_path();
+    let world = World::load(&data).unwrap();
+    let recipes: Vec<_> = Catalog::load(&data)
+        .unwrap()
+        .recipes
+        .into_iter()
+        .map(|recipe| recipe.identifier)
+        .collect();
+    for identifier in recipes {
+        for (seed, state, capacity, subsidy) in [
+            (0, IndustryState::Steady, 0, 0.0),
+            (42, IndustryState::Steady, 1, 0.2),
+            (5489, IndustryState::Maximum, 10, 1.0),
+            (1, IndustryState::Minimum, 1000, 0.0),
+            (42, IndustryState::Construction, 10, 0.0),
+        ] {
+            let mut simulation = Simulation::load(&data, &world, seed).unwrap();
+            let recipe_id = simulation.catalog.recipe(&identifier).unwrap();
+            // One job/industry isolates scheduling from registry/hash traversal, using Simulation::tick.
+            let job = simulation
+                .catalog
+                .jobs
+                .remove(simulation.catalog.default_job.0);
+            let labor_good = job.good;
+            simulation.catalog.jobs = vec![job];
+            simulation.catalog.default_job = JobId(0);
+            simulation.catalog.recipes[recipe_id.0].workers = vec![(JobId(0), 12)];
+            simulation
+                .settlements
+                .retain(|site| !site.populations.is_empty());
+            simulation.settlements.truncate(1);
+            let site = &mut simulation.settlements[0];
+            site.spaceport = None;
+            site.colonization = None;
+            site.colony = None;
+            site.populations.truncate(1);
+            let population = &mut site.populations[0];
+            population.size = 10_000;
+            population.standard_of_living = 5.0;
+            population.wallet.assign(10_000.0);
+            population.income = 100.0;
+            population.spending = 80.0;
+            population.jobs = [(JobId(0), 5000)].into();
+            let mut industry = Industry::new(recipe_id, 32).unwrap();
+            industry.state = state;
+            industry.output_subsidy = subsidy;
+            if state == IndustryState::Construction {
+                industry.construction = Some(Construction {
+                    progress: 0,
+                    maximum: 3 * DAY as i32,
+                    levels: 2,
+                });
+            }
+            site.industries = vec![industry];
+            site.construction = ConstructionSector {
+                capacity,
+                current: 0,
+                cost: 777.0,
+            };
+            site.job_demands = vec![0.0];
+            for index in 0..simulation.catalog.goods.len() {
+                site.market.taxation[GoodId(index)] = index as f64 * 0.001;
+            }
+            let body = site.body;
+            let country = site.country.unwrap();
+            for (&id, market) in &mut simulation.planetary_markets {
+                *market = PlanetaryMarket::new(&simulation.catalog, id == body);
+            }
+            let recipe = &simulation.catalog.recipes[recipe_id.0];
+            let market_config = simulation.catalog.config.market_config;
+            let production_config = simulation.catalog.config.production_config;
+            let goods: Vec<_> = simulation
+                .catalog
+                .goods
+                .iter()
+                .enumerate()
+                .map(|(index, good)| {
+                    json!([
+                        good.price,
+                        usize::from(simulation.catalog.labor_goods.contains(&GoodId(index))),
+                        good.consumption
+                            .as_ref()
+                            .map(|value| value.autonomous_consumption),
+                        good.consumption
+                            .as_ref()
+                            .map(|value| value.marginal_propensity),
+                    ])
+                })
+                .collect();
+            let days = 43;
+            let reference = reference_output(Some("--combined-economy"), &json!({
+            "seed":seed, "days":days, "goods":goods, "labor_good":labor_good.0,
+            "market_config":[market_config.base_price_deviation, market_config.shortage_level, market_config.default_market_access],
+            "production_config":[production_config.profit_multiplier, production_config.max_factory_delta,
+                production_config.factory_min_utilization, production_config.construction_limit, production_config.underutilization_limit],
+            "population":[10_000,5.0,10_000.0,100.0,80.0,5000], "sector":[capacity,777.0],
+            "recipe":{"input":recipe.input,"capital":recipe.capital,"output":recipe.output,"power":recipe.power,
+                "workers":12,"construction_time":recipe.construction_ticks,"construction_cost":recipe.construction_cost},
+            "industry":[state as usize,32.0,32.0,subsidy,simulation.settlements[0].industries[0].construction.as_ref().map(|job| [job.progress,job.maximum,job.levels])],
+            "taxation":simulation.settlements[0].market.taxation.values(),
+        }).to_string());
+            let mut comparisons = 0;
+            let mut weekly_updates = 0;
+            for tick in 0..=((days - 1) * DAY) {
+                simulation.tick();
+                assert_eq!(simulation.date.tick(), tick);
+                if simulation.date.due(WEEK) {
+                    weekly_updates += 1;
+                }
+                if !simulation.date.due(DAY) {
+                    continue;
+                }
+                let site = &simulation.settlements[0];
+                let population = &site.populations[0];
+                let industry = &site.industries[0];
+                let history = simulation.history.last().unwrap();
+                let row = json!({
+                    "population":[population.wallet.balance,population.wallet.change,population.wallet.gdp_change,
+                        population.standard_of_living,population.income,population.spending,population.average_wage,
+                        population.sol_pid.proportional,population.sol_pid.integral,population.sol_pid.derivative,
+                        population.employed as f64,population.jobs[&JobId(0)] as f64],
+                    "unemployment":population.unemployment_rate, "market":market_values(&site.market),
+                    "planet":market_values(&simulation.planetary_markets[&body].market),
+                    "industry":[industry.state as usize as f64,industry.size,industry.utilization,industry.diff,f64::from(industry.shortage),
+                        industry.cumulative_profit_ratio,industry.continuous_gains as f64,industry.stability as f64,industry.expertise,
+                        industry.revenue,industry.material_costs,industry.wage_cost,industry.tax_cost,industry.construction_cost,industry.profit,
+                        industry.subsidy_amount,industry.amount_sold,industry.power_consumption,industry.wallet.balance,industry.wallet.change,industry.wallet.gdp_change],
+                    "construction":industry.construction.as_ref().map(|job| [job.progress,job.maximum,job.levels]),
+                    "sector":[site.construction.capacity as f64,site.construction.current as f64,site.construction.cost],
+                    "taxes":simulation.countries[country].income_taxes,
+                    "history":[history.population as f64,history.standard_of_living,history.employed as f64,history.employed as f64 / history.population as f64 * 100.0],
+                    "job_demand":site.job_demands[0], "market_history_length":simulation.planetary_markets[&body].history.0.len(),
+                });
+                compare_at(
+                    &row,
+                    &reference[comparisons],
+                    &format!("{identifier} / seed {seed} / {state:?} / tick {tick}"),
+                    1e-12,
+                );
+                comparisons += 1;
+            }
+            assert_eq!(comparisons, days as usize);
+            assert_eq!(weekly_updates, 7);
+        }
+    }
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; runs actual launch vehicle production boundaries"]
 fn manufacturing_boundaries_match_original_system() {
     use cqsp_core::{
