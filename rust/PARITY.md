@@ -37,8 +37,8 @@ Successful long runs establish stability, not gameplay parity.
 | Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen; manufacturing/order systems reference-tested | Actual SysLaunchVehicleProduction boundaries plus SysInterplanetaryTrade: three markets, two ports each, three daily allocations, repeated orders, shortages and multiple sellers; dispatch/combined-system corpus remains |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
-| Spacecraft movement / trigger commands | Implemented; lunar delivery reference-tested | Actual original SysOrbit/SysSpacePort scenario compares sampled states, queues, landing/unload ticks and colony core/stage; broader SOI, return flights and command boundary corpus remain |
-| Maneuver planning | Reference-tested components | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner and complete Moon-transfer scenario need broader comparisons |
+| Spacecraft movement / trigger commands | Lunar delivery and boundary corpus reference-tested | Actual SysOrbit/SysSpacePort: five bit-exact seeded outbound missions; 66 movement/command cases across three epochs and 16,008 ticks include every command kind, overdue queues, blocked triggers, SOI boundaries, lunar escape and return/docking; malformed command/entity guards and broader planet transfers remain |
+| Maneuver planning | Reference-tested components and command integration | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner integrated into three original-system lunar return/docking scenarios; broader planet-transfer comparisons remain |
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
 | Industry modifiers / factory controls | Reference-tested components; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded and industry gain/cap wiring tested |
@@ -211,14 +211,14 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 100 unit tests
-and 23 passing differential tests. Twenty-two live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 102 unit tests
+and 24 passing differential tests. Twenty-three live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
 22 recipes × two seeds × nine industry cases × 12 steps. The original component
 and controlled lunar tolerances are unchanged; the seeded lunar gate checks exact
-numeric bits on the installed Windows MSVC target, including every flight tick.
+  numeric bits on the installed Windows MSVC target, including every flight tick.
 Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
 invalid-province/template guards. These are controlled subsystem scenarios, not a
 seed-identical run of the entire original economy.
@@ -278,6 +278,17 @@ orbit samples, compares 41 sampled states/command counts and exact delivery stat
 The reference Game alone links the existing Lua library to instantiate unchanged
 legacy systems; the Rust app/core remain Lua-free and audio-free. Manufactured
 vehicle launches and dynamically added render markers are tested.
+The movement boundary corpus has 66 cases at ticks 0, 144 and 10,000, totaling
+16,008 compared ticks. It checks orbital elements, current/future state and centers,
+entire burn queues, command order and crash/docked status with the existing 1e-12
+tolerance. It covers every command kind, overdue one-per-tick processing, blocked
+front triggers, natural/no-op crashes, docking, self-destruct at maneuver/entry/exit,
+and both sides and the exact lunar SOI boundary. Three departure-command return
+scenarios must actually reach Earth's SOI and dock, not merely compare idle queues.
+This corpus caught missing ascending-node normalization and the final future-position
+update after self-destruct on SOI entry; dedicated Rust regressions guard both.
+Docked diagnostic orbit/state is not compared because the original removes those
+components. Invalid entity/payload references remain explicit safe-port decisions.
 
 The client smoke test renders to a fixed 1280×800 GPU image with Winit disabled:
 no OS window is created, so minimizing/using the desktop cannot resize its viewport
@@ -316,8 +327,9 @@ which do not create native windows.
    grids, mixed-direction labor and combined tick ordering. All recipes and seeded
    production are now covered. Controlled
    labor, construction demand, shortages, taxes/subsidies and trade are covered.
-2. Extend spacecraft comparisons to return flights, SOI edge ordering and different
-   launch epochs; the five-seed outbound lunar timing gap is resolved.
+2. Extend spacecraft comparisons to broader planet transfers and malformed command
+   boundaries; seeded outbound missions, lunar returns, SOI ordering and three
+   launch epochs are covered.
 3. Extend native spaceport screens with filtering/inspection detail and dispatch
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete

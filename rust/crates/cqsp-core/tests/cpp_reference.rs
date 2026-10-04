@@ -588,35 +588,36 @@ fn random_stream_and_mixed_distributions_match_original_msvc() {
 }
 
 fn compare_with_tolerance(actual: &Value, expected: &Value, tolerance: f64) {
-    fn visit(actual: &Value, expected: &Value, path: &str, tolerance: f64) {
-        match (actual, expected) {
-            (Value::Number(a), Value::Number(b)) => {
-                let (a, b) = (a.as_f64().unwrap(), b.as_f64().unwrap());
-                assert!(
-                    (a - b).abs() <= tolerance * b.abs().max(1.0),
-                    "{path}: Rust {a}, C++ {b}"
-                );
-            }
-            (Value::Array(a), Value::Array(b)) => {
-                assert_eq!(a.len(), b.len(), "{path}");
-                for (index, (a, b)) in a.iter().zip(b).enumerate() {
-                    visit(a, b, &format!("{path}[{index}]"), tolerance);
-                }
-            }
-            (Value::Object(a), Value::Object(b)) => {
-                assert_eq!(
-                    a.keys().collect::<Vec<_>>(),
-                    b.keys().collect::<Vec<_>>(),
-                    "{path}"
-                );
-                for (key, b) in b {
-                    visit(&a[key], b, &format!("{path}.{key}"), tolerance);
-                }
-            }
-            _ => assert_eq!(actual, expected, "{path}"),
+    compare_at(actual, expected, "$", tolerance);
+}
+
+fn compare_at(actual: &Value, expected: &Value, path: &str, tolerance: f64) {
+    match (actual, expected) {
+        (Value::Number(a), Value::Number(b)) => {
+            let (a, b) = (a.as_f64().unwrap(), b.as_f64().unwrap());
+            assert!(
+                (a - b).abs() <= tolerance * b.abs().max(1.0),
+                "{path}: Rust {a}, C++ {b}"
+            );
         }
+        (Value::Array(a), Value::Array(b)) => {
+            assert_eq!(a.len(), b.len(), "{path}");
+            for (index, (a, b)) in a.iter().zip(b).enumerate() {
+                compare_at(a, b, &format!("{path}[{index}]"), tolerance);
+            }
+        }
+        (Value::Object(a), Value::Object(b)) => {
+            assert_eq!(
+                a.keys().collect::<Vec<_>>(),
+                b.keys().collect::<Vec<_>>(),
+                "{path}"
+            );
+            for (key, b) in b {
+                compare_at(&a[key], b, &format!("{path}.{key}"), tolerance);
+            }
+        }
+        _ => assert_eq!(actual, expected, "{path}"),
     }
-    visit(actual, expected, "$", tolerance);
 }
 
 #[test]
@@ -1297,6 +1298,360 @@ fn surface_assets_match_live_cpp_loaders_and_common_soi() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares original movement, SOI transitions and command boundaries"]
+fn flight_commands_soi_boundaries_and_return_trajectories_match_original() {
+    use cqsp_core::{
+        clock::SECONDS_PER_TICK,
+        flight::{Burn, Command as FlightCommand, FlightStatus, Trigger, TriggeredCommand},
+        orbit::StateVector,
+    };
+    struct Case {
+        name: String,
+        parent: &'static str,
+        orbit: Orbit,
+        burns: Vec<Burn>,
+        commands: Vec<TriggeredCommand>,
+        ticks: Vec<u64>,
+    }
+    impl Case {
+        fn new(name: &str, parent: &'static str, orbit: Orbit, tick: u64, steps: u64) -> Self {
+            Self {
+                name: format!("{name} at tick {tick}"),
+                parent,
+                orbit,
+                burns: Vec::new(),
+                commands: Vec::new(),
+                ticks: (tick..tick + steps).collect(),
+            }
+        }
+        fn command(mut self, trigger: Trigger, command: FlightCommand) -> Self {
+            self.commands.push(TriggeredCommand { trigger, command });
+            self
+        }
+        fn burn(mut self, delay: f64) -> Self {
+            self.burns.push(Burn {
+                delta_v: DVec3::ZERO,
+                delay,
+            });
+            self
+        }
+    }
+    let mut system = SolarSystem::load(&default_data_path()).unwrap();
+    system.ships.clear();
+    let earth = system.body_id("earth").unwrap();
+    let moon = system.body_id("moon").unwrap();
+    let body_number = |parent| {
+        if parent == moon {
+            2
+        } else if parent == earth {
+            1
+        } else {
+            0
+        }
+    };
+    let base = Orbit {
+        semi_major_axis: 12000.0,
+        eccentricity: 0.25,
+        inclination: 0.3,
+        ascending_node: 1.1,
+        periapsis_argument: 0.7,
+        mean_anomaly: 0.5,
+        true_anomaly: 0.5,
+        mu: system.bodies[earth.0].mu,
+        ..Orbit::default()
+    };
+    let target = Orbit {
+        semi_major_axis: 24000.0,
+        eccentricity: 0.05,
+        inclination: 0.7,
+        ascending_node: 0.2,
+        ..base
+    };
+    let mut cases = Vec::new();
+    for tick in [0, DAY, 10000] {
+        let time = (tick * SECONDS_PER_TICK) as f64;
+        let orbit = Orbit {
+            epoch: time,
+            ..base
+        };
+        cases.push(
+            Case::new("overdue burns", "earth", orbit, tick, 16)
+                .burn(10.0)
+                .burn(20.0)
+                .command(Trigger::Maneuver, FlightCommand::Impulse)
+                .command(
+                    Trigger::Maneuver,
+                    FlightCommand::InterceptAndCircularizeBody,
+                ),
+        );
+        cases.push(
+            Case::new("blocked front trigger", "earth", orbit, tick, 16)
+                .burn(0.0)
+                .command(Trigger::ExitSoi, FlightCommand::SelfDestruct)
+                .command(Trigger::Maneuver, FlightCommand::SelfDestruct),
+        );
+        for (name, command) in [
+            ("circularize apoapsis", FlightCommand::CircularizeAtApoapsis),
+            (
+                "circularize periapsis",
+                FlightCommand::CircularizeAtPeriapsis,
+            ),
+            ("raise apoapsis", FlightCommand::SetApoapsis(24000.0)),
+            ("lower periapsis", FlightCommand::SetPeriapsis(8000.0)),
+            ("inclination", FlightCommand::SetInclination(0.6)),
+            ("plane matching", FlightCommand::MatchPlanes(target)),
+            ("forced planes", FlightCommand::ForceMatchPlanes(target)),
+            ("interception", FlightCommand::CoplanarIntercept(target)),
+            (
+                "interception and transfer",
+                FlightCommand::CoplanarInterceptAndTransfer(target),
+            ),
+            ("maneuver self destruct", FlightCommand::SelfDestruct),
+        ] {
+            cases.push(
+                Case::new(name, "earth", orbit, tick, 96)
+                    .burn(0.0)
+                    .command(Trigger::Maneuver, command),
+            );
+        }
+        let collision = Orbit {
+            semi_major_axis: 5000.0,
+            eccentricity: 0.05,
+            ..orbit
+        };
+        cases.push(Case::new("natural crash", "earth", collision, tick, 3).burn(10000.0));
+        cases.push(
+            Case::new("crash docking", "earth", collision, tick, 3)
+                .command(Trigger::Crash, FlightCommand::Land(123)),
+        );
+        cases.push(
+            Case::new("crash no-op", "earth", collision, tick, 3)
+                .command(Trigger::Crash, FlightCommand::Impulse)
+                .command(Trigger::Crash, FlightCommand::SelfDestruct),
+        );
+        let lunar = Orbit {
+            semi_major_axis: 3500.0,
+            eccentricity: 0.05,
+            mu: system.bodies[moon.0].mu,
+            ..orbit
+        };
+        let escaping = Orbit {
+            semi_major_axis: -15000.0,
+            eccentricity: 1.5,
+            ..lunar
+        };
+        cases.push(Case::new("lunar escape", "moon", escaping, tick, DAY * 10));
+        cases.push(
+            Case::new("lunar return command", "moon", lunar, tick, DAY * 20)
+                .burn(10.0)
+                .command(Trigger::Maneuver, FlightCommand::ExitSoi(8000.0))
+                .command(
+                    Trigger::ExitSoi,
+                    FlightCommand::SetPeriapsis(system.bodies[earth.0].radius * 0.9),
+                )
+                .command(Trigger::Crash, FlightCommand::Land(123)),
+        );
+        system.update(time);
+        let moon_state = system.bodies[moon.0].kinematics.state;
+        for offset in [-0.01, 0.0, 0.01] {
+            let state = StateVector {
+                position: moon_state.position
+                    + DVec3::new(system.bodies[moon.0].sphere_of_influence + offset, 0.0, 0.0),
+                velocity: moon_state.velocity + DVec3::new(0.1, 0.3, 0.02),
+            };
+            let arrival = Orbit::from_state(state, system.bodies[earth.0].mu, time).unwrap();
+            cases.push(
+                Case::new(&format!("SOI boundary {offset}"), "earth", arrival, tick, 3)
+                    .command(Trigger::EnterSoi, FlightCommand::Impulse),
+            );
+        }
+        let arrival = Orbit::from_state(
+            StateVector {
+                position: moon_state.position + DVec3::new(10000.0, 0.0, 0.0),
+                velocity: moon_state.velocity + DVec3::new(0.1, 0.3, 0.02),
+            },
+            system.bodies[earth.0].mu,
+            time,
+        )
+        .unwrap();
+        cases.push(
+            Case::new("arrival self destruct", "earth", arrival, tick, 3)
+                .command(Trigger::EnterSoi, FlightCommand::SelfDestruct),
+        );
+        let outside = Orbit {
+            semi_major_axis: 100000.0,
+            eccentricity: 0.1,
+            ..lunar
+        };
+        cases.push(
+            Case::new("exit self destruct", "moon", outside, tick, 3)
+                .command(Trigger::ExitSoi, FlightCommand::SelfDestruct),
+        );
+    }
+    let command_row = |command: TriggeredCommand| {
+        let trigger = match command.trigger {
+            Trigger::EnterSoi => 0,
+            Trigger::ExitSoi => 1,
+            Trigger::Maneuver => 2,
+            Trigger::Crash => 3,
+        };
+        let (kind, payload) = match command.command {
+            FlightCommand::CircularizeAtApoapsis => (0, json!(0)),
+            FlightCommand::CircularizeAtPeriapsis => (1, json!(0)),
+            FlightCommand::SetApoapsis(value) => (2, json!(value)),
+            FlightCommand::SetPeriapsis(value) => (3, json!(value)),
+            FlightCommand::SetInclination(value) => (4, json!(value)),
+            FlightCommand::MatchPlanes(orbit) => (5, orbit_row(orbit)),
+            FlightCommand::CoplanarIntercept(orbit) => (6, orbit_row(orbit)),
+            FlightCommand::CoplanarInterceptAndTransfer(orbit) => (7, orbit_row(orbit)),
+            FlightCommand::Impulse => (8, json!(0)),
+            FlightCommand::Land(value) => (9, json!(value)),
+            FlightCommand::InterceptAndCircularizeBody => (10, json!(0)),
+            FlightCommand::ForceMatchPlanes(orbit) => (11, orbit_row(orbit)),
+            FlightCommand::ExitSoi(value) => (12, json!(value)),
+            FlightCommand::SelfDestruct => (13, json!(0)),
+        };
+        json!([trigger, kind, payload])
+    };
+    let inputs: Vec<_> = cases.iter().map(|case| {
+        let parent = system.body_id(case.parent).unwrap();
+        let time = (case.ticks[0] * SECONDS_PER_TICK) as f64;
+        let burns: Vec<_> = case.burns.iter().map(|burn| json!([burn.delta_v.x, burn.delta_v.y, burn.delta_v.z, time + burn.delay])).collect();
+        let commands: Vec<_> = case.commands.iter().copied().map(command_row).collect();
+        json!({"parent":body_number(parent), "orbit":orbit_row(case.orbit), "burns":burns, "commands":commands, "ticks":case.ticks})
+    }).collect();
+    let reference = reference_output(
+        Some("--flight-boundaries"),
+        &json!({"bodies":flight_body_rows(&system),"cases":inputs}).to_string(),
+    );
+    assert_eq!(reference.as_array().unwrap().len(), cases.len());
+    for (case, expected) in cases.iter().zip(reference.as_array().unwrap()) {
+        system.ships.clear();
+        let parent = system.body_id(case.parent).unwrap();
+        let ship = system
+            .launch_ship(case.name.clone(), parent, case.orbit)
+            .unwrap();
+        let craft = &mut system.ships[ship.0];
+        craft.orbit = case.orbit;
+        craft.kinematics.state = case.orbit.state_at_anomaly(case.orbit.true_anomaly);
+        let time = (case.ticks[0] * SECONDS_PER_TICK) as f64;
+        for &burn in &case.burns {
+            craft.queue_burn(burn, time).unwrap();
+        }
+        for &command in &case.commands {
+            craft.queue_command(command.trigger, command.command);
+        }
+        assert_eq!(expected.as_array().unwrap().len(), case.ticks.len());
+        let mut visited_earth = false;
+        for (&tick, expected) in case.ticks.iter().zip(expected.as_array().unwrap()) {
+            system.update((tick * SECONDS_PER_TICK) as f64);
+            system.validate().unwrap();
+            let craft = &system.ships[ship.0];
+            visited_earth |= craft.parent == earth;
+            let docked = matches!(craft.status, FlightStatus::Docked(_));
+            let status = match craft.status {
+                FlightStatus::Orbiting => 0,
+                FlightStatus::Crashed => 1,
+                FlightStatus::Docked(_) => 2,
+            };
+            let burns: Vec<_> = craft
+                .maneuvers
+                .iter()
+                .map(|burn| json!([burn.delta_v.x, burn.delta_v.y, burn.delta_v.z, burn.time]))
+                .collect();
+            let commands: Vec<_> = craft
+                .commands
+                .iter()
+                .copied()
+                .map(|command| {
+                    let row = command_row(command);
+                    json!([row[0], row[1]])
+                })
+                .collect();
+            let mut actual = json!({"status":status,"burns":burns,"commands":commands});
+            if !docked {
+                let k = craft.kinematics;
+                actual["parent"] = json!(body_number(craft.parent));
+                actual["orbit"] = orbit_row(craft.orbit);
+                actual["motion"] = json!([
+                    k.state.position.x,
+                    k.state.position.y,
+                    k.state.position.z,
+                    k.state.velocity.x,
+                    k.state.velocity.y,
+                    k.state.velocity.z,
+                    k.center.x,
+                    k.center.y,
+                    k.center.z,
+                    k.future_position.x,
+                    k.future_position.y,
+                    k.future_position.z,
+                    k.future_center.x,
+                    k.future_center.y,
+                    k.future_center.z
+                ]);
+            }
+            compare_at(
+                &actual,
+                expected,
+                &format!("{} tick {tick}", case.name),
+                1e-12,
+            );
+        }
+        if case.name.starts_with("lunar escape") || case.name.starts_with("lunar return command") {
+            assert!(visited_earth, "{} never returned to Earth's SOI", case.name);
+        }
+        if case.name.starts_with("lunar return command") {
+            assert_eq!(
+                system.ships[ship.0].status,
+                FlightStatus::Docked(123),
+                "{}",
+                case.name
+            );
+        }
+    }
+}
+
+fn orbit_row(orbit: Orbit) -> Value {
+    json!([
+        orbit.semi_major_axis,
+        orbit.eccentricity,
+        orbit.inclination,
+        orbit.ascending_node,
+        orbit.periapsis_argument,
+        orbit.mean_anomaly,
+        orbit.epoch,
+        orbit.true_anomaly,
+        orbit.mu
+    ])
+}
+
+fn flight_body_rows(system: &SolarSystem) -> Value {
+    ["sun", "earth", "moon"]
+        .map(|name| {
+            let body = &system.bodies[system.body_id(name).unwrap().0];
+            let orbit = body.orbit;
+            json!([
+                body.radius,
+                body.mu,
+                if body.sphere_of_influence.is_finite() {
+                    body.sphere_of_influence
+                } else {
+                    0.0
+                },
+                orbit.semi_major_axis,
+                orbit.eccentricity,
+                orbit.inclination,
+                orbit.ascending_node,
+                orbit.periapsis_argument,
+                orbit.mean_anomaly,
+                orbit.mu
+            ])
+        })
+        .into()
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; runs the actual C++ SysOrbit and SysSpacePort"]
 fn lunar_trajectory_and_delivery_match_original_systems() {
     lunar_mission_case(None);
@@ -1316,34 +1671,11 @@ fn lunar_mission_case(seed: Option<u64>) {
     let world = World::load(&data).unwrap();
     let mut simulation = Simulation::load(&data, &world, seed.unwrap_or(42)).unwrap();
     let system = &simulation.solar_system;
-    let sun = system.sun;
     let earth = system.body_id("earth").unwrap();
     let moon = system.body_id("moon").unwrap();
-    let bodies: Vec<_> = [sun, earth, moon]
-        .map(|id| {
-            let body = &system.bodies[id.0];
-            let orbit = body.orbit;
-            json!([
-                body.radius,
-                body.mu,
-                if body.sphere_of_influence.is_finite() {
-                    body.sphere_of_influence
-                } else {
-                    0.0
-                },
-                orbit.semi_major_axis,
-                orbit.eccentricity,
-                orbit.inclination,
-                orbit.ascending_node,
-                orbit.periapsis_argument,
-                orbit.mean_anomaly,
-                orbit.mu
-            ])
-        })
-        .into();
     let reference = reference_output(
         Some("--lunar-mission"),
-        &json!({"bodies": bodies, "seed": seed}).to_string(),
+        &json!({"bodies": flight_body_rows(system), "seed": seed}).to_string(),
     );
     let country = world
         .countries

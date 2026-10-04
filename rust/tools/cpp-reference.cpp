@@ -1,4 +1,5 @@
 // Runs the original C++ components, not a second implementation of their formulas.
+#include <algorithm>
 #include <cmath>
 #include <iomanip>
 #include <fstream>
@@ -678,16 +679,10 @@ void PrintScience() {
     WriteJson(output); std::cout << '\n';
 }
 
-void PrintLunarMission() {
-    spdlog::set_level(spdlog::level::off);
-    cqsp::core::Game game;
-    auto& universe = game.GetUniverse();
-    auto input = ReadInput();
-    universe.random = ReferenceRandom(input["seed"]);
-    const bool seeded = input["seed"].type() != Hjson::Type::Null && input["seed"].type() != Hjson::Type::Undefined;
+std::vector<entt::entity> LoadFlightBodies(cqsp::core::Universe& universe, const Hjson::Value& input) {
     std::vector<entt::entity> body_entities;
-    for (int index = 0; index < input["bodies"].size(); ++index) {
-        const auto& row = input["bodies"][index];
+    for (int index = 0; index < input.size(); ++index) {
+        const auto& row = input[index];
         auto entity = universe.create();
         body_entities.push_back(entity);
         auto& body = universe.emplace<bodies::Body>(entity);
@@ -701,6 +696,97 @@ void PrintLunarMission() {
         if (index > 0) universe.get<bodies::OrbitalSystem>(orbit.reference_body).bodies.push_back(entity);
     }
     universe.sun = body_entities[0];
+    return body_entities;
+}
+
+types::Orbit FlightOrbit(const Hjson::Value& row, entt::entity parent) {
+    types::Orbit orbit;
+    orbit.semi_major_axis = row[0].to_double(); orbit.eccentricity = row[1].to_double();
+    orbit.inclination = row[2].to_double(); orbit.LAN = row[3].to_double(); orbit.w = row[4].to_double();
+    orbit.M0 = row[5].to_double(); orbit.epoch = row[6].to_double(); orbit.v = row[7].to_double();
+    orbit.GM = row[8].to_double(); orbit.reference_body = parent;
+    return orbit;
+}
+
+void PrintFlightBoundaries() {
+    spdlog::set_level(spdlog::level::off);
+    auto input = ReadInput();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int index = 0; index < input["cases"].size(); ++index) {
+        cqsp::core::Game game;
+        auto& universe = game.GetUniverse();
+        const auto& test = input["cases"][index];
+        auto bodies = LoadFlightBodies(universe, input["bodies"]);
+        universe.date.SetDate(test["ticks"][0].to_int64());
+        cqsp::core::systems::SysOrbit movement(game);
+        movement.DoSystem();
+        auto ship = universe.create();
+        auto target = universe.create();
+        universe.emplace<Name>(target, "Reference landing site");
+        auto& orbit = universe.emplace<types::Orbit>(ship);
+        orbit = FlightOrbit(test["orbit"], bodies[test["parent"].to_int64()]);
+        auto& position = universe.emplace<types::Kinematics>(ship);
+        position.position = types::toVec3(orbit);
+        position.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
+        universe.emplace<types::FuturePosition>(ship);
+        auto& queue = universe.emplace<CommandQueue>(ship);
+        for (int burn = 0; burn < test["burns"].size(); ++burn) {
+            const auto& row = test["burns"][burn];
+            queue.maneuvers.emplace_back(std::make_pair(glm::dvec3(row[0].to_double(), row[1].to_double(), row[2].to_double()), row[3].to_double()));
+        }
+        for (int command = 0; command < test["commands"].size(); ++command) {
+            const auto& row = test["commands"][command];
+            auto entity = universe.create();
+            universe.emplace<Trigger>(entity, static_cast<Trigger>(row[0].to_int64()));
+            universe.emplace<Command>(entity, static_cast<Command>(row[1].to_int64()));
+            if (row[2].type() == Hjson::Type::Vector) {
+                auto& payload = universe.emplace<OrbitTarget>(entity);
+                payload.orbit = FlightOrbit(row[2], entt::null);
+            } else if (row[1].to_int64() == static_cast<int>(Command::LandOnBody)) {
+                universe.emplace<OrbitEntityTarget>(entity, target);
+            } else {
+                universe.emplace<OrbitScalar>(entity, row[2].to_double());
+            }
+            queue.commands.push_back(entity);
+        }
+        Hjson::Value samples(Hjson::Type::Vector);
+        for (int tick = 0; tick < test["ticks"].size(); ++tick) {
+            universe.date.SetDate(test["ticks"][tick].to_int64());
+            movement.DoSystem();
+            Hjson::Value sample(Hjson::Type::Map), burns(Hjson::Type::Vector), commands(Hjson::Type::Vector);
+            bool docked = !universe.all_of<types::Orbit>(ship);
+            sample["status"] = docked ? 2 : universe.all_of<ships::Crash>(ship) ? 1 : 0;
+            if (!docked) {
+                const auto& orb = universe.get<types::Orbit>(ship);
+                const auto& pos = universe.get<types::Kinematics>(ship);
+                const auto& future = universe.get<types::FuturePosition>(ship);
+                sample["parent"] = static_cast<int>(std::find(bodies.begin(), bodies.end(), orb.reference_body) - bodies.begin());
+                sample["orbit"] = Numbers({orb.semi_major_axis, orb.eccentricity, orb.inclination, orb.LAN, orb.w, orb.M0, orb.epoch, orb.v, orb.GM});
+                sample["motion"] = Numbers({pos.position.x, pos.position.y, pos.position.z, pos.velocity.x, pos.velocity.y, pos.velocity.z,
+                    pos.center.x, pos.center.y, pos.center.z, future.position.x, future.position.y, future.position.z,
+                    future.center.x, future.center.y, future.center.z});
+            }
+            if (universe.all_of<CommandQueue>(ship)) {
+                const auto& current_queue = universe.get<CommandQueue>(ship);
+                for (const auto& burn : current_queue.maneuvers) burns.push_back(Numbers({burn.delta_v.x, burn.delta_v.y, burn.delta_v.z, burn.time}));
+                for (auto entity : current_queue.commands) commands.push_back(Numbers({static_cast<double>(universe.get<Trigger>(entity)), static_cast<double>(universe.get<Command>(entity))}));
+            }
+            sample["burns"] = burns; sample["commands"] = commands;
+            samples.push_back(sample);
+        }
+        output.push_back(samples);
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintLunarMission() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    universe.random = ReferenceRandom(input["seed"]);
+    const bool seeded = input["seed"].type() != Hjson::Type::Null && input["seed"].type() != Hjson::Type::Undefined;
+    auto body_entities = LoadFlightBodies(universe, input["bodies"]);
     universe.date.SetDate(0);
     cqsp::core::systems::SysOrbit movement(game);
     movement.DoSystem();
@@ -1209,6 +1295,7 @@ int main(int argc, char** argv) {
         PrintLunarMission();
         return 0;
     }
+    if (argc == 2 && std::string(argv[1]) == "--flight-boundaries") { PrintFlightBoundaries(); return 0; }
     Wallet wallet;
     wallet = 100;
     wallet.Reset();

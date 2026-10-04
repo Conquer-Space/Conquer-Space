@@ -283,7 +283,7 @@ impl Orbit {
             semi_major_axis: axis,
             eccentricity,
             inclination,
-            ascending_node,
+            ascending_node: normalize_angle(ascending_node),
             periapsis_argument: normalize_angle(periapsis_argument),
             mean_anomaly,
             epoch: time,
@@ -450,6 +450,20 @@ mod tests {
         assert!(recovered.eccentricity > 0.0 && recovered.eccentricity < 1e-12);
         assert!((recovered.periapsis_argument - orbit.periapsis_argument).abs() < 0.01);
         assert_ne!(recovered.periapsis_argument, 0.0);
+        Ok(())
+    }
+
+    #[test]
+    fn recovered_ascending_node_wraps_a_rounded_full_turn_to_zero() -> Result<()> {
+        let orbit = Orbit::from_state(
+            StateVector {
+                position: DVec3::new(10000.0, -1e-9, 0.0),
+                velocity: DVec3::new(0.1, 0.3, 0.02),
+            },
+            4904.86959,
+            0.0,
+        )?;
+        assert_eq!(orbit.ascending_node, 0.0);
         Ok(())
     }
 

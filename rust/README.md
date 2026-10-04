@@ -210,6 +210,10 @@ including residual circular-orbit elements, maneuver times, landing and unloadin
 Recovery uses the original platform CRT's `atanh` rounding; diagnostic JSON parsing
 preserves numeric bits. No timing tolerance was introduced. Other runtime targets
 are not claimed bit-identical; broader flight and whole-economy comparisons remain.
+An additional 66-case movement corpus compares 16,008 ticks at three epochs,
+including every command kind, lunar return/docking, SOI boundaries, crash handling,
+current/future centers and complete burn/command queues. It preserves the original
+late self-destruct update and ascending-node angle wrapping.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.

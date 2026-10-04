@@ -224,7 +224,9 @@ impl Spacecraft {
             self.process_trigger(Trigger::EnterSoi, time, bodies)?;
             break;
         }
-        if self.status == FlightStatus::Orbiting {
+        // SelfDestruct on SOI entry is late: the source still writes this tick's
+        // future position before excluding the craft from subsequent updates.
+        if !matches!(self.status, FlightStatus::Docked(_)) {
             self.kinematics.future_position =
                 self.orbit.state_at(time + SECONDS_PER_TICK as f64).position;
             // The original loop uses the starting parent's future center for one tick.
@@ -660,6 +662,45 @@ mod tests {
         assert_eq!(
             ship.kinematics.future_center,
             system.bodies[earth.0].kinematics.absolute_future_position()
+        );
+        system.validate()?;
+        Ok(())
+    }
+
+    #[test]
+    fn self_destruct_on_soi_entry_finishes_this_ticks_future_position() -> Result<()> {
+        let mut system = SolarSystem::load(&default_data_path())?;
+        let earth = system.body_id("earth").unwrap();
+        let moon = system.body_id("moon").unwrap();
+        let moon_state = system.bodies[moon.0].kinematics.state;
+        let orbit = Orbit::from_state(
+            StateVector {
+                position: moon_state.position + DVec3::new(10000.0, 0.0, 0.0),
+                velocity: moon_state.velocity + DVec3::new(0.1, 0.3, 0.02),
+            },
+            system.bodies[earth.0].mu,
+            0.0,
+        )?;
+        let id = system.launch_ship("Self destruct arrival".into(), earth, orbit)?;
+        system.ships[id.0].queue_command(Trigger::EnterSoi, Command::SelfDestruct);
+        system.update(0.0);
+        let ship = &system.ships[id.0];
+        assert_eq!(ship.status, FlightStatus::Crashed);
+        assert_eq!(ship.parent, moon);
+        assert_eq!(
+            ship.kinematics.future_position,
+            ship.orbit.state_at(600.0).position
+        );
+        assert_eq!(
+            ship.kinematics.future_center,
+            system.bodies[earth.0].kinematics.absolute_future_position()
+        );
+        let retained = ship.kinematics;
+        system.update(600.0);
+        assert_eq!(system.ships[id.0].kinematics.state, retained.state);
+        assert_eq!(
+            system.ships[id.0].kinematics.future_position,
+            retained.future_position
         );
         system.validate()?;
         Ok(())
