@@ -350,6 +350,170 @@ fn surface_assets_match_live_cpp_loaders_and_common_soi() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; runs the actual C++ SysOrbit and SysSpacePort"]
+fn lunar_trajectory_and_delivery_match_original_systems() {
+    use cqsp_core::{flight::FlightStatus, spaceflight::ColonizationStep};
+    let data = default_data_path();
+    let world = World::load(&data).unwrap();
+    let mut simulation = Simulation::load(&data, &world, 42).unwrap();
+    let system = &simulation.solar_system;
+    let sun = system.sun;
+    let earth = system.body_id("earth").unwrap();
+    let moon = system.body_id("moon").unwrap();
+    let bodies: Vec<_> = [sun, earth, moon]
+        .map(|id| {
+            let body = &system.bodies[id.0];
+            let orbit = body.orbit;
+            json!([
+                body.radius,
+                body.mu,
+                if body.sphere_of_influence.is_finite() {
+                    body.sphere_of_influence
+                } else {
+                    0.0
+                },
+                orbit.semi_major_axis,
+                orbit.eccentricity,
+                orbit.inclination,
+                orbit.ascending_node,
+                orbit.periapsis_argument,
+                orbit.mean_anomaly,
+                orbit.mu
+            ])
+        })
+        .into();
+    let reference = reference_output(
+        Some("--lunar-mission"),
+        &json!({"bodies": bodies}).to_string(),
+    );
+    let country = world
+        .countries
+        .iter()
+        .position(|country| country.identifier == "usa")
+        .unwrap();
+    let target = simulation
+        .settlements
+        .iter()
+        .position(|site| site.body == moon && site.is_province())
+        .unwrap();
+    simulation.begin_colonization(target, country).unwrap();
+    let mission = simulation
+        .queue_colonization_mission(target, country, true)
+        .unwrap();
+    simulation.missions[mission.0].in_progress = true;
+    let radius = simulation.solar_system.bodies[earth.0].radius;
+    let ship = simulation
+        .solar_system
+        .launch_ship(
+            "Colony Core Transport Vehicle".into(),
+            earth,
+            Orbit {
+                semi_major_axis: radius * 1.08 + radius * 0.01 * 0.4,
+                eccentricity: 0.000005 * 0.4,
+                inclination: 0.05 * 0.4,
+                periapsis_argument: 0.1,
+                ..Orbit::default()
+            },
+        )
+        .unwrap();
+    simulation.solar_system.ships[ship.0]
+        .land_on_moon(moon, &simulation.solar_system.bodies[moon.0], target, 0.0)
+        .unwrap();
+    simulation.solar_system.ships[ship.0].cargo = Some(vec![mission]);
+    let mut samples = Vec::new();
+    let mut landing_tick = None;
+    let mut unload_tick = None;
+    for tick in 0..DAY * 30 {
+        simulation.tick();
+        simulation.validate().unwrap();
+        let craft = &simulation.solar_system.ships[ship.0];
+        if craft.status == FlightStatus::Docked(target) {
+            landing_tick.get_or_insert(tick);
+            if craft.cargo.is_none() {
+                unload_tick = Some(tick);
+                break;
+            }
+            continue;
+        }
+        if tick % 24 == 0 || tick < 10 {
+            let orbit = craft.orbit;
+            let p = craft.kinematics.state.position;
+            let v = craft.kinematics.state.velocity;
+            samples.push(json!([
+                tick,
+                if craft.parent == moon {
+                    2
+                } else if craft.parent == earth {
+                    1
+                } else {
+                    0
+                },
+                orbit.semi_major_axis,
+                orbit.eccentricity,
+                orbit.inclination,
+                orbit.ascending_node,
+                orbit.periapsis_argument,
+                orbit.mean_anomaly,
+                orbit.epoch,
+                orbit.true_anomaly,
+                p.x,
+                p.y,
+                p.z,
+                v.x,
+                v.y,
+                v.z,
+                craft.maneuvers.len(),
+                craft.commands.len()
+            ]));
+        }
+    }
+    assert_eq!(
+        simulation.settlements[target]
+            .colonization
+            .as_ref()
+            .unwrap()
+            .step,
+        ColonizationStep::Preparation
+    );
+    let delivery = json!([
+        landing_tick,
+        unload_tick,
+        1,
+        simulation.settlements[target]
+            .colony
+            .as_ref()
+            .unwrap()
+            .components
+            .len(),
+        usize::from(simulation.missions[mission.0].in_progress)
+    ]);
+    let expected = reference["samples"].as_array().unwrap();
+    assert_eq!(samples.len(), expected.len());
+    for (row, expected) in samples.iter().zip(expected) {
+        if expected[3].as_f64().unwrap() < 1e-12 {
+            // A circular orbit has no defined apsis: compiler rounding chooses
+            // different w/M0/v for residual e~1e-13. Compare its physical state
+            // (within 1 m / 1 mm/s), not that arbitrary element representation.
+            for index in [0, 1, 2, 3, 4, 5, 8, 16, 17] {
+                compare(&row[index], &expected[index]);
+            }
+            let vector = |row: &Value, start| {
+                DVec3::new(
+                    row[start].as_f64().unwrap(),
+                    row[start + 1].as_f64().unwrap(),
+                    row[start + 2].as_f64().unwrap(),
+                )
+            };
+            assert!(vector(row, 10).distance(vector(expected, 10)) <= 0.001);
+            assert!(vector(row, 13).distance(vector(expected, 13)) <= 0.000001);
+        } else {
+            compare(row, expected);
+        }
+    }
+    compare(&delivery, &reference["delivery"]);
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; requires Visual Studio and the legacy headers"]
 fn all_loaded_orbits_match_live_cpp_across_fifty_years() {
     let system = SolarSystem::load(&default_data_path()).unwrap();

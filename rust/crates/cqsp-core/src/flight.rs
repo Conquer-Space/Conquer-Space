@@ -292,11 +292,13 @@ impl Spacecraft {
     }
 
     pub fn transfer_to_moon(&mut self, target: Orbit, time: f64) -> Result<()> {
-        if self.orbit.eccentricity > 0.00001 {
-            self.queue_burn(self.orbit.circularize_at_periapsis(), time)?;
+        let target = target.legacy_copy();
+        let orbit = self.orbit.legacy_copy();
+        if orbit.eccentricity > 0.00001 {
+            self.queue_burn(orbit.circularize_at_periapsis(), time)?;
             self.queue_command(Trigger::Maneuver, Command::MatchPlanes(target));
         } else {
-            self.queue_burn(self.orbit.match_planes(target), time)?;
+            self.queue_burn(orbit.match_planes(target), time)?;
         }
         self.queue_command(Trigger::Maneuver, Command::ForceMatchPlanes(target));
         self.queue_command(Trigger::Maneuver, Command::CoplanarIntercept(target));

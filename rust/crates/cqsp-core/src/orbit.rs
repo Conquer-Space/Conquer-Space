@@ -135,6 +135,13 @@ impl Orbit {
     pub fn update(&mut self, time: f64) {
         self.true_anomaly = self.true_anomaly_at(time);
     }
+    /// Explicit C++ Orbit copies reset v to M0; assignment does not.
+    pub fn legacy_copy(self) -> Self {
+        Self {
+            true_anomaly: self.mean_anomaly,
+            ..self
+        }
+    }
     pub fn state_at(self, time: f64) -> StateVector {
         self.state_at_anomaly(self.true_anomaly_at(time))
     }
@@ -148,18 +155,25 @@ impl Orbit {
         let rotation = self.rotation();
         StateVector {
             position: parameter
-                * (rotation * DVec3::new(cos / denominator, sin / denominator, 0.0)),
+                * rotate_vector(
+                    rotation,
+                    DVec3::new(cos / denominator, sin / denominator, 0.0),
+                ),
             velocity: (self.mu / parameter).sqrt()
-                * (rotation * DVec3::new(-sin, self.eccentricity + cos, 0.0)),
+                * rotate_vector(rotation, DVec3::new(-sin, self.eccentricity + cos, 0.0)),
         }
     }
     pub fn speed_at(self, anomaly: f64) -> f64 {
         (self.mu * (2.0 / self.radius_at(anomaly).abs() - 1.0 / self.semi_major_axis)).sqrt()
     }
     pub fn rotation(self) -> DQuat {
-        DQuat::from_rotation_z(self.ascending_node)
-            * DQuat::from_rotation_x(self.inclination)
-            * DQuat::from_rotation_z(self.periapsis_argument)
+        multiply_rotation(
+            multiply_rotation(
+                DQuat::from_rotation_z(self.ascending_node),
+                DQuat::from_rotation_x(self.inclination),
+            ),
+            DQuat::from_rotation_z(self.periapsis_argument),
+        )
     }
     pub fn time_to_anomaly(self, target: f64) -> f64 {
         let mean = |anomaly: f64| {
@@ -200,33 +214,47 @@ impl Orbit {
             radius > 0.0 && momentum.length() > 0.0,
             "Radial/zero-position orbit is unsupported"
         );
-        let eccentric_vector = state.velocity.cross(momentum) / mu - state.position / radius;
+        let eccentric_vector = state.velocity.cross(momentum) / mu - state.position.normalize();
         let eccentricity = eccentric_vector.length();
-        let axis = 1.0 / (2.0 / radius - state.velocity.length_squared() / mu);
+        let speed = state.velocity.length();
+        let axis = 1.0 / (2.0 / radius - speed * speed / mu);
         let inclination = (momentum.z / momentum.length()).clamp(-1.0, 1.0).acos();
         let node = DVec3::new(-momentum.y, momentum.x, 0.0);
-        let equatorial = node.length() <= momentum.length() * 1e-12;
+        let equatorial = node == DVec3::ZERO || inclination == 0.0 || inclination == PI;
         let ascending_node = if equatorial {
             0.0
         } else {
-            normalize_angle(node.y.atan2(node.x))
+            let angle = (node.x / node.length()).clamp(-1.0, 1.0).acos();
+            if node.y < 0.0 { TAU - angle } else { angle }
         };
-        let (periapsis_argument, true_anomaly) = if eccentricity < 1e-12 {
-            // The source's circular degeneracy can yield NaNs. Choose a stable frame.
+        let (periapsis_argument, true_anomaly) = if eccentricity == 0.0 && equatorial {
+            // Only choose a stable frame where the original actually yields NaNs.
             let rotation =
                 DQuat::from_rotation_z(ascending_node) * DQuat::from_rotation_x(inclination);
             let in_plane = rotation.inverse() * state.position;
             (0.0, normalize_angle(in_plane.y.atan2(in_plane.x)))
+        } else if eccentricity == 0.0 {
+            let angle = angle_between(node, state.position);
+            (
+                if state.position.z < 0.0 {
+                    TAU - angle
+                } else {
+                    angle
+                },
+                0.0,
+            )
         } else {
             let mut anomaly = angle_between(eccentric_vector, state.position);
             if state.position.dot(state.velocity) < 0.0 {
                 anomaly = TAU - anomaly;
             }
             let periapsis = if equatorial {
-                normalize_angle(
-                    (eccentric_vector.y * if momentum.z < 0.0 { -1.0 } else { 1.0 })
-                        .atan2(eccentric_vector.x),
-                )
+                let angle = (eccentric_vector.x / eccentricity).clamp(-1.0, 1.0).acos();
+                if eccentric_vector.y < 0.0 {
+                    TAU - angle
+                } else {
+                    angle
+                }
             } else {
                 let angle = angle_between(node, eccentric_vector);
                 if eccentric_vector.z < 0.0 {
@@ -255,7 +283,7 @@ impl Orbit {
             eccentricity,
             inclination,
             ascending_node,
-            periapsis_argument,
+            periapsis_argument: normalize_angle(periapsis_argument),
             mean_anomaly,
             epoch: time,
             true_anomaly: normalize_angle(true_anomaly),
@@ -269,7 +297,10 @@ impl Orbit {
     pub fn apply_impulse(self, impulse: DVec3, time: f64) -> Result<Self> {
         let anomaly = self.true_anomaly_at(time);
         let state = self.state_at_anomaly(anomaly);
-        let impulse = self.rotation() * DQuat::from_rotation_z(anomaly) * impulse;
+        let impulse = rotate_vector(
+            multiply_rotation(self.rotation(), DQuat::from_rotation_z(anomaly)),
+            impulse,
+        );
         Self::from_state(
             StateVector {
                 velocity: state.velocity + impulse,
@@ -279,6 +310,22 @@ impl Orbit {
             time,
         )
     }
+}
+
+// GLM's operation order matters: a circularizing burn's tiny residual eccentricity
+// defines the next apsis, so algebraically equivalent glam rotations change its time.
+fn multiply_rotation(p: DQuat, q: DQuat) -> DQuat {
+    DQuat::from_xyzw(
+        p.w * q.x + p.x * q.w + p.y * q.z - p.z * q.y,
+        p.w * q.y + p.y * q.w + p.z * q.x - p.x * q.z,
+        p.w * q.z + p.z * q.w + p.x * q.y - p.y * q.x,
+        p.w * q.w - p.x * q.x - p.y * q.y - p.z * q.z,
+    )
+}
+fn rotate_vector(rotation: DQuat, vector: DVec3) -> DVec3 {
+    let axis = DVec3::new(rotation.x, rotation.y, rotation.z);
+    let cross = axis.cross(vector);
+    vector + (cross * rotation.w + axis.cross(cross)) * 2.0
 }
 
 pub fn normalize_angle(angle: f64) -> f64 {
@@ -363,6 +410,30 @@ mod tests {
             + orbit.rotation() * DQuat::from_rotation_z(orbit.true_anomaly_at(time)) * impulse;
         assert!((burned.state_at(time).position - state.position).length() < 1e-7);
         assert!((burned.state_at(time).velocity - expected).length() < 1e-10);
+        Ok(())
+    }
+
+    #[test]
+    fn explicit_legacy_copies_reset_anomaly_but_assignment_preserves_it() {
+        let mut orbit = sample();
+        orbit.update(4321.0);
+        assert_ne!(orbit.true_anomaly, orbit.mean_anomaly);
+        assert_eq!(orbit.legacy_copy().true_anomaly, orbit.mean_anomaly);
+        let assigned = orbit;
+        assert_eq!(assigned.true_anomaly, orbit.true_anomaly);
+        assert_eq!(orbit.legacy_copy().epoch, orbit.epoch);
+    }
+
+    #[test]
+    fn tiny_nonzero_eccentricity_retains_the_legacy_apsis_frame() -> Result<()> {
+        let orbit = Orbit {
+            eccentricity: 5e-13,
+            ..sample()
+        };
+        let recovered = Orbit::from_state(orbit.state_at(4321.0), orbit.mu, 4321.0)?;
+        assert!(recovered.eccentricity > 0.0 && recovered.eccentricity < 1e-12);
+        assert!((recovered.periapsis_argument - orbit.periapsis_argument).abs() < 0.01);
+        assert_ne!(recovered.periapsis_argument, 0.0);
         Ok(())
     }
 

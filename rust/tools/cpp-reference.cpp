@@ -19,6 +19,7 @@
 #include "core/components/population.h"
 #include "core/components/projects.h"
 #include "core/components/spaceport.h"
+#include "core/components/ships.h"
 #include "core/components/surface.h"
 #include "core/components/market.h"
 #include "core/components/modifier.h"
@@ -29,9 +30,109 @@
 #include "core/loading/loadcities.h"
 #include "core/loading/projectloader.h"
 #include "core/systems/economy/economyconfig.h"
+#include "core/systems/economy/sysspaceport.h"
+#include "core/systems/economy/syslaunchvehicleproduction.h"
+#include "core/systems/economy/sysinterplanetarytrade.h"
+#include "core/systems/movement/sysorbit.h"
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/null_sink.h>
 
 using namespace cqsp::core::components;
+void PrintVector(const glm::dvec3& vector);
+
+// Suppress the reference Game's logging side effects, not its simulation behavior.
+// This avoids original app-data log files and keeps stdout exclusively machine-readable.
+namespace cqsp::core::util {
+std::shared_ptr<spdlog::logger> make_logger(const std::string& name, bool) {
+    return std::make_shared<spdlog::logger>(name, std::make_shared<spdlog::sinks::null_sink_mt>());
+}
+}
+
+class ControlledRandom : public cqsp::core::util::IRandom {
+ public:
+    ControlledRandom() : IRandom(42) {}
+    int GetRandomInt(int min, int) override { return min; }
+    int GetRandomNormalInt(double mean, double sd) override { return static_cast<int>(std::round(GetRandomNormal(mean, sd))); }
+    double GetRandomNormal(double mean, double sd) override { return mean + sd * 0.4; }
+};
+
+void PrintLunarMission() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    universe.random = std::make_unique<ControlledRandom>();
+    auto input = Hjson::Unmarshal(std::string(std::istreambuf_iterator<char>(std::cin), {}));
+    std::vector<entt::entity> body_entities;
+    for (int index = 0; index < input["bodies"].size(); ++index) {
+        const auto& row = input["bodies"][index];
+        auto entity = universe.create();
+        body_entities.push_back(entity);
+        auto& body = universe.emplace<bodies::Body>(entity);
+        body.radius = row[0].to_double(); body.GM = row[1].to_double(); body.SOI = row[2].to_double();
+        auto& orbit = universe.emplace<types::Orbit>(entity, row[3].to_double(), row[4].to_double(), row[5].to_double(),
+            row[6].to_double(), row[7].to_double(), row[8].to_double(), index == 0 ? entt::null : body_entities[index == 2 ? 1 : 0]);
+        orbit.GM = row[9].to_double();
+        universe.emplace<types::Kinematics>(entity);
+        universe.emplace<types::FuturePosition>(entity);
+        universe.emplace<bodies::OrbitalSystem>(entity);
+        if (index > 0) universe.get<bodies::OrbitalSystem>(orbit.reference_body).bodies.push_back(entity);
+    }
+    universe.sun = body_entities[0];
+    universe.date.SetDate(0);
+    cqsp::core::systems::SysOrbit movement(game);
+    movement.DoSystem();
+    auto country = universe.create();
+    universe.emplace<MissionQueue>(country);
+    auto& city_list = universe.emplace<CountryCityList>(country);
+    auto source_province = universe.create();
+    universe.emplace<Province>(source_province, country, body_entities[1]);
+    auto city = universe.create();
+    universe.emplace<City>(city, source_province);
+    universe.emplace<infrastructure::SpacePort>(city, 0).reference_body = body_entities[1];
+    city_list.space_port_list.push_back(city);
+    auto target = universe.create();
+    universe.emplace<Province>(target, entt::null, body_entities[2]);
+    universe.emplace<ColonizationTarget>(target, country);
+    universe.emplace<Settlements>(body_entities[2]).provinces.push_back(target);
+    auto mission = universe.create();
+    universe.emplace<Mission>(mission, entt::null, body_entities[2], target);
+    universe.emplace<ColonyCoreModule>(mission);
+    universe.emplace<Name>(mission, "Colony Core");
+    universe.get<MissionQueue>(country).list.push_back(mission);
+    cqsp::core::systems::SysSpacePort ports(game);
+    entt::entity ship = entt::null;
+    int landing_tick = -1;
+    int unload_tick = -1;
+    std::cout << "{\"samples\":[";
+    bool first = true;
+    for (int tick = 0; tick < StarDate::DAY * 30; ++tick) {
+        universe.date.SetDate(tick);
+        if (tick % ports.Interval() == 0) ports.DoSystem();
+        if (ship == entt::null && !universe.view<ships::Ship>().empty()) ship = universe.view<ships::Ship>().front();
+        movement.DoSystem();
+        if (!universe.all_of<types::Orbit>(ship)) {
+            if (landing_tick < 0) landing_tick = tick;
+            if (!universe.all_of<ships::CargoHold>(ship)) { unload_tick = tick; break; }
+            continue;
+        }
+        if (tick % 24 == 0 || tick < 10) {
+            if (!first) std::cout << ',';
+            const auto& orbit = universe.get<types::Orbit>(ship);
+            const auto& position = universe.get<types::Kinematics>(ship);
+            const auto& queue = universe.get<CommandQueue>(ship);
+            std::cout << '[' << tick << ',' << (orbit.reference_body == body_entities[2] ? 2 : orbit.reference_body == body_entities[1] ? 1 : 0) << ','
+                << orbit.semi_major_axis << ',' << orbit.eccentricity << ',' << orbit.inclination << ',' << orbit.LAN << ','
+                << orbit.w << ',' << orbit.M0 << ',' << orbit.epoch << ',' << orbit.v << ',';
+            PrintVector(position.position); std::cout << ','; PrintVector(position.velocity);
+            std::cout << ',' << queue.maneuvers.size() << ',' << queue.commands.size() << ']';
+            first = false;
+        }
+    }
+    auto step = universe.get<ColonizationTarget>(target).steps;
+    int core_count = universe.all_of<Colony>(target) ? universe.get<Colony>(target).components.size() : 0;
+    std::cout << "],\"delivery\":[" << landing_tick << ',' << unload_tick << ',' << static_cast<int>(step) << ',' << core_count << ','
+        << (universe.all_of<MissionInProgress>(mission) ? 1 : 0) << "]}\n";
+}
 
 std::vector<Hjson::Value> ReadEntries(const std::filesystem::path& directory) {
     std::vector<std::filesystem::path> paths;
@@ -218,6 +319,10 @@ int main(int argc, char** argv) {
     }
     if (argc == 3 && std::string(argv[1]) == "--surface-assets") {
         PrintSurfaceAssets(argv[2]);
+        return 0;
+    }
+    if (argc == 2 && std::string(argv[1]) == "--lunar-mission") {
+        PrintLunarMission();
         return 0;
     }
     Wallet wallet;

@@ -32,7 +32,7 @@ Successful long runs establish stability, not gameplay parity.
 | Spaceports / launch vehicles / interplanetary trade | Implemented core | LIFO shipments, design/manufacture/launch, unloading, original trade rules and missing-city diagnostics; native screens and whole-system differential tests remain |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
-| Spacecraft movement / trigger commands | Implemented | One overdue burn per tick, burn epoch, front-only trigger queue, SOI conversions, crash/dock states and lunar deorbit tests; whole original-system differential harness and cargo/docking integration remain |
+| Spacecraft movement / trigger commands | Implemented; lunar delivery reference-tested | Actual original SysOrbit/SysSpacePort scenario compares sampled states, queues, landing/unload ticks and colony core/stage; broader SOI, return flights and command boundary corpus remain |
 | Maneuver planning | Reference-tested components | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner and complete Moon-transfer scenario need broader comparisons |
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented basic native view | Body/ship focus, hierarchy navigation, precise local frames, orbit overlays, inspection, basic native maneuver buttons; simplified/enlarged markers, textured planets/ships, ground tracks, complete controls and universe generation remain |
@@ -79,9 +79,15 @@ Successful long runs establish stability, not gameplay parity.
 - A missing atmosphere adds a zero-height atmosphere in the C++ loader (Undefined
   is not Null); preserve that distinction. Unknown parents/cyclic hierarchies and
   invalid conics fail clearly rather than leaving undefined entity references.
-- State recovery chooses a stable circular/equatorial frame where C++ can produce
-  NaNs; parabolic/radial trajectories are rejected explicitly. The orbital harness
-  verifies non-degenerate states and burns, not those undefined source cases.
+- State recovery uses the original apsis frame even for tiny nonzero eccentricity.
+  GLM's quaternion operation order and explicit Orbit copy's v=M0 behavior matter:
+  the previous circular fallback changed lunar landing by six ticks (one hour).
+  The controlled C++/Rust scenario now lands at tick 754 and unloads at tick 864.
+  Exactly circular equatorial recovery uses a stable frame where C++ yields NaNs;
+  parabolic/radial trajectories are rejected explicitly. At residual e below 1e-12,
+  rounding leaves an arbitrary apsis, so the lunar test compares physical state
+  within 1 m / 1 mm/s instead of w/M0/v. Other sampled elements retain the 1e-12
+  tolerance. This is not bit-identical circular-frame or every-tick trajectory parity.
 - Preserve the movement loop's late-burn epoch and starting-parent center/future
   center for the SOI-transition tick. `ForceMatchPlanes` retains the source's
   zero-burn trigger hack. The source's unimplemented Impulse/InterceptAndCircularize
@@ -132,7 +138,7 @@ cargo run -p cqsp-client -- --smoke
 The C++ reference build uses Visual Studio 2026's developer shell, existing
 dependency headers and the checked-out HJSON submodule. Pass `-VisualStudio` or
 `-DependencyInclude` for other installs.
-It compiles original component sources into `target/cpp-reference/`; it doesn't
+It compiles original component/system sources into `target/cpp-reference/`; it doesn't
 modify the upstream build or require the full C++ client to link. Live reference
 tests are explicitly ignored in ordinary test runs so CI needs no Visual Studio.
 The recorded fixture always runs. Reference outputs must be regenerated and
@@ -140,11 +146,15 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 60 unit tests
-plus five differential tests (four live tests require the reference executable).
+365 market-history records and CSV/industry export checks. There are 62 unit tests
+plus six differential tests (five live tests require the reference executable).
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
-step. Manufactured vehicle launches and dynamically added render markers are tested.
+step. A second scenario runs the actual original systems with controlled parking
+orbit samples, compares 41 sampled states/command counts and exact delivery state.
+The reference Game alone links the existing Lua library to instantiate unchanged
+legacy systems; the Rust app/core remain Lua-free and audio-free. Manufactured
+vehicle launches and dynamically added render markers are tested.
 
 The client smoke test renders to a fixed 1280×800 GPU image with Winit disabled:
 no OS window is created, so minimizing/using the desktop cannot resize its viewport
@@ -164,10 +174,10 @@ which do not create native windows.
 1. Build an original-system differential harness for population, production and
    trade with controlled entity order and injected random samples. Add all FSM
    transition boundaries, construction shortages and taxation/subsidy cases.
-2. Compare the spacecraft movement loop against an original-system harness,
-   including SOI edge ordering and a full Earth-to-Moon transfer/landing scenario.
-3. Port spaceports, launch-vehicle construction, cargo/trade routing and mission
-   actions, then verify an end-to-end launch/delivery against the legacy game.
+2. Extend the spacecraft system harness to return flights, SOI edge ordering,
+   different launch epochs and the near-circular post-burn trajectory.
+3. Complete spaceport/vehicle/mission screens and differential manufacturing/trade
+   boundaries; lunar province delivery is now checked against the actual systems.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
    research, projects, modifier controls, event queues and market/history inspection.
 5. Verify saves/reloads, application settings, asset packaging and input/UI flows.

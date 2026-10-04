@@ -113,6 +113,10 @@ population fields, matching the C++ loader. Initial economic population is
 It loads all 75 orbital definitions through the original
 C++ HJSON loader and checks all 74 moving orbits at seven times spanning 50 years.
 It compares actual original sources, not an independent formula replica.
+The actual C++ movement/spaceport systems also execute a controlled Earth-to-Moon
+colony delivery. Sampled non-degenerate states/queues and exact landing/unload ticks
+match Rust; a nearly circular sample compares physical state instead of its
+rounding-dependent apsis (details and tolerances in `PARITY.md`).
 
 Next: spaceport/mission screens, remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.
