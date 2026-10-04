@@ -17,6 +17,7 @@ Successful long runs establish stability, not gameplay parity.
 | --- | --- | --- |
 | Country/province map and globe picking | Implemented | Original map fixtures, ray/UV tests, offscreen GPU smoke checks; remaining legacy overlays |
 | Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus and settings |
+| Civilization metadata | Loader reference-tested | All 199 countries' wallet/capability/research/tax fields, initial governed city/province lists and capital tags through actual country/province/city loaders; native civ view remains |
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
 | Time-zone definitions / city bindings | Loader and clock reference-tested; native display | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
@@ -31,7 +32,7 @@ Successful long runs establish stability, not gameplay parity.
 | Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
 | Local markets / shortages / planetary trade | Reference-tested controlled system scenario | Actual SysMarket/SysPlanetaryTrade/MarketReset: three provinces, 12 daily steps, retained imports/exports, configurable local versus hard-coded planetary pricing, zero demand, shortage recovery, labor access and port depletion; whole-economy traversal remains |
 | Population history | Controlled scenario reference-tested | Population/SOL/employment summaries match actual original daily history; legacy graph UI remains |
-| Market history / CSV / industry export | Implemented for Earth; native inspection | Daily planetary snapshots, all original market table fields, eight-sample price history and paged province/industry filters; original CSV column schema and production-unit export fields; byte-identical formatting and interactive graphs remain |
+| Market history / CSV / industry export | All-body history system reference-tested; native inspection | All 11 bodies retain daily GDP/price/supply/demand/ratio snapshots; only Earth/Moon have surface sites and participate in trade; 132 controlled history samples match actual SysMarketHistory; table fields, eight-sample history, CSV/export schemas; formatting and interactive graphs remain |
 | Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen; manufacturing/order systems reference-tested | Actual SysLaunchVehicleProduction boundaries plus SysInterplanetaryTrade: three markets, two ports each, three daily allocations, repeated orders, shortages and multiple sellers; dispatch/combined-system corpus remains |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
@@ -99,6 +100,16 @@ Successful long runs establish stability, not gameplay parity.
   fractional hours without shifting minutes, so negative hours are preserved.
   Unknown settlement zones are diagnosed instead of keeping invalid entity references;
   non-finite offsets are rejected rather than exposing undefined integer conversion.
+- Only ProvinceLoader registers the capital tag: Washington D.C.'s province is
+  the USA capital; CityLoader's capital tag is unregistered and does not replace it.
+  Do not invent capitals for the other countries. Governed, Province.country and
+  CountryCityList are distinct: the fifth lunar delivery changes Province.country,
+  not Governed or the initial city/province lists. Only the USA has space_program
+  in the bundled country definitions; native actions do not add capability checks.
+- Every loaded celestial body has a market/history component, including the Sun.
+  Only bodies with a Settlements component participate in planetary/interplanetary
+  trade. Other bodies keep base prices and unchanged ratios while daily reset clears
+  their supply/demand; their zero-economic history is still recorded and inspectable.
 - The original HJSON orbit loader ignores `epoch` and its optional/copy constructor
   initializes true anomaly to mean anomaly; both are reference-tested and preserved.
   The unregistered legacy `satellites.txt` TLE file is not loaded. Signed retrograde
@@ -200,9 +211,9 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 89 unit tests
-and 19 differential tests: 18 pass, while the explicit seeded lunar acceptance
-gate currently fails. Eighteen live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 90 unit tests
+and 21 differential tests: 20 pass, while the explicit seeded lunar acceptance
+gate currently fails. Twenty live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -239,6 +250,13 @@ Factory-creation comparisons execute actual CreateFactory at counts 1/27/1,000
 for all 22 recipes, checking initial state, capacity/utilization, expertise/modifiers,
 wallets, construction attachment, zone insertion and recipe type. The three job
 arguments are copied from the original UI; this test does not execute ImGui itself.
+Civilization comparisons load original country definitions plus province metadata
+and original city rows through the actual loaders. Province economics/color/power
+are deliberately excluded from that metadata corpus, not claimed loader parity.
+All-body history comparisons execute original reset/local/trade/history systems
+for two surface markets and nine inactive markets over 12 days, comparing every
+ledger and newly recorded series value. Rust's full 365-day validation still does
+not establish whole-game traversal or seed-assignment parity.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking

@@ -18,6 +18,7 @@
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/name.h"
+#include "core/components/launchvehicle.h"
 #include "core/components/organizations.h"
 #include "core/components/population.h"
 #include "core/components/projects.h"
@@ -37,6 +38,9 @@
 #include "core/loading/fields.h"
 #include "core/loading/technology.h"
 #include "core/loading/timezoneloader.h"
+#include "core/loading/loadcountries.h"
+#include "core/loading/provinceloader.h"
+#include "core/systems/history/sysmarkethistory.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/economy/sysspaceport.h"
 #include "core/systems/economy/syslaunchvehicleproduction.h"
@@ -357,6 +361,100 @@ void PrintGroundTracks() {
         glm::vec3 position(row[4].to_double(), row[5].to_double(), row[6].to_double());
         auto ground = cqsp::core::util::GetGroundTrack(rotation, position);
         output.push_back(Numbers({rotation.x, rotation.y, rotation.z, rotation.w, ground.r_latitude(), ground.r_longitude()}));
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintCivilizations() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("civilization-reference");
+    auto input = ReadInput();
+    for (int index = 0; index < input["bodies"].size(); ++index) {
+        auto entity = universe.create();
+        universe.emplace<Identifier>(entity, input["bodies"][index].to_string());
+        universe.planets[input["bodies"][index].to_string()] = entity;
+    }
+    cqsp::core::loading::CountryLoader countries(universe);
+    cqsp::core::loading::ProvinceLoader provinces(universe);
+    cqsp::core::loading::CityLoader cities(universe);
+    countries.LoadHjson(input["countries"]);
+    provinces.LoadHjson(input["provinces"]);
+    cities.LoadHjson(input["cities"]);
+    auto names = [&](const auto& entities) {
+        Hjson::Value names(Hjson::Type::Vector);
+        for (auto entity : entities) names.push_back(universe.get<Identifier>(entity).identifier);
+        return names;
+    };
+    Hjson::Value output(Hjson::Type::Map);
+    for (const auto& [identifier, entity] : universe.countries) {
+        Hjson::Value country(Hjson::Type::Map);
+        auto capital = universe.get<Country>(entity).capital_city;
+        country["capital"] = capital == entt::null ? Hjson::Value(Hjson::Type::Null) : Hjson::Value(universe.get<Identifier>(capital).identifier);
+        country["wallet"] = Hjson::Value(Hjson::Type::Null);
+        if (auto* wallet = universe.try_get<Wallet>(entity)) country["wallet"] = Numbers({wallet->GetBalance(), wallet->GetChange(), wallet->GetGDPChange()});
+        country["space_program"] = universe.all_of<SpaceCapability>(entity);
+        auto& income = universe.get<OrganizationIncome>(entity);
+        country["taxes"] = Numbers({income.income_taxes, income.consumption_taxes});
+        country["research"] = universe.get<science::ScientificResearch>(entity).research;
+        auto* sites = universe.try_get<CountryCityList>(entity);
+        country["provinces"] = sites ? names(sites->province_list) : Hjson::Value(Hjson::Type::Vector);
+        country["cities"] = sites ? names(sites->city_list) : Hjson::Value(Hjson::Type::Vector);
+        output[identifier] = country;
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintPlanetHistories() {
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    RegisterGoods(universe, input["goods"]);
+    const int count = universe.GoodCount();
+    std::vector<entt::entity> bodies, provinces;
+    for (int index = 0; index < input["sites"].size(); ++index) {
+        auto body = universe.create(); bodies.push_back(body);
+        universe.emplace<Market>(body, count);
+        universe.emplace<PlanetaryMarket>(body, count);
+        universe.emplace<MarketHistory>(body, count);
+        if (input["sites"][index] == true) {
+            auto province = universe.create(); provinces.push_back(province);
+            universe.emplace<Market>(province, count);
+            universe.emplace<Settlements>(body).provinces.push_back(province);
+        } else provinces.push_back(entt::null);
+    }
+    cqsp::core::systems::SysMarket local(game);
+    cqsp::core::systems::SysPlanetaryTrade trade(game);
+    cqsp::core::systems::SysMarketReset reset(game);
+    cqsp::core::systems::history::SysMarketHistory history(game);
+    local.Init(); trade.Init();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int day = 0; day < input["days"].to_int64(); ++day) {
+        reset.DoSystem();
+        for (int body = 0; body < bodies.size(); ++body) {
+            if (provinces[body] == entt::null) continue;
+            auto& market = universe.get<Market>(provinces[body]);
+            market.GDP = day * 100 + body;
+            for (int good = 0; good < count; ++good) {
+                market.production[ToGoodEntity(good)] = ((day + body + good) % 4) * 3;
+                market.consumption[ToGoodEntity(good)] = ((day + good) % 3) * 2;
+            }
+        }
+        local.DoSystem(); trade.DoSystem(); history.DoSystem();
+        Hjson::Value rows(Hjson::Type::Vector);
+        for (auto body : bodies) {
+            Hjson::Value row(Hjson::Type::Map), sample(Hjson::Type::Map);
+            auto& recorded = universe.get<MarketHistory>(body);
+            row["market"] = MarketValues(universe.get<Market>(body), count);
+            sample["gdp"] = recorded.gdp.back();
+            sample["length"] = static_cast<int64_t>(recorded.gdp.size());
+            for (const auto& [name, series] : {std::pair{"price", &recorded.price_history}, {"supply", &recorded.supply}, {"demand", &recorded.demand}, {"ratio", &recorded.sd_ratio}}) {
+                Hjson::Value values(Hjson::Type::Vector);
+                for (const auto& values_by_day : *series) values.push_back(Number(values_by_day.back()));
+                sample[name] = values;
+            }
+            row["history"] = sample; rows.push_back(row);
+        }
+        output.push_back(rows);
     }
     WriteJson(output); std::cout << '\n';
 }
@@ -953,6 +1051,8 @@ void PrintRandom() {
 
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
+    if (argc == 2 && std::string(argv[1]) == "--civilizations") { PrintCivilizations(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--planet-histories") { PrintPlanetHistories(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--factory-creation") { PrintFactoryCreation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--timezones") { PrintTimeZones(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--random") { PrintRandom(); return 0; }

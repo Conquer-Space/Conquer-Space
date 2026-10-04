@@ -2,7 +2,7 @@
 use crate::{
     catalog::Catalog,
     clock::DAY,
-    economy::{GoodId, Ledger, Market},
+    economy::{GoodId, Ledger, Market, history::MarketHistory},
     flight::{Burn, Command, FlightStatus, Trigger},
     orbit::Orbit,
     read_entries,
@@ -218,18 +218,23 @@ pub struct MarketOrder {
 }
 pub struct PlanetaryMarket {
     pub market: Market,
+    pub history: MarketHistory,
+    /// Original Settlements component, distinct from a PlanetaryMarket component.
+    pub has_surface_sites: bool,
     pub supplied_resources: Ledger,
     pub supply_difference: Ledger,
     pub demands: BTreeMap<GoodId, Vec<MarketOrder>>,
 }
 impl PlanetaryMarket {
-    pub fn new(catalog: &Catalog) -> Self {
+    pub fn new(catalog: &Catalog, has_surface_sites: bool) -> Self {
         Self {
             market: Market::new(
                 &catalog.base_prices,
                 &catalog.labor_goods,
                 catalog.config.market_config,
             ),
+            history: MarketHistory::default(),
+            has_surface_sites,
             supplied_resources: Ledger::new(catalog.goods.len()),
             supply_difference: Ledger::new(catalog.goods.len()),
             demands: BTreeMap::new(),
@@ -684,12 +689,24 @@ impl Simulation {
         Ok(id)
     }
     pub(crate) fn process_interplanetary_trade(&mut self) {
-        for planetary in self.planetary_markets.values_mut() {
+        for planetary in self
+            .planetary_markets
+            .values_mut()
+            .filter(|market| market.has_surface_sites)
+        {
             planetary.update_difference();
         }
         let mut orders = Vec::new();
-        for (&seller_id, seller) in &self.planetary_markets {
-            for (&buyer_id, buyer) in &self.planetary_markets {
+        for (&seller_id, seller) in self
+            .planetary_markets
+            .iter()
+            .filter(|(_, market)| market.has_surface_sites)
+        {
+            for (&buyer_id, buyer) in self
+                .planetary_markets
+                .iter()
+                .filter(|(_, market)| market.has_surface_sites)
+            {
                 if seller_id != buyer_id {
                     orders.extend(
                         seller
@@ -776,7 +793,15 @@ mod tests {
         );
         assert_eq!(simulation.summary(None).population, 360_099_455);
         assert_eq!(simulation.summary(None).industries, 20);
-        assert_eq!(simulation.planetary_markets.len(), 2);
+        assert_eq!(simulation.planetary_markets.len(), 11);
+        assert_eq!(
+            simulation
+                .planetary_markets
+                .values()
+                .filter(|market| market.has_surface_sites)
+                .count(),
+            2
+        );
         let site = &simulation.settlements[cape(&simulation)];
         assert_eq!(
             simulation.settlements[site.province().unwrap()].identifier,
@@ -893,8 +918,8 @@ mod tests {
     {
         let simulation = load()?;
         let catalog = &simulation.catalog;
-        let mut seller = PlanetaryMarket::new(catalog);
-        let mut buyer = PlanetaryMarket::new(catalog);
+        let mut seller = PlanetaryMarket::new(catalog, true);
+        let mut buyer = PlanetaryMarket::new(catalog, true);
         let good = GoodId(0);
         buyer.market.demand[good] = 100.0;
         buyer.market.price[good] = seller.market.price[good] * 2.0;

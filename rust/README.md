@@ -71,10 +71,10 @@ missions, dispatches from the selected port and shows delivery progress. Owned p
 also dispatch missions automatically each daily step. Native manual actions retain
 the source's missing ownership check and other documented spaceport rules.
 
-I or **Economy, construction & science** opens live native inspection. Cycle Earth/Moon,
+I or **Economy, construction & science** opens live native inspection. Cycle all 11 bodies,
 owned/all provinces or the hovered province; inspect all 56 goods, paged factories,
 11 science fields and seven technologies. Market details include all original table
-fields and the latest eight Earth price samples. Advance day updates the real simulation;
+fields and the latest eight selected-body price samples. Advance day updates the real simulation;
 Escape closes inspection without returning to selection. The panels are mutually
 exclusive and do not interrupt vehicle text editing. Select next factory identifies
 the `>`-marked factory, changes its subsidy in ten-percent steps (bounded 0–100%)
@@ -103,7 +103,7 @@ Studio 2026/MSVC 14.51 distribution rules, including discarded spare normal samp
 Seeds use their low 32 bits, matching the original int/engine conversion.
 Whole-economy runs still differ because asset/registry traversal assigns samples
 in a different order; deterministic random values alone do not establish full parity.
-Daily planetary market snapshots are retained alongside population summaries.
+Daily snapshots for all 11 planetary markets are retained alongside population summaries.
 The optional CSV keeps the legacy market logger's columns; the industry JSON keeps
 its production-unit fields. Exports refuse to overwrite existing files. These are
 diagnostic exports, not complete save files.
@@ -177,6 +177,10 @@ and small/empty workforces. Undefined unemployment conversions are not accepted
 as portable behavior; unordered mixed-direction drift still needs broader coverage.
 Science-field and technology definitions also compare against the actual source
 loaders, including defaults and directed/duplicate graph-reference handling.
+Civilization metadata and initial owned lists match actual original loaders for all
+199 countries. Capital tags remain province-only, and only the USA has a bundled
+space-program tag. All-body daily market history matches actual SysMarketHistory,
+including nine bodies without surface settlements that do not participate in trade.
 All 107 fixed-offset time zones and city bindings match the original loader;
 duplicate identifiers keep the final lookup and local hours preserve the source's
 signed remainder and fractional-hour truncation rather than adding DST behavior.

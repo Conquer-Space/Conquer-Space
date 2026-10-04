@@ -5,7 +5,6 @@ use crate::{
     clock::{DAY, StarDate, WEEK},
     economy::{
         GoodId, Market, Wallet,
-        history::MarketHistory,
         industry::{Construction, ConstructionSector, Industry, IndustryEntry},
         population::{Population, PopulationEntry},
     },
@@ -42,9 +41,12 @@ pub struct Settlement {
     pub identifier: String,
     pub name: String,
     pub country: Option<usize>,
+    /// Governed is separate from Province.country; colony delivery changes only the latter.
+    pub governor: Option<usize>,
     pub body: BodyId,
     pub kind: SurfaceKind,
     pub time_zone: Option<TimeZoneId>,
+    pub is_capital: bool,
     pub spaceport: Option<SpacePort>,
     pub colonization: Option<ColonizationTarget>,
     pub colony: Option<Colony>,
@@ -81,6 +83,12 @@ impl Settlement {
 pub struct CountryEconomy {
     pub wallet: Option<Wallet>,
     pub income_taxes: f64,
+    pub consumption_taxes: f64,
+    pub capital: Option<usize>,
+    pub space_program: bool,
+    pub provinces: Vec<usize>,
+    pub cities: Vec<usize>,
+    pub spaceports: Vec<usize>,
     pub vehicles: Vec<VehicleId>,
     pub missions: Vec<MissionId>,
     pub research: i32,
@@ -111,7 +119,6 @@ pub struct Simulation {
     pub project_templates: Vec<ProjectTemplate>,
     pub missions: Vec<Mission>,
     pub history: Vec<Summary>,
-    pub market_history: MarketHistory,
     pub diagnostics: Vec<String>,
     autonomous: Vec<(GoodId, f64)>,
     marginal: Vec<(GoodId, f64)>,
@@ -133,10 +140,12 @@ impl Simulation {
             .map(|_| CountryEconomy::default())
             .collect();
         for entry in read_entries::<CountryEntry>(&data.join("data/countries"))? {
+            let country = &mut countries[country_ids[entry.identifier.as_str()]];
+            country.space_program = entry.tags.iter().any(|tag| tag == "space_program");
             if let Some(balance) = entry.wallet {
                 let mut wallet = Wallet::default();
                 wallet.assign(balance);
-                countries[country_ids[entry.identifier.as_str()]].wallet = Some(wallet);
+                country.wallet = Some(wallet);
             }
         }
         let mut diagnostics = catalog.diagnostics.clone();
@@ -146,7 +155,7 @@ impl Simulation {
         diagnostics.extend(science.diagnostics.iter().cloned());
         let time_zones = TimeZones::load(data)?;
         diagnostics.extend(time_zones.diagnostics.iter().cloned());
-        let mut settlements = Vec::new();
+        let mut settlements: Vec<Settlement> = Vec::new();
         let provinces = read_entries::<SettlementEntry>(&data.join("data/planet_data/provinces"))?;
         let cities = read_entries::<SettlementEntry>(&data.join("data/cities"))?;
         let mut city_provinces = Vec::new();
@@ -229,13 +238,22 @@ impl Simulation {
             } else {
                 SurfaceKind::Province
             };
+            let is_capital = !city && entry.tags.iter().any(|tag| tag == "capital");
+            if is_capital && let Some(country) = country {
+                let previous = countries[country].capital.replace(settlements.len());
+                if let Some(previous) = previous {
+                    settlements[previous].is_capital = false;
+                }
+            }
             settlements.push(Settlement {
                 name: entry.name.unwrap_or_else(|| entry.identifier.clone()),
                 identifier: entry.identifier,
                 country,
+                governor: country,
                 body,
                 kind,
                 time_zone,
+                is_capital,
                 spaceport: (city
                     && entry.spaceport.is_some_and(|value| {
                         value != Value::Null
@@ -254,6 +272,17 @@ impl Simulation {
                 construction: ConstructionSector::default(),
                 job_demands: vec![0.0; catalog.jobs.len()],
             });
+            if let Some(country) = country {
+                let index = settlements.len() - 1;
+                if city {
+                    countries[country].cities.push(index);
+                    if settlements[index].spaceport.is_some() {
+                        countries[country].spaceports.push(index);
+                    }
+                } else {
+                    countries[country].provinces.push(index);
+                }
+            }
         }
         for (city, identifier) in city_provinces {
             let province = identifier.as_ref().and_then(|identifier| {
@@ -292,12 +321,17 @@ impl Simulation {
                 marginal.push((good, consumption.marginal_propensity * DAY as f64));
             }
         }
-        let planetary_markets = settlements
-            .iter()
-            .map(|settlement| settlement.body)
-            .collect::<std::collections::BTreeSet<_>>()
-            .into_iter()
-            .map(|body| (body, PlanetaryMarket::new(&catalog)))
+        let planetary_markets = (0..solar_system.bodies.len())
+            .map(BodyId)
+            .map(|body| {
+                (
+                    body,
+                    PlanetaryMarket::new(
+                        &catalog,
+                        settlements.iter().any(|site| site.body == body),
+                    ),
+                )
+            })
             .collect();
         Ok(Self {
             date: StarDate::default(),
@@ -313,7 +347,6 @@ impl Simulation {
             project_templates,
             missions: Vec::new(),
             history: Vec::new(),
-            market_history: MarketHistory::default(),
             diagnostics,
             autonomous,
             marginal,
@@ -411,6 +444,9 @@ impl Simulation {
                 .process(&self.catalog.base_prices, self.catalog.config.market_config);
         }
         for (&body, planetary) in &mut self.planetary_markets {
+            if !planetary.has_surface_sites {
+                continue;
+            }
             planetary.process(
                 &self.catalog.base_prices,
                 self.settlements
@@ -435,10 +471,9 @@ impl Simulation {
             }
         }
         self.history.push(self.summary(None));
-        self.market_history.record(
-            self.date,
-            &self.planetary_markets[&self.solar_system.body_id("earth").unwrap()].market,
-        );
+        for planetary in self.planetary_markets.values_mut() {
+            planetary.history.record(self.date, &planetary.market);
+        }
     }
 
     pub fn earth_market(&self) -> &Market {
@@ -585,6 +620,8 @@ impl Simulation {
 struct CountryEntry {
     identifier: String,
     wallet: Option<f64>,
+    #[serde(default)]
+    tags: Vec<String>,
 }
 
 #[derive(Deserialize)]
@@ -597,6 +634,8 @@ struct SettlementEntry {
     province: Option<String>,
     coordinates: Option<CoordinatesEntry>,
     timezone: Option<String>,
+    #[serde(default)]
+    tags: Vec<String>,
     #[serde(rename = "space-port")]
     spaceport: Option<Value>,
     #[serde(default)]
@@ -623,6 +662,61 @@ mod tests {
     fn load(seed: u64) -> Result<Simulation> {
         let data = crate::default_data_path();
         Simulation::load(&data, &World::load(&data)?, seed)
+    }
+    #[test]
+    fn civilization_metadata_and_all_body_histories_preserve_source_scope() -> Result<()> {
+        let data = crate::default_data_path();
+        let world = World::load(&data)?;
+        let mut simulation = Simulation::load(&data, &world, 42)?;
+        let usa = world
+            .countries
+            .iter()
+            .position(|country| country.identifier == "usa")
+            .unwrap();
+        let capital = simulation.countries[usa].capital.unwrap();
+        assert_eq!(
+            simulation.settlements[capital].identifier,
+            "district_of_columbia"
+        );
+        assert!(simulation.settlements[capital].is_capital);
+        assert!(simulation.settlements[capital].is_province());
+        assert_eq!(
+            simulation.countries[usa].wallet.unwrap().balance,
+            100_000_000.0
+        );
+        assert_eq!(
+            simulation
+                .countries
+                .iter()
+                .filter(|country| country.space_program)
+                .count(),
+            1
+        );
+        assert!(
+            simulation
+                .settlements
+                .iter()
+                .filter(|site| !site.is_province())
+                .all(|site| !site.is_capital)
+        );
+        simulation.advance_day();
+        simulation.advance_day();
+        assert_eq!(simulation.planetary_markets.len(), 11);
+        for market in simulation.planetary_markets.values() {
+            assert_eq!(market.history.0.len(), 2);
+            assert_eq!(market.history.0[1].date, simulation.date);
+            if !market.has_surface_sites {
+                assert_eq!(market.market.price, simulation.catalog.base_prices);
+                assert_eq!(
+                    market.market.sd_ratio.values(),
+                    vec![1.0; simulation.catalog.goods.len()]
+                );
+                assert_eq!(market.market.production.sum(), 0.0);
+                assert!(market.demands.is_empty());
+            }
+        }
+        simulation.validate()?;
+        Ok(())
     }
     #[test]
     fn manual_factory_creation_keeps_the_original_zero_level_steady_record() -> Result<()> {
@@ -735,12 +829,10 @@ mod tests {
         assert_eq!(simulation.history.len(), 1);
         simulation.tick();
         assert_eq!(simulation.history.len(), 2);
-        assert_eq!(simulation.market_history.0.len(), 2);
-        assert_eq!(simulation.market_history.0[1].date, simulation.date);
-        assert_eq!(
-            simulation.market_history.0[1].supply,
-            simulation.earth_market().supply
-        );
+        let history = &simulation.planetary_markets[&earth].history.0;
+        assert_eq!(history.len(), 2);
+        assert_eq!(history[1].date, simulation.date);
+        assert_eq!(history[1].supply, simulation.earth_market().supply);
         assert!(
             simulation
                 .industries_json()

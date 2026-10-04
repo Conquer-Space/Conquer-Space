@@ -125,6 +125,111 @@ fn manual_factory_creation_matches_original_action() {
     );
 }
 
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual country/province/city metadata loaders"]
+fn civilization_wallet_capital_capability_and_owned_lists_match_original() {
+    let data = default_data_path();
+    let world = World::load(&data).unwrap();
+    let simulation = Simulation::load(&data, &world, 42).unwrap();
+    let countries = cqsp_core::read_entries::<Value>(&data.join("data/countries")).unwrap();
+    let provinces: Vec<_> = cqsp_core::read_entries::<Value>(&data.join("data/planet_data/provinces")).unwrap().into_iter()
+        .filter(|row| !(row["identifier"] == "name" && row["color"] == "color"))
+        .map(|row| json!({"identifier":row["identifier"],"name":row["name"].as_str().unwrap_or(row["identifier"].as_str().unwrap()),"planet":row["planet"],"country":row["country"],"tags":row["tags"],"color":[0,0,0]}))
+        .collect();
+    let cities = cqsp_core::read_entries::<Value>(&data.join("data/cities")).unwrap();
+    let bodies: Vec<_> = simulation
+        .solar_system
+        .bodies
+        .iter()
+        .map(|body| &body.identifier)
+        .collect();
+    let output: serde_json::Map<_, _> = world.countries.iter().enumerate().map(|(index, country)| {
+        let economy = &simulation.countries[index];
+        let sites: Vec<_> = simulation.settlements.iter().filter(|site| site.governor == Some(index)).collect();
+        (country.identifier.clone(), json!({
+            "capital":economy.capital.map(|site| &simulation.settlements[site].identifier),
+            "wallet":economy.wallet.map(|wallet| [wallet.balance,wallet.change,wallet.gdp_change]),
+            "space_program":economy.space_program,"taxes":[economy.income_taxes,economy.consumption_taxes],"research":economy.research,
+            "provinces":sites.iter().filter(|site| site.is_province()).map(|site| &site.identifier).collect::<Vec<_>>(),
+            "cities":sites.iter().filter(|site| !site.is_province()).map(|site| &site.identifier).collect::<Vec<_>>(),
+        }))
+    }).collect();
+    compare(
+        &json!(output),
+        &reference_output(
+            Some("--civilizations"),
+            &json!({"countries":countries,"provinces":provinces,"cities":cities,"bodies":bodies})
+                .to_string(),
+        ),
+    );
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares all-body market history and inactive trade exclusion"]
+fn all_body_market_histories_match_original_daily_system() {
+    use cqsp_core::{catalog::Catalog, spaceflight::PlanetaryMarket};
+    let catalog = Catalog::load(&default_data_path()).unwrap();
+    let sites: Vec<_> = (0..11).map(|body| body == 0 || body == 4).collect();
+    let mut bodies: Vec<_> = sites
+        .iter()
+        .map(|&sites| PlanetaryMarket::new(&catalog, sites))
+        .collect();
+    let mut provinces: Vec<_> = sites
+        .iter()
+        .map(|&sites| {
+            sites.then(|| {
+                Market::new(
+                    &catalog.base_prices,
+                    &catalog.labor_goods,
+                    catalog.config.market_config,
+                )
+            })
+        })
+        .collect();
+    let mut output = Vec::new();
+    for day in 0..12 {
+        for (body, (planetary, province)) in bodies.iter_mut().zip(&mut provinces).enumerate() {
+            planetary.market.reset();
+            if let Some(province) = province {
+                province.reset();
+                province.gdp = (day * 100 + body) as f64;
+                for good in 0..catalog.goods.len() {
+                    province.production[GoodId(good)] = (((day + body + good) % 4) * 3) as f64;
+                    province.consumption[GoodId(good)] = (((day + good) % 3) * 2) as f64;
+                }
+                province.process(&catalog.base_prices, catalog.config.market_config);
+                planetary.process(&catalog.base_prices, [(province as &Market, None)]);
+                province.trade_with(&planetary.market);
+            }
+            planetary
+                .history
+                .record(StarDate::from_tick(day as u64 * DAY), &planetary.market);
+        }
+        output.push(bodies.iter().map(|body| {
+            let sample = body.history.0.last().unwrap();
+            json!({"market":market_values(&body.market),"history":{"gdp":sample.gdp,"length":body.history.0.len(),
+                "price":ledger_values(&sample.price),"supply":ledger_values(&sample.supply),"demand":ledger_values(&sample.demand),"ratio":ledger_values(&sample.sd_ratio)}})
+        }).collect::<Vec<_>>());
+    }
+    let goods: Vec<_> = catalog
+        .goods
+        .iter()
+        .map(|good| {
+            json!([
+                good.price,
+                i32::from(good.tags.iter().any(|tag| tag == "labor"))
+            ])
+        })
+        .collect();
+    compare(
+        &json!(output),
+        &reference_output(
+            Some("--planet-histories"),
+            &json!({"goods":goods,"sites":sites,"days":12}).to_string(),
+        ),
+    );
+}
+
 fn snapshot() -> Value {
     let mut wallet = Wallet::default();
     wallet.assign(100.0);
@@ -727,7 +832,7 @@ fn local_markets_and_planetary_trade_match_original_systems() {
         }
         ledger
     };
-    let mut planetary = PlanetaryMarket::new(&catalog);
+    let mut planetary = PlanetaryMarket::new(&catalog, true);
     let mut markets: Vec<_> = (0..3)
         .map(|_| Market::new(&catalog.base_prices, &catalog.labor_goods, config))
         .collect();
@@ -866,7 +971,7 @@ fn interplanetary_orders_and_first_port_allocation_match_original_system() {
     let mut markets: Vec<_> = inputs
         .iter()
         .map(|values| {
-            let mut planetary = PlanetaryMarket::new(&catalog);
+            let mut planetary = PlanetaryMarket::new(&catalog, true);
             for (index, (&price, (&production, (&consumption, &shortage)))) in values[0]
                 .iter()
                 .zip(values[1].iter().zip(values[2].iter().zip(&values[3])))

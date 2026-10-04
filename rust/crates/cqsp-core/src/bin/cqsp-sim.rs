@@ -96,7 +96,8 @@ fn main() -> Result<()> {
             "settlements":simulation.settlements.len(), "summary":simulation.summary(None),
             "celestial_bodies":simulation.solar_system.bodies.len(),
             "spacecraft":simulation.solar_system.ships.len(),
-            "market_history_days":simulation.market_history.0.len(),
+            "market_history_days":simulation.planetary_markets.values().next().map_or(0, |market| market.history.0.len()),
+            "planetary_markets":simulation.planetary_markets.len(),
             "orbital_positions_km": orbital_positions,
             "legacy_data_diagnostics":simulation.diagnostics
         }))?

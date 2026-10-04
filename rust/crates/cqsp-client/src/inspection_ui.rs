@@ -349,11 +349,13 @@ impl Inspector {
                     simulation.catalog.goods.len(),
                     simulation.catalog.goods[self.good].name
                 );
-                if self.province.is_none()
-                    && Some(self.body) == simulation.solar_system.body_id("earth")
-                {
-                    let history = &simulation.market_history.0;
-                    let _ = write!(text, "Earth price history (last eight days): ");
+                if self.province.is_none() {
+                    let history = &simulation.planetary_markets[&self.body].history.0;
+                    let _ = write!(
+                        text,
+                        "{} price history (last eight days): ",
+                        simulation.solar_system.bodies[self.body.0].name
+                    );
                     for sample in history.iter().skip(history.len().saturating_sub(8)) {
                         let _ = write!(
                             text,
@@ -367,7 +369,7 @@ impl Inspector {
                     }
                 } else {
                     text.push_str(
-                        "Historical samples currently exist only for the Earth planetary market.",
+                        "Historical samples exist for planetary markets, not individual provinces.",
                     );
                 }
                 text
@@ -1062,7 +1064,11 @@ mod tests {
             app.world()
                 .resource::<Game>()
                 .simulation
-                .market_history
+                .planetary_markets
+                .values()
+                .next()
+                .unwrap()
+                .history
                 .0
                 .len(),
             2 // Includes the original tick-zero sample.
@@ -1149,7 +1155,16 @@ mod tests {
                 .count(),
             1067
         );
-        apply(&mut app, Action::Planet);
+        let moon = app
+            .world()
+            .resource::<Game>()
+            .simulation
+            .solar_system
+            .body_id("moon")
+            .unwrap();
+        while app.world().resource::<Inspector>().body != moon {
+            apply(&mut app, Action::Planet);
+        }
         assert_eq!(
             app.world()
                 .resource::<Inspector>()

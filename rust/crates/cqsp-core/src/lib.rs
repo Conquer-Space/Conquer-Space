@@ -294,7 +294,8 @@ struct ProvinceEntry {
     color: Option<Value>,
 }
 
-pub(crate) fn read_entries<T: serde::de::DeserializeOwned>(directory: &Path) -> Result<Vec<T>> {
+/// Read original HJSON arrays recursively in stable filename order.
+pub fn read_entries<T: serde::de::DeserializeOwned>(directory: &Path) -> Result<Vec<T>> {
     let mut files = fs::read_dir(directory)
         .with_context(|| format!("Reading {}", directory.display()))?
         .map(|entry| entry.map(|entry| entry.path()))
