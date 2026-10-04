@@ -11,3 +11,6 @@ serde.workspace = true
 serde_json.workspace = true
 serde-hjson.workspace = true
 image.workspace = true
+rand.workspace = true
+rand_distr.workspace = true
+glam.workspace = true

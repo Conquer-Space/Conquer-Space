@@ -1,11 +1,26 @@
 # Conquer Space — Rust / Bevy port
 
-This is the first runnable port milestone, not a complete replacement for the C++ game.
+This is an actively developed port, not a complete replacement for the C++ game.
 It loads the original HJSON country/province definitions and 2K Earth textures, displays
 terrain and political maps with province borders, supports globe navigation and picking,
 and selects a player country before entering the game view. There is no Lua runtime.
-Economy, population, industry, trade, orbital simulation, saves, and the remaining UI
-have not been ported yet. The existing CMake/Visual Studio project is unchanged.
+The Earth economy slice loads original goods, jobs, recipes, populations and industries,
+and runs daily consumption/production/markets/trade with weekly labor redistribution.
+The original 11 celestial bodies and 64 satellites now load and propagate on
+ten-minute ticks, with parent-centered positions and next-tick predictions. Kepler
+propagation, orbital burns and state-vector conversion are C++ reference-tested.
+Spacecraft now execute timed burns, trigger queues, SOI transitions, crashes and
+landing commands. A native system view exposes body/ship selection, orbital paths,
+inspection and basic maneuver controls. Spaceports, cargo, saves and much of the UI
+remain unported. See
+[PARITY.md](PARITY.md) for status, evidence, compatibility gaps and acceptance gates.
+The existing CMake/Visual Studio project is unchanged.
+
+The Rust app is deliberately **silent**: no music, effects or sound-device backend
+are built in. Original sound assets are left untouched. Run
+`./tools/verify-silent.ps1` to audit the enabled dependency graph; pass `-Cargo`
+with the full Cargo path if it is not on PATH. Audio is intentionally excluded from
+the otherwise full-parity target at your request.
 
 ## Build and run
 
@@ -26,27 +41,75 @@ Enter or the sidebar button starts the game view; Escape returns to selection.
 M toggles terrain/political maps, R resets the camera, F12 writes `target/conquer-space.png`.
 Closing the window exits normally.
 
+The game starts paused. Space pauses/resumes; N advances to the next economy day;
+minus/equal select 1x/4x/16x/64x tick speeds. The right panel shows country/global
+economic totals and the hovered province's local market. Returning to selection
+pauses and preserves the in-memory simulation; it does not create a new game.
+
+V switches Earth/system views after starting. In system view, Tab/Shift+Tab cycle
+natural bodies; Q/Shift+Q cycle spacecraft at the current body; Backspace selects
+the parent and E focuses Earth. Click a marker to focus it. Drag/arrows/wheel control
+the camera; O toggles orbit paths. Select a spacecraft to use the maneuver buttons;
+brackets adjust their target radius by 10%. Distances are center-to-center kilometers,
+not altitude. Body/ship markers are enlarged for visibility; this is not yet the
+original textured system renderer or the complete spacecraft interface.
+
+For fast renderer-free simulation checks:
+
+```powershell
+cargo run -p cqsp-core --bin cqsp-sim -- --days 365 --seed 42
+cargo run -p cqsp-core --bin cqsp-sim -- --days 30 --market-csv target/market.csv --industries-json target/industries.json
+```
+
+This checks daily economy/orbital state and prints JSON, including body positions.
+The scope is explicitly partial; deterministic
+Rust runs are not yet identical to the original C++ random sequence.
+Daily planetary market snapshots are retained alongside population summaries.
+The optional CSV keeps the legacy market logger's columns; the industry JSON keeps
+its production-unit fields. Exports refuse to overwrite existing files. These are
+diagnostic exports, not complete save files.
+
 ## Verification
 
 ```powershell
 cargo test --workspace
 cargo clippy --workspace --all-targets -- -D warnings
+./tools/verify-silent.ps1
 cargo run -p cqsp-client -- --smoke
 ```
 
 The GPU smoke check casts a real camera ray into Delhi, asserts that India is selected,
-enters the game view, writes `target/selection.png` and `target/game-view.png`, then exits.
-Inspect both images and the console for shader/rendering errors; process success alone
+enters the game view, validates seven daily economy steps, navigates to the system
+and a spacecraft, queues a native maneuver and advances another day. It writes
+`target/selection.png`, `target/game-view.png`, `target/system-view.png` and
+`target/spacecraft-view.png`, then exits.
+Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
+Shader pipelines compile synchronously to address intermittent missing UI text in
+captures; sibling labels refresh together when their panel changes. Smoke tests now
+render to a fixed-size GPU image **without creating an OS window** and ignore live
+input. They check glyph layouts, actual text/overlay pixels and all four completed
+captures. Background tests work while normal game windows are minimized or closed.
 
 ## Layout and next milestone
 
-- `cqsp-core`: renderer-independent domain data, map ownership, globe math, selection rules.
+- `cqsp-core`: renderer-independent map, economy/history, industry modifiers, orbital math, spacecraft actions and selection rules.
 - `cqsp-client`: Bevy rendering, input, native UI, and smoke verification.
 
-Next: port a deterministic simulation tick and the population/goods/industry model into
-`cqsp-core`, with parity fixtures against the C++ systems before adding their game UI.
+Actual C++ component outputs are tested by the recorded fixture. To also compare live:
+
+```powershell
+./tools/build-reference.ps1
+cargo test -p cqsp-core --test cpp_reference -- --include-ignored
+```
+
+The live reference suite also loads all 75 orbital definitions through the original
+C++ HJSON loader and checks all 74 moving orbits at seven times spanning 50 years.
+It compares actual original sources, not an independent formula replica.
+
+Next: spaceports/launch vehicles/cargo, remaining native interfaces and broader
+economy differential coverage. These components are not yet whole-game parity verified.
 Original asset irregularities are reported rather than silently inventing ownership.
 Build output is contained in the ignored `target/` directory and can be deleted to reclaim
 space. `Cargo.lock` is tracked for reproducible application builds.

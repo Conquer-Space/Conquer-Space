@@ -1,4 +1,13 @@
-//! Renderer-independent data and interaction rules for the first port milestone.
+//! Renderer-independent domain data and simulation rules for the Rust port.
+pub mod catalog;
+pub mod clock;
+pub mod economy;
+pub mod flight;
+pub mod modifiers;
+pub mod orbit;
+pub mod simulation;
+pub mod solar_system;
+pub mod units;
 use anyhow::{Context, Result, bail, ensure};
 use serde::Deserialize;
 use serde_json::Value;
@@ -281,17 +290,21 @@ struct ProvinceEntry {
     color: Option<Value>,
 }
 
-fn read_entries<T: serde::de::DeserializeOwned>(directory: &Path) -> Result<Vec<T>> {
+pub(crate) fn read_entries<T: serde::de::DeserializeOwned>(directory: &Path) -> Result<Vec<T>> {
     let mut files = fs::read_dir(directory)
         .with_context(|| format!("Reading {}", directory.display()))?
         .map(|entry| entry.map(|entry| entry.path()))
         .collect::<std::io::Result<Vec<_>>>()?;
     files.sort();
     let mut entries = Vec::new();
-    for path in files
-        .into_iter()
-        .filter(|path| path.extension().is_some_and(|ext| ext == "hjson"))
-    {
+    for path in files {
+        if path.is_dir() {
+            entries.extend(read_entries::<T>(&path)?);
+            continue;
+        }
+        if !path.extension().is_some_and(|ext| ext == "hjson") {
+            continue;
+        }
         let content = fs::read_to_string(&path)?;
         // Deserialize through Value: serde-hjson's Option visitor mistakes unquoted
         // strings beginning with 'n' (such as n__cyprus) for null.

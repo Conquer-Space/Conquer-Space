@@ -1,23 +1,29 @@
 use anyhow::{Context, Result, bail};
 use bevy::{
-    app::AppExit,
+    app::{AppExit, ScheduleRunnerPlugin},
     asset::RenderAssetUsages,
+    camera::RenderTarget,
     core_pipeline::tonemapping::Tonemapping,
     input::mouse::{AccumulatedMouseMotion, AccumulatedMouseScroll},
     mesh::Indices,
     prelude::*,
     reflect::TypePath,
     render::{
+        RenderPlugin,
         render_resource::{
             AsBindGroup, Extent3d, PrimitiveTopology, TextureDimension, TextureFormat,
         },
-        view::screenshot::{Screenshot, save_to_disk},
+        view::screenshot::{Screenshot, ScreenshotCaptured, save_to_disk},
     },
     shader::ShaderRef,
-    window::PrimaryWindow,
+    window::{ExitCondition, PrimaryWindow},
+    winit::WinitPlugin,
 };
 use cqsp_core::{Session, World, default_data_path, intersect_globe, uv_to_direction};
-use std::{f32::consts::PI, path::PathBuf};
+use cqsp_core::{clock::StarDate, simulation::Simulation};
+use std::{f32::consts::PI, path::PathBuf, time::Duration};
+mod system_view;
+use system_view::{FlightAction, Focus, Navigation};
 
 #[derive(Resource)]
 struct Game {
@@ -26,6 +32,10 @@ struct Game {
     hovered: Option<usize>,
     political: bool,
     ordered_countries: Vec<usize>,
+    simulation: Simulation,
+    paused: bool,
+    speed_index: usize,
+    tick_accumulator: f64,
 }
 
 #[derive(Resource)]
@@ -86,7 +96,11 @@ struct Smoke {
     enabled: bool,
     stage: u8,
     elapsed: f32,
+    captures: u8,
 }
+
+#[derive(Resource)]
+struct SmokeTarget(Handle<Image>);
 
 #[derive(Resource)]
 struct InitialAssets {
@@ -95,11 +109,20 @@ struct InitialAssets {
 }
 
 #[derive(Component)]
-struct Hud;
+enum Hud {
+    Phase,
+    Country,
+    Province,
+    Note,
+}
+#[derive(Component)]
+struct EconomyHud;
 #[derive(Component)]
 struct BeginButton;
 #[derive(Component)]
 struct BeginLabel;
+#[derive(Component)]
+struct EarthGlobe;
 
 fn main() -> Result<()> {
     let mut data = default_data_path();
@@ -113,7 +136,7 @@ fn main() -> Result<()> {
             "--smoke" => smoke = true,
             "--help" | "-h" => {
                 println!(
-                    "Conquer Space — Rust port\nUsage: cqsp-client [--data PATH] [--smoke]\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nM: terrain/political map; R: reset camera; F12: screenshot"
+                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke]\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nO: orbit paths; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
                 return Ok(());
             }
@@ -121,6 +144,18 @@ fn main() -> Result<()> {
         }
     }
     let world = World::load(&data)?;
+    let simulation = Simulation::load(&data, &world, 42)?;
+    let navigation = Navigation::new(&simulation.solar_system);
+    println!(
+        "Economy slice: {} goods, {} jobs, {} recipes, {} settlements.",
+        simulation.catalog.goods.len(),
+        simulation.catalog.jobs.len(),
+        simulation.catalog.recipes.len(),
+        simulation.settlements.len()
+    );
+    for diagnostic in &simulation.diagnostics {
+        eprintln!("Legacy economy data: {diagnostic}");
+    }
     println!(
         "Loaded {} countries, {} provinces, {}x{} map; {} unmapped land pixels.",
         world.countries.len(),
@@ -165,53 +200,77 @@ fn main() -> Result<()> {
         std::fs::read(data.join("gfx/fonts/Roboto-Regular.ttf"))
             .context("Loading the bundled UI font")?,
     );
-    App::new()
-        .add_plugins((
-            DefaultPlugins
-                .set(AssetPlugin {
-                    file_path: PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-                        .join("assets")
-                        .to_string_lossy()
-                        .into_owned(),
-                    ..default()
-                })
-                .set(WindowPlugin {
-                    primary_window: Some(Window {
-                        title: "Conquer Space — Rust / Bevy".into(),
-                        resolution: (1280, 800).into(),
-                        ..default()
-                    }),
-                    ..default()
-                }),
-            MaterialPlugin::<EarthMaterial>::default(),
-        ))
-        .insert_resource(ClearColor(Color::srgb(0.008, 0.014, 0.03)))
+    let mut plugins = DefaultPlugins
+        // Async pipeline preparation intermittently omitted UI text in captures.
+        .set(RenderPlugin {
+            synchronous_pipeline_compilation: true,
+            ..default()
+        })
+        .set(AssetPlugin {
+            file_path: PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+                .join("assets")
+                .to_string_lossy()
+                .into_owned(),
+            ..default()
+        })
+        .set(WindowPlugin {
+            primary_window: (!smoke).then(|| Window {
+                title: "Conquer Space — Rust / Bevy".into(),
+                resolution: (1280, 800).into(),
+                ..default()
+            }),
+            exit_condition: if smoke {
+                ExitCondition::DontExit
+            } else {
+                ExitCondition::OnAllClosed
+            },
+            ..default()
+        });
+    if smoke {
+        plugins = plugins.disable::<WinitPlugin>();
+    }
+    let mut app = App::new();
+    app.add_plugins((plugins, MaterialPlugin::<EarthMaterial>::default()));
+    if smoke {
+        app.add_plugins(ScheduleRunnerPlugin::run_loop(Duration::from_millis(16)));
+    }
+    app.insert_resource(ClearColor(Color::srgb(0.008, 0.014, 0.03)))
         .insert_resource(Game {
             world,
             session: Session::default(),
             hovered: None,
             political: true,
             ordered_countries,
+            simulation,
+            paused: true,
+            speed_index: 0,
+            tick_accumulator: 0.0,
         })
         .insert_resource(Orbit::default())
+        .insert_resource(navigation)
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
             elapsed: 0.0,
+            captures: 0,
         })
         .insert_resource(InitialAssets {
             terrain: terrain_image,
             font,
         })
-        .add_systems(Startup, setup)
+        .add_systems(Startup, (setup, system_view::setup).chain())
         .add_systems(
             Update,
             (
-                camera_controls,
-                pick_province,
-                selection_controls,
+                camera_controls.run_if(earth_controls),
+                pick_province.run_if(earth_controls),
+                selection_controls.run_if(interactive),
+                simulation_controls.run_if(interactive),
+                system_view::controls.run_if(interactive),
+                system_view::update,
                 update_globe,
                 update_hud,
+                update_economy_hud,
                 smoke_test,
             )
                 .chain(),
@@ -244,6 +303,7 @@ fn setup(
     game: Res<Game>,
     orbit: Res<Orbit>,
     initial: Res<InitialAssets>,
+    smoke: Res<Smoke>,
 ) {
     let font = fonts.add(initial.font.clone());
     let political = images.add(rgba_image(
@@ -257,6 +317,7 @@ fn setup(
         political: political.clone(),
     });
     commands.spawn((
+        EarthGlobe,
         Mesh3d(meshes.add(globe_mesh())),
         MeshMaterial3d(material.clone()),
     ));
@@ -264,24 +325,64 @@ fn setup(
         political,
         material,
     });
-    commands.spawn((
+    let mut camera = commands.spawn((
         Camera3d::default(),
         Tonemapping::Reinhard,
         orbit.transform(),
     ));
+    if smoke.enabled {
+        let image = images.add(Image::new_target_texture(
+            1280,
+            800,
+            TextureFormat::Rgba8UnormSrgb,
+            None,
+        ));
+        camera.insert(RenderTarget::Image(image.clone().into()));
+        camera.commands().insert_resource(SmokeTarget(image));
+    }
+    let camera = camera.id();
     commands.remove_resource::<InitialAssets>();
     commands.spawn((Node {
         position_type: PositionType::Absolute, left: px(24), top: px(24), width: px(292),
         padding: UiRect::all(px(20)), flex_direction: FlexDirection::Column, row_gap: px(18), border_radius: BorderRadius::all(px(12)), ..default()
-    }, BackgroundColor(Color::srgba(0.025, 0.05, 0.09, 0.95))))
+    }, UiTargetCamera(camera), BackgroundColor(Color::srgba(0.025, 0.05, 0.09, 0.95))))
         .with_children(|panel| {
             panel.spawn((Text::new("CONQUER SPACE"), ui_font(&font, 24.0), TextColor(Color::srgb(0.9, 0.76, 0.42))));
-            panel.spawn((Hud, Text::new("Loading Earth…"), ui_font(&font, 17.0), TextColor(Color::srgb(0.82, 0.87, 0.94))));
+            for section in [Hud::Phase, Hud::Country, Hud::Province] {
+                panel.spawn((section, Text::new("Loading Earth…"), ui_font(&font, 17.0), TextColor(Color::srgb(0.82, 0.87, 0.94))));
+            }
+            panel.spawn((Text::new(format!("{} countries · {} provinces", game.world.countries.len(), game.world.provinces.len())), ui_font(&font, 14.0), TextColor(Color::srgb(0.82, 0.87, 0.94))));
+            panel.spawn((Hud::Note, Text::new(""), ui_font(&font, 16.0), TextColor(Color::srgb(0.82, 0.87, 0.94))));
             panel.spawn((BeginButton, Button, Node { padding: UiRect::all(px(12)), border_radius: BorderRadius::all(px(6)), ..default() },
                 BackgroundColor(Color::srgb(0.15, 0.29, 0.43))))
                 .with_children(|button| { button.spawn((BeginLabel, Text::new("Select a country"), ui_font(&font, 18.0))); });
-            panel.spawn((Text::new("Right drag / arrows: orbit\nWheel: zoom\nLeft click: select province\nTab / Shift+Tab: countries\nEnter: start · Esc: selection\nM: map mode · R: reset\nF12: save screenshot"),
+            panel.spawn((Text::new("Right drag / arrows: orbit\nWheel: zoom · Left click: select\nTab / Shift+Tab: countries\nEnter: start · Esc: selection\nV: Earth / system view\nM: map mode · R: reset\nF12: save screenshot"),
                 ui_font(&font, 14.0), TextColor(Color::srgb(0.55, 0.65, 0.77))));
+        });
+    commands
+        .spawn((
+            Node {
+                position_type: PositionType::Absolute,
+                right: px(24),
+                top: px(24),
+                width: px(288),
+                padding: UiRect::all(px(18)),
+                border_radius: BorderRadius::all(px(12)),
+                flex_direction: FlexDirection::Column,
+                row_gap: px(12),
+                ..default()
+            },
+            BackgroundColor(Color::srgba(0.025, 0.05, 0.09, 0.95)),
+            UiTargetCamera(camera),
+        ))
+        .with_children(|panel| {
+            panel.spawn((
+                EconomyHud,
+                Text::new("Loading economy…"),
+                ui_font(&font, 16.0),
+                TextColor(Color::srgb(0.82, 0.87, 0.94)),
+            ));
+            system_view::spawn_controls(panel, &font);
         });
 }
 
@@ -297,6 +398,14 @@ fn screenshot_path(name: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("../../target")
         .join(name)
+}
+
+fn interactive(smoke: Res<Smoke>) -> bool {
+    !smoke.enabled
+}
+
+fn earth_controls(smoke: Res<Smoke>, navigation: Res<Navigation>) -> bool {
+    !smoke.enabled && !navigation.active
 }
 
 fn globe_mesh() -> Mesh {
@@ -374,7 +483,7 @@ fn pick_province(
 ) {
     let hovered = window
         .cursor_position()
-        .filter(|position| position.x > 326.0)
+        .filter(|position| position.x > 326.0 && position.x < window.width() - 326.0)
         .and_then(|cursor| picked_province(&game.world, camera.0, camera.1, cursor));
     if game.hovered != hovered {
         game.hovered = hovered;
@@ -392,8 +501,12 @@ fn selection_controls(
     button: Query<&Interaction, (Changed<Interaction>, With<BeginButton>)>,
     mut commands: Commands,
     mut game: ResMut<Game>,
+    navigation: Res<Navigation>,
 ) {
-    if keyboard.just_pressed(KeyCode::Tab) && game.session.player_country.is_none() {
+    if keyboard.just_pressed(KeyCode::Tab)
+        && !navigation.active
+        && game.session.player_country.is_none()
+    {
         let count = game.ordered_countries.len();
         let current = game
             .session
@@ -413,6 +526,8 @@ fn selection_controls(
     }
     if keyboard.just_pressed(KeyCode::Escape) {
         game.session.return_to_selection();
+        game.paused = true;
+        game.tick_accumulator = 0.0;
     }
     let pressed = button
         .iter()
@@ -420,6 +535,8 @@ fn selection_controls(
     if keyboard.just_pressed(KeyCode::Enter) || pressed {
         if game.session.player_country.is_some() {
             game.session.return_to_selection();
+            game.paused = true;
+            game.tick_accumulator = 0.0;
         } else {
             game.session.start();
         }
@@ -434,13 +551,61 @@ fn selection_controls(
     }
 }
 
+const SIMULATION_SPEEDS: [f64; 4] = [1.0, 4.0, 16.0, 64.0];
+
+fn simulation_controls(
+    time: Res<Time>,
+    keyboard: Res<ButtonInput<KeyCode>>,
+    mut game: ResMut<Game>,
+) {
+    if game.session.player_country.is_none() {
+        return;
+    }
+    if game.simulation.date == StarDate::default() {
+        game.simulation.tick();
+    }
+    if keyboard.just_pressed(KeyCode::Space) {
+        game.paused = !game.paused;
+        game.tick_accumulator = 0.0;
+    }
+    if keyboard.just_pressed(KeyCode::Minus) {
+        game.speed_index = game.speed_index.saturating_sub(1);
+    }
+    if keyboard.just_pressed(KeyCode::Equal) {
+        game.speed_index = (game.speed_index + 1).min(SIMULATION_SPEEDS.len() - 1);
+    }
+    if keyboard.just_pressed(KeyCode::KeyN) {
+        game.paused = true;
+        game.tick_accumulator = 0.0;
+        game.simulation.advance_day();
+    }
+    if !game.paused {
+        game.tick_accumulator += time.delta_secs_f64() * SIMULATION_SPEEDS[game.speed_index];
+        // Cap work per rendered frame without throwing away pending simulation time.
+        for _ in 0..32 {
+            if game.tick_accumulator < 0.25 {
+                break;
+            }
+            game.tick_accumulator -= 0.25;
+            game.simulation.tick();
+        }
+    }
+}
+
 fn update_globe(
     game: Res<Game>,
     handles: Res<GlobeAssets>,
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<EarthMaterial>>,
     mut previous: Local<Option<(Option<usize>, bool)>>,
+    navigation: Res<Navigation>,
+    mut globe: Single<&mut Visibility, With<EarthGlobe>>,
 ) {
+    **globe = if navigation.active {
+        Visibility::Hidden
+    } else {
+        Visibility::Visible
+    };
     let state = (game.session.selected_country, game.political);
     if *previous == Some(state) {
         return;
@@ -456,46 +621,60 @@ fn update_globe(
 
 fn update_hud(
     game: Res<Game>,
-    mut hud: Single<&mut Text, With<Hud>>,
+    navigation: Res<Navigation>,
+    mut hud: Query<(&Hud, &mut Text), Without<BeginLabel>>,
     mut label: Single<&mut Text, (With<BeginLabel>, Without<Hud>)>,
 ) {
-    if !game.is_changed() {
+    if !game.is_changed() && !navigation.is_changed() {
         return;
     }
     let selected = game
         .session
         .selected_country
         .map(|id| &game.world.countries[id]);
-    let phase = if game.session.player_country.is_some() {
-        "Game view · port foundation"
+    let phase = if navigation.active {
+        "Game view · solar system"
+    } else if game.session.player_country.is_some() {
+        "Game view · economy slice"
     } else {
         "Choose your country"
     };
     let country = selected.map_or("No country selected".to_owned(), |country| {
         format!("{}\n{}", country.common, country.name)
     });
-    let province = game
-        .hovered
-        .map_or("Hover over land to inspect a province.".to_owned(), |id| {
-            let province = &game.world.provinces[id];
-            format!(
-                "{}\n{}",
-                province.name,
-                province
-                    .country
-                    .map_or("Ungoverned", |id| game.world.countries[id].common.as_str())
-            )
-        });
+    let province = if navigation.active {
+        navigation.focus_label(&game.simulation.solar_system)
+    } else {
+        game.hovered.map_or(
+            "PROVINCE\nHover over land to inspect a province.".to_owned(),
+            |id| {
+                let province = &game.world.provinces[id];
+                format!(
+                    "PROVINCE\n{}\n{}",
+                    province.name,
+                    province
+                        .country
+                        .map_or("Ungoverned", |id| game.world.countries[id].common.as_str())
+                )
+            },
+        )
+    };
     let note = if game.session.player_country.is_some() {
-        "Economy and orbital simulation\nare not ported yet."
+        "Earth economy slice is loaded.\nFull parity is still in progress."
     } else {
         "Click land or use Tab, then start."
     };
-    hud.0 = format!(
-        "{phase}\n\n{country}\n\nPROVINCE\n{province}\n\n{} countries · {} provinces\n\n{note}",
-        game.world.countries.len(),
-        game.world.provinces.len()
-    );
+    for (section, mut text) in &mut hud {
+        let content = match section {
+            Hud::Phase => phase,
+            Hud::Country => &country,
+            Hud::Province => &province,
+            Hud::Note => note,
+        };
+        // Refresh sibling layouts together: Bevy 0.19 can drop unchanged glyphs
+        // when a neighboring text block changes the panel's layout.
+        text.0 = content.into();
+    }
     label.0 = if game.session.player_country.is_some() {
         "Back to selection"
     } else if selected.is_some() {
@@ -506,15 +685,159 @@ fn update_hud(
     .into();
 }
 
+fn update_economy_hud(
+    game: Res<Game>,
+    navigation: Res<Navigation>,
+    mut hud: Single<&mut Text, With<EconomyHud>>,
+) {
+    if !game.is_changed() && !navigation.is_changed() {
+        return;
+    }
+    let simulation = &game.simulation;
+    if navigation.active {
+        hud.0 = navigation.inspector(&simulation.solar_system, simulation.date, game.paused);
+        return;
+    }
+    if game.session.player_country.is_none() {
+        hud.0 = format!(
+            "ECONOMY PORT\n\n{} goods · {} jobs\n{} recipes · {} settlements\n\nStart to inspect the simulation.\n\nPartial Earth economy.\nSpaceflight and remaining UI\nare still being ported.",
+            simulation.catalog.goods.len(),
+            simulation.catalog.jobs.len(),
+            simulation.catalog.recipes.len(),
+            simulation.settlements.len()
+        );
+        return;
+    }
+    let global = simulation.summary(None);
+    let owned = simulation.summary(game.session.player_country);
+    let date = simulation.date;
+    let local = game.hovered.map_or(String::new(), |index| {
+        let settlement = &simulation.settlements[index];
+        let population: u64 = settlement
+            .populations
+            .iter()
+            .map(|population| population.size)
+            .sum();
+        format!(
+            "\n\nLOCAL MARKET\n{}\nPopulation: {}\nGDP: {}\nTrade balance: {}",
+            settlement.name,
+            human_number(population as f64),
+            human_number(settlement.market.gdp),
+            human_number(settlement.market.last_trade_deficit)
+        )
+    });
+    hud.0 = format!(
+        "{} {:02}:{:02} · {}\nSpeed: {}x\n\nCOUNTRY\nPopulation: {}\nIndustries: {}\nGDP: {}\n\nGLOBAL\nPopulation: {}\nEmployed: {}\nLiving standard: {:.2}\n\nSpace: pause / resume\nN: next economy day\n- / =: change speed{}",
+        date.display(),
+        date.hour(0.0),
+        date.minute(),
+        if game.paused { "Paused" } else { "Running" },
+        SIMULATION_SPEEDS[game.speed_index],
+        human_number(owned.population as f64),
+        owned.industries,
+        human_number(owned.gdp),
+        human_number(global.population as f64),
+        human_number(global.employed as f64),
+        global.standard_of_living,
+        local
+    );
+}
+
+fn human_number(value: f64) -> String {
+    for (threshold, suffix) in [(1e12, "T"), (1e9, "B"), (1e6, "M"), (1e3, "K")] {
+        if value.abs() >= threshold {
+            return format!("{:.2}{suffix}", value / threshold);
+        }
+    }
+    format!("{value:.2}")
+}
+
+fn verify_capture(
+    capture: On<ScreenshotCaptured>,
+    text_nodes: Query<(&Text, &ComputedNode, &UiGlobalTransform)>,
+    navigation: Res<Navigation>,
+    mut smoke: ResMut<Smoke>,
+) {
+    let pixels = capture
+        .image
+        .clone()
+        .try_into_dynamic()
+        .expect("Smoke image")
+        .to_rgb8();
+    let mut checked = 0;
+    for (text, node, transform) in &text_nodes {
+        if text.0.trim().is_empty() || node.is_empty() {
+            continue;
+        }
+        let center = transform.affine().translation;
+        let min = (center - node.size() / 2.0).max(Vec2::ZERO).as_uvec2();
+        let max = (center + node.size() / 2.0)
+            .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
+            .as_uvec2();
+        let mut bright = 0;
+        for y in min.y..max.y {
+            for x in min.x..max.x {
+                if pixels
+                    .get_pixel(x, y)
+                    .0
+                    .iter()
+                    .all(|channel| *channel > 100)
+                {
+                    bright += 1;
+                }
+            }
+        }
+        assert!(
+            bright >= 3,
+            "Smoke check: text is laid out but not rendered: {:?}",
+            text.0
+        );
+        checked += 1;
+    }
+    assert!(
+        checked >= 8,
+        "Smoke check: expected visible text nodes, checked {checked}"
+    );
+    println!("SMOKE: verified rendered pixels for {checked} text blocks.");
+    if navigation.active {
+        let mut orbit_pixels = 0;
+        for y in 0..pixels.height() {
+            for x in 330..pixels.width() - 330 {
+                if Vec2::new(x as f32, y as f32).distance(Vec2::new(640.0, 400.0)) < 80.0 {
+                    continue;
+                }
+                let [r, g, b] = pixels.get_pixel(x, y).0;
+                if r < 90 && g > 70 && b > g && g as f32 > r as f32 * 1.4 {
+                    orbit_pixels += 1;
+                }
+            }
+        }
+        assert!(
+            orbit_pixels > 200,
+            "Smoke check: missing rendered orbital overlays ({orbit_pixels} pixels)"
+        );
+    }
+    smoke.captures += 1;
+}
+
+fn capture_smoke(commands: &mut Commands, target: &SmokeTarget, name: &str) {
+    commands
+        .spawn(Screenshot::image(target.0.clone()))
+        .observe(verify_capture)
+        .observe(save_to_disk(screenshot_path(name)));
+}
+
 #[allow(clippy::too_many_arguments)]
 fn smoke_test(
     time: Res<Time>,
     mut smoke: ResMut<Smoke>,
     mut game: ResMut<Game>,
     mut commands: Commands,
-    window: Single<&Window, With<PrimaryWindow>>,
     camera: Single<(&Camera, &GlobalTransform), With<Camera3d>>,
     mut exit: MessageWriter<AppExit>,
+    text_layouts: Query<(&Text, &bevy::text::TextLayoutInfo)>,
+    target: Option<Res<SmokeTarget>>,
+    mut navigation: ResMut<Navigation>,
 ) {
     if !smoke.enabled {
         return;
@@ -524,13 +847,26 @@ fn smoke_test(
         return;
     }
     smoke.elapsed = 0.0;
+    if matches!(smoke.stage, 1 | 3 | 5 | 7) {
+        for (text, layout) in &text_layouts {
+            assert!(
+                text.0.trim().is_empty() || !layout.glyphs.is_empty(),
+                "Smoke check: missing text layout for {:?}",
+                text.0
+            );
+        }
+    }
     match smoke.stage {
         0 => {
             let id = picked_province(
                 &game.world,
                 camera.0,
                 camera.1,
-                Vec2::new(window.width() / 2.0, window.height() / 2.0),
+                camera
+                    .0
+                    .logical_viewport_rect()
+                    .expect("Smoke check: viewport initialized")
+                    .center(),
             )
             .expect("Smoke check: camera center must hit Delhi");
             let country = game.world.provinces[id]
@@ -538,26 +874,74 @@ fn smoke_test(
                 .expect("Smoke check: Delhi has an owner");
             assert_eq!(game.world.countries[country].identifier, "india");
             game.session.select(country);
+            game.hovered = Some(id);
             println!(
                 "SMOKE: center-screen ray selected India ({}).",
                 game.world.provinces[id].name
             );
         }
         1 => {
-            commands
-                .spawn(Screenshot::primary_window())
-                .observe(save_to_disk(screenshot_path("selection.png")));
+            capture_smoke(
+                &mut commands,
+                target.as_ref().expect("Smoke render target"),
+                "selection.png",
+            );
         }
         2 => {
             assert!(game.session.start());
-            println!("SMOKE: entered game view as India.");
+            for _ in 0..7 {
+                game.simulation.advance_day();
+            }
+            game.simulation
+                .validate()
+                .expect("Smoke check: valid economy after a week");
+            assert_eq!(game.simulation.history.len(), 7);
+            println!(
+                "SMOKE: entered game as India; seven daily economy steps passed ({}).",
+                game.simulation.date.display()
+            );
         }
         3 => {
-            commands
-                .spawn(Screenshot::primary_window())
-                .observe(save_to_disk(screenshot_path("game-view.png")));
+            capture_smoke(
+                &mut commands,
+                target.as_ref().expect("Smoke render target"),
+                "game-view.png",
+            );
+        }
+        4 => {
+            navigation.active = true;
+            let earth = game.simulation.solar_system.body_id("earth").unwrap();
+            navigation.select(Focus::Body(earth), &game.simulation.solar_system);
+        }
+        5 => {
+            capture_smoke(
+                &mut commands,
+                target.as_ref().expect("Smoke render target"),
+                "system-view.png",
+            );
+        }
+        6 => {
+            navigation.cycle_ship(&game.simulation.solar_system, false);
+            assert!(matches!(navigation.focus, Focus::Ship(_)));
+            navigation
+                .apply(FlightAction::CircularizePeriapsis, &mut game)
+                .expect("Smoke maneuver action");
+            game.simulation.advance_day();
+            game.simulation.validate().expect("Smoke flight validation");
+            println!("SMOKE: system navigation and native spacecraft action passed.");
+        }
+        7 => {
+            capture_smoke(
+                &mut commands,
+                target.as_ref().expect("Smoke render target"),
+                "spacecraft-view.png",
+            );
         }
         _ => {
+            assert_eq!(
+                smoke.captures, 4,
+                "Smoke check: all four captures must be verified"
+            );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);
         }
@@ -569,6 +953,100 @@ fn smoke_test(
 mod tests {
     use super::*;
     use bevy::mesh::VertexAttributeValues;
+
+    #[test]
+    fn simulation_keys_step_pause_speed_and_stop_in_selection() -> Result<()> {
+        let data = default_data_path();
+        let world = World::load(&data)?;
+        let expected_country =
+            format!("{}\n{}", world.countries[0].common, world.countries[0].name);
+        let simulation = Simulation::load(&data, &world, 42)?;
+        let navigation = Navigation::new(&simulation.solar_system);
+        let mut session = Session::default();
+        session.select(0);
+        session.start();
+        let mut app = App::new();
+        app.insert_resource(Game {
+            world,
+            simulation,
+            session,
+            hovered: None,
+            political: true,
+            ordered_countries: Vec::new(),
+            paused: true,
+            speed_index: 0,
+            tick_accumulator: 0.0,
+        })
+        .insert_resource(navigation)
+        .init_resource::<Time>()
+        .init_resource::<ButtonInput<KeyCode>>()
+        .add_systems(Update, (simulation_controls, update_hud).chain());
+        let country_text = app.world_mut().spawn((Hud::Country, Text::default())).id();
+        app.world_mut().spawn((BeginLabel, Text::default()));
+        app.update();
+        assert_eq!(
+            app.world().get::<Text>(country_text).unwrap().0,
+            expected_country
+        );
+        assert_eq!(app.world().resource::<Game>().simulation.date.tick(), 0);
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::KeyN);
+        app.update();
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            cqsp_core::clock::DAY
+        );
+        assert!(app.world().resource::<Game>().paused);
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::Space);
+        app.world_mut()
+            .resource_mut::<Time>()
+            .advance_by(std::time::Duration::from_secs(1));
+        app.update();
+        assert!(!app.world().resource::<Game>().paused);
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            cqsp_core::clock::DAY + 4
+        );
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::Equal);
+        app.update();
+        assert_eq!(app.world().resource::<Game>().speed_index, 1);
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            cqsp_core::clock::DAY + 20
+        );
+        app.world_mut()
+            .resource_mut::<Game>()
+            .session
+            .return_to_selection();
+        app.update();
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            cqsp_core::clock::DAY + 20
+        );
+        assert_eq!(
+            app.world().get::<Text>(country_text).unwrap().0,
+            expected_country
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn economic_numbers_keep_sign_and_units() {
+        assert_eq!(human_number(549_700_354.0), "549.70M");
+        assert_eq!(human_number(-16000.0), "-16.00K");
+        assert_eq!(human_number(1.07), "1.07");
+    }
 
     #[test]
     fn globe_triangles_face_outward() {
