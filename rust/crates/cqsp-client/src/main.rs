@@ -272,6 +272,7 @@ fn main() -> Result<()> {
             Update,
             (
                 inspection_ui::controls.run_if(interactive),
+                inspection_ui::chart_controls.run_if(interactive),
                 inspection_ui::scroll.run_if(interactive),
                 spaceport_ui::controls.run_if(interactive),
                 spaceport_ui::scroll.run_if(interactive),
@@ -1249,6 +1250,16 @@ fn smoke_test(
             "history-inspector.png",
         ),
         26 => {
+            // The late price series sits at its minimum; keep that band in view.
+            inspector.zoom_plot(&game, (0.5, 0.0), 0.5);
+            inspector.pan_plot(&game, (0.1, 0.1));
+        }
+        27 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "history-zoomed-inspector.png",
+        ),
+        28 => {
             game.hovered = game
                 .simulation
                 .settlements
@@ -1260,15 +1271,15 @@ fn smoke_test(
                 &mut game,
             );
         }
-        27 => capture_smoke(
+        29 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "infrastructure-inspector.png",
         ),
         _ => {
             assert_eq!(
-                smoke.captures, 14,
-                "Smoke check: all fourteen captures must be verified"
+                smoke.captures, 15,
+                "Smoke check: all fifteen captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

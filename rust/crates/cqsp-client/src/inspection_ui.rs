@@ -3,6 +3,7 @@ use super::{Game, human_number, spaceport_ui, ui_button as button, ui_font, ui_r
 use bevy::{
     input::mouse::{AccumulatedMouseScroll, MouseScrollUnit},
     prelude::*,
+    ui::RelativeCursorPosition,
 };
 use cqsp_core::{economy::GoodId, solar_system::BodyId};
 use std::fmt::Write;
@@ -40,6 +41,7 @@ pub(super) enum Action {
     ConstructFactory,
     ChartGood,
     ChartWindow,
+    ChartFit,
     NextDay,
 }
 #[derive(Component)]
@@ -98,13 +100,14 @@ impl Series {
         )
     }
 }
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq)]
 struct PlotKey {
     body: BodyId,
     good: usize,
     series: Series,
     window: usize,
     samples: usize,
+    view: Option<super::chart::View>,
 }
 #[derive(Component, Default)]
 pub(super) struct PlotImage {
@@ -131,6 +134,10 @@ pub(super) struct Inspector {
     message: String,
     series: usize,
     plot_window: usize,
+    plot_view: Option<super::chart::View>,
+    plot_drag: Option<Vec2>,
+    plot_cursor: Option<(f64, f64)>,
+    plot_pointer_over: bool,
 }
 impl Inspector {
     pub fn new(game: &cqsp_core::simulation::Simulation) -> Self {
@@ -153,9 +160,24 @@ impl Inspector {
             message: String::new(),
             series: 0,
             plot_window: 0,
+            plot_view: None,
+            plot_drag: None,
+            plot_cursor: None,
+            plot_pointer_over: false,
         }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) {
+        if matches!(
+            action,
+            Action::Tab(_)
+                | Action::Planet
+                | Action::ChartGood
+                | Action::ChartWindow
+                | Action::ChartFit
+        ) || (self.tab == Tab::History && matches!(action, Action::Previous | Action::Next))
+        {
+            self.reset_plot();
+        }
         if matches!(
             action,
             Action::Tab(_)
@@ -334,6 +356,7 @@ impl Inspector {
             Action::ConstructFactory => {}
             Action::ChartGood => cycle(&mut self.good, game.simulation.catalog.goods.len(), false),
             Action::ChartWindow => cycle(&mut self.plot_window, 3, false),
+            Action::ChartFit => {}
             Action::NextDay => {
                 game.paused = true;
                 game.tick_accumulator = 0.0;
@@ -939,8 +962,20 @@ impl Inspector {
                     human_number(samples.last().unwrap().1)
                 )
             });
+        let cursor = self.plot_cursor.map_or(String::new(), |(sample, value)| {
+            format!(" · cursor X {sample:.2}, Y {}", human_number(value))
+        });
+        let view = self.plot_view.map_or(String::new(), |view| {
+            format!(
+                "\nView X {:.2}–{:.2} · Y {}–{}",
+                view.first,
+                view.last,
+                human_number(view.low),
+                human_number(view.high)
+            )
+        });
         format!(
-            "HISTORY · {}\n{} · selected good: {}\n{} samples shown · range {}\n{}\nThe source's Tick axis actually uses daily sample indices. Non-finite samples leave gaps.\n",
+            "HISTORY · {}\n{} · selected good: {}\n{} samples shown · range {}\n{}{}{}\nLeft-drag: pan · wheel: cursor-centered zoom · right-click / Fit: reset\nTick means daily sample index. Non-finite samples leave gaps.\n",
             series.name(),
             if series.global() {
                 "Global population history"
@@ -952,8 +987,99 @@ impl Inspector {
             game.simulation.catalog.goods[self.good].name,
             samples.len(),
             ["All", "Last 128", "Last 32"][self.plot_window],
-            range
+            range,
+            cursor,
+            view,
         )
+    }
+    fn reset_plot(&mut self) {
+        self.plot_view = None;
+        self.plot_drag = None;
+        self.plot_cursor = None;
+    }
+    fn chart_view(&self, game: &Game) -> Option<super::chart::View> {
+        self.plot_view
+            .or_else(|| super::chart::View::fit(&self.history_samples(game)))
+    }
+    pub(super) fn zoom_plot(&mut self, game: &Game, anchor: (f64, f64), factor: f64) {
+        if let Some(view) = self.chart_view(game) {
+            self.plot_view = Some(view.zoom(anchor, factor));
+        }
+    }
+    pub(super) fn pan_plot(&mut self, game: &Game, delta: (f64, f64)) {
+        if let Some(view) = self.chart_view(game) {
+            self.plot_view = Some(view.pan(delta));
+        }
+    }
+}
+
+pub(super) fn chart_controls(
+    mut inspector: ResMut<Inspector>,
+    game: Res<Game>,
+    buttons: Res<ButtonInput<MouseButton>>,
+    scroll: Res<AccumulatedMouseScroll>,
+    plots: Query<&RelativeCursorPosition, With<PlotImage>>,
+) {
+    if !inspector.is_history() {
+        if inspector.plot_drag.is_some()
+            || inspector.plot_cursor.is_some()
+            || inspector.plot_pointer_over
+        {
+            inspector.plot_drag = None;
+            inspector.plot_cursor = None;
+            inspector.plot_pointer_over = false;
+        }
+        return;
+    }
+    let cursor = plots.iter().next();
+    let position = cursor.and_then(|cursor| cursor.normalized).map(|point| {
+        let (x, y) = super::chart::plot_position((point.x as f64 + 0.5, point.y as f64 + 0.5));
+        Vec2::new(x as f32, y as f32)
+    });
+    let hovered = cursor.is_some_and(|cursor| cursor.cursor_over)
+        && position
+            .is_some_and(|point| (0.0..=1.0).contains(&point.x) && (0.0..=1.0).contains(&point.y));
+    if inspector.plot_pointer_over != hovered {
+        inspector.plot_pointer_over = hovered;
+    }
+    if hovered && buttons.just_pressed(MouseButton::Right) {
+        inspector.reset_plot();
+    } else if let Some(position) = position {
+        if !buttons.pressed(MouseButton::Left) {
+            if inspector.plot_drag.is_some() {
+                inspector.plot_drag = None;
+            }
+        } else if buttons.just_pressed(MouseButton::Left) && hovered {
+            inspector.plot_drag = Some(position);
+        } else if let Some(previous) = inspector.plot_drag {
+            let delta = position - previous;
+            if delta != Vec2::ZERO {
+                inspector.pan_plot(&game, (delta.x as f64, delta.y as f64));
+                inspector.plot_drag = Some(position);
+            }
+        }
+        if hovered && scroll.delta.y != 0.0 {
+            let units = if scroll.unit == MouseScrollUnit::Line {
+                scroll.delta.y
+            } else {
+                scroll.delta.y / 32.0
+            };
+            let factor = (-0.15 * units as f64).exp().clamp(0.1, 10.0);
+            inspector.zoom_plot(&game, (position.x as f64, position.y as f64), factor);
+        }
+    }
+    if !buttons.pressed(MouseButton::Left) && inspector.plot_drag.is_some() {
+        inspector.plot_drag = None;
+    }
+    let cursor = if hovered {
+        position
+            .zip(inspector.chart_view(&game))
+            .map(|(point, view)| view.value_at((point.x as f64, point.y as f64)))
+    } else {
+        None
+    };
+    if inspector.plot_cursor != cursor {
+        inspector.plot_cursor = cursor;
     }
 }
 
@@ -987,6 +1113,7 @@ pub(super) fn update_plot(
             series,
             window: inspector.plot_window,
             samples,
+            view: inspector.plot_view,
         };
         if plot.key == Some(key) {
             continue;
@@ -994,7 +1121,7 @@ pub(super) fn update_plot(
         let image = super::rgba_image(
             super::chart::WIDTH,
             super::chart::HEIGHT,
-            super::chart::render(&inspector.history_samples(&game)),
+            super::chart::render(&inspector.history_samples(&game), inspector.plot_view),
         );
         if plot.key.is_some()
             && let Some(mut existing) = images.get_mut(&node.image)
@@ -1180,6 +1307,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                 .with_children(|bar| {
                     button(bar, font, Action::ChartGood, "Next chart good");
                     button(bar, font, Action::ChartWindow, "All / last 128 / last 32");
+                    button(bar, font, Action::ChartFit, "Fit chart");
                 });
             panel.spawn((
                 Label::Content,
@@ -1192,6 +1320,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
             ));
             panel.spawn((
                 PlotImage::default(),
+                RelativeCursorPosition::default(),
                 ImageNode::default(),
                 Node {
                     display: Display::None,
@@ -1256,7 +1385,7 @@ pub(super) fn scroll(
     mouse: Res<AccumulatedMouseScroll>,
     mut panels: Query<(&Panel, &mut ScrollPosition)>,
 ) {
-    if !inspector.open || mouse.delta.y == 0.0 {
+    if !inspector.open || inspector.plot_pointer_over || mouse.delta.y == 0.0 {
         return;
     }
     let scale = if mouse.unit == MouseScrollUnit::Line {
@@ -1363,12 +1492,14 @@ mod tests {
             .init_resource::<Time>()
             .init_resource::<Assets<Image>>()
             .init_resource::<ButtonInput<KeyCode>>()
+            .init_resource::<ButtonInput<MouseButton>>()
             .init_resource::<AccumulatedMouseScroll>()
             .add_message::<KeyboardInput>()
             .add_systems(
                 Update,
                 (
                     controls,
+                    chart_controls,
                     spaceport_ui::controls,
                     super::super::simulation_controls,
                     super::super::selection_controls.run_if(super::super::world_input),
@@ -2036,6 +2167,131 @@ mod tests {
         }
         assert_eq!(bodies.len(), 11);
         assert_eq!(app.world().resource::<Inspector>().body, start);
+        Ok(())
+    }
+
+    #[test]
+    fn history_mouse_zoom_pan_fit_and_selection_reset_do_not_scroll_or_mutate_game() -> Result<()> {
+        let mut app = app()?;
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::History));
+        for _ in 0..40 {
+            apply(&mut app, Action::NextDay);
+        }
+        let plot = app
+            .world_mut()
+            .spawn((
+                PlotImage::default(),
+                ImageNode::default(),
+                Node::default(),
+                RelativeCursorPosition {
+                    cursor_over: true,
+                    normalized: Some(Vec2::ZERO),
+                },
+            ))
+            .id();
+        let panel = app
+            .world_mut()
+            .spawn((
+                Panel::Overlay,
+                Node::default(),
+                ScrollPosition(Vec2::new(0.0, 80.0)),
+            ))
+            .id();
+        app.update();
+        let handle = app.world().get::<ImageNode>(plot).unwrap().image.clone();
+        let initial = {
+            let inspector = app.world().resource::<Inspector>();
+            super::super::chart::View::fit(
+                &inspector.history_samples(app.world().resource::<Game>()),
+            )
+            .unwrap()
+        };
+        let date = app.world().resource::<Game>().simulation.date;
+        app.world_mut()
+            .resource_mut::<AccumulatedMouseScroll>()
+            .delta
+            .y = 1.0;
+        app.update();
+        let zoomed = app.world().resource::<Inspector>().plot_view.unwrap();
+        assert!(zoomed.last - zoomed.first < initial.last - initial.first);
+        assert!(
+            app.world()
+                .resource::<Inspector>()
+                .content(app.world().resource::<Game>())
+                .contains("cursor X")
+        );
+        assert_eq!(app.world().get::<ScrollPosition>(panel).unwrap().0.y, 80.0);
+        app.world_mut()
+            .resource_mut::<AccumulatedMouseScroll>()
+            .delta = Vec2::ZERO;
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .press(MouseButton::Left);
+        app.update();
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .clear();
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .normalized = Some(Vec2::new(0.1, 0.1));
+        app.update();
+        let panned = app.world().resource::<Inspector>().plot_view.unwrap();
+        assert!(panned.first < zoomed.first);
+        assert!(panned.low > zoomed.low);
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .cursor_over = false;
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .normalized = Some(Vec2::new(0.8, 0.1));
+        app.update();
+        assert!(app.world().resource::<Inspector>().plot_view.unwrap().first < panned.first);
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .release(MouseButton::Left);
+        app.update();
+        assert!(app.world().resource::<Inspector>().plot_drag.is_none());
+        assert!(app.world().resource::<Inspector>().plot_cursor.is_none());
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            date.tick()
+        );
+        assert_eq!(app.world().get::<ImageNode>(plot).unwrap().image, handle);
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 1);
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .cursor_over = true;
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .normalized = Some(Vec2::ZERO);
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .press(MouseButton::Right);
+        app.update();
+        assert!(app.world().resource::<Inspector>().plot_view.is_none());
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .reset_all();
+        for action in [
+            Action::Next,
+            Action::ChartGood,
+            Action::ChartWindow,
+            Action::Planet,
+            Action::ChartFit,
+        ] {
+            app.world_mut().resource_mut::<Inspector>().plot_view = Some(zoomed);
+            apply(&mut app, action);
+            assert!(app.world().resource::<Inspector>().plot_view.is_none());
+        }
+        apply(&mut app, Action::Close);
+        app.update();
+        assert!(!app.world().resource::<Inspector>().plot_pointer_over);
         Ok(())
     }
 

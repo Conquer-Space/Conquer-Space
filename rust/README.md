@@ -91,7 +91,10 @@ balances and mission queue. History cycles market GDP, selected-good price/suppl
 and global population/SOL/employment/employment rate. Next chart good and the
 all/last-128/last-32 range controls redraw native plots; X uses daily sample indices,
 matching the original graph despite its Tick label. Non-finite samples leave gaps.
-Mouse plot pan/zoom and consumption pie graphs remain to be ported. Spaceport inspection
+Left-drag pans history plots, the wheel zooms around the cursor, and right-click/Fit
+restores automatic bounds. Cursor values and viewport bounds use the original daily
+sample indices; chart input does not scroll the panel or move the game camera.
+Consumption pie graphs remain to be ported. Spaceport inspection
 also shows loaded fixed-offset local time, retaining the source clock's quirks.
 Infrastructure inspects province transport costs, zoning allocations and power/grid
 bindings. The original Illinois coal plant and New York transport cost load directly
@@ -138,7 +141,8 @@ a lunar core mission and verifies its delivery. It also writes `target/spaceport
 and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.png`,
 `target/industry-inspector.png`, `target/science-inspector.png`,
 `target/demographics-inspector.png`, `target/construction-inspector.png`,
-`target/civilization-inspector.png`, `target/history-inspector.png` and
+`target/civilization-inspector.png`, `target/history-inspector.png`,
+`target/history-zoomed-inspector.png` and
 `target/infrastructure-inspector.png`, then exits.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,

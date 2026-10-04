@@ -32,8 +32,8 @@ Successful long runs establish stability, not gameplay parity.
 | Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, two seeds, nine cases spanning all eight states and 12 steps (4,752 seeded samples), plus injected noise, shortage interruption, construction completion, taxes/subsidies; combined tick ordering and larger FSM boundary grids remain |
 | Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
 | Local markets / shortages / planetary trade | Reference-tested controlled system scenario | Actual SysMarket/SysPlanetaryTrade/MarketReset: three provinces, 12 daily steps, retained imports/exports, configurable local versus hard-coded planetary pricing, zero demand, shortage recovery, labor access and port depletion; whole-economy traversal remains |
-| Population history | Controlled scenario reference-tested; native graphs | Global population/SOL/employment/employment-rate series, retaining original employed/population denominator and daily sample-index X axis; mouse pan/zoom remains |
-| Market history / CSV / industry export | All-body history system reference-tested; native inspection/graphs | All 11 bodies retain daily GDP/price/supply/demand/ratio snapshots; only Earth/Moon have surface sites and participate in trade; 132 controlled history samples match actual SysMarketHistory; native GDP/price/supply/demand plots with full/128/32-sample ranges and non-finite gaps, table fields, CSV/export schemas; exact formatting and mouse plot interactions remain |
+| Population history | Controlled scenario reference-tested; native interactive graphs | Global population/SOL/employment/employment-rate series, retaining original employed/population denominator and daily sample-index X axis; native pan, cursor-centered zoom, readout and fit/reset |
+| Market history / CSV / industry export | All-body history system reference-tested; native interactive graphs | All 11 bodies retain daily GDP/price/supply/demand/ratio snapshots; only Earth/Moon have surface sites and participate in trade; 132 controlled history samples match actual SysMarketHistory; native GDP/price/supply/demand plots with full/128/32-sample ranges, mouse pan/zoom/readout, clipped lines and non-finite gaps, table fields, CSV/export schemas; exact export formatting remains |
 | Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen; manufacturing/order systems reference-tested | Actual SysLaunchVehicleProduction boundaries plus SysInterplanetaryTrade: three markets, two ports each, three daily allocations, repeated orders, shortages and multiple sellers; dispatch/combined-system corpus remains |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
@@ -211,7 +211,7 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 102 unit tests
+365 market-history records per body and CSV/industry export checks. There are 105 unit tests
 and 24 passing differential tests. Twenty-three live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
@@ -296,7 +296,7 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Fourteen verified captures include the spaceport panel, newly
+native screen actions. Fifteen verified captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
@@ -311,6 +311,15 @@ and range windows are reachable; cropped ranges retain original daily sample ind
 The rasterizer handles constant/single/extreme/non-finite series. Chart images reuse
 one owned asset, redraw only for changed selections/new samples and hide on close.
 The history GPU capture also requires actual colored series pixels in the plot region.
+History controls retain a manual view while new daily samples arrive; choosing a
+different series/good/body/range resets it. Left drag pans both axes, the wheel zooms
+around the cursor, and right-click/Fit restores automatic bounds. Plot wheel input
+does not scroll the overlay or move the game camera; drag capture continues outside
+the image until release. Cursor values use the original daily sample-index axis.
+Renderer-free input tests check selection reset, capture release, unchanged simulation,
+asset reuse and panel-scroll isolation. Zoomed segments are clipped before rasterization
+so extreme offscreen values cannot create unbounded pixel loops; non-finite gaps remain.
+The extra GPU capture verifies the panned/zoomed history panel and actual curve pixels.
 Text editing, Unicode deletion, shortcut isolation, one-shot
 buttons, scrolling and invalid-design non-mutation have renderer-free ECS tests.
 Text checks cover both glyph layouts and bright pixels inside visible text blocks;
