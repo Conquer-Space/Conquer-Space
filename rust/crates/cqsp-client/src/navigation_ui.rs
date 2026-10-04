@@ -213,7 +213,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
             Node {
                 position_type: PositionType::Absolute,
                 left: px(24),
-                bottom: px(112),
+                bottom: px(128),
                 ..default()
             },
         ))

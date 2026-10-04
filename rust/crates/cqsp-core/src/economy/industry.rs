@@ -38,6 +38,15 @@ pub struct Construction {
     pub levels: i32,
 }
 
+/// Separate from labor-hour demand. The original production system leaves these
+/// value-initialized employer counts unchanged.
+#[derive(Debug, Default)]
+pub struct Employer {
+    pub population_needed: i32,
+    pub population_fulfilled: i32,
+    pub population_change: i32,
+}
+
 #[derive(Debug)]
 pub struct ConstructionSector {
     pub capacity: u32,
@@ -90,6 +99,7 @@ pub struct Industry {
     pub subsidy_amount: f64,
     pub amount_sold: f64,
     pub workers: Vec<(GoodId, f64)>,
+    pub employer: Employer,
     pub wallet: Wallet,
     pub construction: Option<Construction>,
 }
@@ -122,6 +132,7 @@ impl Industry {
             subsidy_amount: 0.0,
             amount_sold: 0.0,
             workers: Vec::new(),
+            employer: Employer::default(),
             wallet: Wallet::default(),
             construction: None,
         })
@@ -453,6 +464,8 @@ mod tests {
         let id = catalog.recipe("farming").unwrap();
         let recipe = &catalog.recipes[id.0];
         let mut industry = Industry::new(id, 2)?;
+        industry.employer.population_change = -12;
+        industry.employer.population_fulfilled = 123;
         let mut market = Market::new(
             &catalog.base_prices,
             &catalog.labor_goods,
@@ -470,6 +483,8 @@ mod tests {
         let expected_profit =
             (expected_revenue - market.price.dot(&input) - market.price.dot(&workers)) * 1.5;
         let taxes = industry.produce(&catalog, &mut market, &mut sector);
+        assert_eq!(industry.employer.population_change, -12);
+        assert_eq!(industry.employer.population_fulfilled, 123);
         assert!((industry.profit - expected_profit).abs() < 1e-8);
         assert_eq!(industry.wallet.balance, industry.profit);
         assert_eq!(taxes, -industry.subsidy_amount);

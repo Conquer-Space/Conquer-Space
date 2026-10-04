@@ -20,6 +20,8 @@
 #include "core/actions/factoryconstructaction.h"
 #include "core/actions/economy/subsidyhelper.h"
 #include "core/util/save/save.h"
+#include "core/util/nameutil.h"
+#include "core/util/utilnumberdisplay.h"
 #include "client/components/clientctx.h"
 #include "engine/clientoptions.h"
 #include "core/components/colony.h"
@@ -1744,7 +1746,88 @@ void PrintOrbitFilter() {
     output["snapshots"] = snapshots;
     WriteJson(output);
 }
+// Actual CreateFactory/GetName/number formatter, with ProductionSummary's field
+// projection mapped from its UI source. Does not execute ImGui/RmlUi or Lua.
+void PrintProductionSummary() {
+    std::cout << std::setprecision(17);
+    const auto input = ReadInput();
+    cqsp::core::Universe universe("summary-reference");
+    cqsp::core::Node province(universe);
+    province.emplace<IndustrialZone>();
+    cqsp::core::Node recipe(universe);
+    recipe.emplace<Recipe>();
+    recipe.emplace<Name>("Farming");
+    Hjson::Value output(Hjson::Type::Map);
+    output["integers"] = Hjson::Value(Hjson::Type::Vector);
+    for (int index = 0; index < input["integers"].size(); ++index)
+        output["integers"].push_back(cqsp::util::NumberToHumanString(input["integers"][index].to_int64()));
+    output["floats"] = Hjson::Value(Hjson::Type::Vector);
+    for (int index = 0; index < input["floats"].size(); ++index)
+        output["floats"].push_back(cqsp::util::NumberToHumanString(input["floats"][index].to_double()));
+    output["rows"] = Hjson::Value(Hjson::Type::Vector);
+    const double colors[][3] = {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{0,1,1},{1,1,1},{1,.5,0}};
+    for (int index = 0; index < input["rows"].size(); ++index) {
+        const auto row = input["rows"][index];
+        auto factory = cqsp::core::actions::CreateFactory(province, recipe, 1);
+        auto& production = factory.get<ProductionUnit>();
+        production.state = static_cast<IndustryState>(row["state"].to_int64());
+        production.size = row["size"].to_double();
+        production.utilization = row["utilization"].to_double();
+        production.diff = row["diff"].to_double();
+        production.shortage = static_cast<bool>(row["shortage"]);
+        production.wage_cost = row["wage"].to_double();
+        production.revenue = row["revenue"].to_double();
+        production.profit = row["profit"].to_double();
+        production.amount_sold = row["sold"].to_double();
+        factory.get<Wallet>() = row["cash"].to_double();
+        auto& employer = factory.get<Employer>();
+        if (row["employment"].type() == Hjson::Type::Vector) {
+            employer.population_change = static_cast<int>(row["employment"][0].to_int64());
+            employer.population_fufilled = static_cast<int>(row["employment"][1].to_int64());
+        }
+        auto integer = [](double value) { return cqsp::util::NumberToHumanString(static_cast<int64_t>(value)); };
+        Hjson::Value result(Hjson::Type::Map);
+        Hjson::Value cells(Hjson::Type::Vector);
+        cells.push_back(cqsp::core::util::GetName(universe, factory));
+        cells.push_back(integer(production.size));
+        if (row["construction"].type() == Hjson::Type::Vector) {
+            auto& job = factory.emplace<Construction>(static_cast<int>(row["construction"][0].to_int64()),
+                static_cast<int>(row["construction"][1].to_int64()), 0);
+            float progress = static_cast<float>(job.progress) / static_cast<float>(job.maximum);
+            result["construction"] = Number(progress);
+            cells.push_back(fmt::format("{:.0f}%", std::clamp(progress, 0.0f, 1.0f) * 100.0f + 0.01f));
+        } else {
+            cells.push_back(integer(production.utilization));
+            result["construction"] = Hjson::Value(Hjson::Type::Null);
+        }
+        double delta = (production.diff - 1.0) * 100.0;
+        cells.push_back(fmt::format("{:.2f}%", delta));
+        cells.push_back(cqsp::util::NumberToHumanString(factory.get<Wallet>().GetBalance()));
+        cells.push_back(fmt::format("{}/{}", integer(employer.population_change), integer(employer.population_fufilled)));
+        cells.push_back(integer(production.wage_cost));
+        cells.push_back(integer(production.revenue));
+        cells.push_back(integer(production.profit));
+        result["cells"] = cells;
+        Hjson::Value row_colors(Hjson::Type::Vector);
+        for (int column = 0; column < 9; ++column) {
+            if (column == 0) {
+                auto color = colors[static_cast<int>(production.state)];
+                row_colors.push_back(Numbers({color[0],color[1],color[2]}));
+            } else if ((column == 1 && production.shortage) || (column == 3 && delta < 0))
+                row_colors.push_back(Numbers({.75,0,0}));
+            else if (column == 3 && delta > 0) row_colors.push_back(Numbers({0,.75,0}));
+            else row_colors.push_back(Numbers({1,1,1}));
+        }
+        result["colors"] = row_colors;
+        result["shortage"] = production.shortage;
+        result["items_sold"] = fmt::format("Items sold: {}", production.amount_sold);
+        output["rows"].push_back(result);
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--production-summary") { PrintProductionSummary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--orbit-filter") { PrintOrbitFilter(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--province-search") { PrintProvinceSearch(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--event-queues") { PrintEventQueues(); return 0; }

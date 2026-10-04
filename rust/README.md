@@ -31,6 +31,8 @@ Release clients use the Windows GUI subsystem, matching the original release:
 double-clicking does not open a separate console. Pipe `--help`/`--paths` output
 in PowerShell. The supplied `run-smoke.ps1 -Executable ./cqsp-client.exe` waits
 for offscreen GPU checks to complete, including GUI-subsystem releases.
+The default scenario verifies all 35 screens. Add `-Scenario Inspection` for a
+focused three-screen production/Moon/Sun check (`--smoke-inspection` directly).
 
 The Rust app is deliberately **silent**: no music, effects or sound-device backend
 are built in. Original sound assets are left untouched. Run
@@ -162,6 +164,20 @@ whole-segment and count/cost toggles. Construction cycles all 22 recipes and sho
 their input/capital/output costs and expected profit. Select a province, adjust the
 1–1,000 unit count and construct a factory. This preserves the original zero-level
 construction record and Steady state; it does not invent an up-front purchase.
+
+The native sidebar routes **Buildings** to the global, nine-column **Production**
+table, not the construction tool. It includes foreign factories and ignores the
+inspection scope filters. Previous/Next pages through every factory; state colors,
+shortage indication, utilization delta, cash, actual employer counts and construction
+bars follow the original fields. Hover Size/Revenue for shortages/items sold.
+**Exploration** lists all 11 natural bodies (including Sun and Moon), showing
+semi-major axis, eccentricity and reference body without moving the camera. Sun's
+null parent is displayed as `Null Entity!`, matching the source name helper.
+**Economy** and **Budget** currently share the native subsidy/tax/labor panel;
+**Space Access** requires the source space-program tag. Projects has no implemented
+source window, and Situations retains the previous sidebar selection as upstream.
+Sidebar/inspection layout is native, not an exact ImGui/RmlUi reproduction.
+
 The separate map toolbar cycles all recipes and toggles **Construct / cancel (B)**.
 **Search recipes** opens the native, case-insensitive picker. Opening clears its
 filter; type, choose a result or use arrows/Enter, and Escape closes search before

@@ -13,6 +13,8 @@ use cqsp_core::{
 use std::{collections::BTreeSet, fmt::Write};
 #[path = "budget_ui.rs"]
 pub(super) mod budget;
+#[path = "production_ui.rs"]
+pub(super) mod production;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Tab {
@@ -25,6 +27,8 @@ pub(super) enum Tab {
     Infrastructure,
     Science,
     Budget,
+    Production,
+    Exploration,
 }
 #[derive(Component, Clone, Copy)]
 pub(super) enum Action {
@@ -57,6 +61,7 @@ pub(super) enum Action {
     FullSubsidy,
     ApplySubsidy,
     RemoveSubsidy,
+    Explore(BodyId),
 }
 #[derive(Component)]
 pub(super) enum Panel {
@@ -68,6 +73,9 @@ pub(super) enum Panel {
     HistoryActions,
     ConsumptionPlots,
     BudgetActions,
+    Production,
+    Exploration,
+    ScopeActions,
 }
 #[derive(Component)]
 pub(super) enum Label {
@@ -179,6 +187,7 @@ pub(super) struct Inspector {
     plot_cursor: Option<(f64, f64)>,
     plot_pointer_over: bool,
     budget: budget::Budget,
+    exploration_body: BodyId,
 }
 impl Inspector {
     pub fn new(game: &cqsp_core::simulation::Simulation) -> Self {
@@ -211,6 +220,7 @@ impl Inspector {
             plot_cursor: None,
             plot_pointer_over: false,
             budget: budget::Budget::new(game.catalog.goods.len()),
+            exploration_body: BodyId(game.solar_system.bodies.len() - 1),
         }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) {
@@ -261,7 +271,18 @@ impl Inspector {
             Action::Tab(tab) => {
                 self.tab = tab;
                 self.page = 0;
+                if tab == Tab::Exploration {
+                    game.hovered = None;
+                }
             }
+            Action::Explore(body)
+                if self.tab == Tab::Exploration
+                    && body.0 < game.simulation.solar_system.bodies.len() =>
+            {
+                self.exploration_body = body;
+                game.hovered = None;
+            }
+            Action::Explore(_) => {}
             Action::Planet => {
                 let bodies: Vec<_> = game.simulation.planetary_markets.keys().copied().collect();
                 let index = bodies
@@ -333,6 +354,18 @@ impl Inspector {
                         cycle(&mut self.page, count, previous);
                         self.factory = self.page * 4;
                     }
+                    Tab::Production => {
+                        let count = production::industries(game)
+                            .count()
+                            .div_ceil(production::PAGE_SIZE)
+                            .max(1);
+                        cycle(&mut self.page, count, previous);
+                    }
+                    Tab::Exploration => cycle(
+                        &mut self.exploration_body.0,
+                        game.simulation.solar_system.bodies.len(),
+                        previous,
+                    ),
                     Tab::Demographics => {
                         let count = self
                             .sites(game)
@@ -475,6 +508,13 @@ impl Inspector {
             })
     }
     fn scope(&self, game: &Game) -> String {
+        if matches!(self.tab, Tab::Production | Tab::Exploration) {
+            return format!(
+                "{} · Global scope · {}\nNo country, planet or province filter applies here.",
+                game.simulation.date.display(),
+                if game.paused { "Paused" } else { "Running" }
+            );
+        }
         let site = self.province.map_or_else(
             || {
                 format!(
@@ -500,6 +540,27 @@ impl Inspector {
     fn content(&self, game: &Game) -> String {
         let simulation = &game.simulation;
         match self.tab {
+            Tab::Production => format!(
+                "PRODUCTION SUMMARY · {} factories worldwide · page {} / {}\nHover Size for shortages and Revenue for items sold. Employer counts are not labor-hour demand.",
+                production::industries(game).count(),
+                self.page + 1,
+                production::industries(game)
+                    .count()
+                    .div_ceil(production::PAGE_SIZE)
+                    .max(1)
+            ),
+            Tab::Exploration => {
+                let system = &simulation.solar_system;
+                let body = &system.bodies[self.exploration_body.0];
+                format!(
+                    "EXPLORATION · {}\n\nOrbit information\nOrbit: {} km\nEccentricity: {}\nReference body: {}\n\nSelection inspects orbit data; it does not move the camera.",
+                    body.name,
+                    cqsp_core::number_display::human_float(body.orbit.semi_major_axis),
+                    cqsp_core::number_display::human_float(body.orbit.eccentricity),
+                    body.parent
+                        .map_or("Null Entity!", |id| system.bodies[id.0].name.as_str())
+                )
+            }
             Tab::Civilization => self.civilization(game),
             Tab::History => self.history(game),
             Tab::Infrastructure => self.infrastructure(game),
@@ -682,6 +743,12 @@ impl Inspector {
     }
     pub(super) fn is_budget(&self) -> bool {
         self.open && self.tab == Tab::Budget
+    }
+    pub(super) fn is_production(&self) -> bool {
+        self.open && self.tab == Tab::Production
+    }
+    pub(super) fn is_exploration(&self) -> bool {
+        self.open && self.tab == Tab::Exploration
     }
     fn demographic_segments<'a>(
         &self,
@@ -1492,7 +1559,8 @@ fn cycle(index: &mut usize, count: usize, previous: bool) {
     }
 }
 
-pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>, goods: usize) {
+pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>, game: &Game) {
+    let goods = game.simulation.catalog.goods.len();
     commands
         .spawn((
             Panel::Launcher,
@@ -1556,23 +1624,36 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     (Tab::Infrastructure, "Infrastructure"),
                     (Tab::Science, "Science"),
                     (Tab::Budget, "Budget"),
+                    (Tab::Production, "Production"),
+                    (Tab::Exploration, "Exploration"),
                 ] {
                     button(bar, font, Action::Tab(tab), name);
                 }
                 button(bar, font, Action::NextDay, "Advance day");
                 button(bar, font, Action::Close, "Close (I / Esc)");
             });
-            row(panel, |bar| {
-                for (action, name) in [
-                    (Action::Planet, "Next planet"),
-                    (Action::PreviousProvince, "Previous province"),
-                    (Action::NextProvince, "Next province"),
-                    (Action::Hovered, "Hovered province"),
-                    (Action::Ownership, "Owned / all"),
-                ] {
-                    button(bar, font, action, name);
-                }
-            });
+            panel
+                .spawn((
+                    Panel::ScopeActions,
+                    Node {
+                        flex_wrap: FlexWrap::Wrap,
+                        flex_shrink: 0.0,
+                        column_gap: px(10),
+                        row_gap: px(6),
+                        ..default()
+                    },
+                ))
+                .with_children(|bar| {
+                    for (action, name) in [
+                        (Action::Planet, "Next planet"),
+                        (Action::PreviousProvince, "Previous province"),
+                        (Action::NextProvince, "Next province"),
+                        (Action::Hovered, "Hovered province"),
+                        (Action::Ownership, "Owned / all"),
+                    ] {
+                        button(bar, font, action, name);
+                    }
+                });
             panel.spawn((
                 Label::Scope,
                 Text::default(),
@@ -1588,6 +1669,22 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                 button(bar, font, Action::NextTechnology, "Next technology");
             });
             budget::spawn(panel, font);
+            panel
+                .spawn((
+                    Panel::Exploration,
+                    Node {
+                        flex_wrap: FlexWrap::Wrap,
+                        flex_shrink: 0.0,
+                        column_gap: px(10),
+                        row_gap: px(6),
+                        ..default()
+                    },
+                ))
+                .with_children(|bar| {
+                    for (index, body) in game.simulation.solar_system.bodies.iter().enumerate() {
+                        button(bar, font, Action::Explore(BodyId(index)), &body.name);
+                    }
+                });
             panel
                 .spawn((
                     Panel::FactoryActions,
@@ -1759,6 +1856,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     ..default()
                 },
             ));
+            production::spawn(panel, font);
             panel.spawn((
                 PlotImage::default(),
                 RelativeCursorPosition::default(),
@@ -1869,6 +1967,11 @@ pub(super) fn update(
             Panel::ConstructionActions => inspector.open && inspector.tab == Tab::Construction,
             Panel::HistoryActions => inspector.is_history(),
             Panel::BudgetActions => inspector.open && inspector.tab == Tab::Budget,
+            Panel::Production => inspector.is_production(),
+            Panel::Exploration => inspector.is_exploration(),
+            Panel::ScopeActions => {
+                inspector.open && !matches!(inspector.tab, Tab::Production | Tab::Exploration)
+            }
             Panel::ConsumptionPlots => {
                 inspector.is_demographics() && inspector.segment(&game, 0).is_some()
             }
@@ -1943,6 +2046,7 @@ pub(crate) mod tests {
                 stage: 0,
                 elapsed: 0.0,
                 captures: 0,
+                expected_captures: 35,
             })
             .insert_resource(Game {
                 world,
@@ -1992,6 +2096,8 @@ pub(crate) mod tests {
                             pie_controls.run_if(super::super::application_input),
                             budget::controls.run_if(super::super::application_input),
                             spaceport_ui::controls.run_if(super::super::application_input),
+                            super::super::sidebar_ui::controls
+                                .run_if(super::super::application_input),
                             super::super::selection_controls.run_if(super::super::world_input),
                             scroll.run_if(super::super::application_input),
                             super::super::save_ui::scroll.run_if(super::super::menu_input),
@@ -2009,6 +2115,7 @@ pub(crate) mod tests {
                         super::super::event_ui::update,
                         super::super::search_ui::update,
                         super::super::navigation_ui::update,
+                        super::super::sidebar_ui::update,
                     )
                         .chain(),
                     spaceport_ui::update,
@@ -2016,13 +2123,14 @@ pub(crate) mod tests {
                     update_plot,
                     update_pies,
                     budget::update,
+                    production::update,
                     super::super::construction_ui::update,
                 )
                     .chain(),
             );
         Ok(app)
     }
-    pub(super) fn apply(app: &mut App, action: Action) {
+    pub(crate) fn apply(app: &mut App, action: Action) {
         app.world_mut()
             .resource_scope(|world, mut inspector: Mut<Inspector>| {
                 inspector.apply(action, &mut world.resource_mut::<Game>());
@@ -2036,6 +2144,57 @@ pub(crate) mod tests {
         app.world_mut()
             .resource_mut::<ButtonInput<KeyCode>>()
             .reset_all();
+    }
+
+    #[test]
+    fn exploration_buttons_inspect_every_body_without_focusing_camera_and_null_parent_is_named() {
+        let mut app = app().unwrap();
+        let focus = app.world().resource::<super::super::Navigation>().focus;
+        let bodies = app
+            .world()
+            .resource::<Game>()
+            .simulation
+            .solar_system
+            .bodies
+            .len();
+        assert_eq!(bodies, 11);
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::Exploration));
+        for index in 0..bodies {
+            let button = app
+                .world_mut()
+                .spawn((Action::Explore(BodyId(index)), Interaction::Pressed))
+                .id();
+            app.update();
+            let inspector = app.world().resource::<Inspector>();
+            let game = app.world().resource::<Game>();
+            assert_eq!(inspector.exploration_body, BodyId(index));
+            assert!(
+                inspector
+                    .content(game)
+                    .contains(&game.simulation.solar_system.bodies[index].name)
+            );
+            assert_eq!(
+                app.world().resource::<super::super::Navigation>().focus,
+                focus
+            );
+            app.world_mut().despawn(button);
+        }
+        let sun = app.world().resource::<Game>().simulation.solar_system.sun;
+        apply(&mut app, Action::Explore(sun));
+        assert!(
+            app.world()
+                .resource::<Inspector>()
+                .content(app.world().resource::<Game>())
+                .contains("Reference body: Null Entity!")
+        );
+        apply(&mut app, Action::Explore(BodyId(usize::MAX)));
+        assert_eq!(app.world().resource::<Inspector>().exploration_body, sun);
+        key(&mut app, KeyCode::KeyN);
+        assert_eq!(app.world().resource::<Game>().simulation.date.tick(), 0);
+        key(&mut app, KeyCode::Escape);
+        assert!(!app.world().resource::<Inspector>().open);
+        assert!(app.world().resource::<Inspector>().capture_input);
     }
 
     #[test]

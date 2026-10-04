@@ -20,6 +20,113 @@ use std::{
 };
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; actual formatter/CreateFactory/GetName with source-mapped summary projection"]
+fn production_summary_columns_colors_progress_and_number_formats_match_source() {
+    use cqsp_core::{
+        catalog::Catalog,
+        economy::industry::{Construction, Industry, IndustryState},
+        number_display::{human_float, human_integer},
+    };
+    let integers = [
+        -9_223_372_036_854_775_000_i64,
+        -1_000_000_000,
+        -1235,
+        -1000,
+        -999,
+        -1,
+        0,
+        1,
+        999,
+        1000,
+        1234,
+        1235,
+        999_999,
+        1_000_000,
+        1_000_000_000,
+        1_000_000_000_000,
+        9_223_372_036_854_775_000,
+    ];
+    let mut floats = vec![
+        -0.0,
+        0.0,
+        0.00001,
+        0.0001,
+        0.123456789,
+        999.999,
+        -999.999,
+        1000.0,
+        1235.0,
+        999_995.0,
+        1e48,
+        1e51,
+        1e100,
+    ];
+    for exponent in -15..=51 {
+        for coefficient in [1.0, -1.0, 1.23456789, -9.999999999] {
+            floats.push(coefficient * 10_f64.powi(exponent));
+        }
+    }
+    let catalog = Catalog::load(&default_data_path()).unwrap();
+    let states = [
+        IndustryState::Steady,
+        IndustryState::Maximum,
+        IndustryState::Minimum,
+        IndustryState::Construction,
+        IndustryState::Demolishing,
+        IndustryState::Shrinking,
+        IndustryState::Expanding,
+        IndustryState::Shortage,
+    ];
+    let mut rows = Vec::new();
+    let mut expected = Vec::new();
+    for (index, state) in states.into_iter().enumerate() {
+        for (progress, maximum) in [(0, 1), (1, 3), (16777217, 33554431), (-5, 100), (101, 100)] {
+            let mut industry = Industry::new(catalog.recipe("farming").unwrap(), 1).unwrap();
+            industry.state = state;
+            industry.size = 1235.99;
+            industry.utilization = 999.99;
+            industry.diff = [0.99999, 1.0, 1.00001, 1.25][index % 4];
+            industry.shortage = index % 2 == 0;
+            industry.wallet.balance = -1235.125;
+            industry.wage_cost = 1000.99;
+            industry.revenue = 999.99;
+            industry.profit = -1235.99;
+            industry.amount_sold = 0.0000123456789;
+            industry.construction = (index % 2 == 1).then_some(Construction {
+                progress,
+                maximum,
+                levels: 0,
+            });
+            if index % 3 == 1 {
+                industry.employer.population_change = -1235;
+                industry.employer.population_fulfilled = 999_999;
+            }
+            rows.push(json!({"state":index, "size":industry.size, "utilization":industry.utilization,
+                "diff":industry.diff,"shortage":industry.shortage,"cash":industry.wallet.balance,
+                "wage":industry.wage_cost,"revenue":industry.revenue,"profit":industry.profit,
+                "sold":industry.amount_sold,"construction":industry.construction.as_ref().map(|job| [job.progress,job.maximum]),
+                "employment":(index % 3 == 1).then_some([industry.employer.population_change,industry.employer.population_fulfilled])}));
+            let summary = industry.summary(&catalog);
+            expected.push(json!({"cells":summary.cells,"colors":summary.colors,"construction":summary.construction,
+                "shortage":summary.shortage,"items_sold":summary.items_sold}));
+        }
+    }
+    let reference = reference_output(
+        Some("--production-summary"),
+        &json!({"integers":integers,"floats":floats,"rows":rows}).to_string(),
+    );
+    assert_eq!(reference["integers"], json!(integers.map(human_integer)));
+    for (index, value) in floats.into_iter().enumerate() {
+        assert_eq!(
+            reference["floats"][index],
+            human_float(value),
+            "format {value}"
+        );
+    }
+    compare(&json!(expected), &reference["rows"]);
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; actual SatelliteLoader/OrbitalSystem plus source-mapped OrbitFilter branches"]
 fn imported_visibility_and_filter_actions_match_original_orbit_tags() {
     use cqsp_core::{

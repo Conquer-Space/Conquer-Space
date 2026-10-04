@@ -6,6 +6,7 @@ pub mod events;
 pub mod flight;
 pub mod infrastructure;
 pub mod modifiers;
+pub mod number_display;
 pub mod orbit;
 pub mod paths;
 pub mod random;

@@ -48,7 +48,8 @@ Successful long runs establish stability, not gameplay parity.
 | National subsidies / absolute taxes / labor view | Subsidy action reference-tested; native integration | 286 snapshots across all 22 recipes through actual ApplySubsidy, initial lists/stale ownership, fractional/full/raw finite amounts, future factories and repeated UI ledger erasure; native sliders, full lock, one-shot controls and national labor ledgers; global province-only taxes source-mapped and Rust-tested, not actual ImGui execution |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
-| Native replacements for scripted UI/events | Native event queues/modals/search and several interfaces implemented | Country selection and civilization/economy/history inspection are native; player queue/front-only display, actionless Ok, typed tutorial effects, hover text and full-queue clearing; tutorial stays disabled. Native named-body/province search, source-derived map centroids and click-versus-Enter focus; side-menu mappings and further interface detail remain; exploration has no registered functional workflow upstream |
+| Production summary | Actual formatter/factory names and source-mapped columns reference-tested; native global table | All nine columns, eight state colors, shortage/delta colors, float construction progress independent of state, truncating monetary fields, employer counts and items-sold hover; stable native paging and abbreviated entity tooltip remain layout/detail differences |
+| Native replacements for scripted UI/events | Native event queues/modals/search/sidebar and exploration inspector implemented | Country selection and civilization/economy/history inspection are native; player queue/front-only display, actionless Ok, typed tutorial effects, hover text and full-queue clearing; tutorial stays disabled. Native body/province search/centroids and click-versus-Enter focus; sidebar routes, SpaceCapability guard and real Lua/RmlUi exploration body/orbit inspector are ported. Additional interface detail and source coexistence/layout remain |
 | Saves / load / settings / packaging | Metadata/default graphics reference-tested; native menus and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; CLI/native metadata browser, fresh-asset reset/tick, atomic replacement, six-hex identity separate from economy RNG; source-mapped pause menu, 15 resolution presets, fullscreen/window restoration, isolated Rust preferences. Other application settings and live native-window acceptance remain. Locked bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
 
 ## Compatibility decisions and known gaps
@@ -92,9 +93,11 @@ Successful long runs establish stability, not gameplay parity.
 - `scripts/events/default.lua` defines a tutorial chain but explicitly disables
   registration. Native queue/modal machinery and the two known tutorial effects
   are implemented, but normal play does not activate the chain. Arbitrary Lua
-  callbacks are not retained. ExplorationWindow is not registered by UniverseScene;
-  SetupContent is empty, and its colonize handler only sets tooltip text. Do not
-  invent exploration/research progression to replace these unfinished source stubs.
+  callbacks are not retained. The C++ ExplorationWindow is unregistered/empty, but
+  the registered SideMenu opens `gui/mainscene/exploration_window.rml`, whose Lua
+  model inspects all Body entities and their orbits. That real workflow is now
+  native. The earlier audit incorrectly treated all exploration UI as a stub.
+  No exploration/research progression or functional colonize action is invented.
 - Science fields preserve directed parent/adjacent links; adjacency is not made
   symmetric and repeated parents are not deduplicated. Technology fields are sets,
   difficulty is an integer (default ten), and actions remain data strings. Countries
@@ -551,6 +554,71 @@ directory and executable-relative assets; its 365-day simulation and silent
 dependency audit pass. No native window or audio device is opened. These establish
 the documented slice, not complete UI/rendering or whole-game parity.
 
+## Global production summary, sidebar and exploration inspector
+
+The Buildings sidebar route now displays the original global ProductionSummary,
+not construction painting or the owned-province factory inspector. All nine
+columns use the source fields: factory-name fallback, truncating capacity,
+utilization or float32 construction progress, `(diff - 1) * 100`, double wallet
+cash, Employer change/fulfilled counts, truncating wages/revenue/profit. It uses
+all eight industry-state colors plus shortage and signed-delta colors. Size and
+revenue hover show Resource Shortage / Items sold. Employer is separate from
+labor-hour demand; original CreateFactory zero-initializes its counters and
+SysProduction leaves them unchanged. Construction is detected by component
+presence even when the industry is not in Construction state. Progress labels
+retain the ImGui clamped fraction and 0.01-percent rounding offset.
+
+The live C++ corpus executes actual CreateFactory, GetName and
+NumberToHumanString, with the nine-column projection mapped from
+`productionsummary.cpp`. It compares 40 controlled rows across all eight states,
+float32 progress boundaries, negative/over-complete jobs, shortage flags,
+near-zero delta signs, fractional money and custom/default employers. Seventeen
+integer values and 281 doubles cover suffixes, scientific notation, short/raw
+values, negative zero and both signs from 1e-15 through 1e51. This is not execution
+of ImGui/RmlUi, and arbitrary Name/Identifier overrides or component-less factories
+are not represented by the native Industry model. NaN/inf/out-of-range integer
+casts and INT64_MIN absolute-value behavior are outside the defined C++ corpus;
+Rust safely formats/clamps these cases instead of promising undefined parity.
+
+The native sidebar preserves button order, Buildings/global-production mapping,
+SpaceCapability access guard, Projects' lack of a functional consumer and
+Situations' missing listener branch. Closing production/policy/space clears its
+selection; closing exploration retains its selection like the Lua document.
+Economy and Budget still share the native subsidy/tax/labor panel, rather than
+the source's separate windows and Add Subsidy modal. Native mutually exclusive
+overlays do not reproduce simultaneous Lua exploration plus a C++ window.
+The bar is relocated below construction controls and hidden underneath search/
+other modals. Source icon expansion/animations and exact mouse phases remain.
+
+The registered RmlUi exploration workflow is now native: every natural Body,
+including Sun and Moon, is selectable; its semi-major axis, eccentricity and
+parent name are displayed with the source number formatting. Sun's null parent
+uses GetName's `Null Entity!`. Clicking inspects only; it does not focus the
+camera, reveal ship paths, colonize or invent research progression. Order and
+initial selection follow stable native asset order, not EnTT/Lua traversal.
+Reference-body hover/entity tooltips and exact RmlUi presentation remain.
+The formatter is currently adopted by these new screens, not every earlier
+native inspector. Four native workflow tests cover global paging, body buttons,
+camera preservation, invalid body IDs, sidebar routes/no-ops, capability checks,
+one-shot input/close capture, running time and selection reset; two core tests
+cover formatting and the projection. The existing production test also guards
+retained Employer counts. The tree launcher's position was corrected to avoid
+overlapping the inspection launcher.
+
+`run-smoke.ps1 -Scenario Inspection` runs just the three new offscreen captures;
+the default full scenario verifies all 35. Both use isolated preferences/save
+fixtures, no native windows and no audio devices. The focused scenario is an
+iteration aid, not a substitute for the full scenario or parity acceptance.
+
+This milestone passes 159 unit tests, warning-free Clippy and all 34 differential
+tests in debug/release (33 live comparisons plus the recorded corpus). Debug and
+the executable-relative release bundle both produce all 35 fresh full-scenario
+captures; the three new images are SHA256-identical between them. The release
+run uses an external working directory, and its 365-day simulation and silent
+dependency audit pass. Focused debug/release checks also pass. No native window
+or audio device is opened; no app processes remain after verification. These
+results establish this slice, not full UI/rendering or whole-game parity.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production system corpus to larger FSM boundary
@@ -563,7 +631,7 @@ the documented slice, not complete UI/rendering or whole-game parity.
 3. Extend native spaceport screens with filtering/inspection detail and dispatch
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
-   supported project/modifier controls, side-menu mappings, production-summary detail
+   supported project/modifier controls, richer production/entity tooltips,
    and further market/history inspection. Distinguish source stubs from implemented workflows.
 5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.

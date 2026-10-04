@@ -2,6 +2,7 @@
 pub mod history;
 pub mod industry;
 pub mod population;
+pub mod production_summary;
 use serde::{Deserialize, Serialize};
 use std::ops::{Index, IndexMut};
 

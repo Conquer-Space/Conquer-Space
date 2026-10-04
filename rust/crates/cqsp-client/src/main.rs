@@ -37,6 +37,7 @@ mod pie;
 mod playback_ui;
 mod save_ui;
 mod search_ui;
+mod sidebar_ui;
 mod spaceport_ui;
 mod system_view;
 use system_view::{FlightAction, Focus, Navigation};
@@ -113,6 +114,7 @@ struct Smoke {
     stage: u8,
     elapsed: f32,
     captures: u8,
+    expected_captures: u8,
 }
 
 #[derive(Resource)]
@@ -144,6 +146,7 @@ struct EarthGlobe;
 fn main() -> Result<()> {
     let mut data = default_data_path();
     let mut smoke = false;
+    let mut inspection_smoke = false;
     let mut print_paths = false;
     let mut saves_root = None;
     let mut settings_path = None;
@@ -154,6 +157,10 @@ fn main() -> Result<()> {
                 data = PathBuf::from(args.next().context("--data needs a core data directory")?)
             }
             "--smoke" => smoke = true,
+            "--smoke-inspection" => {
+                smoke = true;
+                inspection_smoke = true;
+            }
             "--paths" => print_paths = true,
             "--settings" => {
                 settings_path = Some(PathBuf::from(
@@ -174,6 +181,7 @@ fn main() -> Result<()> {
                     "Left Ctrl+P: body/province search; Enter zooms, clicking focuses the planet"
                 );
                 println!("T: star-system tree / orbit filter; double-click names to focus");
+                println!("--smoke-inspection: offscreen production and exploration checks only");
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -326,11 +334,13 @@ fn main() -> Result<()> {
         .init_resource::<event_ui::Events>()
         .init_resource::<search_ui::Search>()
         .init_resource::<navigation_ui::Menu>()
+        .init_resource::<sidebar_ui::Sidebar>()
         .insert_resource(Smoke {
             enabled: smoke,
-            stage: 0,
+            stage: if inspection_smoke { 65 } else { 0 },
             elapsed: 0.0,
             captures: 0,
+            expected_captures: if inspection_smoke { 3 } else { 35 },
         })
         .insert_resource(InitialAssets {
             terrain: terrain_image,
@@ -376,9 +386,14 @@ fn main() -> Result<()> {
                 (
                     inspection_ui::scroll.run_if(application_input),
                     spaceport_ui::controls.run_if(application_input),
+                    sidebar_ui::controls.run_if(application_input),
                     spaceport_ui::scroll.run_if(application_input),
-                    camera_controls.run_if(earth_controls),
-                    pick_province.run_if(earth_controls),
+                    camera_controls
+                        .run_if(earth_controls)
+                        .run_if(sidebar_ui::pointer_available),
+                    pick_province
+                        .run_if(earth_controls)
+                        .run_if(sidebar_ui::pointer_available),
                     selection_controls.run_if(world_input),
                 )
                     .chain()
@@ -388,6 +403,7 @@ fn main() -> Result<()> {
                 simulation_controls.run_if(interactive),
                 system_view::controls
                     .run_if(world_input)
+                    .run_if(sidebar_ui::pointer_available)
                     .run_if(event_ui::input_available)
                     .run_if(search_ui::input_available)
                     .run_if(navigation_ui::input_available),
@@ -404,6 +420,7 @@ fn main() -> Result<()> {
                     event_ui::update,
                     search_ui::update,
                     navigation_ui::update,
+                    sidebar_ui::update,
                 )
                     .chain(),
                 spaceport_ui::update,
@@ -411,6 +428,7 @@ fn main() -> Result<()> {
                 inspection_ui::update_plot,
                 inspection_ui::update_pies,
                 inspection_ui::budget::update,
+                inspection_ui::production::update,
                 smoke_test,
             )
                 .chain(),
@@ -537,6 +555,7 @@ fn setup(
     application_ui::spawn(&mut commands, camera, &font);
     search_ui::spawn(&mut commands, camera, &font);
     navigation_ui::spawn(&mut commands, camera, &font);
+    sidebar_ui::spawn(&mut commands, camera, &font);
     let event_image = images.add(initial.event.clone());
     event_ui::spawn(
         &mut commands,
@@ -545,12 +564,7 @@ fn setup(
         &event_image,
         initial.event.height() as f32 / initial.event.width() as f32,
     );
-    inspection_ui::spawn(
-        &mut commands,
-        camera,
-        &font,
-        game.simulation.catalog.goods.len(),
-    );
+    inspection_ui::spawn(&mut commands, camera, &font, &game);
 }
 
 fn ui_font(font: &Handle<Font>, size: f32) -> TextFont {
@@ -1016,17 +1030,25 @@ fn human_number(value: f64) -> String {
     format!("{value:.2}")
 }
 
-#[allow(clippy::too_many_arguments)]
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
 fn verify_capture(
     capture: On<ScreenshotCaptured>,
-    text_nodes: Query<(&Text, &ComputedNode, &UiGlobalTransform)>,
+    text_nodes: Query<(
+        &Text,
+        &ComputedNode,
+        &UiGlobalTransform,
+        Option<&inspection_ui::production::Cell>,
+    )>,
     navigation: Res<Navigation>,
     mut smoke: ResMut<Smoke>,
     ui: Res<spaceport_ui::SpaceportUi>,
     inspector: Res<inspection_ui::Inspector>,
     camera: Single<(&Camera, &GlobalTransform), With<Camera3d>>,
     markers: Query<(&Focus, &Transform)>,
-    plots: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PlotImage>>,
+    (plots, production_fills): (
+        Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PlotImage>>,
+        Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::production::Progress>>,
+    ),
     pies: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PieImage>>,
     policy_fills: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::budget::Fill>>,
     game: Res<Game>,
@@ -1052,7 +1074,9 @@ fn verify_capture(
     let mut event_heading = false;
     let mut search_heading = false;
     let mut tree_heading = false;
-    for (text, node, transform) in &text_nodes {
+    let mut production_columns = 0;
+    let mut exploration_heading = false;
+    for (text, node, transform, production_cell) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
         }
@@ -1064,12 +1088,12 @@ fn verify_capture(
         let mut bright = 0;
         for y in min.y..max.y {
             for x in min.x..max.x {
-                if pixels
-                    .get_pixel(x, y)
-                    .0
-                    .iter()
-                    .all(|channel| *channel > 100)
-                {
+                let channels = pixels.get_pixel(x, y).0;
+                if if production_cell.is_some() {
+                    channels.iter().any(|channel| *channel > 100)
+                } else {
+                    channels.iter().all(|channel| *channel > 100)
+                } {
                     bright += 1;
                 }
             }
@@ -1109,6 +1133,9 @@ fn verify_capture(
         event_heading |= text.0 == "EVENT";
         search_heading |= text.0 == "SEARCH BODIES / PROVINCES";
         tree_heading |= text.0 == "STAR SYSTEM / ORBIT FILTER";
+        production_columns +=
+            usize::from(cqsp_core::economy::production_summary::COLUMNS.contains(&text.0.as_str()));
+        exploration_heading |= text.0.starts_with("EXPLORATION · ");
     }
     assert!(
         checked
@@ -1211,6 +1238,25 @@ fn verify_capture(
             gold > 20,
             "Smoke check: missing inspector header pixels ({gold})"
         );
+    }
+    if inspector.is_production() {
+        assert_eq!(
+            production_columns, 9,
+            "All production columns must be visible"
+        );
+        let (node, transform) = production_fills
+            .iter()
+            .find(|(node, _)| !node.is_empty())
+            .expect("Smoke construction bar");
+        let center = transform.affine().translation.as_uvec2();
+        let [r, g, b] = pixels.get_pixel(center.x, center.y).0;
+        assert!(
+            node.size().x > 10.0 && g > 120 && g as u16 > r as u16 * 2 && g > b,
+            "Production construction fill missing"
+        );
+    }
+    if inspector.is_exploration() {
+        assert!(exploration_heading, "Exploration orbit information missing");
     }
     if inspector.is_demographics() {
         let mut verified = 0;
@@ -1437,7 +1483,11 @@ fn smoke_test(
     mut inspector: ResMut<inspection_ui::Inspector>,
     mut saves: ResMut<save_ui::Saves>,
     mut construction: ResMut<construction_ui::ConstructionTool>,
-    (mut menu, mut navigation_menu): (ResMut<application_ui::Menu>, ResMut<navigation_ui::Menu>),
+    (mut menu, mut navigation_menu, mut sidebar): (
+        ResMut<application_ui::Menu>,
+        ResMut<navigation_ui::Menu>,
+        ResMut<sidebar_ui::Sidebar>,
+    ),
     mut events: ResMut<event_ui::Events>,
     mut search: ResMut<search_ui::Search>,
 ) {
@@ -2107,10 +2157,68 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "orbits-visible.png",
         ),
+        65 => {
+            if game.session.player_country.is_none() {
+                let usa = game
+                    .world
+                    .countries
+                    .iter()
+                    .position(|country| country.identifier == "usa")
+                    .unwrap();
+                game.session.select(usa);
+                game.session.start();
+            }
+            game.simulation
+                .settlements
+                .iter_mut()
+                .flat_map(|site| &mut site.industries)
+                .next()
+                .unwrap()
+                .construction = Some(cqsp_core::economy::industry::Construction {
+                progress: 1,
+                maximum: 3,
+                levels: 0,
+            });
+            sidebar.select(
+                sidebar_ui::Selection::Buildings,
+                &mut game,
+                &mut inspector,
+                &mut ui,
+            );
+        }
+        66 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "production-summary.png",
+        ),
+        67 => {
+            sidebar.select(
+                sidebar_ui::Selection::Exploration,
+                &mut game,
+                &mut inspector,
+                &mut ui,
+            );
+            let moon = game.simulation.solar_system.body_id("moon").unwrap();
+            inspector.apply(inspection_ui::Action::Explore(moon), &mut game);
+        }
+        68 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "exploration-moon.png",
+        ),
+        69 => {
+            let sun = game.simulation.solar_system.sun;
+            inspector.apply(inspection_ui::Action::Explore(sun), &mut game);
+        }
+        70 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "exploration-sun.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 32,
-                "Smoke check: all thirty-two captures must be verified"
+                smoke.captures, smoke.expected_captures,
+                "Smoke check: every requested capture must be verified"
             );
             assert!(!construction.armed, "Load must cancel stale painting");
             println!("SMOKE: complete.");
