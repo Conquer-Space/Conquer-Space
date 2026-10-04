@@ -46,7 +46,7 @@ Successful long runs establish stability, not gameplay parity.
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
 | Native replacements for scripted UI/events | Partial | Country selection and civilization/economy/history inspection are native; exploration, side menu and event infrastructure remain |
-| Saves / load / settings / packaging | Executable-relative assets and local bundling implemented; other workflows remain | Core data, textures/font and native shader resolve beside the executable; fresh locked dev/release Windows bundles under target/packages exclude audio/Lua; runtime/driver prerequisites and redistribution review remain. Original SaveGame is empty; metadata/menu loading and native settings still need porting |
+| Saves / load / settings / packaging | Metadata component reference-tested; CLI/store and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; explicit CLI metadata save/list/load, atomic replacement, six-hex identity separate from economy RNG; native menus/settings remain. Locked dev/release bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
 
 ## Compatibility decisions and known gaps
 
@@ -219,8 +219,8 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 116 unit tests
-and 26 passing differential tests. Twenty-five live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 118 unit tests
+and 27 passing differential tests in debug and release. Twenty-six live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -399,7 +399,15 @@ consumption modes and panned/zoomed pies, from the external working directory wi
 no asset override. All 26 differential tests pass in debug and release.
 The original Save::SaveGame returns an empty HJSON value, while metadata only stores
 date/UUID/version. A full simulation/RNG snapshot would be a new feature, not behavior
-already implemented upstream. Metadata/load-menu/settings parity remains open.
+already implemented upstream. The core/CLI/store now preserves this limited behavior;
+native load-menu/settings parity remains open. Thirteen reference cases execute actual
+GetMetadata/LoadMetadata, including numeric truncation, uint32 wrapping, ignored
+versions, UUID conversion and invalid nonnumeric dates. The load browser defaults
+missing dates to -1, whereas LoadMetadata itself rejects them. Typed validation rejects
+out-of-range/invalid UUID inputs before mutation rather than exposing undefined casts
+or partial writes. CLI tests saved/listed/reloaded a two-day metadata file, advanced a
+fresh simulation one day and atomically replaced metadata in the same folder. Only
+the agent-owned target/metadata-cli-check fixture was written; C++ saves were untouched.
 
 ## Next acceptance gates
 

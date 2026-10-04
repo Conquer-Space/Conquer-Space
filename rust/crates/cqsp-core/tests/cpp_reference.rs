@@ -343,6 +343,38 @@ fn national_recipe_subsidies_match_original_action_and_removal() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual GetMetadata/LoadMetadata and empty SaveGame"]
+fn save_metadata_only_matches_original_and_ignores_versions() {
+    use cqsp_core::save::Metadata;
+    let input = [
+        json!({}),
+        json!({"date":0,"uuid":"abcdef"}),
+        json!({"date":143,"uuid":"012345","version":"old"}),
+        json!({"date":144,"uuid":"new","version":"future"}),
+        json!({"date":143.75,"uuid":null}),
+        json!({"date":-1,"uuid":true}),
+        json!({"date":4294967295_u64,"uuid":123}),
+        json!({"date":4294967297_u64}),
+        json!({"date":"144","uuid":"abc"}),
+        json!({"date":"1e3","uuid":"abc"}),
+        json!({"date":"invalid","uuid":"abc"}),
+        json!({"date":true,"uuid":"abc"}),
+        json!({"date":null,"uuid":"abc"}),
+    ];
+    let output: Vec<_> = input.iter().map(|value| {
+            let Ok(metadata) = Metadata::parse(value) else { return json!({"error":true}); };
+        let mut date = StarDate::default();
+        let mut uuid = String::new();
+        metadata.apply(&mut date, &mut uuid);
+        json!({"metadata":Metadata::new(date, uuid), "empty_game":false,"path":Path::new("fixture").join("meta.hjson")})
+    }).collect();
+    compare(
+        &json!(output),
+        &reference_output(Some("--save-metadata"), &json!(input).to_string()),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual country/province/city metadata loaders"]
 fn civilization_wallet_capital_capability_and_owned_lists_match_original() {
     let data = default_data_path();

@@ -36,6 +36,7 @@ try {
         "$repoRoot/src/core/actions/factoryconstructaction.cpp" "$repoRoot/src/core/actions/maneuver/transfers.cpp" `
         "$repoRoot/src/core/actions/economy/subsidyhelper.cpp" `
         "$repoRoot/src/core/util/nameutil.cpp" `
+        "$repoRoot/src/core/util/save/save.cpp" `
         "$repoRoot/src/core/game.cpp" "$repoRoot/src/core/scripting/scripting.cpp" `
         "$repoRoot/src/core/actions/shiplaunchaction.cpp" "$repoRoot/src/core/systems/movement/sysorbit.cpp" `
         "$repoRoot/src/core/systems/economy/sysspaceport.cpp" "$repoRoot/src/core/systems/economy/syslaunchvehicleproduction.cpp" `

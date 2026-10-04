@@ -51,6 +51,14 @@ If Rust is not on your PATH, use `& "$env:USERPROFILE/.cargo/bin/cargo.exe"` in 
 at another asset tree: `cargo run -p cqsp-client -- --data C:/path/to/binaries/data/core`.
 Development builds fall back to the shader in this checkout when no packaged assets exist.
 
+Headless metadata-only save tools are available through `cqsp-sim`:
+`--save-metadata ROOT --save-country usa`, `--list-saves ROOT`, and
+`--load-metadata FOLDER`. Like upstream, a save contains only `meta.hjson`
+(date/UUID/version). Loading applies date/UUID to freshly loaded assets; it does
+not restore economy, ships, country selection, histories or RNG state. Re-saving
+updates the same country/UUID folder with an atomic metadata replacement. Paths
+are explicit, and no original C++ save directories are touched by default.
+
 Right-drag or arrow keys orbit the globe; wheel zooms; left-click selects a province's
 country. Tab/Shift+Tab cycle countries (including ones too small to click on the 2K map).
 Enter or the sidebar button starts the game view; Escape returns to selection.

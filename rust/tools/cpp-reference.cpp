@@ -16,6 +16,7 @@
 #include "core/actions/maneuver/commands.h"
 #include "core/actions/factoryconstructaction.h"
 #include "core/actions/economy/subsidyhelper.h"
+#include "core/util/save/save.h"
 #include "core/components/colony.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
@@ -611,6 +612,26 @@ void PrintFactoryCreation() {
             static_cast<double>(job.progress), static_cast<double>(job.maximum), static_cast<double>(job.levels),
             static_cast<double>(province.get<IndustrialZone>().industries.size()),
             factory.all_of<Mine>() ? 1.0 : 0.0, factory.all_of<Factory>() ? 1.0 : 0.0, factory.all_of<Service>() ? 1.0 : 0.0}));
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintSaveMetadata() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("abcdef");
+    const auto input = ReadInput();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int index = 0; index < input.size(); ++index) {
+        auto metadata = input[index];
+        cqsp::core::save::Save save(universe);
+        Hjson::Value result(Hjson::Type::Map);
+        try {
+            cqsp::core::save::Load(universe).LoadMetadata(metadata);
+            result["metadata"] = save.GetMetadata();
+            result["empty_game"] = save.SaveGame().defined();
+            result["path"] = cqsp::core::save::GetMetaPath("fixture");
+        } catch (const std::exception&) { result["error"] = true; }
+        output.push_back(result);
     }
     WriteJson(output); std::cout << '\n';
 }
@@ -1459,6 +1480,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--planet-histories") { PrintPlanetHistories(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--factory-creation") { PrintFactoryCreation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--subsidies") { PrintSubsidies(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--save-metadata") { PrintSaveMetadata(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--timezones") { PrintTimeZones(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--random") { PrintRandom(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }

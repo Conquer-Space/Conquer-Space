@@ -1,6 +1,11 @@
 //! Fast, renderer-free simulation verification. Does not claim whole-game parity.
 use anyhow::{Context, Result, bail};
-use cqsp_core::{World, default_data_path, economy::Market, simulation::Simulation};
+use cqsp_core::{
+    World, default_data_path,
+    economy::Market,
+    save::{Metadata, SaveStore},
+    simulation::Simulation,
+};
 use std::{
     fs::OpenOptions,
     io::{BufWriter, Write},
@@ -15,6 +20,10 @@ fn main() -> Result<()> {
     let mut market_csv = None;
     let mut industries_json = None;
     let mut science_json = None;
+    let mut load_metadata = None;
+    let mut save_metadata = None;
+    let mut save_country = None;
+    let mut list_saves = None;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -22,6 +31,27 @@ fn main() -> Result<()> {
             "--days" => days = args.next().context("--days needs a number")?.parse()?,
             "--seed" => seed = args.next().context("--seed needs a number")?.parse()?,
             "--paths" => print_paths = true,
+            "--load-metadata" => {
+                load_metadata = Some(PathBuf::from(
+                    args.next().context("--load-metadata needs a save folder")?,
+                ))
+            }
+            "--save-metadata" => {
+                save_metadata = Some(PathBuf::from(
+                    args.next().context("--save-metadata needs a save root")?,
+                ))
+            }
+            "--save-country" => {
+                save_country = Some(
+                    args.next()
+                        .context("--save-country needs a country identifier")?,
+                )
+            }
+            "--list-saves" => {
+                list_saves = Some(PathBuf::from(
+                    args.next().context("--list-saves needs a save root")?,
+                ))
+            }
             "--market-csv" => {
                 market_csv = Some(PathBuf::from(
                     args.next().context("--market-csv needs a path")?,
@@ -39,7 +69,7 @@ fn main() -> Result<()> {
             }
             "--help" | "-h" => {
                 println!(
-                    "Usage: cqsp-sim [--data PATH] [--days NUMBER] [--seed NUMBER] [--paths]\n                [--market-csv NEW_PATH] [--industries-json NEW_PATH] [--science-json NEW_PATH]\n--paths prints the resolved data directory without running.\nRuns the partial Earth economy and orbital propagation; prints JSON and checks every daily step. Exports never overwrite existing files."
+                    "Usage: cqsp-sim [--data PATH] [--days NUMBER] [--seed NUMBER] [--paths]\n                [--market-csv NEW_PATH] [--industries-json NEW_PATH] [--science-json NEW_PATH]\n                [--load-metadata FOLDER] [--save-metadata ROOT --save-country COUNTRY]\n                [--list-saves ROOT]\n--paths prints the resolved data directory without running.\nRuns the partial Earth economy and orbital propagation; prints JSON and checks every daily step. Exports never overwrite existing files. Saves preserve upstream's metadata-only behavior, not a simulation/RNG snapshot. Loading changes date/UUID only; saving updates this game's metadata folder."
                 );
                 return Ok(());
             }
@@ -50,8 +80,33 @@ fn main() -> Result<()> {
         println!("{}", serde_json::json!({"data":data}));
         return Ok(());
     }
+    if let Some(root) = list_saves {
+        let entries: Vec<_> = SaveStore(root)
+            .list()?
+            .into_iter()
+            .map(|entry| serde_json::json!({"name":entry.name,"date":entry.date,"path":entry.path}))
+            .collect();
+        println!("{}", serde_json::to_string_pretty(&entries)?);
+        return Ok(());
+    }
     let world = World::load(&data)?;
     let mut simulation = Simulation::load(&data, &world, seed)?;
+    if let Some(directory) = load_metadata {
+        SaveStore::read(&directory)?.apply(&mut simulation.date, &mut simulation.uuid);
+        eprintln!("Loaded only date/UUID metadata, not economy, orbital state or RNG.");
+    }
+    if save_metadata.is_some() {
+        let country = save_country
+            .as_deref()
+            .context("--save-metadata requires --save-country")?;
+        anyhow::ensure!(
+            world
+                .countries
+                .iter()
+                .any(|entry| entry.identifier == country),
+            "Unknown save country"
+        );
+    }
     let mut csv = market_csv.as_deref().map(create_export).transpose()?;
     if let Some(output) = &mut csv {
         Market::write_csv_header(output, &simulation.catalog)?;
@@ -85,6 +140,13 @@ fn main() -> Result<()> {
         serde_json::to_writer_pretty(&mut output, &simulation.science.definitions_json())?;
         writeln!(output)?;
         output.flush()?;
+    }
+    if let Some(root) = save_metadata {
+        let path = SaveStore(root).write(
+            save_country.as_deref().unwrap(),
+            &Metadata::new(simulation.date, simulation.uuid.clone()),
+        )?;
+        eprintln!("Saved metadata only: {}", path.display());
     }
     let orbital_positions = ["earth", "moon", "mars"].map(|identifier| {
         let id = simulation.solar_system.body_id(identifier).unwrap();

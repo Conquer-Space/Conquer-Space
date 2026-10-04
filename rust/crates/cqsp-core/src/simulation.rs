@@ -110,6 +110,7 @@ pub struct Summary {
 
 pub struct Simulation {
     pub date: StarDate,
+    pub uuid: String,
     pub solar_system: SolarSystem,
     pub catalog: Catalog,
     pub infrastructure: InfrastructureCatalog,
@@ -360,6 +361,7 @@ impl Simulation {
             .collect();
         Ok(Self {
             date: StarDate::default(),
+            uuid: crate::save::new_uuid(),
             solar_system,
             catalog,
             infrastructure,
