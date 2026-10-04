@@ -28,6 +28,7 @@ use cqsp_core::{
 };
 use std::{f32::consts::PI, path::PathBuf, time::Duration};
 mod chart;
+mod construction_ui;
 mod inspection_ui;
 mod pie;
 mod playback_ui;
@@ -157,6 +158,7 @@ fn main() -> Result<()> {
                 println!(
                     "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--saves DIRECTORY] [--smoke] [--paths]\n--paths: print resolved asset/save directories without launching\n--saves: override the Rust-specific metadata save location\n--smoke: offscreen verification with isolated metadata fixtures\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
+                println!("B: owned-province construction painting; Esc cancels painting");
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -290,6 +292,7 @@ fn main() -> Result<()> {
         .insert_resource(spaceport_ui)
         .insert_resource(inspector)
         .insert_resource(saves)
+        .init_resource::<construction_ui::ConstructionTool>()
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
@@ -318,14 +321,24 @@ fn main() -> Result<()> {
                 spaceport_ui::scroll.run_if(application_input),
                 camera_controls.run_if(earth_controls),
                 pick_province.run_if(earth_controls),
-                selection_controls.run_if(world_input),
+                (
+                    construction_ui::controls.run_if(world_input),
+                    selection_controls.run_if(world_input),
+                )
+                    .chain(),
                 simulation_controls.run_if(interactive),
                 system_view::controls.run_if(world_input),
                 system_view::sync_ships,
                 system_view::update,
                 update_globe,
                 update_hud,
-                (update_economy_hud, playback_ui::update, save_ui::update).chain(),
+                (
+                    update_economy_hud,
+                    playback_ui::update,
+                    save_ui::update,
+                    construction_ui::update,
+                )
+                    .chain(),
                 spaceport_ui::update,
                 inspection_ui::update,
                 inspection_ui::update_plot,
@@ -448,6 +461,7 @@ fn setup(
     spaceport_ui::spawn(&mut commands, camera, &font);
     playback_ui::spawn(&mut commands, camera, &font);
     save_ui::spawn(&mut commands, camera, &font);
+    construction_ui::spawn(&mut commands, camera, &font);
     inspection_ui::spawn(
         &mut commands,
         camera,
@@ -597,7 +611,11 @@ fn selection_controls(
     mut commands: Commands,
     mut game: ResMut<Game>,
     navigation: Res<Navigation>,
+    construction: Option<Res<construction_ui::ConstructionTool>>,
 ) {
+    if construction.is_some_and(|tool| tool.capture_input) {
+        return;
+    }
     if keyboard.just_pressed(KeyCode::Tab)
         && !navigation.active
         && game.session.player_country.is_none()
@@ -879,6 +897,7 @@ fn verify_capture(
     policy_fills: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::budget::Fill>>,
     game: Res<Game>,
     saves: Res<save_ui::Saves>,
+    construction: Res<construction_ui::ConstructionTool>,
 ) {
     let pixels = capture
         .image
@@ -889,6 +908,7 @@ fn verify_capture(
     let mut checked = 0;
     let mut inspection_title = false;
     let mut save_title = false;
+    let mut painting_label = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -919,6 +939,7 @@ fn verify_capture(
         checked += 1;
         inspection_title |= text.0.starts_with("NATIVE INSPECTION");
         save_title |= text.0.starts_with("SAVE / LOAD · METADATA ONLY");
+        painting_label |= text.0.starts_with("PAINTING · Esc cancels");
     }
     assert!(
         checked >= 8,
@@ -929,6 +950,12 @@ fn verify_capture(
         !saves.open || save_title,
         "Smoke check: metadata browser header clipped away"
     );
+    if construction.armed && !navigation.active && !saves.open && !inspector.open && !ui.open {
+        assert!(
+            painting_label,
+            "Smoke check: construction painting status missing"
+        );
+    }
     assert!(
         !inspector.open || inspection_title,
         "Smoke check: inspector header clipped away"
@@ -1148,6 +1175,7 @@ fn smoke_test(
     mut ui: ResMut<spaceport_ui::SpaceportUi>,
     mut inspector: ResMut<inspection_ui::Inspector>,
     mut saves: ResMut<save_ui::Saves>,
+    mut construction: ResMut<construction_ui::ConstructionTool>,
 ) {
     if !smoke.enabled {
         return;
@@ -1481,6 +1509,37 @@ fn smoke_test(
             "budget-inspector.png",
         ),
         36 => {
+            inspector.apply(inspection_ui::Action::Close, &mut game);
+            navigation.active = false;
+            let country = game.session.player_country.expect("Smoke player");
+            game.hovered = game.simulation.countries[country]
+                .provinces
+                .iter()
+                .copied()
+                .find(|&id| game.simulation.settlements[id].industries.is_empty());
+            assert!(
+                game.hovered.is_some(),
+                "Smoke player needs an empty province"
+            );
+            construction.apply(construction_ui::Action::Toggle, &game);
+            construction
+                .paint(&mut game, 1)
+                .expect("Paint new smoke factory");
+            construction.apply(construction_ui::Action::Next, &game);
+            construction
+                .paint(&mut game, 5)
+                .expect("Enlarge smoke factory despite different selection");
+            let industry = &game.simulation.settlements[game.hovered.unwrap()].industries[0];
+            assert_eq!((industry.size, industry.utilization), (6.0, 1.0));
+            assert_eq!(industry.recipe, cqsp_core::catalog::RecipeId(0));
+            assert!(industry.construction.is_none());
+        }
+        37 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "construction-painting.png",
+        ),
+        38 => {
             saves
                 .apply(
                     save_ui::Action::Open,
@@ -1500,12 +1559,12 @@ fn smoke_test(
                 )
                 .expect("Save isolated smoke metadata");
         }
-        37 => capture_smoke(
+        39 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "metadata-browser.png",
         ),
-        38 => {
+        40 => {
             let uuid = game.simulation.uuid.clone();
             let tick = game.simulation.date.tick();
             saves
@@ -1525,9 +1584,10 @@ fn smoke_test(
         }
         _ => {
             assert_eq!(
-                smoke.captures, 19,
-                "Smoke check: all nineteen captures must be verified"
+                smoke.captures, 20,
+                "Smoke check: all twenty captures must be verified"
             );
+            assert!(!construction.armed, "Load must cancel stale painting");
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);
         }

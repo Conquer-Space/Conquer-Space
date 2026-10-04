@@ -606,6 +606,39 @@ impl Simulation {
         site.industries.push(industry);
         Ok(index)
     }
+    /// ConstructionMenu painting is distinct from the province tab's construction job.
+    pub fn paint_factory(
+        &mut self,
+        country: usize,
+        province: usize,
+        recipe: RecipeId,
+        count: i32,
+    ) -> Result<Option<usize>> {
+        ensure!(
+            country < self.countries.len(),
+            "Unknown construction country"
+        );
+        ensure!(count > 0, "Factory painting count must be positive");
+        let Some(site) = self.settlements.get_mut(province) else {
+            return Ok(None);
+        };
+        if !site.is_province() || site.country != Some(country) {
+            return Ok(None);
+        }
+        let index = if let Some(industry) = site.industries.last_mut() {
+            // Upstream ignores the selected recipe and changes size, not utilization or the job.
+            industry.size += f64::from(count);
+            site.industries.len() - 1
+        } else {
+            ensure!(
+                recipe.0 < self.catalog.recipes.len(),
+                "Unknown factory recipe"
+            );
+            site.industries.push(Industry::new(recipe, count)?);
+            0
+        };
+        Ok(Some(index))
+    }
     pub(crate) fn normal(&mut self, mean: f64, deviation: f64) -> f64 {
         self.random.normal(mean, deviation)
     }
@@ -1028,6 +1061,77 @@ mod tests {
         assert_eq!(industry.construction_cost, 0.0);
         assert_eq!(industry.construction.as_ref().unwrap().progress, 0);
         simulation.validate()?;
+        Ok(())
+    }
+    #[test]
+    fn map_factory_painting_checks_ownership_and_enlarges_only_the_last_size() -> Result<()> {
+        let mut simulation = load(42)?;
+        let province = simulation
+            .settlements
+            .iter()
+            .position(|site| site.is_province() && site.country.is_some())
+            .unwrap();
+        let country = simulation.settlements[province].country.unwrap();
+        let city = simulation
+            .settlements
+            .iter()
+            .position(|site| !site.is_province())
+            .unwrap();
+        let foreign = (country + 1) % simulation.countries.len();
+        simulation.settlements[province].industries.clear();
+        for (owner, site) in [(foreign, province), (country, city), (country, usize::MAX)] {
+            assert_eq!(simulation.paint_factory(owner, site, RecipeId(0), 5)?, None);
+        }
+        for recipe in 0..simulation.catalog.recipes.len() {
+            simulation.settlements[province].industries.clear();
+            assert!(
+                simulation
+                    .paint_factory(country, province, RecipeId(usize::MAX), 1)
+                    .is_err()
+            );
+            assert!(
+                simulation
+                    .paint_factory(country, province, RecipeId(recipe), 0)
+                    .is_err()
+            );
+            assert_eq!(
+                simulation.paint_factory(country, province, RecipeId(recipe), 5)?,
+                Some(0)
+            );
+            let industry = &simulation.settlements[province].industries[0];
+            assert_eq!(
+                (industry.recipe, industry.size, industry.utilization),
+                (RecipeId(recipe), 5.0, 5.0)
+            );
+            assert!(industry.construction.is_none());
+            // Even a nonexistent selection is ignored when enlarging the existing last factory.
+            assert_eq!(
+                simulation.paint_factory(country, province, RecipeId(usize::MAX), 10)?,
+                Some(0)
+            );
+            let industry = &simulation.settlements[province].industries[0];
+            assert_eq!(
+                (industry.recipe, industry.size, industry.utilization),
+                (RecipeId(recipe), 15.0, 5.0)
+            );
+            assert!(industry.construction.is_none());
+            let second = simulation.construct_factory(
+                province,
+                RecipeId((recipe + 1) % simulation.catalog.recipes.len()),
+                7,
+            )?;
+            assert_eq!(
+                simulation.paint_factory(country, province, RecipeId(recipe), 1)?,
+                Some(second)
+            );
+            let industries = &simulation.settlements[province].industries;
+            assert_eq!(industries[0].size, 15.0);
+            assert_eq!(
+                (industries[second].size, industries[second].utilization),
+                (8.0, 7.0)
+            );
+            assert_eq!(industries[second].construction.as_ref().unwrap().levels, 0);
+        }
         Ok(())
     }
     #[test]

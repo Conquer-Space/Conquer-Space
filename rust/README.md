@@ -122,6 +122,13 @@ whole-segment and count/cost toggles. Construction cycles all 22 recipes and sho
 their input/capital/output costs and expected profit. Select a province, adjust the
 1–1,000 unit count and construct a factory. This preserves the original zero-level
 construction record and Steady state; it does not invent an up-front purchase.
+The separate map toolbar cycles all recipes and toggles **Construct / cancel (B)**.
+While painting, click an owned province: an empty one gets a factory with no
+construction job; otherwise only its last factory's size increases, ignoring the
+selected recipe and leaving utilization/job fields unchanged. Left Shift adds
+five, Left Ctrl ten, and holding both adds five (the source's Shift branch wins).
+Escape cancels painting without leaving the game. UI clicks and open overlays
+cannot paint; entering country selection/loading cancels stale painting.
 Civilization shows the player's capital, wallet/taxes, governed sites, initial province
 balances and mission queue. History cycles market GDP, selected-good price/supply/demand
 and global population/SOL/employment/employment rate. Next chart good and the
@@ -196,17 +203,18 @@ and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.
 `target/demographics-zoomed-inspector.png`,
 `target/construction-inspector.png`,
 `target/civilization-inspector.png`, `target/history-inspector.png`,
-`target/history-zoomed-inspector.png` and
-`target/infrastructure-inspector.png`, then exits.
+`target/history-zoomed-inspector.png`, `target/infrastructure-inspector.png`,
+`target/budget-inspector.png`, `target/construction-painting.png` and
+`target/metadata-browser.png`, then loads the fixture and checks fresh-session reset.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all eighteen completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all twenty completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all eighteen PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all twenty PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.

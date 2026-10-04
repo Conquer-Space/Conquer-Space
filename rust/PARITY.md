@@ -29,6 +29,7 @@ Successful long runs establish stability, not gameplay parity.
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
 | Native demographics / factory construction | Implemented; creation action reference-tested | Paged population, employment, jobs, spending/income, education, wallets and consumption toggles; two native pies per page with colored values, hover and hide/show legends; source float values, double normalization and hidden-angle behavior; all 22 recipes, cost/revenue preview and 1–1,000 factory count; 66 CreateFactory comparisons, one-shot button and invalid/non-mutating guards |
+| Map construction painting | Native implementation; actual creation with source-mapped guards | Separate ConstructionMenu behavior: owned provinces only, empty-zone CreateFactory without a construction job, otherwise enlarge the last size without changing recipe/utilization/job; 528 comparisons across 22 recipes, 1/5/10 counts, ownership/type/empty cases; Left Shift wins over Ctrl, native recipe cycles, UI/input/close isolation; searchable selector remains |
 | Labor distribution / labor market | Reference-tested controlled system scenario | Actual SysLaborDistribution/SysLaborMarket: six cases and 12 weekly steps, drift caps/truncation, wages, zero demand, empty/tiny workforces, weekly hours and daily job demand; mixed-direction unordered traversal and invalid conversions remain |
 | Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, two seeds, nine cases spanning all eight states and 12 steps (4,752 seeded samples), plus injected noise, shortage interruption, construction completion, taxes/subsidies; combined tick ordering and larger FSM boundary grids remain |
 | Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
@@ -221,7 +222,7 @@ orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
 365 market-history records per body and CSV/industry export checks. There are 119 unit tests
-and 28 passing differential tests in debug and release. Twenty-seven live tests require the reference executable.
+and 29 passing differential tests in debug and release. Twenty-eight live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -317,7 +318,7 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Nineteen captures include the spaceport panel, newly
+native screen actions. Twenty captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 The budget capture applies a national subsidy to a newly constructed player factory
 and verifies the chosen absolute tax across all provinces before rendering. Native
@@ -326,6 +327,14 @@ coordinates, the full-subsidy lock, release/close isolation, one-shot apply, led
 removal and no daily advancement. National labor reads initial-list demand/supply,
 not ownership-filtered aggregates. The C++ subsidy corpus executes the actual action;
 ledger deletion copies the original UI erase, without claiming ImGui was executed.
+The painting capture creates an owned factory, changes the selected recipe and
+enlarges the existing last factory, checking size/utilization and no construction
+attachment. Core tests cover all recipes, last-versus-first targeting, preserved
+manual jobs and invalid/non-owned/city no-ops. Two ECS tests cover recipe cycles,
+one-shot toggle, all modifier combinations (including right keys not affecting
+the source's left-key-only count), UI hover, overlays/system view and cancel/reset.
+Its C++ fixture uses actual CreateFactory with source-mapped ConstructionMenu
+guards/size-only branch; it does not claim execution of ImGui or the whole menu.
 Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
 day advancement, live label refresh, panel exclusivity and closing-frame isolation.
@@ -424,7 +433,7 @@ application and one tick, then resets country selection, navigation, inspection,
 ports and pause state. Extra ship markers are pruned and can be recreated without
 duplicates. Four ECS tests cover modal time/shortcut capture, closing-frame isolation,
 one-shot disk writes, all ten fixture folders, scroll isolation and invalid-load
-non-mutation. A nineteenth GPU capture checks the explicit metadata-only warning;
+non-mutation. The metadata GPU capture checks the explicit metadata-only warning;
 the smoke then loads it and checks date/UUID, default ships and session reset.
 Fixtures are isolated under target/; no normal Rust or original C++ saves are written.
 

@@ -263,6 +263,96 @@ fn manual_factory_creation_matches_original_action() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; actual CreateFactory with source-mapped painting guards/size branch"]
+fn map_factory_painting_matches_original_creation_and_size_only_branch() {
+    use cqsp_core::{
+        catalog::{ProductionType, RecipeId},
+        economy::industry::{Construction, Industry},
+        simulation::SurfaceKind,
+    };
+    let data = default_data_path();
+    let mut simulation = Simulation::load(&data, &World::load(&data).unwrap(), 42).unwrap();
+    let kind = |recipe: usize| match simulation.catalog.recipes[recipe].kind {
+        ProductionType::Mine => 1,
+        ProductionType::Service => 2,
+        _ => 0,
+    };
+    let kinds: Vec<_> = (0..simulation.catalog.recipes.len()).map(kind).collect();
+    let mut input = Vec::new();
+    let mut output = Vec::new();
+    for recipe in 0..kinds.len() {
+        let old_recipe = (recipe + 1) % kinds.len();
+        for count in [1, 5, 10] {
+            for owned in [false, true] {
+                for province in [false, true] {
+                    for existing in [false, true] {
+                        input.push(json!([
+                            kinds[recipe],
+                            kinds[old_recipe],
+                            count,
+                            i32::from(owned),
+                            i32::from(province),
+                            i32::from(existing)
+                        ]));
+                        let site = &mut simulation.settlements[0];
+                        site.kind = if province {
+                            SurfaceKind::Province
+                        } else {
+                            SurfaceKind::City {
+                                province: None,
+                                latitude: 0.0,
+                                longitude: 0.0,
+                            }
+                        };
+                        site.country = Some(usize::from(!owned));
+                        site.industries.clear();
+                        if existing {
+                            let mut industry = Industry::new(RecipeId(old_recipe), 7).unwrap();
+                            industry.construction = Some(Construction {
+                                progress: 3,
+                                maximum: 42,
+                                levels: 2,
+                            });
+                            site.industries.push(industry);
+                        }
+                        let applied = simulation
+                            .paint_factory(0, 0, RecipeId(recipe), count)
+                            .unwrap()
+                            .is_some();
+                        let industries: Vec<_> = simulation.settlements[0]
+                            .industries
+                            .iter()
+                            .map(|industry| {
+                                let job = industry.construction.as_ref();
+                                json!([
+                                    industry.size,
+                                    industry.utilization,
+                                    industry.state as usize,
+                                    industry.expertise,
+                                    industry.wallet.balance,
+                                    industry.revenue,
+                                    i32::from(industry.recipe == RecipeId(recipe)),
+                                    i32::from(job.is_some()),
+                                    job.map_or(-1, |job| job.progress),
+                                    job.map_or(-1, |job| job.maximum),
+                                    job.map_or(-1, |job| job.levels)
+                                ])
+                            })
+                            .collect();
+                        output.push(json!([applied, industries]));
+                    }
+                }
+            }
+        }
+    }
+    assert_eq!(input.len(), 528);
+    compare(
+        &json!(output),
+        &reference_output(Some("--factory-painting"), &json!(input).to_string()),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual ApplySubsidy and UI ledger deletion"]
 fn national_recipe_subsidies_match_original_action_and_removal() {
     use cqsp_core::catalog::RecipeId;

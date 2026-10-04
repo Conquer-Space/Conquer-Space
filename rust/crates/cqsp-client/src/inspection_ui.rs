@@ -1964,6 +1964,7 @@ pub(crate) mod tests {
                     budget::controls.run_if(super::super::application_input),
                     spaceport_ui::controls.run_if(super::super::application_input),
                     super::super::simulation_controls,
+                    super::super::construction_ui::controls.run_if(super::super::world_input),
                     super::super::selection_controls.run_if(super::super::world_input),
                     scroll.run_if(super::super::application_input),
                     super::super::save_ui::scroll,
@@ -1973,6 +1974,7 @@ pub(crate) mod tests {
                     update_plot,
                     update_pies,
                     budget::update,
+                    super::super::construction_ui::update,
                 )
                     .chain(),
             );

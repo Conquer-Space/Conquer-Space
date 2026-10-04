@@ -637,6 +637,49 @@ void PrintSaveMetadata() {
     WriteJson(output); std::cout << '\n';
 }
 
+// Actual CreateFactory, with ConstructionMenu's ownership/type guard and size-only branch.
+// This does not execute ImGui or the full ConstructionMenu/Application.
+void PrintFactoryPainting() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("painting-reference");
+    const auto input = ReadInput();
+    Hjson::Value output(Hjson::Type::Vector);
+    const auto player = universe.create();
+    const auto foreign = universe.create();
+    for (int index = 0; index < input.size(); ++index) {
+        const auto& row = input[index];
+        cqsp::core::Node province(universe), recipe(universe), old_recipe(universe);
+        province.emplace<IndustrialZone>();
+        if (row[4].to_int64()) province.emplace<Province>().country = row[3].to_int64() ? player : foreign;
+        recipe.emplace<Recipe>().type = static_cast<ProductionType>(row[0].to_int64());
+        old_recipe.emplace<Recipe>().type = static_cast<ProductionType>(row[1].to_int64());
+        if (row[5].to_int64()) {
+            auto factory = cqsp::core::actions::CreateFactory(province, old_recipe, 7);
+            factory.emplace<Construction>(3, 42, 2);
+        }
+        auto& factories = province.get<IndustrialZone>().industries;
+        const bool applied = province.all_of<Province>() && province.get<Province>().country == player;
+        if (applied) {
+            if (factories.empty()) cqsp::core::actions::CreateFactory(province, recipe, static_cast<int>(row[2].to_int64()));
+            else universe.get<ProductionUnit>(factories.back()).size += row[2].to_int64();
+        }
+        Hjson::Value industries(Hjson::Type::Vector);
+        for (auto entity : factories) {
+            const auto& production = universe.get<ProductionUnit>(entity);
+            const auto& wallet = universe.get<Wallet>(entity);
+            const auto* job = universe.try_get<Construction>(entity);
+            industries.push_back(Numbers({production.size, production.utilization, static_cast<double>(production.state),
+                production.expertise, wallet.GetBalance(), production.revenue, production.recipe == recipe.entity() ? 1.0 : 0.0,
+                job ? 1.0 : 0.0, job ? static_cast<double>(job->progress) : -1.0,
+                job ? static_cast<double>(job->maximum) : -1.0, job ? static_cast<double>(job->levels) : -1.0}));
+        }
+        Hjson::Value result(Hjson::Type::Vector);
+        result.push_back(applied); result.push_back(industries);
+        output.push_back(result);
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
 void PrintSubsidies() {
     spdlog::set_level(spdlog::level::off);
     cqsp::core::Universe universe("subsidy-reference");
@@ -1490,6 +1533,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--civilizations") { PrintCivilizations(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--planet-histories") { PrintPlanetHistories(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--factory-creation") { PrintFactoryCreation(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--factory-painting") { PrintFactoryPainting(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--subsidies") { PrintSubsidies(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--save-metadata") { PrintSaveMetadata(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--timezones") { PrintTimeZones(); return 0; }
@@ -1520,6 +1564,7 @@ int main(int argc, char** argv) {
         return 0;
     }
     if (argc == 2 && std::string(argv[1]) == "--flight-boundaries") { PrintFlightBoundaries(); return 0; }
+    if (argc != 1) { std::cerr << "Unknown reference mode; rebuild tools/build-reference.ps1\n"; return 2; }
     Wallet wallet;
     wallet = 100;
     wallet.Reset();
