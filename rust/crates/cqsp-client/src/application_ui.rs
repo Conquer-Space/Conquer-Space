@@ -243,7 +243,9 @@ pub(super) fn controls(
     let other_input = ports.capture_input
         || inspector.capture_input
         || saves.as_ref().is_some_and(|saves| saves.capture_input)
-        || construction.is_some_and(|tool| tool.armed || tool.capture_input);
+        || construction
+            .as_ref()
+            .is_some_and(|tool| tool.armed || tool.searching || tool.capture_input);
     if keyboard.just_pressed(KeyCode::Escape) {
         if menu.is_open() {
             menu.apply(Action::Resume).expect("Resume menu");
@@ -258,7 +260,12 @@ pub(super) fn controls(
             continue;
         }
         if matches!(action, Action::OpenGraphics)
-            && (ports.editing() || inspector.open || saves.as_ref().is_some_and(|saves| saves.open))
+            && (ports.editing()
+                || inspector.open
+                || saves.as_ref().is_some_and(|saves| saves.open)
+                || construction
+                    .as_ref()
+                    .is_some_and(|tool| tool.searching || tool.capture_input))
         {
             continue;
         }

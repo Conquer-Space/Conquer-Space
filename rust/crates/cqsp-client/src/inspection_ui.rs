@@ -1965,6 +1965,10 @@ pub(crate) mod tests {
                         super::super::application_ui::controls,
                         super::super::application_ui::scroll,
                         super::super::save_ui::controls.run_if(super::super::menu_input),
+                        super::super::construction_ui::controls
+                            .run_if(super::super::construction_input),
+                        super::super::construction_ui::scroll
+                            .run_if(super::super::construction_input),
                     )
                         .chain(),
                     controls.run_if(super::super::application_input),
@@ -1973,7 +1977,6 @@ pub(crate) mod tests {
                     budget::controls.run_if(super::super::application_input),
                     spaceport_ui::controls.run_if(super::super::application_input),
                     super::super::simulation_controls,
-                    super::super::construction_ui::controls.run_if(super::super::world_input),
                     super::super::selection_controls.run_if(super::super::world_input),
                     scroll.run_if(super::super::application_input),
                     super::super::save_ui::scroll.run_if(super::super::menu_input),

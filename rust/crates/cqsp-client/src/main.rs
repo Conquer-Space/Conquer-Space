@@ -333,6 +333,8 @@ fn main() -> Result<()> {
                     application_ui::scroll.run_if(interactive),
                     save_ui::controls.run_if(menu_input),
                     save_ui::scroll.run_if(menu_input),
+                    construction_ui::controls.run_if(construction_input),
+                    construction_ui::scroll.run_if(construction_input),
                     inspection_ui::controls.run_if(application_input),
                     inspection_ui::chart_controls.run_if(application_input),
                     inspection_ui::pie_controls.run_if(application_input),
@@ -344,11 +346,7 @@ fn main() -> Result<()> {
                 spaceport_ui::scroll.run_if(application_input),
                 camera_controls.run_if(earth_controls),
                 pick_province.run_if(earth_controls),
-                (
-                    construction_ui::controls.run_if(world_input),
-                    selection_controls.run_if(world_input),
-                )
-                    .chain(),
+                selection_controls.run_if(world_input),
                 simulation_controls.run_if(interactive),
                 system_view::controls.run_if(world_input),
                 system_view::sync_ships,
@@ -485,7 +483,12 @@ fn setup(
     spaceport_ui::spawn(&mut commands, camera, &font);
     playback_ui::spawn(&mut commands, camera, &font);
     save_ui::spawn(&mut commands, camera, &font);
-    construction_ui::spawn(&mut commands, camera, &font);
+    construction_ui::spawn(
+        &mut commands,
+        camera,
+        &font,
+        &game.simulation.catalog.recipes,
+    );
     application_ui::spawn(&mut commands, camera, &font);
     inspection_ui::spawn(
         &mut commands,
@@ -512,20 +515,28 @@ fn screenshot_path(name: &str) -> Result<PathBuf> {
 fn interactive(smoke: Res<Smoke>) -> bool {
     !smoke.enabled
 }
-fn menu_input(smoke: Res<Smoke>, menu: Option<Res<application_ui::Menu>>) -> bool {
-    !smoke.enabled && menu.is_none_or(|menu| !menu.capture_input)
+fn menu_input(
+    smoke: Res<Smoke>,
+    menu: Option<Res<application_ui::Menu>>,
+    construction: Option<Res<construction_ui::ConstructionTool>>,
+) -> bool {
+    !smoke.enabled
+        && menu.is_none_or(|menu| !menu.capture_input)
+        && construction.is_none_or(|tool| !tool.capture_input)
 }
 fn application_input(
     smoke: Res<Smoke>,
     saves: Option<Res<save_ui::Saves>>,
     menu: Option<Res<application_ui::Menu>>,
+    construction: Option<Res<construction_ui::ConstructionTool>>,
 ) -> bool {
     !smoke.enabled
         && saves.is_none_or(|saves| !saves.capture_input)
         && menu.is_none_or(|menu| !menu.capture_input)
+        && construction.is_none_or(|tool| !tool.capture_input)
 }
 
-fn world_input(
+fn construction_input(
     smoke: Res<Smoke>,
     ui: Res<spaceport_ui::SpaceportUi>,
     inspector: Res<inspection_ui::Inspector>,
@@ -537,6 +548,17 @@ fn world_input(
         && !inspector.capture_input
         && saves.is_none_or(|saves| !saves.capture_input)
         && menu.is_none_or(|menu| !menu.capture_input)
+}
+fn world_input(
+    smoke: Res<Smoke>,
+    ui: Res<spaceport_ui::SpaceportUi>,
+    inspector: Res<inspection_ui::Inspector>,
+    saves: Option<Res<save_ui::Saves>>,
+    menu: Option<Res<application_ui::Menu>>,
+    construction: Option<Res<construction_ui::ConstructionTool>>,
+) -> bool {
+    construction.is_none_or(|tool| !tool.capture_input)
+        && construction_input(smoke, ui, inspector, saves, menu)
 }
 
 fn earth_controls(
@@ -546,6 +568,7 @@ fn earth_controls(
     inspector: Res<inspection_ui::Inspector>,
     saves: Option<Res<save_ui::Saves>>,
     menu: Option<Res<application_ui::Menu>>,
+    construction: Option<Res<construction_ui::ConstructionTool>>,
 ) -> bool {
     !smoke.enabled
         && !navigation.active
@@ -553,6 +576,7 @@ fn earth_controls(
         && !inspector.capture_input
         && saves.is_none_or(|saves| !saves.capture_input)
         && menu.is_none_or(|menu| !menu.capture_input)
+        && construction.is_none_or(|tool| !tool.capture_input)
 }
 
 fn globe_mesh() -> Mesh {
@@ -720,6 +744,7 @@ fn simulation_controls(
     inspector: Option<Res<inspection_ui::Inspector>>,
     saves: Option<Res<save_ui::Saves>>,
     menu: Option<Res<application_ui::Menu>>,
+    construction: Option<Res<construction_ui::ConstructionTool>>,
 ) {
     if game.session.player_country.is_none() {
         return;
@@ -732,8 +757,9 @@ fn simulation_controls(
     {
         return;
     }
-    let keyboard_enabled =
-        ui.is_none_or(|ui| !ui.capture_input) && inspector.is_none_or(|ui| !ui.capture_input);
+    let keyboard_enabled = ui.is_none_or(|ui| !ui.capture_input)
+        && inspector.is_none_or(|ui| !ui.capture_input)
+        && construction.is_none_or(|tool| !tool.capture_input);
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
         game.playback_action(playback_ui::Action::Toggle);
     }
@@ -957,6 +983,7 @@ fn verify_capture(
     let mut painting_label = false;
     let mut pause_title = false;
     let mut graphics_title = false;
+    let mut recipe_title = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -990,6 +1017,7 @@ fn verify_capture(
         painting_label |= text.0.starts_with("PAINTING · Esc cancels");
         pause_title |= text.0 == "PAUSE MENU";
         graphics_title |= text.0 == "DISPLAY OPTIONS · SILENT";
+        recipe_title |= text.0 == "SEARCH CONSTRUCTION RECIPES";
     }
     assert!(
         checked >= 8,
@@ -1007,6 +1035,10 @@ fn verify_capture(
     assert!(
         menu.screen != application_ui::Screen::Graphics || graphics_title,
         "Smoke check: display options header missing"
+    );
+    assert!(
+        !construction.searching || recipe_title,
+        "Smoke check: recipe search header missing"
     );
     if construction.armed
         && !navigation.active
@@ -1605,6 +1637,25 @@ fn smoke_test(
             "construction-painting.png",
         ),
         38 => {
+            construction.apply(construction_ui::Action::Search, &game);
+            construction.set_query("CoAl", &game);
+            assert!(construction.searching && construction.capture_input);
+        }
+        39 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "construction-search.png",
+        ),
+        40 => {
+            let recipe = game
+                .simulation
+                .catalog
+                .recipes
+                .iter()
+                .position(|recipe| recipe.name.to_ascii_lowercase().contains("coal"))
+                .expect("Loaded coal recipe");
+            construction.apply(construction_ui::Action::SelectRecipe(recipe), &game);
+            assert!(!construction.searching);
             construction.apply(construction_ui::Action::Toggle, &game);
             let tick = game.simulation.date.tick();
             menu.apply(application_ui::Action::OpenPause)
@@ -1614,12 +1665,12 @@ fn smoke_test(
             assert_eq!(game.simulation.date.tick(), tick);
             assert!(game.session.player_country.is_some());
         }
-        39 => capture_smoke(
+        41 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "pause-menu.png",
         ),
-        40 => {
+        42 => {
             menu.apply(application_ui::Action::OpenGraphics)
                 .expect("Open smoke display options");
             menu.apply(application_ui::Action::Next)
@@ -1634,12 +1685,12 @@ fn smoke_test(
             );
             assert!(menu.settings.full_screen);
         }
-        41 => capture_smoke(
+        43 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "display-options.png",
         ),
-        42 => {
+        44 => {
             menu.apply(application_ui::Action::CloseGraphics)
                 .expect("Return to pause");
             assert_eq!(menu.screen, application_ui::Screen::Pause);
@@ -1664,12 +1715,12 @@ fn smoke_test(
                 )
                 .expect("Save isolated smoke metadata");
         }
-        43 => capture_smoke(
+        45 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "metadata-browser.png",
         ),
-        44 => {
+        46 => {
             let uuid = game.simulation.uuid.clone();
             let tick = game.simulation.date.tick();
             saves
@@ -1689,8 +1740,8 @@ fn smoke_test(
         }
         _ => {
             assert_eq!(
-                smoke.captures, 22,
-                "Smoke check: all twenty-two captures must be verified"
+                smoke.captures, 23,
+                "Smoke check: all twenty-three captures must be verified"
             );
             assert!(!construction.armed, "Load must cancel stale painting");
             println!("SMOKE: complete.");

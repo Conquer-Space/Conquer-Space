@@ -136,6 +136,10 @@ their input/capital/output costs and expected profit. Select a province, adjust 
 1–1,000 unit count and construct a factory. This preserves the original zero-level
 construction record and Steady state; it does not invent an up-front purchase.
 The separate map toolbar cycles all recipes and toggles **Construct / cancel (B)**.
+**Search recipes** opens the native, case-insensitive picker. Opening clears its
+filter; type, choose a result or use arrows/Enter, and Escape closes search before
+cancelling painting. Ctrl+A replaces the query, and the result list scrolls.
+Text entry captures world/playback shortcuts and cannot paint a province.
 While painting, click an owned province: an empty one gets a factory with no
 construction job; otherwise only its last factory's size increases, ignoring the
 selected recipe and leaving utilization/job fields unchanged. Left Shift adds
@@ -217,7 +221,7 @@ and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.
 `target/construction-inspector.png`,
 `target/civilization-inspector.png`, `target/history-inspector.png`,
 `target/history-zoomed-inspector.png`, `target/infrastructure-inspector.png`,
-`target/budget-inspector.png`, `target/construction-painting.png`,
+`target/budget-inspector.png`, `target/construction-painting.png`, `target/construction-search.png`,
 `target/pause-menu.png`, `target/display-options.png` and
 `target/metadata-browser.png`, then loads the fixture and checks fresh-session reset.
 Inspect the images and console for shader/rendering errors; process success alone
@@ -226,9 +230,9 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-two completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-three completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all twenty-two PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all twenty-three PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.
