@@ -18,6 +18,20 @@ remaining UI are still being ported. See
 [PARITY.md](PARITY.md) for status, evidence, compatibility gaps and acceptance gates.
 The existing CMake/Visual Studio project is unchanged.
 
+To make a local Windows bundle, run `./tools/package.ps1` from `rust/` (release),
+or add `-Profile dev` for a faster development build. Each run creates a fresh
+folder under `target/packages/` with both executables, original data/textures/font
+and the native shader. Run `cqsp-client.exe` from that folder; assets resolve next
+to the executable, not from the current working directory. `--paths` prints their
+resolved locations without opening a window. `--data PATH` remains an explicit
+override. Bundles intentionally omit audio/Lua and require compatible graphics
+drivers and the MSVC runtime. They are not installers or full-parity releases;
+see the bundled README for prerequisites and redistribution limitations.
+Release clients use the Windows GUI subsystem, matching the original release:
+double-clicking does not open a separate console. Pipe `--help`/`--paths` output
+in PowerShell. The supplied `run-smoke.ps1 -Executable ./cqsp-client.exe` waits
+for offscreen GPU checks to complete, including GUI-subsystem releases.
+
 The Rust app is deliberately **silent**: no music, effects or sound-device backend
 are built in. Original sound assets are left untouched. Run
 `./tools/verify-silent.ps1` to audit the enabled dependency graph; pass `-Cargo`
@@ -35,7 +49,7 @@ cargo run -p cqsp-client
 If Rust is not on your PATH, use `& "$env:USERPROFILE/.cargo/bin/cargo.exe"` in place of
 `cargo`. The bundled data is found independently of your working directory. To point
 at another asset tree: `cargo run -p cqsp-client -- --data C:/path/to/binaries/data/core`.
-The shader is loaded from this source checkout; this milestone is not a packaged release.
+Development builds fall back to the shader in this checkout when no packaged assets exist.
 
 Right-drag or arrow keys orbit the globe; wheel zooms; left-click selects a province's
 country. Tab/Shift+Tab cycle countries (including ones too small to click on the 2K map).
@@ -150,7 +164,7 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all fourteen completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all fifteen completed
 captures. Background tests work while normal game windows are minimized or closed.
 Focused-spacecraft captures also verify texture color variation and ground-track
 pixels. The body-rotation/ground-coordinate helpers are compared against the actual

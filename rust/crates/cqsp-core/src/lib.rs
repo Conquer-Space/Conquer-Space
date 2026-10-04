@@ -6,6 +6,7 @@ pub mod flight;
 pub mod infrastructure;
 pub mod modifiers;
 pub mod orbit;
+pub mod paths;
 pub mod random;
 pub mod science;
 pub mod simulation;
@@ -24,7 +25,10 @@ use std::{
 };
 
 pub fn default_data_path() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../binaries/data/core")
+    paths::asset_directory(
+        "assets/core",
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("../../../binaries/data/core"),
+    )
 }
 
 #[derive(Debug)]

@@ -11,6 +11,7 @@ fn main() -> Result<()> {
     let mut data = default_data_path();
     let mut days = 30_u32;
     let mut seed = 42_u64;
+    let mut print_paths = false;
     let mut market_csv = None;
     let mut industries_json = None;
     let mut science_json = None;
@@ -20,6 +21,7 @@ fn main() -> Result<()> {
             "--data" => data = PathBuf::from(args.next().context("--data needs a path")?),
             "--days" => days = args.next().context("--days needs a number")?.parse()?,
             "--seed" => seed = args.next().context("--seed needs a number")?.parse()?,
+            "--paths" => print_paths = true,
             "--market-csv" => {
                 market_csv = Some(PathBuf::from(
                     args.next().context("--market-csv needs a path")?,
@@ -37,12 +39,16 @@ fn main() -> Result<()> {
             }
             "--help" | "-h" => {
                 println!(
-                    "Usage: cqsp-sim [--data PATH] [--days NUMBER] [--seed NUMBER]\n                [--market-csv NEW_PATH] [--industries-json NEW_PATH] [--science-json NEW_PATH]\nRuns the partial Earth economy and orbital propagation; prints JSON and checks every daily step. Exports never overwrite existing files."
+                    "Usage: cqsp-sim [--data PATH] [--days NUMBER] [--seed NUMBER] [--paths]\n                [--market-csv NEW_PATH] [--industries-json NEW_PATH] [--science-json NEW_PATH]\n--paths prints the resolved data directory without running.\nRuns the partial Earth economy and orbital propagation; prints JSON and checks every daily step. Exports never overwrite existing files."
                 );
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
         }
+    }
+    if print_paths {
+        println!("{}", serde_json::json!({"data":data}));
+        return Ok(());
     }
     let world = World::load(&data)?;
     let mut simulation = Simulation::load(&data, &world, seed)?;

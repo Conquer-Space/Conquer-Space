@@ -45,7 +45,7 @@ Successful long runs establish stability, not gameplay parity.
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
 | Native replacements for scripted UI/events | Partial | Country selection and civilization/economy/history inspection are native; exploration, side menu and event infrastructure remain |
-| Saves / load / settings / packaging | Not ported | Persist simulation + RNG state, source-independent assets, release installation and compatibility decision |
+| Saves / load / settings / packaging | Executable-relative assets and local bundling implemented; other workflows remain | Core data, textures/font and native shader resolve beside the executable; fresh locked dev/release Windows bundles under target/packages exclude audio/Lua; runtime/driver prerequisites and redistribution review remain. Original SaveGame is empty; metadata/menu loading and native settings still need porting |
 
 ## Compatibility decisions and known gaps
 
@@ -211,7 +211,7 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 105 unit tests
+365 market-history records per body and CSV/industry export checks. There are 106 unit tests
 and 24 passing differential tests. Twenty-three live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
@@ -330,6 +330,27 @@ Repeated offscreen runs have passed; live desktop input/resize still needs separ
 manual acceptance. Keyboard navigation and one-shot button actions have ECS tests
 which do not create native windows.
 
+`tools/package.ps1` builds with Cargo.lock, verifies silence and writes a new bundle
+under target/packages on every run; it does not overwrite an older package, install
+software, change registry settings or copy audio/Lua scripts. The client and headless
+simulator prefer assets/core next to their executables; the native shader uses
+assets/client. Development paths are fallbacks only when those package directories
+are absent. Both CLIs support --paths for non-launching resolution diagnostics.
+Package verification must also run the simulator and offscreen GPU smoke from a
+different working directory with no --data override. A successful local launch does
+not prove CRT/graphics-driver availability on another PC; no installer or completed
+redistribution-license audit is claimed.
+Both dev and release bundles have passed 365 daily simulator steps and all fifteen
+GPU captures from a different working directory with no asset override. The optimized
+C++ differential suite also passes all 24 tests, including bit-exact seeded lunar
+flights. Release clients use the Windows GUI subsystem (PE subsystem 2), matching
+the original release without an extra console. The supplied run-smoke.ps1 redirects
+and drains both output pipes and waits for the offscreen client to exit; no native
+window is created. Pipe non-launching --paths/--help output in PowerShell too.
+The original Save::SaveGame returns an empty HJSON value, while metadata only stores
+date/UUID/version. A full simulation/RNG snapshot would be a new feature, not behavior
+already implemented upstream. Metadata/load-menu/settings parity remains open.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production system corpus to larger FSM boundary
@@ -343,5 +364,6 @@ which do not create native windows.
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
    research, projects, modifier controls, event queues and market/history inspection.
-5. Verify saves/reloads, application settings, asset packaging and input/UI flows.
+5. Verify original metadata/load-menu behavior, application settings, package runtime
+   prerequisites and input/UI flows. Complete-state saves would need a separate design.
    Full parity requires documented scenario-level comparisons, not file counts.

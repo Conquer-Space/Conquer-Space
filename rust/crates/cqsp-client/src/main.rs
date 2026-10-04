@@ -1,3 +1,5 @@
+#![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]
+
 use anyhow::{Context, Result, bail};
 use bevy::{
     app::{AppExit, ScheduleRunnerPlugin},
@@ -130,6 +132,7 @@ struct EarthGlobe;
 fn main() -> Result<()> {
     let mut data = default_data_path();
     let mut smoke = false;
+    let mut print_paths = false;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -137,14 +140,26 @@ fn main() -> Result<()> {
                 data = PathBuf::from(args.next().context("--data needs a core data directory")?)
             }
             "--smoke" => smoke = true,
+            "--paths" => print_paths = true,
             "--help" | "-h" => {
                 println!(
-                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke]\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
+                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--smoke] [--paths]\n--paths: print resolved asset directories without launching\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
         }
+    }
+    let assets = cqsp_core::paths::asset_directory(
+        "assets/client",
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("assets"),
+    );
+    if print_paths {
+        println!(
+            "{}",
+            serde_json::json!({"data":data,"client_assets":assets})
+        );
+        return Ok(());
     }
     let world = World::load(&data)?;
     let simulation = Simulation::load(&data, &world, 42)?;
@@ -213,10 +228,7 @@ fn main() -> Result<()> {
             ..default()
         })
         .set(AssetPlugin {
-            file_path: PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-                .join("assets")
-                .to_string_lossy()
-                .into_owned(),
+            file_path: assets.to_string_lossy().into_owned(),
             ..default()
         })
         .set(WindowPlugin {
@@ -415,10 +427,10 @@ fn ui_font(font: &Handle<Font>, size: f32) -> TextFont {
     }
 }
 
-fn screenshot_path(name: &str) -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../../target")
-        .join(name)
+fn screenshot_path(name: &str) -> Result<PathBuf> {
+    let directory = PathBuf::from("target");
+    std::fs::create_dir_all(&directory).context("Create screenshot directory")?;
+    Ok(directory.join(name))
 }
 
 fn interactive(smoke: Res<Smoke>) -> bool {
@@ -579,9 +591,14 @@ fn selection_controls(
         game.political = !game.political;
     }
     if keyboard.just_pressed(KeyCode::F12) {
-        commands
-            .spawn(Screenshot::primary_window())
-            .observe(save_to_disk(screenshot_path("conquer-space.png")));
+        match screenshot_path("conquer-space.png") {
+            Ok(path) => {
+                commands
+                    .spawn(Screenshot::primary_window())
+                    .observe(save_to_disk(path));
+            }
+            Err(error) => eprintln!("Cannot save screenshot: {error:#}"),
+        }
     }
 }
 
@@ -988,7 +1005,9 @@ fn capture_smoke(commands: &mut Commands, target: &SmokeTarget, name: &str) {
     commands
         .spawn(Screenshot::image(target.0.clone()))
         .observe(verify_capture)
-        .observe(save_to_disk(screenshot_path(name)));
+        .observe(save_to_disk(
+            screenshot_path(name).expect("Smoke screenshot directory"),
+        ));
 }
 
 #[allow(clippy::too_many_arguments)]
