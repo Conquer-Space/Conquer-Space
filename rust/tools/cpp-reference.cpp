@@ -45,6 +45,8 @@
 #include "core/loading/recipeloader.h"
 #include "core/loading/zoningloader.h"
 #include "core/loading/economyloader.h"
+#include "core/loading/powerplantloader.h"
+#include "core/loading/powergridloader.h"
 #include "core/systems/history/sysmarkethistory.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/economy/sysspaceport.h"
@@ -367,6 +369,53 @@ void PrintGroundTracks() {
         auto ground = cqsp::core::util::GetGroundTrack(rotation, position);
         output.push_back(Numbers({rotation.x, rotation.y, rotation.z, rotation.w, ground.r_latitude(), ground.r_longitude()}));
     }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintInfrastructure() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("infrastructure-reference");
+    auto input = ReadInput();
+    cqsp::core::loading::GoodLoader goods(universe);
+    cqsp::core::loading::ZoningLoader zoning(universe);
+    cqsp::core::loading::PowerPlantLoader plants(universe);
+    cqsp::core::loading::PowerGridLoader grids(universe);
+    cqsp::core::loading::ProvinceLoader provinces(universe);
+    goods.LoadHjson(input["goods"]); zoning.LoadHjson(input["zoning"]);
+    plants.LoadHjson(input["power_plants"]); grids.LoadHjson(input["grids"]);
+    for (int index = 0; index < input["bodies"].size(); ++index) {
+        auto entity = universe.create(); universe.planets[input["bodies"][index].to_string()] = entity;
+    }
+    provinces.LoadHjson(input["provinces"]);
+    Hjson::Value output(Hjson::Type::Map), recipes(Hjson::Type::Map), grid_rows(Hjson::Type::Map), sites(Hjson::Type::Vector);
+    for (const auto& [key, entity] : universe.infrastructure) {
+        auto identifier = universe.get<Identifier>(entity).identifier;
+        auto name = universe.all_of<Name>(entity) ? universe.get<Name>(entity).name : identifier;
+        if (auto* recipe = universe.try_get<infrastructure::PowerPlantRecipe>(entity)) {
+            Hjson::Value value(Hjson::Type::Map), consumption(Hjson::Type::Map);
+            for (const auto& [good, amount] : recipe->consumption) consumption[universe.get<Identifier>(universe.good_vector[static_cast<int>(good)]).identifier] = Number(amount);
+            value["name"] = name; value["capacity"] = Number(recipe->maximum_production); value["consumption"] = consumption;
+            recipes[identifier] = value;
+        } else if (universe.all_of<infrastructure::PowerGrid>(entity)) {
+            grid_rows[identifier] = name;
+        }
+    }
+    std::map<std::string, size_t> next_site;
+    for (int index = 0; index < input["provinces"].size(); ++index) {
+        auto planet = input["provinces"][index]["planet"].to_string();
+        auto entity = universe.get<Settlements>(universe.planets[planet]).provinces[next_site[planet]++];
+        auto& infrastructure = universe.get<infrastructure::CityInfrastructure>(entity);
+        Hjson::Value value(Hjson::Type::Map), plants(Hjson::Type::Vector), allocation(Hjson::Type::Map);
+        value["transport"] = Numbers({infrastructure.default_purchase_cost, infrastructure.improvement});
+        value["grid"] = universe.all_of<infrastructure::PowerGrid>(infrastructure.power_grid) ? Hjson::Value(universe.get<Identifier>(infrastructure.power_grid).identifier) : Hjson::Value(Hjson::Type::Null);
+        for (auto plant : infrastructure.power_plants) {
+            auto& component = universe.get<infrastructure::PowerPlant>(plant);
+            plants.push_back(Numbers({component.production, component.maximum_production, double(component.consumption.size())}));
+        }
+        for (const auto& [zone, area] : universe.get<Province>(entity).zoning) allocation[universe.get<Identifier>(zone).identifier] = Numbers({double(area.allocated), double(area.filled)});
+        value["plants"] = plants; value["zoning"] = allocation; sites.push_back(value);
+    }
+    output["recipes"] = recipes; output["grids"] = grid_rows; output["provinces"] = sites;
     WriteJson(output); std::cout << '\n';
 }
 
@@ -1130,6 +1179,7 @@ void PrintRandom() {
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
     if (argc == 2 && std::string(argv[1]) == "--catalog") { PrintCatalog(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--infrastructure") { PrintInfrastructure(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--civilizations") { PrintCivilizations(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--planet-histories") { PrintPlanetHistories(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--factory-creation") { PrintFactoryCreation(); return 0; }

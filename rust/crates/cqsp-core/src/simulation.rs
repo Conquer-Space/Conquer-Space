@@ -8,6 +8,7 @@ use crate::{
         industry::{Construction, ConstructionSector, Industry, IndustryEntry},
         population::{Population, PopulationEntry},
     },
+    infrastructure::{InfrastructureCatalog, SurfaceInfrastructure, ZoningAllocation},
     modifiers::ModifierCatalog,
     random::LegacyRandom,
     read_entries,
@@ -47,6 +48,8 @@ pub struct Settlement {
     pub kind: SurfaceKind,
     pub time_zone: Option<TimeZoneId>,
     pub is_capital: bool,
+    pub zoning: BTreeMap<String, ZoningAllocation>,
+    pub infrastructure: Option<SurfaceInfrastructure>,
     pub spaceport: Option<SpacePort>,
     pub colonization: Option<ColonizationTarget>,
     pub colony: Option<Colony>,
@@ -108,6 +111,7 @@ pub struct Simulation {
     pub date: StarDate,
     pub solar_system: SolarSystem,
     pub catalog: Catalog,
+    pub infrastructure: InfrastructureCatalog,
     pub modifiers: ModifierCatalog,
     pub science: ScienceCatalog,
     pub time_zones: TimeZones,
@@ -128,6 +132,7 @@ pub struct Simulation {
 impl Simulation {
     pub fn load(data: &Path, world: &World, seed: u64) -> Result<Self> {
         let catalog = Catalog::load(data)?;
+        let infrastructure = InfrastructureCatalog::load(data, &catalog)?;
         let solar_system = SolarSystem::load(data)?;
         let project_templates = ProjectTemplate::load(data, &catalog)?;
         let country_ids: HashMap<_, _> = world
@@ -149,6 +154,7 @@ impl Simulation {
             }
         }
         let mut diagnostics = catalog.diagnostics.clone();
+        diagnostics.extend(infrastructure.diagnostics.iter().cloned());
         let modifiers = ModifierCatalog::load(data)?;
         diagnostics.extend(modifiers.diagnostics.iter().cloned());
         let science = ScienceCatalog::load(data)?;
@@ -245,6 +251,18 @@ impl Simulation {
                     settlements[previous].is_capital = false;
                 }
             }
+            let surface_infrastructure = if city {
+                None
+            } else {
+                Some(
+                    SurfaceInfrastructure::load(
+                        entry.transport,
+                        entry.infrastructure,
+                        &infrastructure,
+                    )
+                    .with_context(|| format!("{}: province infrastructure", entry.identifier))?,
+                )
+            };
             settlements.push(Settlement {
                 name: entry.name.unwrap_or_else(|| entry.identifier.clone()),
                 identifier: entry.identifier,
@@ -254,6 +272,12 @@ impl Simulation {
                 kind,
                 time_zone,
                 is_capital,
+                zoning: if city {
+                    BTreeMap::new()
+                } else {
+                    ZoningAllocation::load(entry.zoning, &catalog)
+                },
+                infrastructure: surface_infrastructure,
                 spaceport: (city
                     && entry.spaceport.is_some_and(|value| {
                         value != Value::Null
@@ -337,6 +361,7 @@ impl Simulation {
             date: StarDate::default(),
             solar_system,
             catalog,
+            infrastructure,
             modifiers,
             science,
             time_zones,
@@ -642,6 +667,10 @@ struct SettlementEntry {
     population: Vec<PopulationEntry>,
     #[serde(default)]
     industry: Vec<IndustryEntry>,
+    #[serde(default)]
+    zoning: BTreeMap<String, i64>,
+    transport: Option<f64>,
+    infrastructure: Option<Value>,
 }
 #[derive(Deserialize, Default)]
 struct CoordinatesEntry {
@@ -659,6 +688,40 @@ impl SettlementEntry {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn province_infrastructure_does_not_invent_city_records_or_power_production() -> Result<()> {
+        let data = crate::default_data_path();
+        let simulation = Simulation::load(&data, &World::load(&data)?, 42)?;
+        let illinois = simulation
+            .settlements
+            .iter()
+            .find(|site| site.identifier == "illinois")
+            .unwrap();
+        assert_eq!(illinois.zoning.len(), 3);
+        assert_eq!(illinois.zoning["undeveloped"].allocated, 100000);
+        let infrastructure = illinois.infrastructure.as_ref().unwrap();
+        assert_eq!(infrastructure.power_grid.as_deref(), Some("usa"));
+        assert_eq!(infrastructure.power_plants.len(), 1);
+        assert_eq!(infrastructure.power_plants[0].maximum_production, 1e8);
+        assert_eq!(infrastructure.power_plants[0].production, 0.0);
+        assert!(
+            simulation
+                .settlements
+                .iter()
+                .filter(|site| !site.is_province())
+                .all(|site| site.infrastructure.is_none() && site.zoning.is_empty())
+        );
+        let new_york = simulation
+            .settlements
+            .iter()
+            .find(|site| site.identifier == "new_york" && site.is_province())
+            .unwrap();
+        assert_eq!(
+            new_york.infrastructure.as_ref().unwrap().purchase_cost,
+            0.05
+        );
+        Ok(())
+    }
     fn load(seed: u64) -> Result<Simulation> {
         let data = crate::default_data_path();
         Simulation::load(&data, &World::load(&data)?, seed)

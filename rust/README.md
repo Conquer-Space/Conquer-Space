@@ -93,6 +93,10 @@ all/last-128/last-32 range controls redraw native plots; X uses daily sample ind
 matching the original graph despite its Tick label. Non-finite samples leave gaps.
 Mouse plot pan/zoom and consumption pie graphs remain to be ported. Spaceport inspection
 also shows loaded fixed-offset local time, retaining the source clock's quirks.
+Infrastructure inspects province transport costs, zoning allocations and power/grid
+bindings. The original Illinois coal plant and New York transport cost load directly
+from the assets. Plants retain zero production and empty fuel records like the source;
+grid frequency and a power-generation simulation were not implemented in the original.
 
 For fast renderer-free simulation checks:
 
@@ -134,14 +138,15 @@ a lunar core mission and verifies its delivery. It also writes `target/spaceport
 and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.png`,
 `target/industry-inspector.png`, `target/science-inspector.png`,
 `target/demographics-inspector.png`, `target/construction-inspector.png`,
-`target/civilization-inspector.png` and `target/history-inspector.png`, then exits.
+`target/civilization-inspector.png`, `target/history-inspector.png` and
+`target/infrastructure-inspector.png`, then exits.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all thirteen completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all fourteen completed
 captures. Background tests work while normal game windows are minimized or closed.
 Focused-spacecraft captures also verify texture color variation and ground-track
 pixels. The body-rotation/ground-coordinate helpers are compared against the actual
@@ -187,6 +192,9 @@ The full economy catalog also compares actual goods/labor/zoning/recipe/config l
 56 goods, five jobs, ten zoning types and 22 recipes, plus controlled physical units,
 invalid-good rejection, duplicate lookup, first-tag default jobs, tag precedence,
 missing references, empty-map merging and construction-time/cost defaults.
+Power/grid/province infrastructure loaders compare all 1,317 province bindings plus
+controlled default-grid, zero/negative capacity/cost and zoning-conversion boundaries.
+Random resource amenability and malformed scalar/unit cases remain outside this corpus.
 Civilization metadata and initial owned lists match actual original loaders for all
 199 countries. Capital tags remain province-only, and only the USA has a bundled
 space-program tag. All-body daily market history matches actual SysMarketHistory,

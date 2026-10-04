@@ -30,6 +30,7 @@ try {
         "$repoRoot/src/core/loading/timezoneloader.cpp" `
         "$repoRoot/src/core/loading/loadgoods.cpp" "$repoRoot/src/core/loading/laborloader.cpp" `
         "$repoRoot/src/core/loading/recipeloader.cpp" "$repoRoot/src/core/loading/zoningloader.cpp" "$repoRoot/src/core/loading/economyloader.cpp" `
+        "$repoRoot/src/core/loading/powerplantloader.cpp" "$repoRoot/src/core/loading/powergridloader.cpp" `
         "$repoRoot/src/core/loading/loadcountries.cpp" "$repoRoot/src/core/loading/provinceloader.cpp" `
         "$repoRoot/src/core/systems/history/sysmarkethistory.cpp" `
         "$repoRoot/src/core/actions/factoryconstructaction.cpp" "$repoRoot/src/core/actions/maneuver/transfers.cpp" `

@@ -88,6 +88,75 @@ fn economic_catalog_and_defaults_match_original_loaders() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual power/grid/province infrastructure loaders"]
+fn province_zoning_transport_power_and_grid_match_original_loaders() {
+    use cqsp_core::{
+        catalog::Catalog,
+        infrastructure::{InfrastructureCatalog, SurfaceInfrastructure, ZoningAllocation},
+        read_entries,
+    };
+    let data = default_data_path();
+    let catalog = Catalog::load(&data).unwrap();
+    let mut provinces = read_entries::<Value>(&data.join("data/planet_data/provinces")).unwrap();
+    provinces.retain(|row| !(row["identifier"] == "name" && row["color"] == "color"));
+    let controlled = [
+        json!({"identifier":"empty","planet":"earth","infrastructure":{},"zoning":{"undeveloped":-1,"missing":7}}),
+        json!({"identifier":"default_grid","planet":"earth","transport":0,"infrastructure":{"power_plants":[{"type":"coal_power_plant","size":2.5},{"type":"coal_power_plant","size":0}]}}),
+        json!({"identifier":"missing_grid","planet":"moon","transport":-0.5,"infrastructure":{"power_grid":"missing","power_plants":[{"type":"coal_power_plant","size":-1}]}}),
+        json!({"identifier":"wide_zoning","planet":"earth","zoning":{"commercial":4294967297_i64}}),
+    ];
+    provinces.extend(controlled);
+    // Isolate infrastructure from unrelated population, ownership, color and random amenability.
+    for province in &mut provinces {
+        let object = province.as_object_mut().unwrap();
+        object.retain(|key, _| {
+            [
+                "identifier",
+                "name",
+                "planet",
+                "infrastructure",
+                "transport",
+                "zoning",
+            ]
+            .contains(&key.as_str())
+        });
+        object.insert("country".into(), json!(""));
+        object.insert("color".into(), json!([0, 0, 0]));
+    }
+    let input = json!({"goods":read_entries::<Value>(&data.join("data/goods")).unwrap(),
+        "zoning":serde_hjson::from_str::<Value>(&fs::read_to_string(data.join("data/real_estate.hjson")).unwrap()).unwrap(),
+        "power_plants":read_entries::<Value>(&data.join("data/infrastructure/powerplant")).unwrap(),
+        "grids":read_entries::<Value>(&data.join("data/infrastructure/powergrid")).unwrap(),"bodies":["earth","moon"],"provinces":provinces});
+    let infrastructure = InfrastructureCatalog::from_definitions(
+        serde_json::from_value(input.clone()).unwrap(),
+        &catalog,
+    )
+    .unwrap();
+    let recipes: serde_json::Map<_, _> = infrastructure.power_plants.iter().map(|(identifier, recipe)| {
+        let consumption: serde_json::Map<_, _> = recipe.consumption.iter().map(|&(good, amount)| (catalog.goods[good.0].identifier.clone(), json!(amount))).collect();
+        (identifier.clone(), json!({"name":recipe.name,"capacity":recipe.maximum_production,"consumption":consumption}))
+    }).collect();
+    let grids: serde_json::Map<_, _> = infrastructure
+        .grids
+        .iter()
+        .map(|(identifier, grid)| (identifier.clone(), json!(grid.name)))
+        .collect();
+    let sites: Vec<_> = input["provinces"].as_array().unwrap().iter().map(|province| {
+        let transport = province["transport"].as_f64();
+        let value = province.get("infrastructure").cloned();
+        let site = SurfaceInfrastructure::load(transport, value, &infrastructure).unwrap();
+        let plants: Vec<_> = site.power_plants.iter().map(|plant| [plant.production, plant.maximum_production, plant.consumption.len() as f64]).collect();
+        let allocations = ZoningAllocation::load(serde_json::from_value(province.get("zoning").cloned().unwrap_or(json!({}))).unwrap(), &catalog);
+        let zoning: serde_json::Map<_, _> = allocations.into_iter().map(|(zone, area)| (zone,json!([area.allocated,area.filled]))).collect();
+        json!({"transport":[site.purchase_cost,site.improvement],"grid":site.power_grid,"plants":plants,"zoning":zoning})
+    }).collect();
+    compare(
+        &json!({"recipes":recipes,"grids":grids,"provinces":sites}),
+        &reference_output(Some("--infrastructure"), &input.to_string()),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares original time-zone loader and clock"]
 fn timezone_definitions_and_clock_match_original() {
     use cqsp_core::timezones::TimeZones;

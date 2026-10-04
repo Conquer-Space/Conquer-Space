@@ -22,7 +22,8 @@ Successful long runs establish stability, not gameplay parity.
 | Time-zone definitions / city bindings | Loader and clock reference-tested; native display | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
 | Goods / jobs / zoning / recipes / economy config | Loader reference-tested | Actual original loaders compare all 56 goods, five jobs, ten zoning definitions and 22 recipes; controlled defaults, physical units, invalid-good rejection, duplicate good lookup, first default-job tag, recipe type/tag precedence, missing resources/zoning, empty-map merge and construction-cost scaling |
-| Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; zoning, power grids, resource amenability remain |
+| Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; full economic province-loader comparison and resource amenability remain |
+| Province zoning / transport / power / grids | Bundled bindings reference-tested; native inspection | Actual power/grid/province loaders compare all 1,317 province records plus defaults, empty infrastructure, zero/negative size/cost, missing grid, unknown zoning and uint32 wrapping; plant capacity only, zero production/empty fuel and no invented city records; malformed unit/scalar conversions and nondeterministic resource amenability remain |
 | Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
@@ -211,9 +212,9 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 96 unit tests
-and 22 differential tests: 21 pass, while the explicit seeded lunar acceptance
-gate currently fails. Twenty-one live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 99 unit tests
+and 23 differential tests: 22 pass, while the explicit seeded lunar acceptance
+gate currently fails. Twenty-two live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -263,6 +264,15 @@ All-body history comparisons execute original reset/local/trade/history systems
 for two surface markets and nine inactive markets over 12 days, comparing every
 ledger and newly recorded series value. Rust's full 365-day validation still does
 not establish whole-game traversal or seed-assignment parity.
+Infrastructure comparisons execute PowerPlantLoader/PowerGridLoader/ProvinceLoader
+for all 1,317 bundled provinces plus four controlled boundary records. Other
+province fields are removed from that corpus to isolate these bindings; random
+resource amenability is excluded. Plants copy only scaled capacity, not recipe
+fuel demand; there is no original daily power-generation system to invent.
+Absent/empty infrastructure does not bind a grid. A nonempty infrastructure block
+defaults to USA's grid; undefined/non-grid entity handles are represented as no
+valid grid binding, not guessed grid ownership. Unknown plant types fail safely
+instead of asserting on an invalid EnTT component. The grid loader ignores frequency.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking
@@ -277,8 +287,8 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Thirteen verified captures include the spaceport panel, newly
-launched vehicle and market/industry/science/demographics/construction/civilization/history inspectors.
+native screen actions. Fourteen verified captures include the spaceport panel, newly
+launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
 day advancement, live label refresh, panel exclusivity and closing-frame isolation.

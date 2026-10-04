@@ -3,6 +3,7 @@ pub mod catalog;
 pub mod clock;
 pub mod economy;
 pub mod flight;
+pub mod infrastructure;
 pub mod modifiers;
 pub mod orbit;
 pub mod random;

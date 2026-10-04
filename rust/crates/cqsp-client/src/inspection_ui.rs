@@ -15,6 +15,7 @@ pub(super) enum Tab {
     Demographics,
     Industries,
     Construction,
+    Infrastructure,
     Science,
 }
 #[derive(Component, Clone, Copy)]
@@ -262,6 +263,10 @@ impl Inspector {
                         );
                         self.message.clear();
                     }
+                    Tab::Infrastructure => {
+                        let count = self.sites(game).count().div_ceil(4).max(1);
+                        cycle(&mut self.page, count, previous);
+                    }
                     Tab::Science => cycle(
                         &mut self.field,
                         game.simulation.science.fields.len(),
@@ -392,6 +397,7 @@ impl Inspector {
         match self.tab {
             Tab::Civilization => self.civilization(game),
             Tab::History => self.history(game),
+            Tab::Infrastructure => self.infrastructure(game),
             Tab::Markets => {
                 let market = self
                     .province
@@ -723,6 +729,73 @@ impl Inspector {
         text.push_str(&self.message);
         text
     }
+    fn infrastructure(&self, game: &Game) -> String {
+        let simulation = &game.simulation;
+        let mut text = format!(
+            "INFRASTRUCTURE · page {}\nOriginal power/grid records; no power-production system was implemented.\n\nPOWER-PLANT DEFINITIONS\n",
+            self.page + 1
+        );
+        for recipe in simulation.infrastructure.power_plants.values() {
+            let _ = writeln!(
+                text,
+                "{} · capacity {} W",
+                recipe.name,
+                human_number(recipe.maximum_production)
+            );
+            for &(good, amount) in &recipe.consumption {
+                let _ = writeln!(
+                    text,
+                    "  {} {}",
+                    simulation.catalog.goods[good.0].name,
+                    human_number(amount)
+                );
+            }
+        }
+        text.push_str("\nPROVINCE RECORDS\n");
+        for (_, site) in self.sites(game).skip(self.page * 4).take(4) {
+            let Some(infrastructure) = &site.infrastructure else {
+                let _ = writeln!(
+                    text,
+                    "{} · no CityInfrastructure component (original city loader)",
+                    site.name
+                );
+                continue;
+            };
+            let grid = infrastructure
+                .power_grid
+                .as_ref()
+                .map_or("No grid binding", |grid| {
+                    simulation.infrastructure.grids[grid].name.as_str()
+                });
+            let _ = writeln!(
+                text,
+                "{} · transport cost {} · improvement {}\nGrid: {}",
+                site.name,
+                human_number(infrastructure.purchase_cost),
+                human_number(infrastructure.improvement),
+                grid
+            );
+            for plant in &infrastructure.power_plants {
+                let _ = writeln!(
+                    text,
+                    "Plant capacity {} W · production {} · fuel entries {}",
+                    human_number(plant.maximum_production),
+                    human_number(plant.production),
+                    plant.consumption.len()
+                );
+            }
+            for (zone, allocation) in &site.zoning {
+                let _ = writeln!(
+                    text,
+                    "Zoning {} · allocated {} · filled {}",
+                    zone, allocation.allocated, allocation.filled
+                );
+            }
+            text.push('\n');
+        }
+        text.push_str("The source copies plant capacity but not its recipe's fuel consumption. Zoning is metadata; original factory creation does not enforce it.");
+        text
+    }
     fn governed<'a>(
         &self,
         game: &'a Game,
@@ -1001,6 +1074,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     (Tab::Demographics, "Demographics"),
                     (Tab::Industries, "Industries"),
                     (Tab::Construction, "Construction"),
+                    (Tab::Infrastructure, "Infrastructure"),
                     (Tab::Science, "Science"),
                 ] {
                     button(bar, font, Action::Tab(tab), name);
@@ -1839,6 +1913,55 @@ mod tests {
                 .resource::<Inspector>()
                 .content(app.world().resource::<Game>()),
             "Select a country first."
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn infrastructure_inspection_exposes_original_bindings_without_changing_them() -> Result<()> {
+        let mut app = app()?;
+        let game = app.world().resource::<Game>();
+        let illinois = game
+            .simulation
+            .settlements
+            .iter()
+            .position(|site| site.identifier == "illinois")
+            .unwrap();
+        let city = game
+            .simulation
+            .settlements
+            .iter()
+            .position(|site| !site.is_province())
+            .unwrap();
+        app.world_mut().resource_mut::<Game>().hovered = Some(illinois);
+        apply(&mut app, Action::Hovered);
+        apply(&mut app, Action::Tab(Tab::Infrastructure));
+        let text = app
+            .world()
+            .resource::<Inspector>()
+            .content(app.world().resource::<Game>());
+        assert!(text.contains("Illinois"));
+        assert!(text.contains("capacity 100.00M W"));
+        assert!(text.contains("allocated 100000 · filled 0"));
+        assert!(text.contains("fuel entries 0"));
+        apply(&mut app, Action::Next);
+        assert_eq!(app.world().resource::<Inspector>().page, 0);
+        app.world_mut().resource_mut::<Game>().hovered = Some(city);
+        apply(&mut app, Action::Hovered);
+        assert!(
+            app.world()
+                .resource::<Inspector>()
+                .content(app.world().resource::<Game>())
+                .contains("no CityInfrastructure component")
+        );
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[illinois]
+                .infrastructure
+                .as_ref()
+                .unwrap()
+                .power_plants[0]
+                .production,
+            0.0
         );
         Ok(())
     }

@@ -1014,7 +1014,7 @@ fn smoke_test(
     smoke.elapsed = 0.0;
     if matches!(
         smoke.stage,
-        1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21 | 23 | 25
+        1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21 | 23 | 25 | 27
     ) {
         for (text, layout) in &text_layouts {
             assert!(
@@ -1248,10 +1248,27 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "history-inspector.png",
         ),
+        26 => {
+            game.hovered = game
+                .simulation
+                .settlements
+                .iter()
+                .position(|site| site.identifier == "illinois");
+            inspector.apply(inspection_ui::Action::Hovered, &mut game);
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Infrastructure),
+                &mut game,
+            );
+        }
+        27 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "infrastructure-inspector.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 13,
-                "Smoke check: all thirteen captures must be verified"
+                smoke.captures, 14,
+                "Smoke check: all fourteen captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);
