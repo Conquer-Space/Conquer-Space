@@ -47,7 +47,7 @@ Successful long runs establish stability, not gameplay parity.
 | National subsidies / absolute taxes / labor view | Subsidy action reference-tested; native integration | 286 snapshots across all 22 recipes through actual ApplySubsidy, initial lists/stale ownership, fractional/full/raw finite amounts, future factories and repeated UI ledger erasure; native sliders, full lock, one-shot controls and national labor ledgers; global province-only taxes source-mapped and Rust-tested, not actual ImGui execution |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
-| Native replacements for scripted UI/events | Partial | Country selection and civilization/economy/history inspection are native; exploration, side menu and event infrastructure remain |
+| Native replacements for scripted UI/events | Native event queues/modals and several interfaces implemented | Country selection and civilization/economy/history inspection are native; player queue/front-only display, actionless Ok, typed tutorial effects, hover text and full-queue clearing; tutorial stays disabled. Body/province search, side-menu mappings and further interface detail remain; exploration has no registered functional workflow upstream |
 | Saves / load / settings / packaging | Metadata/default graphics reference-tested; native menus and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; CLI/native metadata browser, fresh-asset reset/tick, atomic replacement, six-hex identity separate from economy RNG; source-mapped pause menu, 15 resolution presets, fullscreen/window restoration, isolated Rust preferences. Other application settings and live native-window acceptance remain. Locked bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
 
 ## Compatibility decisions and known gaps
@@ -89,8 +89,11 @@ Successful long runs establish stability, not gameplay parity.
   clearly instead of propagating undefined entities/clamp bounds. Unit parsing
   is tested for bundled data, not every malformed legacy input.
 - `scripts/events/default.lua` defines a tutorial chain but explicitly disables
-  registration. Native event machinery is still required for supported events;
-  do not activate the disabled chain accidentally.
+  registration. Native queue/modal machinery and the two known tutorial effects
+  are implemented, but normal play does not activate the chain. Arbitrary Lua
+  callbacks are not retained. ExplorationWindow is not registered by UniverseScene;
+  SetupContent is empty, and its colonize handler only sets tooltip text. Do not
+  invent exploration/research progression to replace these unfinished source stubs.
 - Science fields preserve directed parent/adjacent links; adjacency is not made
   symmetric and repeated parents are not deduplicated. Technology fields are sets,
   difficulty is an integer (default ten), and actions remain data strings. Countries
@@ -222,7 +225,7 @@ orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
 365 market-history records per body and CSV/industry export checks. There are 119 unit tests
-and 30 passing differential tests in debug and release. Twenty-nine live tests require the reference executable.
+and 31 passing differential tests in debug and release. Thirty live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -318,7 +321,7 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Twenty-three captures include the spaceport panel, newly
+native screen actions. Twenty-five captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 The budget capture applies a national subsidy to a newly constructed player factory
 and verifies the chosen absolute tax across all provinces before rendering. Native
@@ -462,6 +465,29 @@ the primary monitor's current mode, restoring windowed dimensions/position (40,4
 on exit; ECS tests mutate Window components without opening an OS window. Live
 fullscreen, DPI, resize and remaining MSAA/splash/icon settings require acceptance.
 
+Native notifications are country-scoped, displaying only the player's queue front.
+Choosing a named action runs its typed effect before clearing the entire queue;
+actionless Ok also clears everything. Four core and three ECS tests cover invalid
+choices, effectless choices, callback-appended entries, non-player queues, exact
+bundled tutorial text, disabled registration, modal time/shortcut/closing-frame
+capture, stale actions, missing-image fallback, tooltip labels and scroll reset.
+The 48-case C++ queue corpus covers actionless/actionful, no-callback/callback,
+callback-appended entries, both known tutorial stages and queue sizes 1/2/7.
+The source's rocket image uses its actual aspect ratio at width 450, with a
+150-pixel scrolling content area. Two GPU fixtures exercise action/Ok and check
+image variation and heading pixels. Native input/modal layout are not ImGui pixel
+or phase matches. The C++ reference corpus uses actual EventQueue/Event/EventResult
+and sol callback types with source-mapped SysEvent acknowledgement branches; it
+does not execute ImGui, FunctionEvent parsing or the disabled script registration.
+Only the C++ harness links Lua; Rust's known effects are native.
+
+The current release bundle passed all 25 fresh offscreen captures from an external
+working directory, including both event dialogs and their rendered gold headings.
+The workspace has 141 unit tests; all 31 differential tests pass in both debug and
+release (30 live C++ comparisons and one recorded corpus). No native game window or
+audio device is created by these checks. The earlier 365-day packaged stability run
+uses the same simulation changes; it is not a claim of complete gameplay parity.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production system corpus to larger FSM boundary
@@ -474,7 +500,8 @@ fullscreen, DPI, resize and remaining MSAA/splash/icon settings require acceptan
 3. Extend native spaceport screens with filtering/inspection detail and dispatch
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
-   research, projects, modifier controls, event queues and market/history inspection.
+   supported project/modifier controls, body/province search, side-menu mappings
+   and further market/history inspection. Distinguish source stubs from implemented workflows.
 5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.
    Full parity requires documented scenario-level comparisons, not file counts.

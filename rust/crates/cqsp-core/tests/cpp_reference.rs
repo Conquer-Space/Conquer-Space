@@ -362,6 +362,65 @@ fn graphics_defaults_match_original_client_options() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; original EventQueue/callback types with source-mapped SysEvent acknowledgement"]
+fn event_queues_match_original_components_callbacks_and_clear_all_branch() {
+    use cqsp_core::events::{Choice, Effect, EventQueue, Notification};
+    let mut input = Vec::new();
+    let mut expected = Vec::new();
+    for queued in [1, 2, 7] {
+        for actions in [false, true] {
+            for callback in [false, true] {
+                for append in [false, true] {
+                    for effect in [1, 2] {
+                        let mut queue = EventQueue::default();
+                        let event = Notification {
+                            title: "Native fixture".into(),
+                            content: "Original queue and callback behavior".into(),
+                            image: "core:rocket-event".into(),
+                            choices: if actions {
+                                vec![Choice {
+                                    name: "Begin!".into(),
+                                    tooltip: "Fixture action".into(),
+                                    effect: callback.then_some(Effect::TutorialStage(effect)),
+                                }]
+                            } else {
+                                vec![]
+                            },
+                        };
+                        for _ in 0..queued {
+                            queue.push(event.clone());
+                        }
+                        let before = json!([queue.len(), event.choices.len()]);
+                        let mut stage = 7;
+                        let mut callback_size = 0;
+                        queue
+                            .choose(
+                                actions.then_some(0),
+                                |Effect::TutorialStage(value), queue| {
+                                    stage = value;
+                                    if append {
+                                        queue.push(event);
+                                        callback_size = queue.len();
+                                    }
+                                },
+                            )
+                            .unwrap();
+                        input.push(json!({"queued":queued,"actions":actions,"callback":callback,"append":append,"effect":effect,"initial":7}));
+                        expected.push(
+                            json!({"before":before,"after":[queue.len(),stage,callback_size]}),
+                        );
+                    }
+                }
+            }
+        }
+    }
+    assert_eq!(
+        reference_output(Some("--event-queues"), &json!(input).to_string()),
+        json!(expected)
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual ApplySubsidy and UI ledger deletion"]
 fn national_recipe_subsidies_match_original_action_and_removal() {
     use cqsp_core::catalog::RecipeId;

@@ -62,6 +62,7 @@ pub(super) fn update(
         && !inspector.open
         && saves.is_none_or(|saves| !saves.open)
         && menu.is_none_or(|menu| !menu.is_open())
+        && super::event_ui::pending(&game).is_none()
     {
         Display::Flex
     } else {

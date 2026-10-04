@@ -1879,6 +1879,7 @@ pub(super) fn update(
                     && menu.as_ref().is_none_or(|menu| !menu.is_open())
             }
         };
+        let shown = shown && super::event_ui::pending(&game).is_none();
         let display = if shown { Display::Flex } else { Display::None };
         if node.display != display {
             node.display = display;
@@ -1962,27 +1963,34 @@ pub(crate) mod tests {
                 Update,
                 (
                     (
-                        super::super::application_ui::controls,
-                        super::super::application_ui::scroll,
-                        super::super::save_ui::controls.run_if(super::super::menu_input),
-                        super::super::construction_ui::controls
-                            .run_if(super::super::construction_input),
-                        super::super::construction_ui::scroll
-                            .run_if(super::super::construction_input),
+                        super::super::event_ui::controls,
+                        super::super::event_ui::scroll,
+                        (
+                            super::super::application_ui::controls,
+                            super::super::application_ui::scroll,
+                            super::super::save_ui::controls.run_if(super::super::menu_input),
+                            super::super::construction_ui::controls
+                                .run_if(super::super::construction_input),
+                            super::super::construction_ui::scroll
+                                .run_if(super::super::construction_input),
+                            controls.run_if(super::super::application_input),
+                            chart_controls.run_if(super::super::application_input),
+                            pie_controls.run_if(super::super::application_input),
+                            budget::controls.run_if(super::super::application_input),
+                            spaceport_ui::controls.run_if(super::super::application_input),
+                            super::super::selection_controls.run_if(super::super::world_input),
+                            scroll.run_if(super::super::application_input),
+                            super::super::save_ui::scroll.run_if(super::super::menu_input),
+                        )
+                            .chain()
+                            .run_if(super::super::event_ui::input_available),
                     )
                         .chain(),
-                    controls.run_if(super::super::application_input),
-                    chart_controls.run_if(super::super::application_input),
-                    pie_controls.run_if(super::super::application_input),
-                    budget::controls.run_if(super::super::application_input),
-                    spaceport_ui::controls.run_if(super::super::application_input),
                     super::super::simulation_controls,
-                    super::super::selection_controls.run_if(super::super::world_input),
-                    scroll.run_if(super::super::application_input),
-                    super::super::save_ui::scroll.run_if(super::super::menu_input),
                     (
                         super::super::save_ui::update,
                         super::super::application_ui::update,
+                        super::super::event_ui::update,
                     )
                         .chain(),
                     spaceport_ui::update,

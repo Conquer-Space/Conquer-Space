@@ -325,6 +325,7 @@ pub(super) fn update(
             }
             Panel::Overlay => saves.open,
         };
+        let shown = shown && super::event_ui::pending(&game).is_none();
         let display = if shown { Display::Flex } else { Display::None };
         if node.display != display {
             node.display = display;

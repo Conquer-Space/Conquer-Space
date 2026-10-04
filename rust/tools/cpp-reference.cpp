@@ -20,6 +20,7 @@
 #include "client/components/clientctx.h"
 #include "engine/clientoptions.h"
 #include "core/components/colony.h"
+#include "core/components/event.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
 #include "core/components/name.h"
@@ -1521,7 +1522,57 @@ void PrintRandom() {
     WriteJson(result);
 }
 
+void PrintEventQueues() {
+    // Actual original component/callback types; selection and clear copy SysEvent::DoUI's branch.
+    // This does not execute ImGui, FunctionEvent, or activate the disabled tutorial.
+    Hjson::Value output(Hjson::Type::Vector);
+    auto input = ReadInput();
+    for (int fixture_index = 0; fixture_index < input.size(); ++fixture_index) {
+        auto fixture = input[fixture_index];
+        cqsp::core::event::EventQueue queue;
+        sol::state script;
+        script.open_libraries(sol::lib::base);
+        script["stage"] = static_cast<int>(fixture["initial"]);
+        int callback_size = 0;
+        script["append"] = [&] {
+            queue.events.push_back(std::make_shared<cqsp::core::event::Event>());
+            callback_size = static_cast<int>(queue.events.size());
+        };
+        script.script("function run_action(event) stage = event.stage; if event.append then append() end end");
+        auto event = std::make_shared<cqsp::core::event::Event>();
+        event->title = "Native fixture";
+        event->content = "Original queue and callback behavior";
+        event->image = "core:rocket-event";
+        event->table = script.create_table_with("stage", static_cast<int>(fixture["effect"]), "append", static_cast<bool>(fixture["append"]));
+        if (static_cast<bool>(fixture["actions"])) {
+            auto choice = std::make_shared<cqsp::core::event::EventResult>();
+            choice->name = "Begin!";
+            choice->tooltip = "Fixture action";
+            choice->has_event = static_cast<bool>(fixture["callback"]);
+            choice->action = script["run_action"];
+            event->actions.push_back(choice);
+        }
+        queue.events.push_back(event);
+        for (int i = 1; i < static_cast<int>(fixture["queued"]); ++i) queue.events.push_back(event);
+        Hjson::Value row;
+        row["before"] = Numbers({static_cast<double>(queue.events.size()), static_cast<double>(event->actions.size())});
+        if (event->actions.empty()) {
+            queue.events.clear(); // Original actionless Ok branch.
+        } else {
+            auto choice = event->actions.front();
+            if (choice->has_event) {
+                sol::protected_function_result result = choice->action(event->table);
+                if (!result.valid()) throw std::runtime_error("Event fixture callback failed");
+            }
+            queue.events.clear(); // Includes events appended by the chosen callback.
+        }
+        row["after"] = Numbers({static_cast<double>(queue.events.size()), static_cast<double>(script["stage"].get<int>()), static_cast<double>(callback_size)});
+        output.push_back(row);
+    }
+    WriteJson(output);
+}
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--event-queues") { PrintEventQueues(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--graphics-defaults") {
         cqsp::client::ClientOptions options;
         const auto defaults = options.GetDefaultOptions();

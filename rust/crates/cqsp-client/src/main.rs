@@ -30,6 +30,7 @@ use std::{f32::consts::PI, path::PathBuf, time::Duration};
 mod application_ui;
 mod chart;
 mod construction_ui;
+mod event_ui;
 mod inspection_ui;
 mod pie;
 mod playback_ui;
@@ -118,6 +119,7 @@ struct SmokeTarget(Handle<Image>);
 #[derive(Resource)]
 struct InitialAssets {
     terrain: Image,
+    event: Image,
     font: Font,
 }
 
@@ -256,6 +258,7 @@ fn main() -> Result<()> {
         .context("Loading Earth terrain")?
         .to_rgba8();
     let terrain_image = rgba_image(terrain.width(), terrain.height(), terrain.into_raw());
+    let event_image = event_ui::image(&data)?;
     let font = Font::from_bytes(
         std::fs::read(data.join("gfx/fonts/Roboto-Regular.ttf"))
             .context("Loading the bundled UI font")?,
@@ -314,6 +317,7 @@ fn main() -> Result<()> {
         .insert_resource(saves)
         .insert_resource(menu)
         .init_resource::<construction_ui::ConstructionTool>()
+        .init_resource::<event_ui::Events>()
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
@@ -322,6 +326,7 @@ fn main() -> Result<()> {
         })
         .insert_resource(InitialAssets {
             terrain: terrain_image,
+            event: event_image,
             font,
         })
         .add_systems(Startup, (setup, system_view::setup).chain())
@@ -329,26 +334,38 @@ fn main() -> Result<()> {
             Update,
             (
                 (
-                    application_ui::controls.run_if(interactive),
-                    application_ui::scroll.run_if(interactive),
-                    save_ui::controls.run_if(menu_input),
-                    save_ui::scroll.run_if(menu_input),
-                    construction_ui::controls.run_if(construction_input),
-                    construction_ui::scroll.run_if(construction_input),
-                    inspection_ui::controls.run_if(application_input),
-                    inspection_ui::chart_controls.run_if(application_input),
-                    inspection_ui::pie_controls.run_if(application_input),
-                    inspection_ui::budget::controls.run_if(application_input),
+                    event_ui::controls.run_if(interactive),
+                    event_ui::scroll.run_if(interactive),
+                    (
+                        application_ui::controls.run_if(interactive),
+                        application_ui::scroll.run_if(interactive),
+                        save_ui::controls.run_if(menu_input),
+                        save_ui::scroll.run_if(menu_input),
+                        construction_ui::controls.run_if(construction_input),
+                        construction_ui::scroll.run_if(construction_input),
+                        inspection_ui::controls.run_if(application_input),
+                        inspection_ui::chart_controls.run_if(application_input),
+                        inspection_ui::pie_controls.run_if(application_input),
+                        inspection_ui::budget::controls.run_if(application_input),
+                    )
+                        .chain()
+                        .run_if(event_ui::input_available),
                 )
                     .chain(),
-                inspection_ui::scroll.run_if(application_input),
-                spaceport_ui::controls.run_if(application_input),
-                spaceport_ui::scroll.run_if(application_input),
-                camera_controls.run_if(earth_controls),
-                pick_province.run_if(earth_controls),
-                selection_controls.run_if(world_input),
+                (
+                    inspection_ui::scroll.run_if(application_input),
+                    spaceport_ui::controls.run_if(application_input),
+                    spaceport_ui::scroll.run_if(application_input),
+                    camera_controls.run_if(earth_controls),
+                    pick_province.run_if(earth_controls),
+                    selection_controls.run_if(world_input),
+                )
+                    .chain()
+                    .run_if(event_ui::input_available),
                 simulation_controls.run_if(interactive),
-                system_view::controls.run_if(world_input),
+                system_view::controls
+                    .run_if(world_input)
+                    .run_if(event_ui::input_available),
                 system_view::sync_ships,
                 system_view::update,
                 update_globe,
@@ -359,6 +376,7 @@ fn main() -> Result<()> {
                     save_ui::update,
                     construction_ui::update,
                     application_ui::update,
+                    event_ui::update,
                 )
                     .chain(),
                 spaceport_ui::update,
@@ -490,6 +508,14 @@ fn setup(
         &game.simulation.catalog.recipes,
     );
     application_ui::spawn(&mut commands, camera, &font);
+    let event_image = images.add(initial.event.clone());
+    event_ui::spawn(
+        &mut commands,
+        camera,
+        &font,
+        &event_image,
+        initial.event.height() as f32 / initial.event.width() as f32,
+    );
     inspection_ui::spawn(
         &mut commands,
         camera,
@@ -745,8 +771,12 @@ fn simulation_controls(
     saves: Option<Res<save_ui::Saves>>,
     menu: Option<Res<application_ui::Menu>>,
     construction: Option<Res<construction_ui::ConstructionTool>>,
+    events: Option<Res<event_ui::Events>>,
 ) {
-    if game.session.player_country.is_none() {
+    if game.session.player_country.is_none()
+        || event_ui::pending(&game).is_some()
+        || events.is_some_and(|events| events.capture_input)
+    {
         return;
     }
     if game.simulation.date == StarDate::default() {
@@ -970,6 +1000,7 @@ fn verify_capture(
     saves: Res<save_ui::Saves>,
     construction: Res<construction_ui::ConstructionTool>,
     menu: Res<application_ui::Menu>,
+    event_images: Query<(&ComputedNode, &UiGlobalTransform), With<event_ui::EventImage>>,
 ) {
     let pixels = capture
         .image
@@ -984,6 +1015,7 @@ fn verify_capture(
     let mut pause_title = false;
     let mut graphics_title = false;
     let mut recipe_title = false;
+    let mut event_heading = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -1012,18 +1044,65 @@ fn verify_capture(
             text.0
         );
         checked += 1;
+        if text.0 == "EVENT" {
+            let mut gold = 0;
+            for y in min.y..max.y {
+                for x in min.x..max.x {
+                    let [r, g, b] = pixels.get_pixel(x, y).0;
+                    gold += usize::from(r > 160 && g > 100 && (b as f32) < r as f32 * 0.8);
+                }
+            }
+            assert!(gold > 20, "Smoke check: event heading glyphs missing");
+        }
         inspection_title |= text.0.starts_with("NATIVE INSPECTION");
         save_title |= text.0.starts_with("SAVE / LOAD · METADATA ONLY");
         painting_label |= text.0.starts_with("PAINTING · Esc cancels");
         pause_title |= text.0 == "PAUSE MENU";
         graphics_title |= text.0 == "DISPLAY OPTIONS · SILENT";
         recipe_title |= text.0 == "SEARCH CONSTRUCTION RECIPES";
+        event_heading |= text.0 == "EVENT";
     }
     assert!(
-        checked >= 8,
+        checked
+            >= if event_ui::pending(&game).is_some() {
+                4
+            } else {
+                8
+            },
         "Smoke check: expected visible text nodes, checked {checked}"
     );
     println!("SMOKE: verified rendered pixels for {checked} text blocks.");
+    if let Some(event) = event_ui::pending(&game) {
+        assert!(event_heading, "Smoke check: event header missing");
+        if event.image == "core:rocket-event" {
+            let (node, transform) = event_images.single().expect("Native event image");
+            assert!(
+                (node.size().x - 450.0).abs() < 1.0,
+                "Original event image width must be 450 pixels"
+            );
+            let center = transform.affine().translation;
+            let min = (center - node.size() / 2.0).max(Vec2::ZERO).as_uvec2();
+            let max = (center + node.size() / 2.0)
+                .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
+                .as_uvec2();
+            let mut colors = std::collections::HashSet::new();
+            for y in min.y..max.y {
+                for x in min.x..max.x {
+                    colors.insert(pixels.get_pixel(x, y).0);
+                }
+            }
+            assert!(
+                colors.len() > 500,
+                "Smoke check: original event texture not rendered"
+            );
+            println!(
+                "SMOKE: verified original event image ({} colors).",
+                colors.len()
+            );
+        }
+        smoke.captures += 1;
+        return;
+    }
     assert!(
         !saves.open || save_title,
         "Smoke check: metadata browser header clipped away"
@@ -1273,6 +1352,7 @@ fn smoke_test(
     mut saves: ResMut<save_ui::Saves>,
     mut construction: ResMut<construction_ui::ConstructionTool>,
     mut menu: ResMut<application_ui::Menu>,
+    mut events: ResMut<event_ui::Events>,
 ) {
     if !smoke.enabled {
         return;
@@ -1657,6 +1737,49 @@ fn smoke_test(
             construction.apply(construction_ui::Action::SelectRecipe(recipe), &game);
             assert!(!construction.searching);
             construction.apply(construction_ui::Action::Toggle, &game);
+            let country = game.session.player_country.expect("Smoke event player");
+            game.simulation
+                .push_event(
+                    country,
+                    cqsp_core::events::Notification::tutorial(0).unwrap(),
+                )
+                .expect("Queue explicit event fixture");
+            game.simulation
+                .push_event(
+                    country,
+                    cqsp_core::events::Notification::tutorial(1).unwrap(),
+                )
+                .expect("Queue discarded second fixture");
+        }
+        41 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "event-choice.png",
+        ),
+        42 => {
+            let tick = game.simulation.date.tick();
+            events
+                .choose(&mut game, Some(0))
+                .expect("Resolve native event effect");
+            assert_eq!(game.simulation.tutorial_stage, 1);
+            assert!(event_ui::pending(&game).is_none());
+            assert_eq!(game.simulation.date.tick(), tick);
+            let country = game.session.player_country.expect("Smoke event player");
+            game.simulation.push_event(country, cqsp_core::events::Notification {
+                title: "Native queue notice".into(), content: "This explicit smoke fixture has no actions. Ok clears the entire player queue, matching upstream. The disabled tutorial is not registered during normal play.".into(),
+                image: "missing-fixture-image".into(), choices: vec![],
+            }).expect("Queue actionless fixture");
+        }
+        43 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "event-notice.png",
+        ),
+        44 => {
+            events
+                .choose(&mut game, None)
+                .expect("Acknowledge actionless native event");
+            assert!(event_ui::pending(&game).is_none());
             let tick = game.simulation.date.tick();
             menu.apply(application_ui::Action::OpenPause)
                 .expect("Open smoke pause menu");
@@ -1665,12 +1788,12 @@ fn smoke_test(
             assert_eq!(game.simulation.date.tick(), tick);
             assert!(game.session.player_country.is_some());
         }
-        41 => capture_smoke(
+        45 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "pause-menu.png",
         ),
-        42 => {
+        46 => {
             menu.apply(application_ui::Action::OpenGraphics)
                 .expect("Open smoke display options");
             menu.apply(application_ui::Action::Next)
@@ -1685,12 +1808,12 @@ fn smoke_test(
             );
             assert!(menu.settings.full_screen);
         }
-        43 => capture_smoke(
+        47 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "display-options.png",
         ),
-        44 => {
+        48 => {
             menu.apply(application_ui::Action::CloseGraphics)
                 .expect("Return to pause");
             assert_eq!(menu.screen, application_ui::Screen::Pause);
@@ -1715,12 +1838,12 @@ fn smoke_test(
                 )
                 .expect("Save isolated smoke metadata");
         }
-        45 => capture_smoke(
+        49 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "metadata-browser.png",
         ),
-        46 => {
+        50 => {
             let uuid = game.simulation.uuid.clone();
             let tick = game.simulation.date.tick();
             saves
@@ -1740,8 +1863,8 @@ fn smoke_test(
         }
         _ => {
             assert_eq!(
-                smoke.captures, 23,
-                "Smoke check: all twenty-three captures must be verified"
+                smoke.captures, 25,
+                "Smoke check: all twenty-five captures must be verified"
             );
             assert!(!construction.armed, "Load must cancel stale painting");
             println!("SMOKE: complete.");

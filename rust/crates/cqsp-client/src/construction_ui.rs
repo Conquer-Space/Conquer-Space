@@ -445,7 +445,9 @@ pub(super) fn update(
         && !ports.open
         && !inspector.open
         && saves.is_none_or(|saves| !saves.open);
-    let shown = shown && menu.is_none_or(|menu| !menu.is_open());
+    let shown = shown
+        && menu.is_none_or(|menu| !menu.is_open())
+        && super::event_ui::pending(&game).is_none();
     for (entity, panel, mut node) in &mut panels {
         let visible = shown && (matches!(panel, Panel::Toolbar) || tool.searching);
         let display = if visible {

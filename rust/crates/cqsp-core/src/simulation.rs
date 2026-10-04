@@ -8,6 +8,7 @@ use crate::{
         industry::{Construction, ConstructionSector, Industry, IndustryEntry},
         population::{Population, PopulationEntry},
     },
+    events::{Effect, EventQueue, Notification},
     infrastructure::{InfrastructureCatalog, SurfaceInfrastructure, ZoningAllocation},
     modifiers::ModifierCatalog,
     random::LegacyRandom,
@@ -96,6 +97,7 @@ pub struct CountryEconomy {
     pub missions: Vec<MissionId>,
     pub research: i32,
     pub subsidies: BTreeMap<RecipeId, f64>,
+    pub events: EventQueue,
 }
 
 #[derive(Default, Debug, Clone, Serialize)]
@@ -111,6 +113,7 @@ pub struct Summary {
 pub struct Simulation {
     pub date: StarDate,
     pub uuid: String,
+    pub tutorial_stage: u8,
     pub solar_system: SolarSystem,
     pub catalog: Catalog,
     pub infrastructure: InfrastructureCatalog,
@@ -362,6 +365,7 @@ impl Simulation {
         Ok(Self {
             date: StarDate::default(),
             uuid: crate::save::new_uuid(),
+            tutorial_stage: 0,
             solar_system,
             catalog,
             infrastructure,
@@ -382,6 +386,22 @@ impl Simulation {
         })
     }
 
+    pub fn push_event(&mut self, country: usize, event: Notification) -> Result<()> {
+        self.countries
+            .get_mut(country)
+            .context("Unknown event country")?
+            .events
+            .push(event);
+        Ok(())
+    }
+    pub fn resolve_event(&mut self, country: usize, choice: Option<usize>) -> Result<()> {
+        let stage = &mut self.tutorial_stage;
+        self.countries
+            .get_mut(country)
+            .context("Unknown event country")?
+            .events
+            .choose(choice, |Effect::TutorialStage(value), _| *stage = value)
+    }
     pub fn tick(&mut self) {
         self.date.advance();
         if self.date.due(DAY) {
@@ -1228,6 +1248,32 @@ mod tests {
             assert_eq!(a.market.price, b.market.price);
             assert_eq!(a.market.trade, b.market.trade);
         }
+        Ok(())
+    }
+    #[test]
+    fn events_are_country_scoped_and_tutorial_is_not_automatically_registered() -> Result<()> {
+        let mut simulation = load(42)?;
+        simulation.advance_day();
+        assert!(
+            simulation
+                .countries
+                .iter()
+                .all(|country| country.events.is_empty())
+        );
+        assert_eq!(simulation.tutorial_stage, 0);
+        let event = Notification::tutorial(0).unwrap();
+        assert!(simulation.push_event(usize::MAX, event.clone()).is_err());
+        simulation.push_event(0, event)?;
+        simulation.push_event(1, Notification::tutorial(1).unwrap())?;
+        assert!(simulation.resolve_event(0, Some(1)).is_err());
+        assert_eq!(simulation.countries[0].events.len(), 1);
+        simulation.resolve_event(0, Some(0))?;
+        assert_eq!(simulation.tutorial_stage, 1);
+        assert!(simulation.countries[0].events.is_empty());
+        assert_eq!(simulation.countries[1].events.len(), 1);
+        simulation.resolve_event(1, Some(0))?;
+        assert_eq!(simulation.tutorial_stage, 2);
+        assert!(simulation.countries[1].events.is_empty());
         Ok(())
     }
 }

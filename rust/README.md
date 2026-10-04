@@ -81,6 +81,14 @@ Changes preview immediately; Save preferences explicitly persists them to
 No audio preferences/backend or original C++ settings files are used. MSAA, splash
 and icon preferences and live fullscreen/DPI acceptance remain unfinished.
 
+Player event queues now have native modals with the original 450-pixel rocket image,
+scrolling content, action hover text and actionless Ok. Acknowledging executes its
+native effect and clears the whole queue, including notifications appended by that
+effect. Pending events halt time and capture shortcuts without changing playback.
+Unknown images use a visible fallback; stale/invalid buttons cannot clear another
+event. The bundled tutorial remains disabled as upstream intended; smoke explicitly
+queues test fixtures. Known tutorial effects are native, not arbitrary Lua callbacks.
+
 Right-drag or arrow keys orbit the globe; wheel zooms; left-click selects a province's
 country. Tab/Shift+Tab cycle countries (including ones too small to click on the 2K map).
 Enter or the sidebar button starts/returns to selection; Escape opens the pause menu.
@@ -224,15 +232,18 @@ and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.
 `target/budget-inspector.png`, `target/construction-painting.png`, `target/construction-search.png`,
 `target/pause-menu.png`, `target/display-options.png` and
 `target/metadata-browser.png`, then loads the fixture and checks fresh-session reset.
+It also captures `target/event-choice.png` and `target/event-notice.png`, checking
+the original texture, action/Ok behavior and full-queue clearing without enabling
+the disabled tutorial in normal play.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-three completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-five completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all twenty-three PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all twenty-five PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.

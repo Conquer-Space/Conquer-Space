@@ -2,6 +2,7 @@
 pub mod catalog;
 pub mod clock;
 pub mod economy;
+pub mod events;
 pub mod flight;
 pub mod infrastructure;
 pub mod modifiers;
