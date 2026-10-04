@@ -26,10 +26,10 @@ Successful long runs establish stability, not gameplay parity.
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
 | Labor distribution / labor market | Implemented | Weekly hours, integer-truncated drift, daily job demand; entity traversal order and invalid conversions need differential review |
 | Industry state machine / production / construction | Reference-tested controlled system scenario | Actual SysProduction: nine cases spanning all eight states, 12 steps, injected noise, shortage interruption, construction completion, taxes and partial/full subsidies; broader recipe/transition corpus and original RNG sequence remain |
-| Local markets / shortages / planetary trade | Implemented | Price caps, shortages, retained trade, imports/exports, Earth/Moon markets and spaceport coupling; original system harness remains |
+| Local markets / shortages / planetary trade | Reference-tested controlled system scenario | Actual SysMarket/SysPlanetaryTrade/MarketReset: three provinces, 12 daily steps, retained imports/exports, configurable local versus hard-coded planetary pricing, zero demand, shortage recovery, labor access and port depletion; whole-economy traversal remains |
 | Population history | Controlled scenario reference-tested | Population/SOL/employment summaries match actual original daily history; legacy graph UI remains |
 | Market history / CSV / industry export | Implemented for Earth | Daily planetary snapshots, original CSV column schema and production-unit export fields; CSV numeric/date formatting and empty-zone omission are not byte-identical, inspection graphs remain |
-| Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen; manufacturing reference-tested | Actual SysLaunchVehicleProduction: zero/day/day+one/90-day boundaries, template guard and invalid province; trade whole-system differential tests remain |
+| Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen; manufacturing/order systems reference-tested | Actual SysLaunchVehicleProduction boundaries plus SysInterplanetaryTrade: three markets, two ports each, three daily allocations, repeated orders, shortages and multiple sellers; dispatch/combined-system corpus remains |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
 | Spacecraft movement / trigger commands | Implemented; lunar delivery reference-tested | Actual original SysOrbit/SysSpacePort scenario compares sampled states, queues, landing/unload ticks and colony core/stage; broader SOI, return flights and command boundary corpus remain |
@@ -151,12 +151,18 @@ orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
 365 market-history records and CSV/industry export checks. There are 67 unit tests
-plus nine differential tests (eight live tests require the reference executable).
+plus 11 differential tests (ten live tests require the reference executable).
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
 invalid-province/template guards. These are controlled subsystem scenarios, not a
 seed-identical run of the entire original economy.
+Market comparisons include every ledger and deficit field before and after planetary
+trade, using non-default local pricing/access and depleted port stocks. Planetary
+ratios remain unchanged and supplied resources clear, matching the source. The
+interplanetary fixture controls which port EnTT traverses first; it does not prove
+equivalence of every possible registry order. Numeric reference output bypasses
+the legacy HJSON encoder's invalid scientific `.0` suffix without changing values.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking
@@ -185,12 +191,12 @@ which do not create native windows.
 ## Next acceptance gates
 
 1. Extend the existing population/production system corpus to all recipes, larger
-   FSM boundary grids, labor/local/planetary/interplanetary trade and combined
-   tick ordering. Controlled shortage interruption and taxes/subsidies are covered.
+   FSM boundary grids, labor and combined tick ordering. Controlled shortage
+   interruption, taxes/subsidies and local/planetary/interplanetary trade are covered.
 2. Extend the spacecraft system harness to return flights, SOI edge ordering,
    different launch epochs and the near-circular post-burn trajectory.
-3. Extend native spaceport screens with filtering/inspection detail and differential
-   manufacturing/trade boundaries; lunar province delivery is now reference-tested.
+3. Extend native spaceport screens with filtering/inspection detail and dispatch
+   boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
    research, projects, modifier controls, event queues and market/history inspection.
 5. Verify saves/reloads, application settings, asset packaging and input/UI flows.

@@ -134,6 +134,9 @@ The reference suite now also runs the original population/reset, industry produc
 and launch-vehicle production systems. Controlled daily scenarios cover debt/wages,
 all eight industry states, interrupted construction, taxes/subsidies and manufacturing
 completion boundaries. This is subsystem evidence, not whole-economy seed parity.
+Local/planetary markets and interplanetary order resolution also run against the
+original systems, including retained trade, shortages, non-default pricing/access,
+port stockpile depletion, repeated orders and first-port allocation.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.

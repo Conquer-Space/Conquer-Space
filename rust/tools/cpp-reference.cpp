@@ -39,6 +39,8 @@
 #include "core/systems/economy/sysmarketreset.h"
 #include "core/systems/economy/syspopulation.h"
 #include "core/systems/economy/sysproduction.h"
+#include "core/systems/economy/sysmarket.h"
+#include "core/systems/economy/sysplanetarytrade.h"
 #include "core/systems/movement/sysorbit.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/null_sink.h>
@@ -48,15 +50,46 @@ void PrintVector(const glm::dvec3& vector);
 Hjson::Value ReadInput() {
     return Hjson::Unmarshal(std::string(std::istreambuf_iterator<char>(std::cin), {}));
 }
+Hjson::Value Number(double value) {
+    if (std::isfinite(value)) return value;
+    return std::isnan(value) ? "nan" : value > 0 ? "inf" : "-inf";
+}
 Hjson::Value Numbers(std::initializer_list<double> values) {
     Hjson::Value row(Hjson::Type::Vector);
-    for (double value : values) row.push_back(value);
+    for (double value : values) row.push_back(Number(value));
     return row;
 }
 Hjson::Value LedgerValues(const ResourceLedger& ledger, int count) {
     Hjson::Value row(Hjson::Type::Vector);
-    for (int good = 0; good < count; ++good) row.push_back(ledger[ToGoodEntity(good)]);
+    for (int good = 0; good < count; ++good) row.push_back(Number(ledger[ToGoodEntity(good)]));
     return row;
+}
+
+// Legacy Value::to_string appends .0 after scientific exponents (e.g. 1e-05.0).
+// Encode numeric output with the stream's 17-digit precision; leave upstream untouched.
+void WriteJson(const Hjson::Value& value) {
+    switch (value.type()) {
+        case Hjson::Type::Double: std::cout << value.to_double(); break;
+        case Hjson::Type::Int64: std::cout << value.to_int64(); break;
+        case Hjson::Type::Vector:
+            std::cout << '[';
+            for (int index = 0; index < value.size(); ++index) {
+                if (index > 0) std::cout << ',';
+                WriteJson(value[index]);
+            }
+            std::cout << ']';
+            break;
+        case Hjson::Type::Map:
+            std::cout << '{';
+            for (int index = 0; index < value.size(); ++index) {
+                if (index > 0) std::cout << ',';
+                std::cout << Hjson::MarshalJson(Hjson::Value(value.key(index))) << ':';
+                WriteJson(value[index]);
+            }
+            std::cout << '}';
+            break;
+        default: std::cout << Hjson::MarshalJson(value); break;
+    }
 }
 
 // Suppress the reference Game's logging side effects, not its simulation behavior.
@@ -74,6 +107,148 @@ class ControlledRandom : public cqsp::core::util::IRandom {
     int GetRandomNormalInt(double mean, double sd) override { return static_cast<int>(std::round(GetRandomNormal(mean, sd))); }
     double GetRandomNormal(double mean, double sd) override { return mean + sd * 0.4; }
 };
+
+void RegisterGoods(cqsp::core::Universe& universe, const Hjson::Value& goods) {
+    for (int index = 0; index < goods.size(); ++index) {
+        auto entity = universe.create();
+        universe.good_vector.push_back(entity);
+        universe.good_map[entity] = ToGoodEntity(index);
+        universe.emplace<Price>(entity, goods[index][0].to_double());
+        if (goods[index][1].to_double() == 1) universe.emplace<LaborGood>(entity);
+    }
+}
+
+Hjson::Value MarketValues(const Market& market, int count) {
+    Hjson::Value value(Hjson::Type::Map);
+    value["price"] = LedgerValues(market.price, count);
+    value["supply"] = LedgerValues(market.supply, count);
+    value["demand"] = LedgerValues(market.demand, count);
+    value["ratio"] = LedgerValues(market.sd_ratio, count);
+    value["trade"] = LedgerValues(market.trade, count);
+    value["access"] = LedgerValues(market.market_access, count);
+    value["shortages"] = LedgerValues(market.chronic_shortages, count);
+    value["production"] = LedgerValues(market.production, count);
+    value["consumption"] = LedgerValues(market.consumption, count);
+    value["totals"] = Numbers({market.GDP, market.deficit, market.last_deficit, market.trade_deficit, market.last_trade_deficit});
+    return value;
+}
+
+void PrintMarkets() {
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    RegisterGoods(universe, input["goods"]);
+    const int count = universe.GoodCount();
+    auto& config = universe.economy_config.market_config;
+    config.base_price_deviation = input["config"][0].to_double();
+    config.shortage_level = input["config"][1].to_double();
+    config.default_market_access = input["config"][2].to_double();
+    auto planet = universe.create();
+    universe.emplace<Market>(planet, count);
+    universe.emplace<PlanetaryMarket>(planet, count);
+    universe.emplace<Settlements>(planet);
+    std::vector<entt::entity> provinces;
+    for (int index = 0; index < input["provinces"].size(); ++index) {
+        auto entity = universe.create(); provinces.push_back(entity);
+        universe.emplace<Market>(entity, count);
+        universe.get<Settlements>(planet).provinces.push_back(entity);
+    }
+    auto& port = universe.emplace<infrastructure::SpacePort>(provinces[0], count);
+    for (int good = 0; good < count; ++good) {
+        port.output_resources[ToGoodEntity(good)] = input["port"][0][good].to_double();
+        port.output_resources_rate[ToGoodEntity(good)] = input["port"][1][good].to_double();
+        port.demanded_resources_rate[ToGoodEntity(good)] = input["port"][2][good].to_double();
+    }
+    cqsp::core::systems::SysMarket local(game);
+    cqsp::core::systems::SysPlanetaryTrade planetary(game);
+    cqsp::core::systems::SysMarketReset reset(game);
+    local.Init(); planetary.Init();
+    Hjson::Value output(Hjson::Type::Map), initial(Hjson::Type::Vector), days(Hjson::Type::Vector);
+    for (auto entity : provinces) initial.push_back(MarketValues(universe.get<Market>(entity), count));
+    initial.push_back(MarketValues(universe.get<Market>(planet), count));
+    output["initial"] = initial;
+    for (int index = 0; index < provinces.size(); ++index) {
+        auto& market = universe.get<Market>(provinces[index]);
+        for (int good = 0; good < count; ++good) {
+            market.trade[ToGoodEntity(good)] = input["provinces"][index][0][good].to_double();
+            market.chronic_shortages[ToGoodEntity(good)] = input["provinces"][index][1][good].to_double();
+            market.market_access[ToGoodEntity(good)] = input["provinces"][index][2][good].to_double();
+        }
+    }
+    for (int day = 0; day < input["production"].size(); ++day) {
+        reset.DoSystem();
+        for (int index = 0; index < provinces.size(); ++index) {
+            auto& market = universe.get<Market>(provinces[index]);
+            market.GDP = 100.0 * index + day;
+            for (int good = 0; good < count; ++good) {
+                market.production[ToGoodEntity(good)] = input["production"][day][index][good].to_double();
+                market.consumption[ToGoodEntity(good)] = input["consumption"][day][index][good].to_double();
+            }
+        }
+        local.DoSystem();
+        Hjson::Value result(Hjson::Type::Map), before(Hjson::Type::Vector), after(Hjson::Type::Vector);
+        for (auto entity : provinces) before.push_back(MarketValues(universe.get<Market>(entity), count));
+        result["local"] = before;
+        universe.get<PlanetaryMarket>(planet).supplied_resources[ToGoodEntity(0)] = 8;
+        planetary.DoSystem();
+        for (auto entity : provinces) after.push_back(MarketValues(universe.get<Market>(entity), count));
+        result["traded"] = after;
+        result["planet"] = MarketValues(universe.get<Market>(planet), count);
+        result["supplied"] = LedgerValues(universe.get<PlanetaryMarket>(planet).supplied_resources, count);
+        result["port"] = Hjson::Value(Hjson::Type::Vector);
+        result["port"].push_back(LedgerValues(port.output_resources, count));
+        result["port"].push_back(LedgerValues(port.output_resources_rate, count));
+        days.push_back(result);
+    }
+    output["days"] = days;
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintInterplanetary() {
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    RegisterGoods(universe, input["goods"]);
+    const int count = universe.GoodCount();
+    std::vector<entt::entity> bodies, ports;
+    for (int index = 0; index < input["markets"].size(); ++index) {
+        auto body = universe.create(); bodies.push_back(body);
+        auto& market = universe.emplace<Market>(body, count);
+        universe.emplace<PlanetaryMarket>(body, count);
+        universe.emplace<Settlements>(body);
+        for (int good = 0; good < count; ++good) {
+            market.price[ToGoodEntity(good)] = input["markets"][index][0][good].to_double();
+            market.production[ToGoodEntity(good)] = input["markets"][index][1][good].to_double();
+            market.consumption[ToGoodEntity(good)] = input["markets"][index][2][good].to_double();
+            market.chronic_shortages[ToGoodEntity(good)] = input["markets"][index][3][good].to_double();
+        }
+        // EnTT traverses creation in reverse: the primary port must be created last.
+        for (int port_index = 0; port_index < 2; ++port_index) {
+            auto port = universe.create(); ports.push_back(port);
+            universe.emplace<infrastructure::SpacePort>(port, count).reference_body = body;
+        }
+    }
+    cqsp::core::systems::SysInterplanetaryTrade system(game);
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int day = 0; day < input["days"].to_double(); ++day) {
+        system.DoSystem();
+        Hjson::Value result(Hjson::Type::Map), differences(Hjson::Type::Vector), shipments(Hjson::Type::Vector);
+        for (auto body : bodies) differences.push_back(LedgerValues(universe.get<PlanetaryMarket>(body).supply_difference, count));
+        for (int index = 0; index < ports.size(); ++index) {
+            Hjson::Value rows(Hjson::Type::Vector);
+            for (const auto& [target, deliveries] : universe.get<infrastructure::SpacePort>(ports[index]).deliveries) {
+                for (const auto& delivery : deliveries) rows.push_back(Numbers({
+                    static_cast<double>(std::find(bodies.begin(), bodies.end(), target) - bodies.begin()),
+                    static_cast<double>(universe.good_map.at(delivery.good)), delivery.amount, delivery.fulfilled, delivery.priority,
+                    delivery.target_province == entt::null ? 1.0 : 0.0}));
+            }
+            shipments.push_back(rows);
+        }
+        result["differences"] = differences; result["shipments"] = shipments;
+        output.push_back(result);
+    }
+    WriteJson(output); std::cout << '\n';
+}
 
 void PrintLunarMission() {
     spdlog::set_level(spdlog::level::off);
@@ -212,7 +387,7 @@ void PrintPopulation() {
         result["history"] = Numbers({history.population.back(), history.sol.back(), history.employment.back(), history.employment_rate.back()});
         output.push_back(result);
     }
-    std::cout << Hjson::MarshalJson(output) << '\n';
+    WriteJson(output); std::cout << '\n';
 }
 
 void PrintManufacturing() {
@@ -253,7 +428,7 @@ void PrintManufacturing() {
         }
         output.push_back(rows);
     }
-    std::cout << Hjson::MarshalJson(output) << '\n';
+    WriteJson(output); std::cout << '\n';
 }
 
 void PrintProduction() {
@@ -353,7 +528,7 @@ void PrintProduction() {
         }
         output.push_back(rows);
     }
-    std::cout << Hjson::MarshalJson(output) << '\n';
+    WriteJson(output); std::cout << '\n';
 }
 
 std::vector<Hjson::Value> ReadEntries(const std::filesystem::path& directory) {
@@ -531,6 +706,8 @@ void PrintLoadedOrbits() {
 
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
+    if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--interplanetary") { PrintInterplanetary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--population") { PrintPopulation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--manufacturing") { PrintManufacturing(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production") { PrintProduction(); return 0; }

@@ -218,6 +218,7 @@ pub struct MarketOrder {
 }
 pub struct PlanetaryMarket {
     pub market: Market,
+    pub supplied_resources: Ledger,
     pub supply_difference: Ledger,
     pub demands: BTreeMap<GoodId, Vec<MarketOrder>>,
 }
@@ -229,9 +230,31 @@ impl PlanetaryMarket {
                 &catalog.labor_goods,
                 catalog.config.market_config,
             ),
+            supplied_resources: Ledger::new(catalog.goods.len()),
             supply_difference: Ledger::new(catalog.goods.len()),
             demands: BTreeMap::new(),
         }
+    }
+    /// Original planetary consolidation runs after the daily reset and local markets.
+    pub fn process<'a>(
+        &mut self,
+        base_prices: &Ledger,
+        provinces: impl IntoIterator<Item = (&'a Market, Option<&'a SpacePort>)>,
+    ) {
+        self.market.gdp = 0.0;
+        self.market.trade.clear();
+        for (market, port) in provinces {
+            self.market.supply.add_ledger(&market.production);
+            self.market.demand.add_ledger(&market.consumption);
+            if let Some(port) = port {
+                self.market.supply.add_ledger(&port.output_resources_rate);
+                self.market.demand.add_ledger(&port.demanded_resources_rate);
+            }
+            self.market.gdp += market.gdp;
+        }
+        // Legacy planetary pricing ignores config and leaves S/D ratios unchanged.
+        self.market.determine_prices(base_prices, 0.75);
+        self.supplied_resources.clear();
     }
     pub fn update_difference(&mut self) {
         for index in 0..self.supply_difference.values().len() {

@@ -34,6 +34,7 @@ try {
         "$repoRoot/src/core/systems/economy/syspopulation.cpp" "$repoRoot/src/core/systems/economy/sysfinance.cpp" `
         "$repoRoot/src/core/systems/economy/sysmarketreset.cpp" `
         "$repoRoot/src/core/systems/economy/sysproduction.cpp" `
+        "$repoRoot/src/core/systems/economy/sysmarket.cpp" "$repoRoot/src/core/systems/economy/sysplanetarytrade.cpp" `
         "$repoRoot/lib/hjson-cpp/src/hjson_decode.cpp" "$repoRoot/lib/hjson-cpp/src/hjson_encode.cpp" `
         "$repoRoot/lib/hjson-cpp/src/hjson_parsenumber.cpp" "$repoRoot/lib/hjson-cpp/src/hjson_value.cpp" `
         /link /OPT:REF /INCREMENTAL:NO "$(Split-Path $DependencyInclude)/lib/lua51.lib"

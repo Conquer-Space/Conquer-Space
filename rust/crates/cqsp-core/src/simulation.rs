@@ -391,33 +391,14 @@ impl Simulation {
                 .market
                 .process(&self.catalog.base_prices, self.catalog.config.market_config);
         }
-        for planetary in self.planetary_markets.values_mut() {
-            planetary.market.gdp = 0.0;
-            planetary.market.trade.clear();
-        }
-        for settlement in self
-            .settlements
-            .iter()
-            .filter(|settlement| settlement.is_province())
-        {
-            let market = &mut self
-                .planetary_markets
-                .get_mut(&settlement.body)
-                .unwrap()
-                .market;
-            market.supply.add_ledger(&settlement.market.production);
-            market.demand.add_ledger(&settlement.market.consumption);
-            if let Some(port) = &settlement.spaceport {
-                market.supply.add_ledger(&port.output_resources_rate);
-                market.demand.add_ledger(&port.demanded_resources_rate);
-            }
-            market.gdp += settlement.market.gdp;
-        }
-        // Legacy planetary pricing hard-codes 0.75 and does not update its S/D ratios.
-        for planetary in self.planetary_markets.values_mut() {
-            planetary
-                .market
-                .determine_prices(&self.catalog.base_prices, 0.75);
+        for (&body, planetary) in &mut self.planetary_markets {
+            planetary.process(
+                &self.catalog.base_prices,
+                self.settlements
+                    .iter()
+                    .filter(|site| site.is_province() && site.body == body)
+                    .map(|site| (&site.market, site.spaceport.as_ref())),
+            );
         }
         for settlement in self
             .settlements

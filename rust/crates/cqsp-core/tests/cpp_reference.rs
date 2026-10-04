@@ -269,7 +269,322 @@ fn reference_output(mode: Option<&str>, input: &str) -> Value {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    serde_json::from_slice(&output.stdout).unwrap()
+    serde_json::from_slice(&output.stdout).unwrap_or_else(|error| {
+        let text = String::from_utf8_lossy(&output.stdout);
+        let context = text
+            .lines()
+            .nth(error.line().saturating_sub(1))
+            .unwrap_or("");
+        panic!("Invalid reference JSON: {error}: {context}")
+    })
+}
+
+fn ledger_values(ledger: &Ledger) -> Value {
+    Value::Array(
+        ledger
+            .values()
+            .iter()
+            .map(|&value| {
+                if value.is_finite() {
+                    json!(value)
+                } else {
+                    json!(if value.is_nan() {
+                        "nan"
+                    } else if value > 0.0 {
+                        "inf"
+                    } else {
+                        "-inf"
+                    })
+                }
+            })
+            .collect(),
+    )
+}
+
+fn market_values(market: &Market) -> Value {
+    json!({
+        "price": ledger_values(&market.price), "supply": ledger_values(&market.supply),
+        "demand": ledger_values(&market.demand), "ratio": ledger_values(&market.sd_ratio),
+        "trade": ledger_values(&market.trade), "access": ledger_values(&market.market_access),
+        "shortages": ledger_values(&market.chronic_shortages),
+        "production": ledger_values(&market.production), "consumption": ledger_values(&market.consumption),
+        "totals": [market.gdp, market.deficit, market.last_deficit, market.trade_deficit, market.last_trade_deficit]
+    })
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual local and planetary trade systems"]
+fn local_markets_and_planetary_trade_match_original_systems() {
+    use cqsp_core::{
+        catalog::Catalog,
+        solar_system::BodyId,
+        spaceflight::{PlanetaryMarket, SpacePort},
+    };
+    let mut catalog = Catalog::load(&default_data_path()).unwrap();
+    let config = MarketConfig {
+        base_price_deviation: 0.4,
+        shortage_level: 0.8,
+        default_market_access: 0.3,
+    };
+    catalog.config.market_config = config;
+    catalog.labor_goods = vec![GoodId(5)];
+    for (index, price) in [10.0, 20.0, 30.0, 5.0, 100.0, 2.0].into_iter().enumerate() {
+        catalog.base_prices[GoodId(index)] = price;
+    }
+    let count = catalog.goods.len();
+    let ledger = |values: &[f64]| {
+        let mut ledger = Ledger::new(count);
+        for (index, &value) in values.iter().enumerate() {
+            ledger[GoodId(index)] = value;
+        }
+        ledger
+    };
+    let mut planetary = PlanetaryMarket::new(&catalog);
+    let mut markets: Vec<_> = (0..3)
+        .map(|_| Market::new(&catalog.base_prices, &catalog.labor_goods, config))
+        .collect();
+    let initial: Vec<_> = markets
+        .iter()
+        .chain([&planetary.market])
+        .map(market_values)
+        .collect();
+    let provinces: Vec<_> = markets
+        .iter_mut()
+        .enumerate()
+        .map(|(index, market)| {
+            market.trade = ledger(&[-3.0, 9.0, 0.0, 2.0]);
+            market.chronic_shortages = ledger(&[8.0, 8.0]);
+            for good in 0..count {
+                market.market_access[GoodId(good)] = if good == 5 {
+                    0.0
+                } else {
+                    [0.0, 0.25, 1.0][index]
+                };
+            }
+            json!([
+                market.trade.values(),
+                market.chronic_shortages.values(),
+                market.market_access.values()
+            ])
+        })
+        .collect();
+    let mut port = SpacePort::new(BodyId(0), count);
+    port.output_resources = ledger(&[9.0, 0.5]);
+    port.output_resources_rate = ledger(&[3.0, 1.0]);
+    port.demanded_resources_rate = ledger(&[0.0, 2.0]);
+    let port_input = json!([
+        port.output_resources.values(),
+        port.output_resources_rate.values(),
+        port.demanded_resources_rate.values()
+    ]);
+    let production_base = [
+        [0.0, 10.0, 0.0, 20.0, 0.001, 40.0],
+        [100.0, 0.0, 20.0, 5.0, 0.0, 10.0],
+        [5.0, 20.0, 0.0, 1.0, 0.0, 5.0],
+    ];
+    let consumption_base = [
+        [10.0, 0.0, 0.0, 100.0, 0.0, 40.0],
+        [20.0, 30.0, 0.0, 2.0, 0.001, 10.0],
+        [10.0, 5.0, 0.0, 1.0, 0.0, 5.0],
+    ];
+    let mut production = Vec::new();
+    let mut consumption = Vec::new();
+    let mut days = Vec::new();
+    for day in 0..12 {
+        let (supply_scale, demand_scale) =
+            [(1.0, 1.0), (0.01, 1.0), (3.0, 1.0), (0.0, 0.0)][day % 4];
+        planetary.market.reset();
+        for (index, market) in markets.iter_mut().enumerate() {
+            market.reset();
+            market.gdp = (100 * index + day) as f64;
+            market.production = ledger(&production_base[index].map(|value| value * supply_scale));
+            market.consumption = ledger(&consumption_base[index].map(|value| value * demand_scale));
+        }
+        production.push(
+            markets
+                .iter()
+                .map(|market| market.production.values().to_vec())
+                .collect::<Vec<_>>(),
+        );
+        consumption.push(
+            markets
+                .iter()
+                .map(|market| market.consumption.values().to_vec())
+                .collect::<Vec<_>>(),
+        );
+        port.process_market(&mut markets[0]);
+        for market in &mut markets {
+            market.process(&catalog.base_prices, config);
+        }
+        let local: Vec<_> = markets.iter().map(market_values).collect();
+        planetary.supplied_resources[GoodId(0)] = 8.0;
+        planetary.process(
+            &catalog.base_prices,
+            markets
+                .iter()
+                .enumerate()
+                .map(|(index, market)| (market, (index == 0).then_some(&port))),
+        );
+        for market in &mut markets {
+            market.trade_with(&planetary.market);
+        }
+        let traded: Vec<_> = markets.iter().map(market_values).collect();
+        days.push(json!({"local": local, "traded": traded, "planet": market_values(&planetary.market),
+            "supplied": planetary.supplied_resources.values(), "port": [port.output_resources.values(), port.output_resources_rate.values()]}));
+    }
+    let goods: Vec<_> = catalog
+        .base_prices
+        .values()
+        .iter()
+        .enumerate()
+        .map(|(index, price)| json!([price, usize::from(index == 5)]))
+        .collect();
+    let reference = reference_output(Some("--markets"), &json!({"goods": goods,
+        "config": [config.base_price_deviation, config.shortage_level, config.default_market_access],
+        "provinces": provinces, "port": port_input, "production": production, "consumption": consumption}).to_string());
+    compare(&json!({"initial": initial, "days": days}), &reference);
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual interplanetary order resolution"]
+fn interplanetary_orders_and_first_port_allocation_match_original_system() {
+    use cqsp_core::{
+        catalog::Catalog,
+        solar_system::BodyId,
+        spaceflight::{PlanetaryMarket, Shipment, SpacePort},
+    };
+    let catalog = Catalog::load(&default_data_path()).unwrap();
+    let count = catalog.goods.len();
+    let inputs = [
+        [
+            [10.0, 30.0, 30.0],
+            [100.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 0.0],
+        ],
+        [
+            [20.0, 40.0, 40.0],
+            [0.0, 0.0, 0.0],
+            [0.0, 0.0, 7.0],
+            [0.0, 1.0, 0.0],
+        ],
+        [
+            [30.0, 50.0, 20.0],
+            [2.0, 1.0, 0.0],
+            [5.0, 3.0, 0.0],
+            [-1.0, 0.0, 0.0],
+        ],
+    ];
+    let mut markets: Vec<_> = inputs
+        .iter()
+        .map(|values| {
+            let mut planetary = PlanetaryMarket::new(&catalog);
+            for (index, (&price, (&production, (&consumption, &shortage)))) in values[0]
+                .iter()
+                .zip(values[1].iter().zip(values[2].iter().zip(&values[3])))
+                .enumerate()
+            {
+                let good = GoodId(index);
+                planetary.market.price[good] = price;
+                planetary.market.production[good] = production;
+                planetary.market.consumption[good] = consumption;
+                planetary.market.chronic_shortages[good] = shortage;
+            }
+            planetary
+        })
+        .collect();
+    let market_input: Vec<_> = markets
+        .iter()
+        .map(|planetary| {
+            json!([
+                planetary.market.price.values(),
+                planetary.market.production.values(),
+                planetary.market.consumption.values(),
+                planetary.market.chronic_shortages.values()
+            ])
+        })
+        .collect();
+    // Same controlled EnTT order as the fixture: secondary created first, primary last.
+    let mut ports: Vec<_> = (0..markets.len())
+        .flat_map(|body| (0..2).map(move |_| SpacePort::new(BodyId(body), count)))
+        .collect();
+    let mut days = Vec::new();
+    for _ in 0..3 {
+        for market in &mut markets {
+            market.update_difference();
+        }
+        let mut orders = Vec::new();
+        for (seller, market) in markets.iter().enumerate() {
+            for (buyer, target) in markets.iter().enumerate() {
+                if seller != buyer {
+                    orders.extend(
+                        market
+                            .orders_for(target, BodyId(buyer))
+                            .into_iter()
+                            .map(|order| (seller, order)),
+                    );
+                }
+            }
+        }
+        for (seller, (good, order)) in orders {
+            markets[seller].demands.entry(good).or_default().push(order);
+        }
+        for port in ports.iter_mut().rev() {
+            port.take_orders(&mut markets[port.reference_body.0]);
+        }
+        let differences: Vec<_> = markets
+            .iter()
+            .map(|market| market.supply_difference.values())
+            .collect();
+        let shipments: Vec<_> = ports
+            .iter()
+            .map(|port| {
+                port.deliveries
+                    .iter()
+                    .flat_map(|(target, deliveries)| {
+                        deliveries.iter().map(|delivery| {
+                            let Shipment::Good(good) = delivery.item else {
+                                panic!("Unexpected mission")
+                            };
+                            [
+                                target.0 as f64,
+                                good.0 as f64,
+                                delivery.amount,
+                                delivery.fulfilled,
+                                delivery.priority,
+                                f64::from(delivery.target_province.is_none()),
+                            ]
+                        })
+                    })
+                    .collect::<Vec<_>>()
+            })
+            .collect();
+        assert!(
+            ports
+                .iter()
+                .step_by(2)
+                .all(|port| port.deliveries.is_empty())
+        );
+        assert!(
+            markets
+                .iter()
+                .all(|market| market.demands.values().all(Vec::is_empty))
+        );
+        days.push(json!({"differences": differences, "shipments": shipments}));
+    }
+    let goods: Vec<_> = catalog
+        .base_prices
+        .values()
+        .iter()
+        .map(|price| json!([price, 0]))
+        .collect();
+    compare(
+        &json!(days),
+        &reference_output(
+            Some("--interplanetary"),
+            &json!({"goods": goods, "markets": market_input, "days": 3}).to_string(),
+        ),
+    );
 }
 
 #[test]
