@@ -22,6 +22,7 @@ use bevy::{
 use cqsp_core::{Session, World, default_data_path, intersect_globe, uv_to_direction};
 use cqsp_core::{clock::StarDate, simulation::Simulation};
 use std::{f32::consts::PI, path::PathBuf, time::Duration};
+mod chart;
 mod inspection_ui;
 mod spaceport_ui;
 mod system_view;
@@ -286,6 +287,7 @@ fn main() -> Result<()> {
                 update_economy_hud,
                 spaceport_ui::update,
                 inspection_ui::update,
+                inspection_ui::update_plot,
                 smoke_test,
             )
                 .chain(),
@@ -797,6 +799,7 @@ fn verify_capture(
     inspector: Res<inspection_ui::Inspector>,
     camera: Single<(&Camera, &GlobalTransform), With<Camera3d>>,
     markers: Query<(&Focus, &Transform)>,
+    plots: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PlotImage>>,
     game: Res<Game>,
 ) {
     let pixels = capture
@@ -858,6 +861,27 @@ fn verify_capture(
             gold > 20,
             "Smoke check: missing inspector header pixels ({gold})"
         );
+    }
+    if inspector.is_history() {
+        let (node, transform) = plots.single().expect("History plot node");
+        assert!(!node.is_empty(), "Smoke check: history plot not laid out");
+        let center = transform.affine().translation;
+        let min = (center - node.size() / 2.0).max(Vec2::ZERO).as_uvec2();
+        let max = (center + node.size() / 2.0)
+            .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
+            .as_uvec2();
+        let mut plotted = 0;
+        for y in min.y..max.y {
+            for x in min.x..max.x {
+                let [r, g, b] = pixels.get_pixel(x, y).0;
+                plotted += usize::from(r < 100 && g > 150 && b > 100 && b < g);
+            }
+        }
+        assert!(
+            plotted > 30,
+            "Smoke check: history series not rendered ({plotted} pixels)"
+        );
+        println!("SMOKE: verified history plot ({plotted} series pixels).");
     }
     if navigation.active && !ui.open && !inspector.open {
         let mut orbit_pixels = 0;
@@ -988,7 +1012,10 @@ fn smoke_test(
         return;
     }
     smoke.elapsed = 0.0;
-    if matches!(smoke.stage, 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21) {
+    if matches!(
+        smoke.stage,
+        1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21 | 23 | 25
+    ) {
         for (text, layout) in &text_layouts {
             assert!(
                 text.0.trim().is_empty() || !layout.glyphs.is_empty(),
@@ -1199,10 +1226,32 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "construction-inspector.png",
         ),
+        22 => inspector.apply(
+            inspection_ui::Action::Tab(inspection_ui::Tab::Civilization),
+            &mut game,
+        ),
+        23 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "civilization-inspector.png",
+        ),
+        24 => {
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::History),
+                &mut game,
+            );
+            inspector.apply(inspection_ui::Action::Next, &mut game);
+            inspector.apply(inspection_ui::Action::ChartWindow, &mut game);
+        }
+        25 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "history-inspector.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 11,
-                "Smoke check: all eleven captures must be verified"
+                smoke.captures, 13,
+                "Smoke check: all thirteen captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

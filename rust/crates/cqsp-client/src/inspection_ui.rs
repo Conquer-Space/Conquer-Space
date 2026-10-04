@@ -9,7 +9,9 @@ use std::fmt::Write;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Tab {
+    Civilization,
     Markets,
+    History,
     Demographics,
     Industries,
     Construction,
@@ -35,6 +37,8 @@ pub(super) enum Action {
     ConsumptionCost,
     FactoryCount(i32),
     ConstructFactory,
+    ChartGood,
+    ChartWindow,
     NextDay,
 }
 #[derive(Component)]
@@ -44,11 +48,66 @@ pub(super) enum Panel {
     FactoryActions,
     DemographicActions,
     ConstructionActions,
+    HistoryActions,
 }
 #[derive(Component)]
 pub(super) enum Label {
     Scope,
     Content,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Series {
+    Gdp,
+    Price,
+    Supply,
+    Demand,
+    Population,
+    Sol,
+    Employment,
+    EmploymentRate,
+}
+impl Series {
+    const ALL: [Self; 8] = [
+        Self::Gdp,
+        Self::Price,
+        Self::Supply,
+        Self::Demand,
+        Self::Population,
+        Self::Sol,
+        Self::Employment,
+        Self::EmploymentRate,
+    ];
+    fn name(self) -> &'static str {
+        match self {
+            Self::Gdp => "Market GDP",
+            Self::Price => "Good price",
+            Self::Supply => "Good supply",
+            Self::Demand => "Good demand",
+            Self::Population => "Global population",
+            Self::Sol => "Global standard of living",
+            Self::Employment => "Global employment",
+            Self::EmploymentRate => "Global employment rate (%)",
+        }
+    }
+    fn global(self) -> bool {
+        matches!(
+            self,
+            Self::Population | Self::Sol | Self::Employment | Self::EmploymentRate
+        )
+    }
+}
+#[derive(Clone, Copy, PartialEq, Eq)]
+struct PlotKey {
+    body: BodyId,
+    good: usize,
+    series: Series,
+    window: usize,
+    samples: usize,
+}
+#[derive(Component, Default)]
+pub(super) struct PlotImage {
+    key: Option<PlotKey>,
 }
 
 #[derive(Resource)]
@@ -69,6 +128,8 @@ pub(super) struct Inspector {
     recipe: usize,
     factory_count: i32,
     message: String,
+    series: usize,
+    plot_window: usize,
 }
 impl Inspector {
     pub fn new(game: &cqsp_core::simulation::Simulation) -> Self {
@@ -89,6 +150,8 @@ impl Inspector {
             recipe: 0,
             factory_count: 1,
             message: String::new(),
+            series: 0,
+            plot_window: 0,
         }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) {
@@ -157,6 +220,21 @@ impl Inspector {
             Action::Previous | Action::Next => {
                 let previous = matches!(action, Action::Previous);
                 match self.tab {
+                    Tab::Civilization => {
+                        let count = game
+                            .session
+                            .player_country
+                            .map_or(0, |country| {
+                                game.simulation.countries[country]
+                                    .provinces
+                                    .len()
+                                    .max(self.governed(game).count())
+                            })
+                            .div_ceil(8)
+                            .max(1);
+                        cycle(&mut self.page, count, previous);
+                    }
+                    Tab::History => cycle(&mut self.series, Series::ALL.len(), previous),
                     Tab::Markets => cycle(
                         &mut self.good,
                         game.simulation.catalog.goods.len(),
@@ -249,6 +327,8 @@ impl Inspector {
                 );
             }
             Action::ConstructFactory => {}
+            Action::ChartGood => cycle(&mut self.good, game.simulation.catalog.goods.len(), false),
+            Action::ChartWindow => cycle(&mut self.plot_window, 3, false),
             Action::NextDay => {
                 game.paused = true;
                 game.tick_accumulator = 0.0;
@@ -310,6 +390,8 @@ impl Inspector {
     fn content(&self, game: &Game) -> String {
         let simulation = &game.simulation;
         match self.tab {
+            Tab::Civilization => self.civilization(game),
+            Tab::History => self.history(game),
             Tab::Markets => {
                 let market = self
                     .province
@@ -641,6 +723,215 @@ impl Inspector {
         text.push_str(&self.message);
         text
     }
+    fn governed<'a>(
+        &self,
+        game: &'a Game,
+    ) -> impl Iterator<Item = &'a cqsp_core::simulation::Settlement> {
+        let country = game.session.player_country;
+        game.simulation
+            .settlements
+            .iter()
+            .filter(move |site| country.is_some() && site.governor == country)
+    }
+    fn civilization(&self, game: &Game) -> String {
+        let Some(country) = game.session.player_country else {
+            return "Select a country first.".into();
+        };
+        let simulation = &game.simulation;
+        let economy = &simulation.countries[country];
+        let capital = economy
+            .capital
+            .map_or("Not defined by the original assets", |site| {
+                simulation.settlements[site].name.as_str()
+            });
+        let mut text = format!(
+            "CIVILIZATION · {}\nCapital: {}\nCurrency reserves: {} · tax income {}\nSpace-program tag: {} · research {}\nGoverned sites {} · initial provinces {} · page {}\n\nGOVERNED SITES (original City Information)\n{}\n\nPROVINCE BALANCES\n",
+            game.world.countries[country].name,
+            capital,
+            economy
+                .wallet
+                .map_or("No wallet component".into(), |wallet| human_number(
+                    wallet.balance
+                )),
+            human_number(economy.income_taxes + economy.consumption_taxes),
+            economy.space_program,
+            economy.research,
+            self.governed(game).count(),
+            economy.provinces.len(),
+            self.page + 1,
+            self.governed(game)
+                .skip(self.page * 8)
+                .take(8)
+                .map(|site| site.name.as_str())
+                .collect::<Vec<_>>()
+                .join(", ")
+        );
+        for &province in economy.provinces.iter().skip(self.page * 8).take(8) {
+            let site = &simulation.settlements[province];
+            let market = &site.market;
+            let _ = writeln!(
+                text,
+                "{} · deficit {} · cumulative {}\nTrade deficit {} · cumulative trade {}",
+                site.name,
+                human_number(market.last_deficit),
+                human_number(market.deficit),
+                human_number(market.last_trade_deficit),
+                human_number(market.trade_deficit)
+            );
+        }
+        text.push_str("\nMISSION QUEUE\n");
+        for mission in &economy.missions {
+            let mission = &simulation.missions[mission.0];
+            let _ = writeln!(
+                text,
+                "{} -> {} · {}",
+                mission.name,
+                simulation.settlements[mission.province].name,
+                if mission.in_progress {
+                    "In progress (marker retained)"
+                } else {
+                    "Awaiting dispatch"
+                }
+            );
+        }
+        if economy.missions.is_empty() {
+            text.push_str("No missions queued.\n");
+        }
+        text.push_str("\nThe original budget breakdown and research tab were unimplemented. Population history is global, not a country-only series.");
+        text
+    }
+    pub fn is_history(&self) -> bool {
+        self.open && self.tab == Tab::History
+    }
+    fn history_samples(&self, game: &Game) -> Vec<(usize, f64)> {
+        let series = Series::ALL[self.series];
+        let simulation = &game.simulation;
+        let mut samples: Vec<_> = if series.global() {
+            simulation
+                .history
+                .iter()
+                .enumerate()
+                .map(|(index, sample)| {
+                    (
+                        index,
+                        match series {
+                            Series::Population => sample.population as f64,
+                            Series::Sol => sample.standard_of_living,
+                            Series::Employment => sample.employed as f64,
+                            Series::EmploymentRate => {
+                                sample.employed as f64 / sample.population as f64 * 100.0
+                            }
+                            _ => unreachable!(),
+                        },
+                    )
+                })
+                .collect()
+        } else {
+            simulation.planetary_markets[&self.body]
+                .history
+                .0
+                .iter()
+                .enumerate()
+                .map(|(index, sample)| {
+                    (
+                        index,
+                        match series {
+                            Series::Gdp => sample.gdp,
+                            Series::Price => sample.price[GoodId(self.good)],
+                            Series::Supply => sample.supply[GoodId(self.good)],
+                            Series::Demand => sample.demand[GoodId(self.good)],
+                            _ => unreachable!(),
+                        },
+                    )
+                })
+                .collect()
+        };
+        let limit = [usize::MAX, 128, 32][self.plot_window];
+        if samples.len() > limit {
+            samples.drain(..samples.len() - limit);
+        }
+        samples
+    }
+    fn history(&self, game: &Game) -> String {
+        let samples = self.history_samples(game);
+        let series = Series::ALL[self.series];
+        let range =
+            super::chart::bounds(&samples).map_or("No daily samples yet.".into(), |range| {
+                format!(
+                    "X: daily sample {}–{} · Y: {}–{}\nLatest: {}",
+                    range.first,
+                    range.last,
+                    human_number(range.low),
+                    human_number(range.high),
+                    human_number(samples.last().unwrap().1)
+                )
+            });
+        format!(
+            "HISTORY · {}\n{} · selected good: {}\n{} samples shown · range {}\n{}\nThe source's Tick axis actually uses daily sample indices. Non-finite samples leave gaps.\n",
+            series.name(),
+            if series.global() {
+                "Global population history"
+            } else {
+                game.simulation.solar_system.bodies[self.body.0]
+                    .name
+                    .as_str()
+            },
+            game.simulation.catalog.goods[self.good].name,
+            samples.len(),
+            ["All", "Last 128", "Last 32"][self.plot_window],
+            range
+        )
+    }
+}
+
+pub(super) fn update_plot(
+    inspector: Res<Inspector>,
+    game: Res<Game>,
+    mut images: ResMut<Assets<Image>>,
+    mut plots: Query<(&mut PlotImage, &mut ImageNode, &mut Node)>,
+) {
+    for (mut plot, mut node, mut layout) in &mut plots {
+        let shown = inspector.is_history();
+        let display = if shown { Display::Flex } else { Display::None };
+        if layout.display != display {
+            layout.display = display;
+        }
+        if !shown {
+            continue;
+        }
+        let series = Series::ALL[inspector.series];
+        let samples = if series.global() {
+            game.simulation.history.len()
+        } else {
+            game.simulation.planetary_markets[&inspector.body]
+                .history
+                .0
+                .len()
+        };
+        let key = PlotKey {
+            body: inspector.body,
+            good: inspector.good,
+            series,
+            window: inspector.plot_window,
+            samples,
+        };
+        if plot.key == Some(key) {
+            continue;
+        }
+        let image = super::rgba_image(
+            super::chart::WIDTH,
+            super::chart::HEIGHT,
+            super::chart::render(&inspector.history_samples(&game)),
+        );
+        if plot.key.is_some()
+            && let Some(mut existing) = images.get_mut(&node.image)
+        {
+            *existing = image;
+        } else {
+            node.image = images.add(image);
+        }
+        plot.key = Some(key);
+    }
 }
 
 fn cycle(index: &mut usize, count: usize, previous: bool) {
@@ -704,7 +995,9 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
             ));
             row(panel, |bar| {
                 for (tab, name) in [
+                    (Tab::Civilization, "Civilization"),
                     (Tab::Markets, "Markets"),
+                    (Tab::History, "History"),
                     (Tab::Demographics, "Demographics"),
                     (Tab::Industries, "Industries"),
                     (Tab::Construction, "Construction"),
@@ -800,11 +1093,36 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     }
                     button(bar, font, Action::ConstructFactory, "Construct factory");
                 });
+            panel
+                .spawn((
+                    Panel::HistoryActions,
+                    Node {
+                        flex_direction: FlexDirection::Row,
+                        flex_shrink: 0.0,
+                        column_gap: px(10),
+                        ..default()
+                    },
+                ))
+                .with_children(|bar| {
+                    button(bar, font, Action::ChartGood, "Next chart good");
+                    button(bar, font, Action::ChartWindow, "All / last 128 / last 32");
+                });
             panel.spawn((
                 Label::Content,
                 Text::default(),
                 ui_font(font, 16.0),
                 Node {
+                    flex_shrink: 0.0,
+                    ..default()
+                },
+            ));
+            panel.spawn((
+                PlotImage::default(),
+                ImageNode::default(),
+                Node {
+                    display: Display::None,
+                    width: percent(100),
+                    height: px(super::chart::HEIGHT),
                     flex_shrink: 0.0,
                     ..default()
                 },
@@ -897,6 +1215,7 @@ pub(super) fn update(
             }
             Panel::DemographicActions => inspector.open && inspector.tab == Tab::Demographics,
             Panel::ConstructionActions => inspector.open && inspector.tab == Tab::Construction,
+            Panel::HistoryActions => inspector.is_history(),
             Panel::Launcher => {
                 game.session.player_country.is_some() && !ports.open && !inspector.open
             }
@@ -968,6 +1287,7 @@ mod tests {
                 tick_accumulator: 0.0,
             })
             .init_resource::<Time>()
+            .init_resource::<Assets<Image>>()
             .init_resource::<ButtonInput<KeyCode>>()
             .init_resource::<AccumulatedMouseScroll>()
             .add_message::<KeyboardInput>()
@@ -981,6 +1301,7 @@ mod tests {
                     scroll,
                     spaceport_ui::update,
                     update,
+                    update_plot,
                 )
                     .chain(),
             );
@@ -1467,6 +1788,187 @@ mod tests {
         assert_eq!(
             app.world().get::<ScrollPosition>(launcher).unwrap().0.y,
             0.0
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn civilization_pages_use_governors_and_initial_province_lists() -> Result<()> {
+        let mut app = app()?;
+        apply(&mut app, Action::Tab(Tab::Civilization));
+        let game = app.world().resource::<Game>();
+        let country = game.session.player_country.unwrap();
+        let economy = &game.simulation.countries[country];
+        let capital = economy.capital.unwrap();
+        let capital_name = game.simulation.settlements[capital].name.clone();
+        let text = app.world().resource::<Inspector>().content(game);
+        assert!(text.contains(&format!("Capital: {capital_name}")));
+        assert!(text.contains("Space-program tag: true"));
+        let governed: Vec<_> = game
+            .simulation
+            .settlements
+            .iter()
+            .filter(|site| site.governor == Some(country))
+            .map(|site| site.name.clone())
+            .collect();
+        let pages = governed.len().max(economy.provinces.len()).div_ceil(8);
+        // Source colony delivery changes Province.country, not Governed or CountryCityList.
+        app.world_mut()
+            .resource_mut::<Game>()
+            .simulation
+            .settlements[capital]
+            .country = None;
+        let mut contents = String::new();
+        for _ in 0..pages {
+            contents.push_str(
+                &app.world()
+                    .resource::<Inspector>()
+                    .content(app.world().resource::<Game>()),
+            );
+            apply(&mut app, Action::Next);
+        }
+        assert!(governed.iter().all(|name| contents.contains(name)));
+        assert!(contents.contains(&format!("{capital_name} · deficit")));
+        assert_eq!(app.world().resource::<Inspector>().page, 0);
+        app.world_mut()
+            .resource_mut::<Game>()
+            .session
+            .player_country = None;
+        assert_eq!(
+            app.world()
+                .resource::<Inspector>()
+                .content(app.world().resource::<Game>()),
+            "Select a country first."
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn history_series_goods_bodies_and_windows_preserve_original_samples() -> Result<()> {
+        use cqsp_core::{clock::StarDate, simulation::Summary};
+        let mut app = app()?;
+        {
+            let mut game = app.world_mut().resource_mut::<Game>();
+            game.simulation.history = (0..140)
+                .map(|index| Summary {
+                    population: 100 + index,
+                    employed: 20 + index,
+                    standard_of_living: index as f64 / 10.0,
+                    ..default()
+                })
+                .collect();
+            for market in game.simulation.planetary_markets.values_mut() {
+                market.history.0.clear();
+                for index in 0..140 {
+                    market.market.gdp = index as f64 * 2.0;
+                    market.market.price[GoodId(0)] = index as f64 * 3.0;
+                    market.market.supply[GoodId(0)] = index as f64 * 4.0;
+                    market.market.demand[GoodId(0)] = index as f64 * 5.0;
+                    market
+                        .history
+                        .record(StarDate::from_tick(index * DAY), &market.market);
+                }
+            }
+        }
+        apply(&mut app, Action::Tab(Tab::History));
+        let expected = [
+            278.0,
+            417.0,
+            556.0,
+            695.0,
+            239.0,
+            13.9,
+            159.0,
+            159.0 / 239.0 * 100.0,
+        ];
+        for (series, value) in expected.into_iter().enumerate() {
+            let inspector = app.world().resource::<Inspector>();
+            let game = app.world().resource::<Game>();
+            assert_eq!(inspector.series, series);
+            let samples = inspector.history_samples(game);
+            assert_eq!(samples.len(), 140);
+            assert_eq!(samples.last(), Some(&(139, value)));
+            assert!(inspector.content(game).contains(Series::ALL[series].name()));
+            apply(&mut app, Action::Next);
+        }
+        assert_eq!(app.world().resource::<Inspector>().series, 0);
+        for (window, first, count) in [(1, 12, 128), (2, 108, 32), (0, 0, 140)] {
+            apply(&mut app, Action::ChartWindow);
+            let inspector = app.world().resource::<Inspector>();
+            assert_eq!(inspector.plot_window, window);
+            let samples = inspector.history_samples(app.world().resource::<Game>());
+            assert_eq!(samples.len(), count);
+            assert_eq!(samples[0].0, first);
+        }
+        for good in 0..56 {
+            assert_eq!(app.world().resource::<Inspector>().good, good);
+            apply(&mut app, Action::ChartGood);
+        }
+        assert_eq!(app.world().resource::<Inspector>().good, 0);
+        let start = app.world().resource::<Inspector>().body;
+        let mut bodies = std::collections::BTreeSet::new();
+        for _ in 0..11 {
+            bodies.insert(app.world().resource::<Inspector>().body);
+            apply(&mut app, Action::Planet);
+        }
+        assert_eq!(bodies.len(), 11);
+        assert_eq!(app.world().resource::<Inspector>().body, start);
+        Ok(())
+    }
+
+    #[test]
+    fn history_plot_reuses_its_owned_image_and_hides_when_closed() -> Result<()> {
+        let mut app = app()?;
+        let plot = app
+            .world_mut()
+            .spawn((PlotImage::default(), ImageNode::default(), Node::default()))
+            .id();
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::History));
+        app.update();
+        let handle = app.world().get::<ImageNode>(plot).unwrap().image.clone();
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 1);
+        assert_eq!(
+            app.world().get::<Node>(plot).unwrap().display,
+            Display::Flex
+        );
+        let before = app
+            .world()
+            .resource::<Assets<Image>>()
+            .get(&handle)
+            .unwrap()
+            .data
+            .clone();
+        app.update();
+        assert_eq!(
+            app.world()
+                .resource::<Assets<Image>>()
+                .get(&handle)
+                .unwrap()
+                .data,
+            before
+        );
+        apply(&mut app, Action::NextDay);
+        app.update();
+        assert_ne!(
+            app.world()
+                .resource::<Assets<Image>>()
+                .get(&handle)
+                .unwrap()
+                .data,
+            before
+        );
+        for _ in 0..16 {
+            apply(&mut app, Action::Next);
+            app.update();
+        }
+        assert_eq!(app.world().get::<ImageNode>(plot).unwrap().image, handle);
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 1);
+        apply(&mut app, Action::Close);
+        app.update();
+        assert_eq!(
+            app.world().get::<Node>(plot).unwrap().display,
+            Display::None
         );
         Ok(())
     }

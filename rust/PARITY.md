@@ -17,7 +17,7 @@ Successful long runs establish stability, not gameplay parity.
 | --- | --- | --- |
 | Country/province map and globe picking | Implemented | Original map fixtures, ray/UV tests, offscreen GPU smoke checks; remaining legacy overlays |
 | Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus and settings |
-| Civilization metadata | Loader reference-tested | All 199 countries' wallet/capability/research/tax fields, initial governed city/province lists and capital tags through actual country/province/city loaders; native civ view remains |
+| Civilization metadata / native view | Loader reference-tested; native integration | All 199 countries' wallet/capability/research/tax fields, initial city/province lists and capital tags through actual loaders; native capital, wallet/taxes, paged governed sites/province balances and mission queue; governor and province ownership remain distinct |
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
 | Time-zone definitions / city bindings | Loader and clock reference-tested; native display | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
@@ -31,8 +31,8 @@ Successful long runs establish stability, not gameplay parity.
 | Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, two seeds, nine cases spanning all eight states and 12 steps (4,752 seeded samples), plus injected noise, shortage interruption, construction completion, taxes/subsidies; combined tick ordering and larger FSM boundary grids remain |
 | Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
 | Local markets / shortages / planetary trade | Reference-tested controlled system scenario | Actual SysMarket/SysPlanetaryTrade/MarketReset: three provinces, 12 daily steps, retained imports/exports, configurable local versus hard-coded planetary pricing, zero demand, shortage recovery, labor access and port depletion; whole-economy traversal remains |
-| Population history | Controlled scenario reference-tested | Population/SOL/employment summaries match actual original daily history; legacy graph UI remains |
-| Market history / CSV / industry export | All-body history system reference-tested; native inspection | All 11 bodies retain daily GDP/price/supply/demand/ratio snapshots; only Earth/Moon have surface sites and participate in trade; 132 controlled history samples match actual SysMarketHistory; table fields, eight-sample history, CSV/export schemas; formatting and interactive graphs remain |
+| Population history | Controlled scenario reference-tested; native graphs | Global population/SOL/employment/employment-rate series, retaining original employed/population denominator and daily sample-index X axis; mouse pan/zoom remains |
+| Market history / CSV / industry export | All-body history system reference-tested; native inspection/graphs | All 11 bodies retain daily GDP/price/supply/demand/ratio snapshots; only Earth/Moon have surface sites and participate in trade; 132 controlled history samples match actual SysMarketHistory; native GDP/price/supply/demand plots with full/128/32-sample ranges and non-finite gaps, table fields, CSV/export schemas; exact formatting and mouse plot interactions remain |
 | Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen; manufacturing/order systems reference-tested | Actual SysLaunchVehicleProduction boundaries plus SysInterplanetaryTrade: three markets, two ports each, three daily allocations, repeated orders, shortages and multiple sellers; dispatch/combined-system corpus remains |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
@@ -43,7 +43,7 @@ Successful long runs establish stability, not gameplay parity.
 | Industry modifiers / factory controls | Reference-tested components; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded and industry gain/cap wiring tested |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
-| Native replacements for scripted UI/events | Partial | Country selection is native; civ info, exploration, side menu and event infrastructure remain |
+| Native replacements for scripted UI/events | Partial | Country selection and civilization/economy/history inspection are native; exploration, side menu and event infrastructure remain |
 | Saves / load / settings / packaging | Not ported | Persist simulation + RNG state, source-independent assets, release installation and compatibility decision |
 
 ## Compatibility decisions and known gaps
@@ -211,7 +211,7 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 90 unit tests
+365 market-history records per body and CSV/industry export checks. There are 95 unit tests
 and 21 differential tests: 20 pass, while the explicit seeded lunar acceptance
 gate currently fails. Twenty live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
@@ -271,8 +271,8 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Eleven verified captures include the spaceport panel, newly
-launched vehicle and market/industry/science/demographics/construction inspectors.
+native screen actions. Thirteen verified captures include the spaceport panel, newly
+launched vehicle and market/industry/science/demographics/construction/civilization/history inspectors.
 Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
 day advancement, live label refresh, panel exclusivity and closing-frame isolation.
@@ -280,6 +280,12 @@ Scroll layouts retain their header/navigation rows when content overflows.
 Demographics pages cycle all segments and consumption modes without altering the
 population. Construction tests cover every recipe, bounded count adjustments,
 one-shot creation, the original idle record and rejection without partial mutation.
+Civilization pages check governor filtering independently of province ownership and
+retain the initial province balance list. All eight chart series, 56 goods, 11 bodies
+and range windows are reachable; cropped ranges retain original daily sample indices.
+The rasterizer handles constant/single/extreme/non-finite series. Chart images reuse
+one owned asset, redraw only for changed selections/new samples and hide on close.
+The history GPU capture also requires actual colored series pixels in the plot region.
 Text editing, Unicode deletion, shortcut isolation, one-shot
 buttons, scrolling and invalid-design non-mutation have renderer-free ECS tests.
 Text checks cover both glyph layouts and bright pixels inside visible text blocks;

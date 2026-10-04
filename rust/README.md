@@ -86,7 +86,12 @@ whole-segment and count/cost toggles. Construction cycles all 22 recipes and sho
 their input/capital/output costs and expected profit. Select a province, adjust the
 1–1,000 unit count and construct a factory. This preserves the original zero-level
 construction record and Steady state; it does not invent an up-front purchase.
-Interactive history/consumption graphs remain to be ported. Spaceport inspection
+Civilization shows the player's capital, wallet/taxes, governed sites, initial province
+balances and mission queue. History cycles market GDP, selected-good price/supply/demand
+and global population/SOL/employment/employment rate. Next chart good and the
+all/last-128/last-32 range controls redraw native plots; X uses daily sample indices,
+matching the original graph despite its Tick label. Non-finite samples leave gaps.
+Mouse plot pan/zoom and consumption pie graphs remain to be ported. Spaceport inspection
 also shows loaded fixed-offset local time, retaining the source clock's quirks.
 
 For fast renderer-free simulation checks:
@@ -128,14 +133,15 @@ and a spacecraft, queues a native maneuver and advances another day. It writes
 a lunar core mission and verifies its delivery. It also writes `target/spaceport-view.png`
 and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.png`,
 `target/industry-inspector.png`, `target/science-inspector.png`,
-`target/demographics-inspector.png` and `target/construction-inspector.png`, then exits.
+`target/demographics-inspector.png`, `target/construction-inspector.png`,
+`target/civilization-inspector.png` and `target/history-inspector.png`, then exits.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
 longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay pixels and all eleven completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all thirteen completed
 captures. Background tests work while normal game windows are minimized or closed.
 Focused-spacecraft captures also verify texture color variation and ground-track
 pixels. The body-rotation/ground-coordinate helpers are compared against the actual
