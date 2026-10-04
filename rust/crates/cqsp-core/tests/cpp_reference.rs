@@ -19,6 +19,54 @@ use std::{
     process::{Command, Stdio},
 };
 
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares original time-zone loader and clock"]
+fn timezone_definitions_and_clock_match_original() {
+    use cqsp_core::timezones::TimeZones;
+    let entries: Vec<Value> = serde_hjson::from_str(
+        &fs::read_to_string(default_data_path().join("data/timezones.hjson")).unwrap(),
+    )
+    .unwrap();
+    let controlled = vec![
+        json!({"identifier":"same", "name":"First", "offset":-11}),
+        json!({"identifier":"same", "name":"Last", "offset":"5.5"}),
+        json!({"identifier":"negative", "offset":-3.5}),
+        json!({"identifier":"boolean", "offset":true}),
+        json!({"identifier":"missing"}),
+        json!({"identifier":"null", "offset":null}),
+        json!({"identifier":"invalid", "offset":"2e+05.0"}),
+        json!({"name":"No identifier"}),
+    ];
+    let ticks = [0, 1, 143, 144, 145, 1008, 1_000_000, u32::MAX as u64];
+    for entries in [entries, controlled] {
+        let zones = TimeZones::from_entries(entries.clone()).unwrap();
+        let definitions: serde_json::Map<_, _> = zones
+            .entries
+            .iter()
+            .map(|zone| {
+                let times: Vec<_> = ticks
+                    .iter()
+                    .map(|&tick| {
+                        let (hour, minute) = zone.local_time(StarDate::from_tick(tick));
+                        json!([hour, minute])
+                    })
+                    .collect();
+                (
+                    zone.identifier.clone(),
+                    json!({"name":zone.name,"offset":zone.offset,"times":times}),
+                )
+            })
+            .collect();
+        compare(
+            &json!({"count":zones.entries.len(),"zones":definitions}),
+            &reference_output(
+                Some("--timezones"),
+                &json!({"entries":entries,"ticks":ticks}).to_string(),
+            ),
+        );
+    }
+}
+
 fn snapshot() -> Value {
     let mut wallet = Wallet::default();
     wallet.assign(100.0);
@@ -895,7 +943,9 @@ fn surface_assets_match_live_cpp_loaders_and_common_soi() {
                 site.spaceport.is_some(),
                 false,
                 false,
-                false
+                false,
+                site.time_zone
+                    .map(|id| &simulation.time_zones.entries[id.0].identifier)
             ]))
         })
         .collect();

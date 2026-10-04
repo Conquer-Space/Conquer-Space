@@ -35,6 +35,7 @@
 #include "core/loading/projectloader.h"
 #include "core/loading/fields.h"
 #include "core/loading/technology.h"
+#include "core/loading/timezoneloader.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/economy/sysspaceport.h"
 #include "core/systems/economy/syslaunchvehicleproduction.h"
@@ -356,6 +357,31 @@ void PrintGroundTracks() {
         auto ground = cqsp::core::util::GetGroundTrack(rotation, position);
         output.push_back(Numbers({rotation.x, rotation.y, rotation.z, rotation.w, ground.r_latitude(), ground.r_longitude()}));
     }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintTimeZones() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("timezone-reference");
+    auto input = ReadInput();
+    cqsp::core::loading::TimezoneLoader loader(universe);
+    loader.LoadHjson(input["entries"]);
+    Hjson::Value output(Hjson::Type::Map), zones(Hjson::Type::Map);
+    output["count"] = static_cast<int64_t>(universe.view<TimeZone>().size());
+    for (const auto& [identifier, entity] : universe.time_zones) {
+        auto offset = universe.get<TimeZone>(entity).time_diff;
+        Hjson::Value zone(Hjson::Type::Map), times(Hjson::Type::Vector);
+        zone["name"] = universe.all_of<Name>(entity) ? Hjson::Value(universe.get<Name>(entity).name) : Hjson::Value(Hjson::Type::Null);
+        zone["offset"] = offset;
+        for (int index = 0; index < input["ticks"].size(); ++index) {
+            StarDate date;
+            date.SetDate(static_cast<unsigned int>(input["ticks"][index].to_int64()));
+            times.push_back(Numbers({static_cast<double>(date.GetHour(offset)), static_cast<double>(date.GetMinute())}));
+        }
+        zone["times"] = times;
+        zones[identifier] = zone;
+    }
+    output["zones"] = zones;
     WriteJson(output); std::cout << '\n';
 }
 
@@ -714,6 +740,9 @@ void PrintSurfaceAssets(const std::filesystem::path& data) {
     register_entries(data / "data/countries", universe.countries);
     register_entries(data / "data/planet_data/provinces", universe.provinces);
     register_entries(data / "data/goods", universe.goods);
+    cqsp::core::loading::TimezoneLoader timezone_loader(universe);
+    std::ifstream timezone_stream(data / "data/timezones.hjson");
+    timezone_loader.LoadHjson(Hjson::Unmarshal(std::string(std::istreambuf_iterator<char>(timezone_stream), {})));
     for (const auto& [identifier, planet] : universe.planets) universe.emplace<types::Orbit>(planet);
     auto sun = universe.planets.at("sun");
     for (const auto& [identifier, planet] : universe.planets) {
@@ -743,7 +772,11 @@ void PrintSurfaceAssets(const std::filesystem::path& data) {
         else std::cout << std::quoted(universe.get<Identifier>(province).identifier);
         std::cout << ',' << coordinate.r_latitude() << ',' << coordinate.r_longitude() << ','
             << universe.all_of<infrastructure::SpacePort>(city) << ',' << universe.all_of<Market>(city) << ','
-            << universe.all_of<Settlement>(city) << ',' << universe.all_of<IndustrialZone>(city) << ']';
+            << universe.all_of<Settlement>(city) << ',' << universe.all_of<IndustrialZone>(city) << ',';
+        auto* zone = universe.try_get<CityTimeZone>(city);
+        if (zone && universe.all_of<TimeZone>(zone->time_zone)) std::cout << std::quoted(universe.get<Identifier>(zone->time_zone).identifier);
+        else std::cout << "null";
+        std::cout << ']';
         first = false;
     }
     cqsp::core::loading::ProjectLoader project_loader(universe);
@@ -892,6 +925,7 @@ void PrintRandom() {
 
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
+    if (argc == 2 && std::string(argv[1]) == "--timezones") { PrintTimeZones(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--random") { PrintRandom(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--interplanetary") { PrintInterplanetary(); return 0; }

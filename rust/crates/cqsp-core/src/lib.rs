@@ -10,6 +10,7 @@ pub mod science;
 pub mod simulation;
 pub mod solar_system;
 pub mod spaceflight;
+pub mod timezones;
 pub mod units;
 use anyhow::{Context, Result, bail, ensure};
 use serde::Deserialize;

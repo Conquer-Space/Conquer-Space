@@ -18,6 +18,7 @@ use crate::{
         ColonizationTarget, Colony, LaunchVehicle, Mission, MissionId, PlanetaryMarket,
         ProjectTemplate, SpacePort, VehicleId,
     },
+    timezones::{TimeZoneId, TimeZones},
 };
 use anyhow::{Context, Result, ensure};
 use serde::{Deserialize, Serialize};
@@ -43,6 +44,7 @@ pub struct Settlement {
     pub country: Option<usize>,
     pub body: BodyId,
     pub kind: SurfaceKind,
+    pub time_zone: Option<TimeZoneId>,
     pub spaceport: Option<SpacePort>,
     pub colonization: Option<ColonizationTarget>,
     pub colony: Option<Colony>,
@@ -100,6 +102,7 @@ pub struct Simulation {
     pub catalog: Catalog,
     pub modifiers: ModifierCatalog,
     pub science: ScienceCatalog,
+    pub time_zones: TimeZones,
     /// Map provinces come first, matching World::provinces indices; then cities.
     pub settlements: Vec<Settlement>,
     pub countries: Vec<CountryEconomy>,
@@ -141,6 +144,8 @@ impl Simulation {
         diagnostics.extend(modifiers.diagnostics.iter().cloned());
         let science = ScienceCatalog::load(data)?;
         diagnostics.extend(science.diagnostics.iter().cloned());
+        let time_zones = TimeZones::load(data)?;
+        diagnostics.extend(time_zones.diagnostics.iter().cloned());
         let mut settlements = Vec::new();
         let provinces = read_entries::<SettlementEntry>(&data.join("data/planet_data/provinces"))?;
         let cities = read_entries::<SettlementEntry>(&data.join("data/cities"))?;
@@ -160,6 +165,17 @@ impl Simulation {
                 .country
                 .as_ref()
                 .and_then(|identifier| country_ids.get(identifier.as_str()).copied());
+            let time_zone = entry
+                .timezone
+                .as_deref()
+                .filter(|name| !name.is_empty())
+                .and_then(|name| {
+                    let zone = time_zones.id(name);
+                    if zone.is_none() {
+                        diagnostics.push(format!("{}: unknown time zone {name}", entry.identifier));
+                    }
+                    zone
+                });
             let populations = entry
                 .population
                 .into_iter()
@@ -219,6 +235,7 @@ impl Simulation {
                 country,
                 body,
                 kind,
+                time_zone,
                 spaceport: (city
                     && entry.spaceport.is_some_and(|value| {
                         value != Value::Null
@@ -288,6 +305,7 @@ impl Simulation {
             catalog,
             modifiers,
             science,
+            time_zones,
             settlements,
             countries,
             planetary_markets,
@@ -543,6 +561,7 @@ struct SettlementEntry {
     color: Option<Value>,
     province: Option<String>,
     coordinates: Option<CoordinatesEntry>,
+    timezone: Option<String>,
     #[serde(rename = "space-port")]
     spaceport: Option<Value>,
     #[serde(default)]
@@ -569,6 +588,30 @@ mod tests {
     fn load(seed: u64) -> Result<Simulation> {
         let data = crate::default_data_path();
         Simulation::load(&data, &World::load(&data)?, seed)
+    }
+    #[test]
+    fn bundled_time_zones_bind_cities_without_inventing_province_offsets() -> Result<()> {
+        let simulation = load(42)?;
+        assert_eq!(simulation.time_zones.entries.len(), 107);
+        assert!(!simulation.time_zones.diagnostics.is_empty());
+        for (city, identifier) in [("london", "GMT"), ("tokyo", "JST"), ("beijing", "CST")] {
+            let site = simulation
+                .settlements
+                .iter()
+                .find(|site| !site.is_province() && site.identifier == city)
+                .unwrap();
+            let zone = &simulation.time_zones.entries[site.time_zone.unwrap().0];
+            assert_eq!(zone.identifier, identifier);
+            assert_eq!(site.time_zone, simulation.time_zones.id(identifier));
+        }
+        assert!(
+            simulation
+                .settlements
+                .iter()
+                .filter(|site| site.is_province())
+                .all(|site| site.time_zone.is_none())
+        );
+        Ok(())
     }
     #[test]
     fn first_tick_and_daily_weekly_scheduling_use_original_intervals() -> Result<()> {

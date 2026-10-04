@@ -169,6 +169,9 @@ and small/empty workforces. Undefined unemployment conversions are not accepted
 as portable behavior; unordered mixed-direction drift still needs broader coverage.
 Science-field and technology definitions also compare against the actual source
 loaders, including defaults and directed/duplicate graph-reference handling.
+All 107 fixed-offset time zones and city bindings match the original loader;
+duplicate identifiers keep the final lookup and local hours preserve the source's
+signed remainder and fractional-hour truncation rather than adding DST behavior.
 All 22 recipes additionally pass seeded production-system comparisons with two
 seeds across all eight states. Six seeds compare 12,000 raw engine words and 30,000
 mixed normal/integer distribution sequences against the actual original StdRandom.

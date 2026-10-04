@@ -18,6 +18,7 @@ Successful long runs establish stability, not gameplay parity.
 | Country/province map and globe picking | Implemented | Original map fixtures, ray/UV tests, offscreen GPU smoke checks; remaining legacy overlays |
 | Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus and settings |
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior; time-zone UI remains |
+| Time-zone definitions / city bindings | Loader and clock reference-tested | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases; native local-time display remains |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
 | Goods / jobs / recipes / economy config | Implemented | Original 56 goods, 5 jobs, 22 recipes; defaults, units, construction-cost scaling; full loader differential corpus remains |
 | Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; zoning, power grids, resource amenability remain |
@@ -91,6 +92,12 @@ Successful long runs establish stability, not gameplay parity.
   so the Rust port must not invent automatic progress or unlock effects. The unused
   `scienceprojects.hjson` is not registered in the source asset manifest. Invalid
   technology field references fail clearly instead of creating default entities.
+- Time zones are the source's fixed offsets, not DST/IANA rules: `isdst`, `text`
+  and `utc` metadata have no loader behavior. Duplicate identifiers retain all
+  definitions but the last lookup wins. GetHour uses signed remainder and truncates
+  fractional hours without shifting minutes, so negative hours are preserved.
+  Unknown settlement zones are diagnosed instead of keeping invalid entity references;
+  non-finite offsets are rejected rather than exposing undefined integer conversion.
 - The original HJSON orbit loader ignores `epoch` and its optional/copy constructor
   initializes true anomaly to mean anomaly; both are reference-tested and preserved.
   The unregistered legacy `satellites.txt` TLE file is not loaded. Signed retrograde
@@ -187,9 +194,9 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 83 unit tests
-and 17 differential tests: 16 pass, while the explicit seeded lunar acceptance
-gate currently fails. Sixteen live tests require the reference executable.
+365 market-history records and CSV/industry export checks. There are 86 unit tests
+and 18 differential tests: 17 pass, while the explicit seeded lunar acceptance
+gate currently fails. Seventeen live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -218,6 +225,10 @@ Science comparisons execute the actual loaders on the bundled definitions and a
 controlled graph with duplicate/self/missing references, duplicate technology fields,
 tags, fractional difficulty and defaults. `cqsp-sim --science-json NEW_PATH` exports
 the loaded definitions without overwriting existing files; this is not a game save.
+Time-zone comparisons execute TimezoneLoader on all 107 definitions plus controlled
+duplicates, missing offsets, numeric strings, booleans and malformed numeric strings.
+Eight clock boundaries per zone compare actual GetHour/GetMinute. The city-loader
+corpus also checks its time-zone bindings after loading the original catalog.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking

@@ -27,6 +27,7 @@ try {
         "$repoRoot/src/core/loading/hjsonloader.cpp" "$repoRoot/src/core/loading/loadcities.cpp" `
         "$repoRoot/src/core/loading/projectloader.cpp" "$repoRoot/src/core/util/color.cpp" `
         "$repoRoot/src/core/loading/fields.cpp" "$repoRoot/src/core/loading/technology.cpp" `
+        "$repoRoot/src/core/loading/timezoneloader.cpp" `
         "$repoRoot/src/core/actions/factoryconstructaction.cpp" "$repoRoot/src/core/actions/maneuver/transfers.cpp" `
         "$repoRoot/src/core/util/nameutil.cpp" `
         "$repoRoot/src/core/game.cpp" "$repoRoot/src/core/scripting/scripting.cpp" `
