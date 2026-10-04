@@ -832,6 +832,7 @@ fn verify_capture(
     markers: Query<(&Focus, &Transform)>,
     plots: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PlotImage>>,
     pies: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PieImage>>,
+    policy_fills: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::budget::Fill>>,
     game: Res<Game>,
 ) {
     let pixels = capture
@@ -944,6 +945,34 @@ fn verify_capture(
             "Smoke check: history series not rendered ({plotted} pixels)"
         );
         println!("SMOKE: verified history plot ({plotted} series pixels).");
+    }
+    if inspector.is_budget() {
+        let mut verified = 0;
+        for (node, transform) in &policy_fills {
+            assert!(
+                !node.is_empty(),
+                "Smoke check: policy slider fill not laid out"
+            );
+            let center = transform.affine().translation;
+            let min = (center - node.size() / 2.0).max(Vec2::ZERO).as_uvec2();
+            let max = (center + node.size() / 2.0)
+                .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
+                .as_uvec2();
+            let mut gold = 0;
+            for y in min.y..max.y {
+                for x in min.x..max.x {
+                    let [r, g, b] = pixels.get_pixel(x, y).0;
+                    gold += usize::from(r > 160 && g > 100 && (b as f32) < r as f32 * 0.8);
+                }
+            }
+            assert!(
+                gold > 1500,
+                "Smoke check: policy slider obscured ({gold} gold pixels, bounds {min:?}..{max:?})"
+            );
+            verified += 1;
+        }
+        assert_eq!(verified, 2, "Smoke check: both policy sliders must render");
+        println!("SMOKE: verified both policy slider fill bars.");
     }
     if navigation.active && !ui.open && !inspector.open {
         let mut orbit_pixels = 0;

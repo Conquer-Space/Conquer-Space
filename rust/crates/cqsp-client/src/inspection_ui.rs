@@ -680,6 +680,9 @@ impl Inspector {
     pub(super) fn is_demographics(&self) -> bool {
         self.open && self.tab == Tab::Demographics
     }
+    pub(super) fn is_budget(&self) -> bool {
+        self.open && self.tab == Tab::Budget
+    }
     fn demographic_segments<'a>(
         &self,
         game: &'a Game,

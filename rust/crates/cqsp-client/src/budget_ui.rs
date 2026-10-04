@@ -1,5 +1,5 @@
 //! Native replacements for the original economy subsidy and absolute-tax windows.
-use super::{Action, Game, Inspector, Panel, Tab, button, row, ui_font};
+use super::{Action, Game, Inspector, Panel, Tab, button, ui_font};
 use bevy::{prelude::*, ui::RelativeCursorPosition};
 use cqsp_core::{catalog::RecipeId, economy::GoodId};
 use std::fmt::Write;
@@ -180,12 +180,22 @@ pub(super) fn spawn(panel: &mut ChildSpawnerCommands, font: &Handle<Font>) {
             },
         ))
         .with_children(|panel| {
-            row(panel, |bar| {
-                button(bar, font, Action::TaxGood, "Next tax good");
-                button(bar, font, Action::FullSubsidy, "Toggle full subsidy");
-                button(bar, font, Action::ApplySubsidy, "Apply national subsidy");
-                button(bar, font, Action::RemoveSubsidy, "Remove selected policy");
-            });
+            panel
+                .spawn(Node {
+                    min_height: px(32),
+                    flex_direction: FlexDirection::Row,
+                    flex_wrap: FlexWrap::Wrap,
+                    column_gap: px(10),
+                    row_gap: px(6),
+                    flex_shrink: 0.0,
+                    ..default()
+                })
+                .with_children(|bar| {
+                    button(bar, font, Action::TaxGood, "Next tax good");
+                    button(bar, font, Action::FullSubsidy, "Toggle full subsidy");
+                    button(bar, font, Action::ApplySubsidy, "Apply national subsidy");
+                    button(bar, font, Action::RemoveSubsidy, "Remove selected policy");
+                });
             for policy in [Policy::Tax, Policy::Subsidy] {
                 panel
                     .spawn(Node {
@@ -204,6 +214,9 @@ pub(super) fn spawn(panel: &mut ChildSpawnerCommands, font: &Handle<Font>) {
                             ui_font(font, 15.0),
                             Node {
                                 width: px(260),
+                                height: px(24),
+                                min_height: px(24),
+                                flex_shrink: 0.0,
                                 ..default()
                             },
                         ));
