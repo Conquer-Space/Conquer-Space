@@ -26,6 +26,7 @@ pub(super) enum Tab {
     Construction,
     Infrastructure,
     Science,
+    Economy,
     Budget,
     Production,
     Exploration,
@@ -56,11 +57,8 @@ pub(super) enum Action {
     ChartWindow,
     ChartFit,
     NextDay,
-    TaxGood,
-    AbsoluteTax(f32),
-    FullSubsidy,
-    ApplySubsidy,
-    RemoveSubsidy,
+    AbsoluteTax { good: GoodId, amount: f32 },
+    Policy(budget::Action),
     Explore(BodyId),
 }
 #[derive(Component)]
@@ -224,7 +222,10 @@ impl Inspector {
         }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) {
-        if matches!(action, Action::Close | Action::Tab(_) | Action::TaxGood) {
+        if matches!(action, Action::Close) || matches!(action, Action::Tab(tab) if tab != self.tab)
+        {
+            self.budget.close();
+        } else if matches!(action, Action::Previous | Action::Next) {
             self.budget.release();
         }
         if matches!(
@@ -375,7 +376,18 @@ impl Inspector {
                             .max(1);
                         cycle(&mut self.page, count, previous);
                     }
-                    Tab::Construction | Tab::Budget => {
+                    Tab::Budget => cycle(
+                        &mut self.page,
+                        game.simulation
+                            .catalog
+                            .goods
+                            .len()
+                            .div_ceil(budget::TAX_PAGE_SIZE)
+                            .max(1),
+                        previous,
+                    ),
+                    Tab::Economy => {}
+                    Tab::Construction => {
                         cycle(
                             &mut self.recipe,
                             game.simulation.catalog.recipes.len(),
@@ -466,15 +478,14 @@ impl Inspector {
                 game.last_tick = 0.0;
                 game.simulation.advance_day();
             }
-            Action::TaxGood => cycle(&mut self.good, game.simulation.catalog.goods.len(), false),
-            Action::AbsoluteTax(amount) => {
+            Action::AbsoluteTax { good, amount } => {
                 if self.tab == Tab::Budget {
-                    self.budget.set_tax(amount, game, self.good);
+                    self.budget.set_tax(amount, game, good.0);
                 }
             }
-            Action::FullSubsidy | Action::ApplySubsidy | Action::RemoveSubsidy => {
-                if self.tab == Tab::Budget {
-                    self.budget.apply(action, game, self.recipe);
+            Action::Policy(action) => {
+                if self.tab == Tab::Economy {
+                    self.budget.apply(action, game);
                 }
             }
         }
@@ -508,6 +519,13 @@ impl Inspector {
             })
     }
     fn scope(&self, game: &Game) -> String {
+        if matches!(self.tab, Tab::Economy | Tab::Budget) {
+            return format!(
+                "{} · National policies / global taxes · {}\nProvince and planet filters do not affect these controls.",
+                game.simulation.date.display(),
+                if game.paused { "Paused" } else { "Running" }
+            );
+        }
         if matches!(self.tab, Tab::Production | Tab::Exploration) {
             return format!(
                 "{} · Global scope · {}\nNo country, planet or province filter applies here.",
@@ -564,7 +582,7 @@ impl Inspector {
             Tab::Civilization => self.civilization(game),
             Tab::History => self.history(game),
             Tab::Infrastructure => self.infrastructure(game),
-            Tab::Budget => self.budget.content(game, self.good, self.recipe),
+            Tab::Economy | Tab::Budget => self.budget.content(game, self.tab, self.page),
             Tab::Markets => {
                 let market = self
                     .province
@@ -743,6 +761,9 @@ impl Inspector {
     }
     pub(super) fn is_budget(&self) -> bool {
         self.open && self.tab == Tab::Budget
+    }
+    pub(super) fn is_economy(&self) -> bool {
+        self.open && self.tab == Tab::Economy
     }
     pub(super) fn is_production(&self) -> bool {
         self.open && self.tab == Tab::Production
@@ -1623,6 +1644,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     (Tab::Construction, "Construction"),
                     (Tab::Infrastructure, "Infrastructure"),
                     (Tab::Science, "Science"),
+                    (Tab::Economy, "Economy"),
                     (Tab::Budget, "Budget"),
                     (Tab::Production, "Production"),
                     (Tab::Exploration, "Exploration"),
@@ -1668,7 +1690,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                 button(bar, font, Action::Next, "Next item / page");
                 button(bar, font, Action::NextTechnology, "Next technology");
             });
-            budget::spawn(panel, font);
+            budget::spawn(panel, font, game);
             panel
                 .spawn((
                     Panel::Exploration,
@@ -1884,6 +1906,7 @@ pub(super) fn controls(
     }
     if game.session.player_country.is_none() {
         inspector.open = false;
+        inspector.budget.close();
         inspector.capture_input = false;
         return;
     }
@@ -1892,13 +1915,18 @@ pub(super) fn controls(
     }
     if keyboard.just_pressed(KeyCode::KeyI) {
         inspector.open = !inspector.open;
+        if !inspector.open {
+            inspector.budget.close();
+        }
     }
     if inspector.open && keyboard.just_pressed(KeyCode::Escape) {
         inspector.open = false;
+        inspector.budget.close();
         return;
     }
     if keyboard.just_pressed(KeyCode::KeyP) {
         inspector.open = false;
+        inspector.budget.close();
     }
     for (action, interaction) in &buttons {
         if *interaction == Interaction::Pressed
@@ -1966,11 +1994,15 @@ pub(super) fn update(
             Panel::DemographicActions => inspector.open && inspector.tab == Tab::Demographics,
             Panel::ConstructionActions => inspector.open && inspector.tab == Tab::Construction,
             Panel::HistoryActions => inspector.is_history(),
-            Panel::BudgetActions => inspector.open && inspector.tab == Tab::Budget,
+            Panel::BudgetActions => inspector.is_budget() || inspector.is_economy(),
             Panel::Production => inspector.is_production(),
             Panel::Exploration => inspector.is_exploration(),
             Panel::ScopeActions => {
-                inspector.open && !matches!(inspector.tab, Tab::Production | Tab::Exploration)
+                inspector.open
+                    && !matches!(
+                        inspector.tab,
+                        Tab::Production | Tab::Exploration | Tab::Economy | Tab::Budget
+                    )
             }
             Panel::ConsumptionPlots => {
                 inspector.is_demographics() && inspector.segment(&game, 0).is_some()

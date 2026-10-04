@@ -147,6 +147,7 @@ fn main() -> Result<()> {
     let mut data = default_data_path();
     let mut smoke = false;
     let mut inspection_smoke = false;
+    let mut policy_smoke = false;
     let mut print_paths = false;
     let mut saves_root = None;
     let mut settings_path = None;
@@ -160,6 +161,10 @@ fn main() -> Result<()> {
             "--smoke-inspection" => {
                 smoke = true;
                 inspection_smoke = true;
+            }
+            "--smoke-policy" => {
+                smoke = true;
+                policy_smoke = true;
             }
             "--paths" => print_paths = true,
             "--settings" => {
@@ -182,6 +187,7 @@ fn main() -> Result<()> {
                 );
                 println!("T: star-system tree / orbit filter; double-click names to focus");
                 println!("--smoke-inspection: offscreen production and exploration checks only");
+                println!("--smoke-policy: offscreen subsidy, labor and tax checks only");
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -337,10 +343,22 @@ fn main() -> Result<()> {
         .init_resource::<sidebar_ui::Sidebar>()
         .insert_resource(Smoke {
             enabled: smoke,
-            stage: if inspection_smoke { 65 } else { 0 },
+            stage: if policy_smoke {
+                71
+            } else if inspection_smoke {
+                65
+            } else {
+                0
+            },
             elapsed: 0.0,
             captures: 0,
-            expected_captures: if inspection_smoke { 3 } else { 35 },
+            expected_captures: if policy_smoke {
+                4
+            } else if inspection_smoke {
+                3
+            } else {
+                39
+            },
         })
         .insert_resource(InitialAssets {
             terrain: terrain_image,
@@ -1076,6 +1094,7 @@ fn verify_capture(
     let mut tree_heading = false;
     let mut production_columns = 0;
     let mut exploration_heading = false;
+    let mut policy_heading = false;
     for (text, node, transform, production_cell) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -1136,6 +1155,14 @@ fn verify_capture(
         production_columns +=
             usize::from(cqsp_core::economy::production_summary::COLUMNS.contains(&text.0.as_str()));
         exploration_heading |= text.0.starts_with("EXPLORATION · ");
+        policy_heading |= [
+            "ADD SUBSIDY",
+            "SUBSIDIZE INDUSTRY",
+            "LABOR MARKET",
+            "TAXES ·",
+        ]
+        .iter()
+        .any(|heading| text.0.starts_with(heading));
     }
     assert!(
         checked
@@ -1258,6 +1285,9 @@ fn verify_capture(
     if inspector.is_exploration() {
         assert!(exploration_heading, "Exploration orbit information missing");
     }
+    if inspector.is_budget() || inspector.is_economy() {
+        assert!(policy_heading, "Policy workflow heading missing");
+    }
     if inspector.is_demographics() {
         let mut verified = 0;
         for (node, transform) in &pies {
@@ -1312,10 +1342,10 @@ fn verify_capture(
     if inspector.is_budget() {
         let mut verified = 0;
         for (node, transform) in &policy_fills {
-            assert!(
-                !node.is_empty(),
-                "Smoke check: policy slider fill not laid out"
-            );
+            // Untouched/zero-valued tax rows and the hidden subsidy editor have no fill.
+            if node.is_empty() {
+                continue;
+            }
             let center = transform.affine().translation;
             let min = (center - node.size() / 2.0).max(Vec2::ZERO).as_uvec2();
             let max = (center + node.size() / 2.0)
@@ -1334,8 +1364,8 @@ fn verify_capture(
             );
             verified += 1;
         }
-        assert_eq!(verified, 2, "Smoke check: both policy sliders must render");
-        println!("SMOKE: verified both policy slider fill bars.");
+        assert!(verified >= 1, "Smoke check: edited tax slider must render");
+        println!("SMOKE: verified {verified} tax slider fill bars.");
     }
     if navigation.active && !ui.open && !inspector.open && !saves.open && !menu.is_open() {
         if navigation.is_surface_focus() {
@@ -1807,12 +1837,28 @@ fn smoke_test(
             );
             inspector.apply(inspection_ui::Action::ConstructFactory, &mut game);
             inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Economy),
+                &mut game,
+            );
+            for action in [
+                inspection_ui::budget::Action::Add,
+                inspection_ui::budget::Action::Recipe(cqsp_core::catalog::RecipeId(0)),
+                inspection_ui::budget::Action::Full,
+                inspection_ui::budget::Action::Apply,
+            ] {
+                inspector.apply(inspection_ui::Action::Policy(action), &mut game);
+            }
+            inspector.apply(
                 inspection_ui::Action::Tab(inspection_ui::Tab::Budget),
                 &mut game,
             );
-            inspector.apply(inspection_ui::Action::FullSubsidy, &mut game);
-            inspector.apply(inspection_ui::Action::ApplySubsidy, &mut game);
-            inspector.apply(inspection_ui::Action::AbsoluteTax(2.5), &mut game);
+            inspector.apply(
+                inspection_ui::Action::AbsoluteTax {
+                    good: cqsp_core::economy::GoodId(0),
+                    amount: 2.5,
+                },
+                &mut game,
+            );
             let site = &game.simulation.settlements[province];
             assert_eq!(site.industries.last().unwrap().output_subsidy, 1.0);
             assert_eq!(game.simulation.countries[country].subsidies.len(), 1);
@@ -2214,6 +2260,78 @@ fn smoke_test(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "exploration-sun.png",
+        ),
+        71 if smoke.expected_captures != 3 => {
+            if game.session.player_country.is_none() {
+                let usa = game
+                    .world
+                    .countries
+                    .iter()
+                    .position(|country| country.identifier == "usa")
+                    .unwrap();
+                game.session.select(usa);
+                game.session.start();
+            }
+            sidebar.select(
+                sidebar_ui::Selection::Economy,
+                &mut game,
+                &mut inspector,
+                &mut ui,
+            );
+            for action in [
+                inspection_ui::budget::Action::View(inspection_ui::budget::View::Subsidies),
+                inspection_ui::budget::Action::Add,
+                inspection_ui::budget::Action::Recipe(cqsp_core::catalog::RecipeId(21)),
+                inspection_ui::budget::Action::Full,
+            ] {
+                inspector.apply(inspection_ui::Action::Policy(action), &mut game);
+            }
+        }
+        72 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "subsidy-editor.png",
+        ),
+        73 => inspector.apply(
+            inspection_ui::Action::Policy(inspection_ui::budget::Action::Apply),
+            &mut game,
+        ),
+        74 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "subsidy-list.png",
+        ),
+        75 => inspector.apply(
+            inspection_ui::Action::Policy(inspection_ui::budget::Action::View(
+                inspection_ui::budget::View::Labor,
+            )),
+            &mut game,
+        ),
+        76 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "labor-market.png",
+        ),
+        77 => {
+            sidebar.select(
+                sidebar_ui::Selection::Budget,
+                &mut game,
+                &mut inspector,
+                &mut ui,
+            );
+            inspector.apply(inspection_ui::Action::Previous, &mut game);
+            inspector.apply(
+                inspection_ui::Action::AbsoluteTax {
+                    good: cqsp_core::economy::GoodId(55),
+                    amount: 3.75,
+                },
+                &mut game,
+            );
+        }
+        78 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "tax-last-page.png",
         ),
         _ => {
             assert_eq!(

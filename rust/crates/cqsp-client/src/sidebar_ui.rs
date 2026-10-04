@@ -45,7 +45,8 @@ impl Sidebar {
             .apply(spaceport_ui::Action::Close, game)
             .expect("Close space window");
         let tab = match selection {
-            Selection::Economy | Selection::Budget => Some(Tab::Budget),
+            Selection::Economy => Some(Tab::Economy),
+            Selection::Budget => Some(Tab::Budget),
             Selection::Buildings => Some(Tab::Production),
             Selection::Exploration => Some(Tab::Exploration),
             Selection::Space => {
@@ -152,7 +153,8 @@ pub(super) fn update(
     };
     let closed = match sidebar.selected {
         Selection::Buildings => !inspector.is_production(),
-        Selection::Economy | Selection::Budget => !inspector.is_budget(),
+        Selection::Economy => !inspector.is_economy(),
+        Selection::Budget => !inspector.is_budget(),
         Selection::Space => {
             game.session
                 .player_country
@@ -323,6 +325,8 @@ mod tests {
             Selection::Exploration
         );
         select(&mut app, Selection::Economy);
+        assert!(app.world().resource::<Inspector>().is_economy());
+        select(&mut app, Selection::Budget);
         assert!(app.world().resource::<Inspector>().is_budget());
         super::super::inspection_ui::tests::apply(&mut app, Inspect::Close);
         app.update();

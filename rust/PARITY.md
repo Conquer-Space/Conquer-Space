@@ -584,8 +584,8 @@ The native sidebar preserves button order, Buildings/global-production mapping,
 SpaceCapability access guard, Projects' lack of a functional consumer and
 Situations' missing listener branch. Closing production/policy/space clears its
 selection; closing exploration retains its selection like the Lua document.
-Economy and Budget still share the native subsidy/tax/labor panel, rather than
-the source's separate windows and Add Subsidy modal. Native mutually exclusive
+Economy and Budget were initially combined; the following policy milestone
+separates their workflows. Native mutually exclusive
 overlays do not reproduce simultaneous Lua exploration plus a C++ window.
 The bar is relocated below construction controls and hidden underneath search/
 other modals. Source icon expansion/animations and exact mouse phases remain.
@@ -618,6 +618,36 @@ run uses an external working directory, and its 365-day simulation and silent
 dependency audit pass. Focused debug/release checks also pass. No native window
 or audio device is opened; no app processes remain after verification. These
 results establish this slice, not full UI/rendering or whole-game parity.
+
+## Separate policy workflows
+
+Economy now opens Subsidize Industry / Labor, and Budget opens a separate absolute
+tax table. All 56 goods have independent float sliders (0–5), eight per native
+page. Their zero-initialized UI values remain separate from loaded market taxes,
+and edits apply globally to province markets only. Previous/Next releases drags
+before changing the page; invalid IDs/non-finite values cannot mutate markets.
+
+Add Subsidy toggles an explicit all-22-recipe editor. Apply always closes, including
+when nothing was selected. Recipe, float draft and full checkbox survive closing
+and reopening; leaving Economy or selecting Labor closes the editor. Full disables
+the draft slider without overwriting its value and applies 1.0. Each policy has
+its own remove button; removal retains existing factory values. Labor uses the
+initial province list even after ownership changes and the source's raw double
+number formatting, not abbreviated monetary units. The C++ header leaves its
+selected_subsidy member uninitialized; Rust deliberately uses None until selection
+instead of reproducing an undefined initial entity. Stable recipe ordering, inline
+editor/native paging and combined demand/supply columns differ from ImGui's layout;
+identifier-copy/entity tooltips remain outstanding. This is source-mapped workflow
+verification, not execution of the original ImGui windows.
+
+Three native tests cover every tax good, global/province-only application, all
+recipe selections, absent/invalid selection, full lock, retained draft, one-shot
+apply, ledger-only removal, labor ownership independence and seven-page dragging.
+Focused Policy smoke checks four fresh offscreen screens with pixel/text assertions.
+This slice passes 160 unit tests and the silent dependency audit. The four-screen
+check passes in debug and an executable-relative release bundle from a fresh
+working directory. The full scenario is extended to 39 captures; whole-game
+parity and native-window acceptance are still open.
 
 ## Next acceptance gates
 

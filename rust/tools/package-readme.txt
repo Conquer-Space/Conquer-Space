@@ -19,8 +19,9 @@ and future launches unaffected; show-all overwrites individual visibility choice
 The native sidebar's Buildings route opens worldwide Production, not construction
 painting. All nine summary columns and construction bars use original fields;
 hover Size/Revenue for shortages/items sold. Exploration inspects every natural
-body's orbit without moving the camera. Economy/Budget share the native policy
-panel; Space Access requires the source space-program tag. Projects/Situations
+body's orbit without moving the camera. Economy offers subsidy/labor tabs and an
+explicit recipe picker; Budget has a separate paged absolute-tax table.
+Space Access requires the source space-program tag. Projects/Situations
 retain their upstream unimplemented behavior. I also opens native inspection.
 Escape opens the pause menu after starting. Options provides the original 15
 resolution presets and fullscreen; audio is intentionally unavailable. Save
@@ -33,7 +34,7 @@ Use the supplied run-smoke.ps1 -Executable ./cqsp-client.exe for the silent,
 offscreen GPU acceptance run, which waits for both dev and release builds. Captures
 are written beneath target/ in the current working directory; no OS window opens.
 Add -Scenario Inspection for just production and the Moon/Sun exploration screens;
-the default Full scenario verifies all 35 captures.
+add -Scenario Policy for four subsidy/labor/tax screens. Full verifies all 39 captures.
 cqsp-sim.exe --days 365 --seed 42 runs renderer-free stability checks.
 
 The port and original game are GPL-3.0-or-later; see LICENSE.txt. Font notices are

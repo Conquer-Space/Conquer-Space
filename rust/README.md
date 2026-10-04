@@ -31,8 +31,9 @@ Release clients use the Windows GUI subsystem, matching the original release:
 double-clicking does not open a separate console. Pipe `--help`/`--paths` output
 in PowerShell. The supplied `run-smoke.ps1 -Executable ./cqsp-client.exe` waits
 for offscreen GPU checks to complete, including GUI-subsystem releases.
-The default scenario verifies all 35 screens. Add `-Scenario Inspection` for a
+The default scenario verifies all 39 screens. Add `-Scenario Inspection` for a
 focused three-screen production/Moon/Sun check (`--smoke-inspection` directly).
+Use `-Scenario Policy` for four subsidy/labor/tax screens (`--smoke-policy`).
 
 The Rust app is deliberately **silent**: no music, effects or sound-device backend
 are built in. Original sound assets are left untouched. Run
@@ -173,7 +174,7 @@ bars follow the original fields. Hover Size/Revenue for shortages/items sold.
 **Exploration** lists all 11 natural bodies (including Sun and Moon), showing
 semi-major axis, eccentricity and reference body without moving the camera. Sun's
 null parent is displayed as `Null Entity!`, matching the source name helper.
-**Economy** and **Budget** currently share the native subsidy/tax/labor panel;
+**Economy** provides subsidy and labor tabs; **Budget** opens the separate tax table.
 **Space Access** requires the source space-program tag. Projects has no implemented
 source window, and Situations retains the previous sidebar selection as upstream.
 Sidebar/inspection layout is native, not an exact ImGui/RmlUi reproduction.
@@ -208,8 +209,11 @@ resets the view; daily data refresh retains it. Plot wheels do not scroll the pa
 Spaceport inspection
 also shows loaded fixed-offset local time, retaining the source clock's quirks.
 
-Budget exposes every good's absolute 0–5 tax slider and all 22 recipe subsidy
-policies, with a 0–100% slider/full-subsidy lock and apply/remove buttons. Taxes
+Budget exposes all 56 goods' absolute 0–5 tax sliders, eight rows per page.
+Economy's Add Subsidy editor explicitly selects from all 22 recipes, with a
+0–100% draft slider/full-subsidy lock and apply/remove buttons. Applying with no
+selection closes without mutation. Closing/leaving the editor retains the selected
+recipe, draft and full checkbox; entering Labor closes it. Taxes
 affect all province markets globally, not just the player. Subsidies target existing
 factories in the country's initial province list; new factories do not inherit them
 and removing the policy row leaves existing factory values unchanged, like upstream.
