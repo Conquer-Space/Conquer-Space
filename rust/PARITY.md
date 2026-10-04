@@ -35,7 +35,7 @@ Successful long runs establish stability, not gameplay parity.
 | Spacecraft movement / trigger commands | Implemented; lunar delivery reference-tested | Actual original SysOrbit/SysSpacePort scenario compares sampled states, queues, landing/unload ticks and colony core/stage; broader SOI, return flights and command boundary corpus remain |
 | Maneuver planning | Reference-tested components | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner and complete Moon-transfer scenario need broader comparisons |
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
-| Solar-system view | Implemented basic native view | Body/ship focus, hierarchy navigation, precise local frames, orbit overlays, inspection, basic native maneuver buttons; simplified/enlarged markers, textured planets/ships, ground tracks, complete controls and universe generation remain |
+| Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
 | Industry modifiers | Reference-tested components; integration implemented | Additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded, industry gain/cap wiring tested; modifier UI remains |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Native replacements for scripted UI/events | Partial | Country selection is native; civ info, exploration, side menu and event infrastructure remain |
@@ -83,6 +83,14 @@ Successful long runs establish stability, not gameplay parity.
 - A missing atmosphere adds a zero-height atmosphere in the C++ loader (Undefined
   is not Null); preserve that distinction. Unknown parents/cyclic hierarchies and
   invalid conics fail clearly rather than leaving undefined entity references.
+- Body orientation follows the source's float angle/quaternion computation, including
+  its double remainder after float conversion. Ground coordinates use the original
+  Z-up frame and rotate into Bevy's Y-up view through an explicit axis reflection.
+  Original float helpers compare within 2e-6 relative/absolute tolerance; double
+  orbit/economy comparisons retain 1e-12. Zero/invalid ground positions return None
+  instead of undefined angles. Texture paths come from the original manifest:
+  Earth is 8K in system view and the file named `2k_moon.jpg` is actually 1K.
+  The selection globe remains 2K. Planet lighting is still unlit, not shader parity.
 - State recovery uses the original apsis frame even for tiny nonzero eccentricity.
   GLM's quaternion operation order and explicit Orbit copy's v=M0 behavior matter:
   the previous circular fallback changed lunar landing by six ticks (one hour).
@@ -154,8 +162,8 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 68 unit tests
-plus 12 differential tests (11 live tests require the reference executable).
+365 market-history records and CSV/industry export checks. There are 71 unit tests
+plus 13 differential tests (12 live tests require the reference executable).
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
@@ -171,6 +179,11 @@ Labor/construction comparisons use six cases over 12 weekly steps, checking job
 counts, hours, employment, daily demand, purchased consumption and sector cost.
 Undefined unsigned unemployment conversions are excluded explicitly, not accepted
 as platform-dependent reference values. Mixed-direction traversal remains a gap.
+Body rotation and ground-track helpers compare 165 samples over 11 bodies and five
+epochs, including retrograde and zero-rotation bodies. Renderer-free tests check
+texture dimensions, axis reflection, surface path radii, escape-path rejection and
+the ground-track toggle. GPU captures check actual texture color variation and
+magenta ground-track pixels in the focused spacecraft's parent-body region.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking
@@ -189,7 +202,7 @@ native screen actions. Six verified captures include the spaceport panel and new
 launched vehicle. Text editing, Unicode deletion, shortcut isolation, one-shot
 buttons, scrolling and invalid-design non-mutation have renderer-free ECS tests.
 Text checks cover both glyph layouts and bright pixels inside visible text blocks;
-system captures also check orbit-overlay pixels. Synchronous pipeline preparation
+system captures also check orbit, texture and ground-track pixels. Synchronous pipeline preparation
 and sibling-label refresh address the previous missing-text captures. The previous
 window-dependent center-ray failure is avoided by targeting the fixed render image.
 Repeated offscreen runs have passed; live desktop input/resize still needs separate

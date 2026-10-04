@@ -196,19 +196,23 @@ fn orbit_elements(orbit: Orbit) -> [f64; 9] {
 }
 
 fn compare(actual: &Value, expected: &Value) {
-    fn visit(actual: &Value, expected: &Value, path: &str) {
+    compare_with_tolerance(actual, expected, 1e-12);
+}
+
+fn compare_with_tolerance(actual: &Value, expected: &Value, tolerance: f64) {
+    fn visit(actual: &Value, expected: &Value, path: &str, tolerance: f64) {
         match (actual, expected) {
             (Value::Number(a), Value::Number(b)) => {
                 let (a, b) = (a.as_f64().unwrap(), b.as_f64().unwrap());
                 assert!(
-                    (a - b).abs() <= 1e-12 * b.abs().max(1.0),
+                    (a - b).abs() <= tolerance * b.abs().max(1.0),
                     "{path}: Rust {a}, C++ {b}"
                 );
             }
             (Value::Array(a), Value::Array(b)) => {
                 assert_eq!(a.len(), b.len(), "{path}");
                 for (index, (a, b)) in a.iter().zip(b).enumerate() {
-                    visit(a, b, &format!("{path}[{index}]"));
+                    visit(a, b, &format!("{path}[{index}]"), tolerance);
                 }
             }
             (Value::Object(a), Value::Object(b)) => {
@@ -218,13 +222,58 @@ fn compare(actual: &Value, expected: &Value) {
                     "{path}"
                 );
                 for (key, b) in b {
-                    visit(&a[key], b, &format!("{path}.{key}"));
+                    visit(&a[key], b, &format!("{path}.{key}"), tolerance);
                 }
             }
             _ => assert_eq!(actual, expected, "{path}"),
         }
     }
-    visit(actual, expected, "$");
+    visit(actual, expected, "$", tolerance);
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares original float body rotation/ground track"]
+fn body_rotations_and_ground_tracks_match_original_float_helpers() {
+    let mut system = SolarSystem::load(&default_data_path()).unwrap();
+    system.bodies[system.sun.0].rotation_period = 0.0;
+    let mut inputs = Vec::new();
+    let mut samples = Vec::new();
+    for body in &system.bodies {
+        for time in [-86400.0, 0.0, 600.0, 86400.0, 365.0 * 86400.0] {
+            for position in [
+                DVec3::X * 7000.0,
+                DVec3::Y * 7000.0,
+                DVec3::new(4000.0, -5000.0, 3000.0),
+            ] {
+                inputs.push([
+                    body.axial_tilt,
+                    body.rotation_period,
+                    body.rotation_offset,
+                    time,
+                    position.x,
+                    position.y,
+                    position.z,
+                ]);
+                let rotation = body.orientation(time);
+                let [latitude, longitude] = body.ground_track(position, time).unwrap();
+                samples.push([
+                    rotation.x as f64,
+                    rotation.y as f64,
+                    rotation.z as f64,
+                    rotation.w as f64,
+                    latitude,
+                    longitude,
+                ]);
+            }
+        }
+    }
+    assert_eq!(samples.len(), 165);
+    // Original helpers are float GLM operations, unlike double orbital comparisons.
+    compare_with_tolerance(
+        &json!(samples),
+        &reference_output(Some("--ground-tracks"), &json!(inputs).to_string()),
+        2e-6,
+    );
 }
 
 #[test]

@@ -51,10 +51,14 @@ pauses and preserves the in-memory simulation; it does not create a new game.
 V switches Earth/system views after starting. In system view, Tab/Shift+Tab cycle
 natural bodies; Q/Shift+Q cycle spacecraft at the current body; Backspace selects
 the parent and E focuses Earth. Click a marker to focus it. Drag/arrows/wheel control
-the camera; O toggles orbit paths. Select a spacecraft to use the maneuver buttons;
+the camera; O toggles orbit paths and G toggles the selected spacecraft's ground track.
+Select a spacecraft to use the maneuver buttons;
 brackets adjust their target radius by 10%. Distances are center-to-center kilometers,
-not altitude. Body/ship markers are enlarged for visibility; this is not yet the
-original textured system renderer or the complete spacecraft interface.
+not altitude. Planet textures come from the original asset manifest and rotate with
+their axial tilt/day length. The inspector reports surface latitude/longitude; the
+magenta ground path projects one future spacecraft orbit onto the current planet.
+Body/ship markers remain enlarged for visibility and planets are unlit; original
+lighting/ship models and the complete spacecraft interface remain to be ported.
 
 P or the **Spaceports & missions** button opens the native space screen. Design a
 vehicle, select a port and manufacture it (90 daily steps), then set orbit parameters
@@ -106,6 +110,9 @@ captures; sibling labels refresh together when their panel changes. Smoke tests 
 render to a fixed-size GPU image **without creating an OS window** and ignore live
 input. They check glyph layouts, actual text/overlay pixels and all six completed
 captures. Background tests work while normal game windows are minimized or closed.
+Focused-spacecraft captures also verify texture color variation and ground-track
+pixels. The body-rotation/ground-coordinate helpers are compared against the actual
+float GLM source across 165 samples (2e-6 tolerance; double comparisons remain 1e-12).
 
 ## Layout and next milestone
 

@@ -20,6 +20,7 @@ try {
         "$repoRoot/src/core/components/resourceledger.cpp" "$repoRoot/src/core/components/pid.cpp" `
         "$repoRoot/src/core/components/stardate.cpp" "$repoRoot/src/core/systems/economy/economyconfig.cpp" `
         "$repoRoot/src/core/components/orbit.cpp" "$repoRoot/src/core/loading/loadorbit.cpp" "$repoRoot/src/core/loading/loadutil.cpp" `
+        "$repoRoot/src/core/components/coordinates.cpp" "$repoRoot/src/core/util/orbit/groundtrack.cpp" `
         "$repoRoot/src/core/actions/maneuver/basicmaneuver.cpp" "$repoRoot/src/core/actions/maneuver/hohmann.cpp" `
         "$repoRoot/src/core/actions/maneuver/rendezvous.cpp" `
         "$repoRoot/src/core/actions/maneuver/commands.cpp" "$repoRoot/src/core/universe.cpp" `

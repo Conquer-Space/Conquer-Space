@@ -9,5 +9,7 @@ license.workspace = true
 cqsp-core = { path = "../cqsp-core" }
 anyhow.workspace = true
 image.workspace = true
+serde_json.workspace = true
+serde-hjson.workspace = true
 # Deliberately silent: never enable Bevy audio or its sound-device backends.
 bevy = { version = "=0.19.0", default-features = false, features = ["std", "default_app", "bevy_winit", "bevy_pbr", "bevy_ui_render", "bevy_gizmos_render", "bevy_log", "default_font", "multi_threaded", "png", "jpeg"] }

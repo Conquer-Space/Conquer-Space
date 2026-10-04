@@ -45,6 +45,7 @@
 #include "core/systems/economy/syslabormarket.h"
 #include "core/systems/economy/sysinfrastructure.h"
 #include "core/systems/movement/sysorbit.h"
+#include "core/util/orbit/groundtrack.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/null_sink.h>
 
@@ -327,6 +328,21 @@ void PrintLabor() {
             rows.push_back(row);
         }
         output.push_back(rows);
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintGroundTracks() {
+    auto input = ReadInput();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int index = 0; index < input.size(); ++index) {
+        const auto& row = input[index];
+        bodies::Body body{};
+        body.axial = row[0].to_double(); body.rotation = row[1].to_double(); body.rotation_offset = row[2].to_double();
+        auto rotation = cqsp::core::util::GetBodyRotation(row[3].to_double(), body);
+        glm::vec3 position(row[4].to_double(), row[5].to_double(), row[6].to_double());
+        auto ground = cqsp::core::util::GetGroundTrack(rotation, position);
+        output.push_back(Numbers({rotation.x, rotation.y, rotation.z, rotation.w, ground.r_latitude(), ground.r_longitude()}));
     }
     WriteJson(output); std::cout << '\n';
 }
@@ -790,6 +806,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--interplanetary") { PrintInterplanetary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--labor") { PrintLabor(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--ground-tracks") { PrintGroundTracks(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--population") { PrintPopulation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--manufacturing") { PrintManufacturing(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production") { PrintProduction(); return 0; }

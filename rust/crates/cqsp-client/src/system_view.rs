@@ -1,5 +1,5 @@
 use super::{Game, Orbit as GlobeCamera, ui_font};
-use anyhow::{Result, ensure};
+use anyhow::{Context, Result, ensure};
 use bevy::{
     input::mouse::{AccumulatedMouseMotion, AccumulatedMouseScroll},
     prelude::*,
@@ -8,9 +8,58 @@ use cqsp_core::{
     clock::StarDate,
     flight::{Burn, FlightStatus},
     orbit::Orbit,
-    solar_system::{BodyId, ShipId, SolarSystem},
+    solar_system::{BodyId, CelestialBody, ShipId, SolarSystem},
 };
-use std::f64::consts::PI;
+use std::{
+    collections::BTreeMap,
+    f64::consts::PI,
+    path::{Component as PathComponent, Path},
+};
+
+#[derive(Resource, Default)]
+pub(super) struct BodyTextures(BTreeMap<BodyId, Image>);
+impl BodyTextures {
+    pub fn load(data: &Path, system: &SolarSystem) -> Result<Self> {
+        let directory = data.join("gfx/img");
+        let manifest: serde_json::Value =
+            serde_hjson::from_str(&std::fs::read_to_string(directory.join("resource.hjson"))?)?;
+        let mut images = BTreeMap::new();
+        for (index, body) in system.bodies.iter().enumerate() {
+            let Some(name) = &body.terrain.terrain else {
+                continue;
+            };
+            let resource = &manifest[name];
+            ensure!(
+                resource["type"] == "texture",
+                "{}: unknown terrain texture {name}",
+                body.identifier
+            );
+            let path = resource["path"]
+                .as_str()
+                .context("Terrain texture has no path")?;
+            ensure!(
+                Path::new(path)
+                    .components()
+                    .all(|component| matches!(component, PathComponent::Normal(_))),
+                "Unsafe terrain texture path {path}"
+            );
+            let image = image::open(directory.join(path))
+                .with_context(|| format!("Loading {} terrain", body.name))?
+                .to_rgba8();
+            images.insert(
+                BodyId(index),
+                super::rgba_image(image.width(), image.height(), image.into_raw()),
+            );
+        }
+        Ok(Self(images))
+    }
+}
+
+fn render_rotation(body: &CelestialBody, time: f64) -> Quat {
+    let rotation = body.orientation(time);
+    // Reflection from legacy Z-up to Bevy Y-up: positions (x,z,y), axes (-x,-z,-y).
+    Quat::from_xyzw(-rotation.x, -rotation.z, -rotation.y, rotation.w)
+}
 
 #[derive(Component, Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Focus {
@@ -23,6 +72,7 @@ pub(super) struct Navigation {
     pub active: bool,
     pub focus: Focus,
     pub show_orbits: bool,
+    pub show_ground_tracks: bool,
     pub target_radius: f64,
     pub message: String,
     yaw: f32,
@@ -36,6 +86,7 @@ impl Navigation {
             active: false,
             focus: Focus::Body(system.body_id("earth").expect("Loaded Earth")),
             show_orbits: true,
+            show_ground_tracks: true,
             target_radius: 14000.0,
             message: String::new(),
             yaw: 0.4,
@@ -153,8 +204,17 @@ impl Navigation {
                 let next = ship.maneuvers.front().map_or("none".into(), |burn| {
                     format!("{:.0} s", burn.time - date.seconds())
                 });
+                let ground = system.bodies[ship.parent.0]
+                    .ground_track(ship.kinematics.state.position, date.seconds())
+                    .map_or("unavailable".into(), |[latitude, longitude]| {
+                        format!(
+                            "{:.2}°, {:.2}°",
+                            latitude.to_degrees(),
+                            longitude.to_degrees()
+                        )
+                    });
                 format!(
-                    "{}\nStatus: {:?}\nAxis: {:.1} km · e: {:.4}\nInclination: {:.2}°\nAscending node: {:.2}°\nPeriapsis angle: {:.2}°\nPeriapsis: {:.1} km\nApoapsis: {:.1} km\nSpeed: {:.3} km/s\nPeriod: {:.0} s\n\nBurns: {} · commands: {}\nNext burn: {}\nTarget radius: {:.0} km",
+                    "{}\nStatus: {:?}\nAxis: {:.1} km · e: {:.4}\nInclination: {:.2}°\nAscending node: {:.2}°\nPeriapsis angle: {:.2}°\nPeriapsis: {:.1} km\nApoapsis: {:.1} km\nSpeed: {:.3} km/s\nPeriod: {:.0} s\nSurface: {}\n\nBurns: {} · commands: {}\nNext burn: {}\nTarget radius: {:.0} km",
                     ship.name,
                     ship.status,
                     orbit.semi_major_axis,
@@ -166,6 +226,7 @@ impl Navigation {
                     orbit.apoapsis(),
                     ship.kinematics.state.velocity.length(),
                     orbit.period(),
+                    ground,
                     ship.maneuvers.len(),
                     ship.commands.len(),
                     next,
@@ -174,7 +235,7 @@ impl Navigation {
             }
         };
         format!(
-            "SYSTEM VIEW · {}\n{} {:02}:{:02}\n\n{}\n\n{}\n\nV: Earth / system · E: Earth\nTab: bodies · Q: spacecraft\nShift: previous · Backspace: parent\nO: orbit paths · [ / ]: target radius",
+            "SYSTEM VIEW · {}\n{} {:02}:{:02}\n\n{}\n\n{}\n\nV: Earth / system · E: Earth\nTab: bodies · Q: spacecraft\nShift: previous · Backspace: parent\nO: orbits · G: ground track\n[ / ]: target radius",
             if paused { "Paused" } else { "Running" },
             date.display(),
             date.hour(0.0),
@@ -331,19 +392,29 @@ pub(super) fn setup(
     game: Res<Game>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    mut images: ResMut<Assets<Image>>,
+    textures: Res<BodyTextures>,
 ) {
     let mesh = meshes.add(Sphere::new(1.0).mesh().ico(3).expect("Marker sphere"));
+    let body_mesh = meshes.add(super::globe_mesh());
     for (index, body) in game.simulation.solar_system.bodies.iter().enumerate() {
-        let color = if body.is_star {
+        let texture = textures
+            .0
+            .get(&BodyId(index))
+            .map(|image| images.add(image.clone()));
+        let color = if texture.is_some() {
+            Color::WHITE
+        } else if body.is_star {
             Color::srgb(1.0, 0.8, 0.3)
         } else {
             Color::srgb(0.3, 0.65, 0.9)
         };
         commands.spawn((
             Focus::Body(BodyId(index)),
-            Mesh3d(mesh.clone()),
+            Mesh3d(body_mesh.clone()),
             MeshMaterial3d(materials.add(StandardMaterial {
                 base_color: color,
+                base_color_texture: texture,
                 unlit: true,
                 ..default()
             })),
@@ -368,6 +439,7 @@ pub(super) fn setup(
         ship_material,
         ships: game.simulation.solar_system.ships.len(),
     });
+    commands.remove_resource::<BodyTextures>();
 }
 
 #[derive(Resource)]
@@ -447,6 +519,9 @@ pub(super) fn controls(
     }
     if keyboard.just_pressed(KeyCode::KeyO) {
         navigation.show_orbits = !navigation.show_orbits;
+    }
+    if keyboard.just_pressed(KeyCode::KeyG) {
+        navigation.show_ground_tracks = !navigation.show_ground_tracks;
     }
     if keyboard.just_pressed(KeyCode::BracketLeft) {
         navigation.target_radius /= 1.1;
@@ -554,6 +629,10 @@ pub(super) fn update(
         };
         *transform =
             Transform::from_translation(frame.point(position)).with_scale(Vec3::splat(radius));
+        if let Focus::Body(id) = focus {
+            transform.rotation =
+                render_rotation(&system.bodies[id.0], game.simulation.date.seconds());
+        }
         if focus == navigation.focus {
             gizmos.sphere(
                 Isometry3d::from_translation(transform.translation),
@@ -581,6 +660,45 @@ pub(super) fn update(
             );
         }
     }
+    if navigation.active
+        && navigation.show_ground_tracks
+        && let Focus::Ship(id) = navigation.focus
+    {
+        let ship = &system.ships[id.0];
+        if ship.status == FlightStatus::Orbiting {
+            let body = &system.bodies[ship.parent.0];
+            let radius = (body.radius / frame.span).clamp(0.018, 0.6) as f32;
+            let center = frame.point(body.kinematics.absolute_position());
+            let points = ground_path(body, ship.orbit, game.simulation.date.seconds())
+                .into_iter()
+                .map(|point| center + point * radius * 1.015);
+            gizmos.linestrip(points, Color::srgb(0.95, 0.25, 0.7));
+        }
+    }
+}
+
+fn ground_path(body: &CelestialBody, orbit: Orbit, time: f64) -> Vec<Vec3> {
+    let period = orbit.period();
+    if !period.is_finite() || period <= 0.0 || orbit.eccentricity >= 1.0 {
+        return Vec::new();
+    }
+    let rotation = render_rotation(body, time);
+    (0..=160)
+        .filter_map(|index| {
+            let sample = time + period * index as f64 / 160.0;
+            let [latitude, longitude] =
+                body.ground_track(orbit.state_at(sample).position, sample)?;
+            let (latitude, longitude) = (latitude as f32, longitude as f32);
+            Some(
+                rotation
+                    * Vec3::new(
+                        latitude.cos() * longitude.cos(),
+                        latitude.sin(),
+                        latitude.cos() * longitude.sin(),
+                    ),
+            )
+        })
+        .collect()
 }
 
 fn orbit_path(orbit: Orbit) -> impl Iterator<Item = bevy::math::DVec3> {
@@ -604,6 +722,64 @@ mod tests {
     use cqsp_core::{Session, World, default_data_path, simulation::Simulation};
 
     #[test]
+    fn original_manifest_resolves_all_nine_planet_textures() -> Result<()> {
+        let data = default_data_path();
+        let system = SolarSystem::load(&data)?;
+        let textures = BodyTextures::load(&data, &system)?;
+        assert_eq!(textures.0.len(), 9);
+        for (id, image) in &textures.0 {
+            let size = image.texture_descriptor.size;
+            let width = match system.bodies[id.0].identifier.as_str() {
+                "earth" => 8192,
+                "moon" => 1024, // The source's 2k_moon.jpg actually contains a 1K image.
+                _ => 2048,
+            };
+            assert_eq!(size.width, width);
+            assert_eq!(size.width, size.height * 2);
+            assert_eq!(
+                image.data.as_ref().unwrap().len(),
+                (size.width * size.height * 4) as usize
+            );
+        }
+        assert!(!textures.0.contains_key(&system.sun));
+        Ok(())
+    }
+
+    #[test]
+    fn textured_body_rotation_and_ground_path_share_the_source_coordinate_frame() -> Result<()> {
+        let system = SolarSystem::load(&default_data_path())?;
+        let earth = system.body_id("earth").unwrap();
+        let body = &system.bodies[earth.0];
+        let ship = &system.ships[0];
+        let source = ship.orbit.state_at(86400.0).position.as_vec3().normalize();
+        let rotated = body.orientation(86400.0) * source;
+        let expected = Vec3::new(rotated.x, rotated.z, rotated.y);
+        let actual = render_rotation(body, 86400.0) * Vec3::new(source.x, source.z, source.y);
+        assert!(actual.distance(expected) < 1e-6);
+        let points = ground_path(body, ship.orbit, 86400.0);
+        assert_eq!(points.len(), 161);
+        assert!(
+            points
+                .iter()
+                .all(|point| point.is_finite() && (point.length() - 1.0).abs() < 1e-6)
+        );
+        assert!(points[0].distance(points[160]) > 0.001); // Body rotates during one spacecraft orbit.
+        assert!(
+            ground_path(
+                body,
+                Orbit {
+                    semi_major_axis: -7000.0,
+                    eccentricity: 1.5,
+                    ..ship.orbit
+                },
+                0.0
+            )
+            .is_empty()
+        );
+        Ok(())
+    }
+
+    #[test]
     fn newly_launched_spacecraft_get_exactly_one_render_marker() -> Result<()> {
         let data = default_data_path();
         let world = World::load(&data)?;
@@ -623,6 +799,8 @@ mod tests {
         })
         .init_resource::<Assets<Mesh>>()
         .init_resource::<Assets<StandardMaterial>>()
+        .init_resource::<Assets<Image>>()
+        .init_resource::<BodyTextures>()
         .add_systems(Startup, setup)
         .add_systems(Update, sync_ships);
         app.update();
@@ -812,6 +990,14 @@ mod tests {
             app.world().resource::<Navigation>().focus,
             Focus::Body(earth)
         );
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .reset_all();
+        app.world_mut()
+            .resource_mut::<ButtonInput<KeyCode>>()
+            .press(KeyCode::KeyG);
+        app.update();
+        assert!(!app.world().resource::<Navigation>().show_ground_tracks);
         app.world_mut()
             .resource_mut::<ButtonInput<KeyCode>>()
             .reset_all();

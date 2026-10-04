@@ -1705,6 +1705,8 @@ dependencies = [
  "bevy",
  "cqsp-core",
  "image",
+ "serde-hjson",
+ "serde_json",
 ]
 
 [[package]]

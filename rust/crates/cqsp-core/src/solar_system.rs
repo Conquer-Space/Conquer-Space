@@ -7,7 +7,7 @@ use crate::{
     units::{GRAVITATIONAL_CONSTANT_KM, Unit, read_unit},
 };
 use anyhow::{Context, Result, ensure};
-use glam::DVec3;
+use glam::{DVec3, Quat};
 use serde::Deserialize;
 use serde_json::Value;
 use std::{collections::HashMap, f64::consts::TAU, path::Path};
@@ -79,6 +79,25 @@ impl CelestialBody {
     pub fn rotation_angle(&self, time: f64) -> Option<f64> {
         (self.rotation_period != 0.0)
             .then(|| (time / self.rotation_period - self.rotation_offset) * TAU)
+    }
+    /// Source GLM uses float rotation, then a double remainder and float quaternion.
+    pub fn orientation(&self, time: f64) -> Quat {
+        let rotation = self.rotation_angle(time).unwrap_or(0.0) as f32;
+        Quat::from_rotation_x(-self.axial_tilt as f32)
+            * Quat::from_rotation_z((rotation as f64 % TAU) as f32)
+    }
+    /// Latitude/longitude in radians, in the body's rotating frame.
+    pub fn ground_track(&self, position: DVec3, time: f64) -> Option<[f64; 2]> {
+        let direction = position.as_vec3().try_normalize()?;
+        let rotation = self.orientation(time);
+        let inverse = rotation.conjugate() / rotation.length_squared();
+        let local = inverse * direction;
+        let latitude = local.z.asin() as f64;
+        let longitude = local.y.atan2(local.x) as f64;
+        (latitude.is_finite() && longitude.is_finite()).then(|| {
+            [latitude, longitude]
+                .map(|angle| (angle + std::f64::consts::PI).rem_euclid(TAU) - std::f64::consts::PI)
+        })
     }
 }
 
@@ -391,6 +410,29 @@ struct SatelliteEntry {
 mod tests {
     use super::*;
     use crate::default_data_path;
+
+    #[test]
+    fn body_ground_track_uses_rotation_tilt_and_rejects_zero_position() -> Result<()> {
+        let mut system = SolarSystem::load(&default_data_path())?;
+        let earth_id = system.body_id("earth").unwrap();
+        let earth = &mut system.bodies[earth_id.0];
+        earth.rotation_period = 100.0;
+        earth.rotation_offset = 0.0;
+        earth.axial_tilt = 0.0;
+        let [latitude, longitude] = earth.ground_track(DVec3::X, 25.0).unwrap();
+        assert!(latitude.abs() < 1e-6);
+        assert!((longitude + std::f64::consts::FRAC_PI_2).abs() < 1e-6);
+        assert!(earth.ground_track(DVec3::ZERO, 0.0).is_none());
+        earth.axial_tilt = 0.4;
+        let local = glam::Vec3::new(0.4, 0.8, 0.2).normalize();
+        let position = (earth.orientation(25.0) * local).as_dvec3();
+        let result = earth.ground_track(position, 25.0).unwrap();
+        assert!((result[0] - local.z.asin() as f64).abs() < 1e-6);
+        assert!((result[1] - local.y.atan2(local.x) as f64).abs() < 1e-6);
+        earth.rotation_period = 0.0;
+        assert!(earth.orientation(0.0).is_finite());
+        Ok(())
+    }
 
     #[test]
     fn original_system_loads_parents_gravity_units_and_satellites() -> Result<()> {

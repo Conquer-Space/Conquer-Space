@@ -147,6 +147,7 @@ fn main() -> Result<()> {
     let world = World::load(&data)?;
     let simulation = Simulation::load(&data, &world, 42)?;
     let navigation = Navigation::new(&simulation.solar_system);
+    let body_textures = system_view::BodyTextures::load(&data, &simulation.solar_system)?;
     let spaceport_ui = spaceport_ui::SpaceportUi::new(&simulation);
     println!(
         "Economy slice: {} goods, {} jobs, {} recipes, {} settlements.",
@@ -250,6 +251,7 @@ fn main() -> Result<()> {
         })
         .insert_resource(Orbit::default())
         .insert_resource(navigation)
+        .insert_resource(body_textures)
         .insert_resource(spaceport_ui)
         .insert_resource(Smoke {
             enabled: smoke,
@@ -771,12 +773,16 @@ fn human_number(value: f64) -> String {
     format!("{value:.2}")
 }
 
+#[allow(clippy::too_many_arguments)]
 fn verify_capture(
     capture: On<ScreenshotCaptured>,
     text_nodes: Query<(&Text, &ComputedNode, &UiGlobalTransform)>,
     navigation: Res<Navigation>,
     mut smoke: ResMut<Smoke>,
     ui: Res<spaceport_ui::SpaceportUi>,
+    camera: Single<(&Camera, &GlobalTransform), With<Camera3d>>,
+    markers: Query<(&Focus, &Transform)>,
+    game: Res<Game>,
 ) {
     let pixels = capture
         .image
@@ -836,6 +842,51 @@ fn verify_capture(
             orbit_pixels > 200,
             "Smoke check: missing rendered orbital overlays ({orbit_pixels} pixels)"
         );
+        if let Focus::Ship(id) = navigation.focus {
+            let parent = game.simulation.solar_system.ships[id.0].parent;
+            let (_, transform) = markers
+                .iter()
+                .find(|(focus, _)| **focus == Focus::Body(parent))
+                .expect("Parent marker");
+            let center = camera
+                .0
+                .world_to_viewport(camera.1, transform.translation)
+                .unwrap();
+            let right = camera.1.compute_transform().rotation * Vec3::X;
+            let edge = camera
+                .0
+                .world_to_viewport(camera.1, transform.translation + right * transform.scale.x)
+                .unwrap();
+            let radius = center.distance(edge);
+            let mut colors = std::collections::HashSet::new();
+            let mut ground_pixels = 0;
+            for y in 0..pixels.height() {
+                for x in 330..pixels.width() - 330 {
+                    if Vec2::new(x as f32, y as f32).distance(center) > radius * 0.85 {
+                        continue;
+                    }
+                    let color = pixels.get_pixel(x, y).0;
+                    colors.insert(color);
+                    let [r, g, b] = color;
+                    if r > 120 && (g as f32) < r as f32 * 0.7 && b as f32 > r as f32 * 0.6 {
+                        ground_pixels += 1;
+                    }
+                }
+            }
+            assert!(
+                colors.len() > 100,
+                "Smoke check: planet texture missing ({} colors)",
+                colors.len()
+            );
+            assert!(
+                ground_pixels > 10,
+                "Smoke check: ground track missing ({ground_pixels} pixels)"
+            );
+            println!(
+                "SMOKE: verified planet texture ({} colors) and ground track ({ground_pixels} pixels).",
+                colors.len()
+            );
+        }
     }
     smoke.captures += 1;
 }
