@@ -17,14 +17,15 @@ Successful long runs establish stability, not gameplay parity.
 | --- | --- | --- |
 | Country/province map and globe picking | Implemented | Original map fixtures, ray/UV tests, offscreen GPU smoke checks; remaining legacy overlays |
 | Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus and settings |
-| Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior; time-zone UI remains |
-| Time-zone definitions / city bindings | Loader and clock reference-tested | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases; native local-time display remains |
+| Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
+| Time-zone definitions / city bindings | Loader and clock reference-tested; native display | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
 | Goods / jobs / recipes / economy config | Implemented | Original 56 goods, 5 jobs, 22 recipes; defaults, units, construction-cost scaling; full loader differential corpus remains |
 | Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; zoning, power grids, resource amenability remain |
 | Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
+| Native demographics / factory construction | Implemented; creation action reference-tested | Paged population, employment, jobs, spending/income, education, wallets and consumption toggles; all 22 recipes, cost/revenue preview and 1–1,000 factory count; 66 CreateFactory comparisons, one-shot button and invalid/non-mutating guards; consumption plots remain |
 | Labor distribution / labor market | Reference-tested controlled system scenario | Actual SysLaborDistribution/SysLaborMarket: six cases and 12 weekly steps, drift caps/truncation, wages, zero demand, empty/tiny workforces, weekly hours and daily job demand; mixed-direction unordered traversal and invalid conversions remain |
 | Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, two seeds, nine cases spanning all eight states and 12 steps (4,752 seeded samples), plus injected noise, shortage interruption, construction completion, taxes/subsidies; combined tick ordering and larger FSM boundary grids remain |
 | Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
@@ -149,6 +150,11 @@ Successful long runs establish stability, not gameplay parity.
   industry state. Progress and spending occur only in the Construction state,
   matching the original switch; mere component presence must not keep billing.
   The original-system corpus caught and guards the previous Rust discrepancy.
+- The original manual Construction tab creates a Steady factory and attaches
+  Construction(0, recipe time, 0). The port preserves that zero-level record without
+  forcing Construction state or inventing up-front purchases, ownership checks or
+  zoning enforcement. It produces immediately where a population exists, while the
+  attached record remains idle. Capacity inputs follow the source UI's 1–1,000 bounds.
 - Spaceport delivery queues are LIFO and do not consume launch vehicles, purchase
   goods or enforce launchpad/capacity limits in the source. Manual vehicle launch
   does consume one manufactured vehicle. Valid/missing project templates both
@@ -194,9 +200,9 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 86 unit tests
-and 18 differential tests: 17 pass, while the explicit seeded lunar acceptance
-gate currently fails. Seventeen live tests require the reference executable.
+365 market-history records and CSV/industry export checks. There are 89 unit tests
+and 19 differential tests: 18 pass, while the explicit seeded lunar acceptance
+gate currently fails. Eighteen live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -229,6 +235,10 @@ Time-zone comparisons execute TimezoneLoader on all 107 definitions plus control
 duplicates, missing offsets, numeric strings, booleans and malformed numeric strings.
 Eight clock boundaries per zone compare actual GetHour/GetMinute. The city-loader
 corpus also checks its time-zone bindings after loading the original catalog.
+Factory-creation comparisons execute actual CreateFactory at counts 1/27/1,000
+for all 22 recipes, checking initial state, capacity/utilization, expertise/modifiers,
+wallets, construction attachment, zone insertion and recipe type. The three job
+arguments are copied from the original UI; this test does not execute ImGui itself.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking
@@ -243,11 +253,15 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Nine verified captures include the spaceport panel, newly
-launched vehicle and market/industry/science inspectors. Native inspection tests cover
+native screen actions. Eleven verified captures include the spaceport panel, newly
+launched vehicle and market/industry/science/demographics/construction inspectors.
+Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
 day advancement, live label refresh, panel exclusivity and closing-frame isolation.
 Scroll layouts retain their header/navigation rows when content overflows.
+Demographics pages cycle all segments and consumption modes without altering the
+population. Construction tests cover every recipe, bounded count adjustments,
+one-shot creation, the original idle record and rejection without partial mutation.
 Text editing, Unicode deletion, shortcut isolation, one-shot
 buttons, scrolling and invalid-design non-mutation have renderer-free ECS tests.
 Text checks cover both glyph layouts and bright pixels inside visible text blocks;

@@ -1,12 +1,12 @@
 //! Native economic scheduling and surface/spaceflight integration.
 use crate::{
     World,
-    catalog::Catalog,
+    catalog::{Catalog, RecipeId},
     clock::{DAY, StarDate, WEEK},
     economy::{
         GoodId, Market, Wallet,
         history::MarketHistory,
-        industry::{ConstructionSector, Industry, IndustryEntry},
+        industry::{Construction, ConstructionSector, Industry, IndustryEntry},
         population::{Population, PopulationEntry},
     },
     modifiers::ModifierCatalog,
@@ -444,6 +444,41 @@ impl Simulation {
     pub fn earth_market(&self) -> &Market {
         &self.planetary_markets[&self.solar_system.body_id("earth").expect("Loaded Earth")].market
     }
+    /// Native equivalent of the original province Construction tab's button.
+    pub fn construct_factory(
+        &mut self,
+        province: usize,
+        recipe: RecipeId,
+        count: i32,
+    ) -> Result<usize> {
+        ensure!(
+            (1..=1000).contains(&count),
+            "Factory construction count must be 1–1000"
+        );
+        let recipe_data = self
+            .catalog
+            .recipes
+            .get(recipe.0)
+            .context("Unknown factory recipe")?;
+        let site = self
+            .settlements
+            .get_mut(province)
+            .context("Unknown factory province")?;
+        ensure!(
+            site.is_province(),
+            "Cities have no IndustrialZone in the original loader"
+        );
+        let mut industry = Industry::new(recipe, count)?;
+        // The original UI attaches a zero-level job without setting Construction state.
+        industry.construction = Some(Construction {
+            progress: 0,
+            maximum: recipe_data.construction_ticks,
+            levels: 0,
+        });
+        let index = site.industries.len();
+        site.industries.push(industry);
+        Ok(index)
+    }
     pub(crate) fn normal(&mut self, mean: f64, deviation: f64) -> f64 {
         self.random.normal(mean, deviation)
     }
@@ -588,6 +623,57 @@ mod tests {
     fn load(seed: u64) -> Result<Simulation> {
         let data = crate::default_data_path();
         Simulation::load(&data, &World::load(&data)?, seed)
+    }
+    #[test]
+    fn manual_factory_creation_keeps_the_original_zero_level_steady_record() -> Result<()> {
+        use crate::economy::industry::IndustryState;
+        let mut simulation = load(42)?;
+        let province = simulation
+            .settlements
+            .iter()
+            .position(|site| !site.populations.is_empty())
+            .unwrap();
+        let recipe = simulation.catalog.recipe("farming").unwrap();
+        let before = simulation.settlements[province].industries.len();
+        for (site, recipe, count) in [
+            (usize::MAX, recipe, 1),
+            (province, RecipeId(usize::MAX), 1),
+            (province, recipe, 0),
+            (province, recipe, 1001),
+        ] {
+            assert!(simulation.construct_factory(site, recipe, count).is_err());
+        }
+        let city = simulation
+            .settlements
+            .iter()
+            .position(|site| !site.is_province())
+            .unwrap();
+        assert!(simulation.construct_factory(city, recipe, 1).is_err());
+        assert!(simulation.settlements[city].industries.is_empty());
+        assert_eq!(simulation.settlements[province].industries.len(), before);
+        let factory = simulation.construct_factory(province, recipe, 27)?;
+        let industry = &simulation.settlements[province].industries[factory];
+        assert_eq!(
+            (industry.size, industry.utilization, industry.wallet.balance),
+            (27.0, 27.0, 0.0)
+        );
+        assert_eq!(industry.state, IndustryState::Steady);
+        let job = industry.construction.as_ref().unwrap();
+        assert_eq!(
+            (job.progress, job.maximum, job.levels),
+            (
+                0,
+                simulation.catalog.recipes[recipe.0].construction_ticks,
+                0
+            )
+        );
+        simulation.tick();
+        let industry = &simulation.settlements[province].industries[factory];
+        assert!(industry.amount_sold > 0.0);
+        assert_eq!(industry.construction_cost, 0.0);
+        assert_eq!(industry.construction.as_ref().unwrap().progress, 0);
+        simulation.validate()?;
+        Ok(())
     }
     #[test]
     fn bundled_time_zones_bind_cities_without_inventing_province_offsets() -> Result<()> {

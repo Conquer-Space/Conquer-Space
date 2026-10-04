@@ -67,6 +67,64 @@ fn timezone_definitions_and_clock_match_original() {
     }
 }
 
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual CreateFactory and original UI attachment"]
+fn manual_factory_creation_matches_original_action() {
+    use cqsp_core::catalog::{ProductionType, RecipeId};
+    let data = default_data_path();
+    let mut simulation = Simulation::load(&data, &World::load(&data).unwrap(), 42).unwrap();
+    let province = simulation
+        .settlements
+        .iter()
+        .position(|site| site.is_province())
+        .unwrap();
+    simulation.settlements[province].industries.clear();
+    let mut input = Vec::new();
+    let mut output = Vec::new();
+    for recipe in 0..simulation.catalog.recipes.len() {
+        for count in [1, 27, 1000] {
+            let definition = &simulation.catalog.recipes[recipe];
+            let kind = match definition.kind {
+                ProductionType::Mine => 1,
+                ProductionType::Service => 2,
+                _ => 0,
+            };
+            input.push(json!([definition.construction_ticks, count, kind]));
+            let factory = simulation
+                .construct_factory(province, RecipeId(recipe), count)
+                .unwrap();
+            let site = &simulation.settlements[province];
+            let industry = &site.industries[factory];
+            let job = industry.construction.as_ref().unwrap();
+            output.push(json!([
+                industry.size,
+                industry.utilization,
+                industry.state as usize,
+                industry.expertise,
+                industry.expertise_gain.value(),
+                industry.max_expertise.value(),
+                industry.revenue,
+                industry.material_costs,
+                industry.profit,
+                industry.wallet.balance,
+                industry.wallet.change,
+                industry.wallet.gdp_change,
+                job.progress,
+                job.maximum,
+                job.levels,
+                site.industries.len(),
+                i32::from(kind == 1),
+                i32::from(kind == 0),
+                i32::from(kind == 2)
+            ]));
+        }
+    }
+    compare(
+        &json!(output),
+        &reference_output(Some("--factory-creation"), &json!(input).to_string()),
+    );
+}
+
 fn snapshot() -> Value {
     let mut wallet = Wallet::default();
     wallet.assign(100.0);

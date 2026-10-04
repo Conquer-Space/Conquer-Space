@@ -13,6 +13,7 @@
 #include "core/actions/maneuver/hohmann.h"
 #include "core/actions/maneuver/rendezvous.h"
 #include "core/actions/maneuver/commands.h"
+#include "core/actions/factoryconstructaction.h"
 #include "core/components/colony.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
@@ -356,6 +357,33 @@ void PrintGroundTracks() {
         glm::vec3 position(row[4].to_double(), row[5].to_double(), row[6].to_double());
         auto ground = cqsp::core::util::GetGroundTrack(rotation, position);
         output.push_back(Numbers({rotation.x, rotation.y, rotation.z, rotation.w, ground.r_latitude(), ground.r_longitude()}));
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintFactoryCreation() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("factory-reference");
+    auto input = ReadInput();
+    cqsp::core::Node province(universe);
+    province.emplace<IndustrialZone>();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int index = 0; index < input.size(); ++index) {
+        const auto& row = input[index];
+        cqsp::core::Node recipe(universe);
+        recipe.emplace<Recipe>().type = static_cast<ProductionType>(row[2].to_int64());
+        auto factory = cqsp::core::actions::CreateFactory(province, recipe, static_cast<int>(row[1].to_int64()));
+        // These three arguments are the original Construction tab's attachment.
+        auto& job = factory.emplace<Construction>(0, static_cast<int>(row[0].to_int64()), 0);
+        const auto& production = factory.get<ProductionUnit>();
+        auto& wallet = factory.get<Wallet>();
+        output.push_back(Numbers({production.size, production.utilization, static_cast<double>(production.state),
+            production.expertise, production.expertise_gain.value, production.max_expertise.value,
+            production.revenue, production.material_costs, production.profit,
+            wallet.GetBalance(), wallet.GetChange(), wallet.GetGDPChange(),
+            static_cast<double>(job.progress), static_cast<double>(job.maximum), static_cast<double>(job.levels),
+            static_cast<double>(province.get<IndustrialZone>().industries.size()),
+            factory.all_of<Mine>() ? 1.0 : 0.0, factory.all_of<Factory>() ? 1.0 : 0.0, factory.all_of<Service>() ? 1.0 : 0.0}));
     }
     WriteJson(output); std::cout << '\n';
 }
@@ -925,6 +953,7 @@ void PrintRandom() {
 
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
+    if (argc == 2 && std::string(argv[1]) == "--factory-creation") { PrintFactoryCreation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--timezones") { PrintTimeZones(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--random") { PrintRandom(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }

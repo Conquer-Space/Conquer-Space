@@ -327,6 +327,17 @@ impl SpaceportUi {
             port.projects.len(),
             port.deliveries.values().map(Vec::len).sum::<usize>()
         );
+        if let Some(zone) = site
+            .time_zone
+            .map(|id| &simulation.time_zones.entries[id.0])
+        {
+            let (hour, minute) = zone.local_time(simulation.date);
+            let _ = write!(
+                text,
+                "\n{} · legacy local time {hour:02}:{minute:02} · fixed offset {:+}h",
+                zone.identifier, zone.offset
+            );
+        }
         for project in port.projects.iter().take(3) {
             let _ = write!(
                 text,

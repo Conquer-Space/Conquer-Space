@@ -988,7 +988,7 @@ fn smoke_test(
         return;
     }
     smoke.elapsed = 0.0;
-    if matches!(smoke.stage, 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17) {
+    if matches!(smoke.stage, 1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21) {
         for (text, layout) in &text_layouts {
             assert!(
                 text.0.trim().is_empty() || !layout.glyphs.is_empty(),
@@ -1160,10 +1160,49 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "science-inspector.png",
         ),
+        18 => inspector.apply(
+            inspection_ui::Action::Tab(inspection_ui::Tab::Demographics),
+            &mut game,
+        ),
+        19 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "demographics-inspector.png",
+        ),
+        20 => {
+            let province = game
+                .simulation
+                .settlements
+                .iter()
+                .position(|site| !site.populations.is_empty())
+                .unwrap();
+            let before = game.simulation.settlements[province].industries.len();
+            game.hovered = Some(province);
+            inspector.apply(inspection_ui::Action::Hovered, &mut game);
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Construction),
+                &mut game,
+            );
+            inspector.apply(inspection_ui::Action::FactoryCount(26), &mut game);
+            inspector.apply(inspection_ui::Action::ConstructFactory, &mut game);
+            assert_eq!(
+                game.simulation.settlements[province].industries.len(),
+                before + 1,
+                "Smoke check: manual factory construction"
+            );
+            game.simulation
+                .validate()
+                .expect("Smoke check: valid constructed factory");
+        }
+        21 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "construction-inspector.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 9,
-                "Smoke check: all nine captures must be verified"
+                smoke.captures, 11,
+                "Smoke check: all eleven captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

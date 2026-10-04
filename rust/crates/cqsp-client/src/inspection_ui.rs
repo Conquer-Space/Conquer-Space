@@ -10,7 +10,9 @@ use std::fmt::Write;
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Tab {
     Markets,
+    Demographics,
     Industries,
+    Construction,
     Science,
 }
 #[derive(Component, Clone, Copy)]
@@ -29,6 +31,10 @@ pub(super) enum Action {
     NextFactory,
     Subsidy(f32),
     BoostExpertise,
+    PerCapita,
+    ConsumptionCost,
+    FactoryCount(i32),
+    ConstructFactory,
     NextDay,
 }
 #[derive(Component)]
@@ -36,6 +42,8 @@ pub(super) enum Panel {
     Launcher,
     Overlay,
     FactoryActions,
+    DemographicActions,
+    ConstructionActions,
 }
 #[derive(Component)]
 pub(super) enum Label {
@@ -56,6 +64,11 @@ pub(super) struct Inspector {
     factory: usize,
     field: usize,
     technology: usize,
+    per_capita: bool,
+    consumption_cost: bool,
+    recipe: usize,
+    factory_count: i32,
+    message: String,
 }
 impl Inspector {
     pub fn new(game: &cqsp_core::simulation::Simulation) -> Self {
@@ -71,6 +84,11 @@ impl Inspector {
             factory: 0,
             field: 0,
             technology: 0,
+            per_capita: true,
+            consumption_cost: true,
+            recipe: 0,
+            factory_count: 1,
+            message: String::new(),
         }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) {
@@ -84,6 +102,7 @@ impl Inspector {
                 | Action::Ownership
         ) {
             self.factory = 0;
+            self.message.clear();
         }
         match action {
             Action::Open => self.open = true,
@@ -148,6 +167,23 @@ impl Inspector {
                         cycle(&mut self.page, count, previous);
                         self.factory = self.page * 4;
                     }
+                    Tab::Demographics => {
+                        let count = self
+                            .sites(game)
+                            .map(|(_, site)| site.populations.len())
+                            .sum::<usize>()
+                            .div_ceil(2)
+                            .max(1);
+                        cycle(&mut self.page, count, previous);
+                    }
+                    Tab::Construction => {
+                        cycle(
+                            &mut self.recipe,
+                            game.simulation.catalog.recipes.len(),
+                            previous,
+                        );
+                        self.message.clear();
+                    }
                     Tab::Science => cycle(
                         &mut self.field,
                         game.simulation.science.fields.len(),
@@ -191,6 +227,28 @@ impl Inspector {
                 }
             }
             Action::NextFactory | Action::Subsidy(_) | Action::BoostExpertise => {}
+            Action::PerCapita => self.per_capita = !self.per_capita,
+            Action::ConsumptionCost => self.consumption_cost = !self.consumption_cost,
+            Action::FactoryCount(change) => {
+                self.factory_count = self.factory_count.saturating_add(change).clamp(1, 1000)
+            }
+            Action::ConstructFactory if self.tab == Tab::Construction => {
+                self.message = self.province.map_or_else(
+                    || "Select a province before constructing a factory.".into(),
+                    |province| match game.simulation.construct_factory(
+                        province,
+                        cqsp_core::catalog::RecipeId(self.recipe),
+                        self.factory_count,
+                    ) {
+                        Ok(_) => format!(
+                            "Created {} factory units in {}.",
+                            self.factory_count, game.simulation.settlements[province].name
+                        ),
+                        Err(error) => error.to_string(),
+                    },
+                );
+            }
+            Action::ConstructFactory => {}
             Action::NextDay => {
                 game.paused = true;
                 game.tick_accumulator = 0.0;
@@ -198,18 +256,20 @@ impl Inspector {
             }
         }
     }
-    fn factories(&self, game: &Game) -> impl Iterator<Item = (usize, usize)> {
+    fn sites<'a>(
+        &self,
+        game: &'a Game,
+    ) -> impl Iterator<Item = (usize, &'a cqsp_core::simulation::Settlement)> {
         let selected = self.province;
         self.province
             .into_iter()
-            .chain(
-                self.provinces(game)
-                    .filter_map(move |(index, _)| selected.is_none().then_some(index)),
-            )
-            .flat_map(move |site| {
-                (0..game.simulation.settlements[site].industries.len())
-                    .map(move |factory| (site, factory))
-            })
+            .map(move |index| (index, &game.simulation.settlements[index]))
+            .chain(self.provinces(game).filter(move |_| selected.is_none()))
+    }
+    fn factories(&self, game: &Game) -> impl Iterator<Item = (usize, usize)> {
+        self.sites(game).flat_map(|(index, site)| {
+            (0..site.industries.len()).map(move |factory| (index, factory))
+        })
     }
     fn provinces<'a>(
         &self,
@@ -228,7 +288,7 @@ impl Inspector {
         let site = self.province.map_or_else(
             || {
                 format!(
-                    "{} planetary market",
+                    "{} aggregate scope",
                     game.simulation.solar_system.bodies[self.body.0].name
                 )
             },
@@ -313,11 +373,7 @@ impl Inspector {
                 text
             }
             Tab::Industries => {
-                let sites: Vec<_> = if let Some(index) = self.province {
-                    vec![&simulation.settlements[index]]
-                } else {
-                    self.provinces(game).map(|(_, site)| site).collect()
-                };
+                let sites: Vec<_> = self.sites(game).map(|(_, site)| site).collect();
                 let industries: Vec<_> = sites
                     .iter()
                     .flat_map(|site| {
@@ -388,6 +444,8 @@ impl Inspector {
                 }
                 text
             }
+            Tab::Demographics => self.demographics(game),
+            Tab::Construction => self.construction(game),
             Tab::Science => {
                 let science = &simulation.science;
                 if science.fields.is_empty() || science.technologies.is_empty() {
@@ -423,6 +481,164 @@ impl Inspector {
             }
         }
     }
+    fn demographics(&self, game: &Game) -> String {
+        let simulation = &game.simulation;
+        let groups: Vec<_> = self
+            .sites(game)
+            .flat_map(|(_, site)| {
+                site.populations
+                    .iter()
+                    .map(move |population| (site, population))
+            })
+            .collect();
+        let people = groups
+            .iter()
+            .map(|(_, population)| population.size)
+            .sum::<u64>();
+        let mut text = format!(
+            "DEMOGRAPHICS · {} people · {} segments · page {}\n\n",
+            human_number(people as f64),
+            groups.len(),
+            self.page + 1
+        );
+        if groups.is_empty() {
+            text.push_str("No population segments in this scope.");
+        }
+        for (site, population) in groups.iter().skip(self.page * 2).take(2) {
+            let income_per_capita = population.income / population.size as f64;
+            let _ = writeln!(
+                text,
+                "{} · population {} · SOL {}\nSpending {} · per capita {}\nIncome {} · per capita {} · annual per capita {}\nEmployed {} / labor force {} · unemployment {:.2}%\nWallet {} · balance change {} · GDP per capita {}\nEducation {:.0} years · consumer confidence {}",
+                site.name,
+                human_number(population.size as f64),
+                human_number(population.standard_of_living),
+                human_number(population.spending),
+                human_number(population.spending / population.size as f64),
+                human_number(population.income),
+                human_number(income_per_capita),
+                human_number(income_per_capita * 365.0),
+                human_number(population.employed as f64),
+                human_number(population.labor_force as f64),
+                (1.0 - population.employed as f64 / population.labor_force as f64) * 100.0,
+                human_number(population.wallet.balance),
+                human_number(population.wallet.change),
+                human_number(population.wallet.gdp_change / population.size as f64),
+                population.education,
+                human_number(population.consumer_confidence)
+            );
+            let _ = write!(text, "Jobs: ");
+            for (&job, &amount) in &population.jobs {
+                let _ = write!(
+                    text,
+                    "{} {}  ",
+                    simulation.catalog.jobs[job.0].name,
+                    human_number(amount as f64)
+                );
+            }
+            let _ = writeln!(
+                text,
+                "\nResource consumption · {} · {}",
+                if self.per_capita {
+                    "per capita"
+                } else {
+                    "whole segment"
+                },
+                if self.consumption_cost {
+                    "cost"
+                } else {
+                    "count"
+                }
+            );
+            for &(good, amount) in &population.consumption {
+                let quantity = if self.per_capita {
+                    amount / population.size as f64
+                } else {
+                    amount
+                };
+                let value = if self.consumption_cost {
+                    quantity * site.market.price[good]
+                } else {
+                    quantity
+                };
+                let _ = write!(
+                    text,
+                    "{}: {}  ",
+                    simulation.catalog.goods[good.0].name,
+                    human_number(value)
+                );
+            }
+            if population.consumption.is_empty() {
+                text.push_str("no consumption samples yet");
+            }
+            text.push_str("\n\n");
+        }
+        text
+    }
+    fn construction(&self, game: &Game) -> String {
+        let simulation = &game.simulation;
+        let Some(recipe) = simulation.catalog.recipes.get(self.recipe) else {
+            return "No factory recipes loaded.".into();
+        };
+        let market = self
+            .province
+            .map_or(&simulation.planetary_markets[&self.body].market, |index| {
+                &simulation.settlements[index].market
+            });
+        let input = market.price.dot(&recipe.input);
+        let capital = market.price.dot(&recipe.capital);
+        let revenue = market.price[recipe.output.0] * recipe.output.1;
+        let mut text = format!(
+            "FACTORY CONSTRUCTION · recipe {}/{}: {}\nUnits to construct: {} (1–1000)\nWorkers per unit: {}\nInput default cost {} · capital default cost {}\nOutput revenue {} · expected profit {}\nConstruction duration {} ticks\n\n",
+            self.recipe + 1,
+            simulation.catalog.recipes.len(),
+            recipe.name,
+            self.factory_count,
+            recipe
+                .workers
+                .iter()
+                .map(|(_, amount)| *amount as u64)
+                .sum::<u64>(),
+            human_number(input),
+            human_number(capital),
+            human_number(revenue),
+            human_number(revenue - input - capital),
+            recipe.construction_ticks
+        );
+        for (title, entries) in [
+            ("Input", recipe.input.as_slice()),
+            ("Capital", recipe.capital.as_slice()),
+            ("Output", std::slice::from_ref(&recipe.output)),
+            ("Construction cost", recipe.construction_cost.as_slice()),
+        ] {
+            let _ = write!(text, "{title}: ");
+            for &(good, amount) in entries {
+                let _ = write!(
+                    text,
+                    "{} {}  ",
+                    simulation.catalog.goods[good.0].name,
+                    human_number(amount)
+                );
+            }
+            text.push('\n');
+        }
+        text.push_str("\nThe original button creates a Steady factory with a zero-level construction record. It does not force Construction state or charge an up-front purchase.\n");
+        if let Some(index) = self.province {
+            let site = &simulation.settlements[index];
+            let _ = writeln!(
+                text,
+                "{} · {} existing factories · construction capacity {} · used {} · cost {}",
+                site.name,
+                site.industries.len(),
+                site.construction.capacity,
+                site.construction.current,
+                human_number(site.construction.cost)
+            );
+        } else {
+            text.push_str("Select or hover a province to construct there.\n");
+        }
+        text.push_str(&self.message);
+        text
+    }
 }
 
 fn cycle(index: &mut usize, count: usize, previous: bool) {
@@ -450,7 +666,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
         ))
         .with_children(|button| {
             button.spawn((
-                Text::new("Markets, industries & science (I)"),
+                Text::new("Economy, construction & science (I)"),
                 ui_font(font, 16.0),
             ));
         });
@@ -487,7 +703,9 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
             row(panel, |bar| {
                 for (tab, name) in [
                     (Tab::Markets, "Markets"),
+                    (Tab::Demographics, "Demographics"),
                     (Tab::Industries, "Industries"),
+                    (Tab::Construction, "Construction"),
                     (Tab::Science, "Science"),
                 ] {
                     button(bar, font, Action::Tab(tab), name);
@@ -516,8 +734,8 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                 },
             ));
             row(panel, |bar| {
-                button(bar, font, Action::Previous, "Previous good / page / field");
-                button(bar, font, Action::Next, "Next good / page / field");
+                button(bar, font, Action::Previous, "Previous item / page");
+                button(bar, font, Action::Next, "Next item / page");
                 button(bar, font, Action::NextTechnology, "Next technology");
             });
             panel
@@ -537,6 +755,48 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     button(bar, font, Action::Subsidy(-0.1), "Subsidy -10%");
                     button(bar, font, Action::Subsidy(0.1), "Subsidy +10%");
                     button(bar, font, Action::BoostExpertise, "Boost expertise");
+                });
+            panel
+                .spawn((
+                    Panel::DemographicActions,
+                    Node {
+                        flex_direction: FlexDirection::Row,
+                        flex_shrink: 0.0,
+                        column_gap: px(10),
+                        ..default()
+                    },
+                ))
+                .with_children(|bar| {
+                    button(bar, font, Action::PerCapita, "Per capita / whole segment");
+                    button(
+                        bar,
+                        font,
+                        Action::ConsumptionCost,
+                        "Consumption count / cost",
+                    );
+                });
+            panel
+                .spawn((
+                    Panel::ConstructionActions,
+                    Node {
+                        flex_direction: FlexDirection::Row,
+                        flex_wrap: FlexWrap::Wrap,
+                        flex_shrink: 0.0,
+                        column_gap: px(10),
+                        row_gap: px(6),
+                        ..default()
+                    },
+                ))
+                .with_children(|bar| {
+                    for (change, title) in [
+                        (-10, "Units -10"),
+                        (-1, "Units -1"),
+                        (1, "Units +1"),
+                        (10, "Units +10"),
+                    ] {
+                        button(bar, font, Action::FactoryCount(change), title);
+                    }
+                    button(bar, font, Action::ConstructFactory, "Construct factory");
                 });
             panel.spawn((
                 Label::Content,
@@ -633,6 +893,8 @@ pub(super) fn update(
                     && inspector.tab == Tab::Industries
                     && inspector.factories(&game).next().is_some()
             }
+            Panel::DemographicActions => inspector.open && inspector.tab == Tab::Demographics,
+            Panel::ConstructionActions => inspector.open && inspector.tab == Tab::Construction,
             Panel::Launcher => {
                 game.session.player_country.is_some() && !ports.open && !inspector.open
             }
@@ -1029,6 +1291,137 @@ mod tests {
                 .factories(app.world().resource::<Game>())
                 .count(),
             0
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn demographics_cycles_segments_and_prices_without_mutating_the_population() -> Result<()> {
+        let mut app = app()?;
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::Demographics));
+        apply(&mut app, Action::Ownership);
+        apply(&mut app, Action::NextDay);
+        let game = app.world().resource::<Game>();
+        let inspector = app.world().resource::<Inspector>();
+        let (province, _) = inspector
+            .sites(game)
+            .find(|(_, site)| !site.populations.is_empty())
+            .unwrap();
+        let pages = inspector
+            .sites(game)
+            .map(|(_, site)| site.populations.len())
+            .sum::<usize>()
+            .div_ceil(2);
+        assert!(pages > 1);
+        let people = game.simulation.summary(None).population;
+        for _ in 0..pages {
+            apply(&mut app, Action::Next);
+        }
+        assert_eq!(app.world().resource::<Inspector>().page, 0);
+        app.world_mut().resource_mut::<Game>().hovered = Some(province);
+        apply(&mut app, Action::Hovered);
+        let game = app.world().resource::<Game>();
+        let population = &game.simulation.settlements[province].populations[0];
+        let (good, quantity) = population.consumption[0];
+        let per_capita_cost = quantity / population.size as f64
+            * game.simulation.settlements[province].market.price[good];
+        let name = game.simulation.catalog.goods[good.0].name.clone();
+        let text = app.world().resource::<Inspector>().content(game);
+        assert!(text.contains("annual per capita"));
+        assert!(text.contains("Education"));
+        assert!(text.contains(&format!("{name}: {}", human_number(per_capita_cost))));
+        apply(&mut app, Action::PerCapita);
+        apply(&mut app, Action::ConsumptionCost);
+        let game = app.world().resource::<Game>();
+        let text = app.world().resource::<Inspector>().content(game);
+        assert!(text.contains("whole segment · count"));
+        assert!(text.contains(&format!("{name}: {}", human_number(quantity))));
+        assert_eq!(game.simulation.summary(None).population, people);
+        apply(&mut app, Action::Planet);
+        assert!(
+            app.world()
+                .resource::<Inspector>()
+                .content(app.world().resource::<Game>())
+                .contains("No population segments")
+        );
+        Ok(())
+    }
+
+    #[test]
+    fn construction_button_fires_once_and_all_recipes_and_count_bounds_are_reachable() -> Result<()>
+    {
+        let mut app = app()?;
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::Construction));
+        apply(&mut app, Action::ConstructFactory);
+        assert!(
+            app.world()
+                .resource::<Inspector>()
+                .message
+                .contains("Select a province")
+        );
+        let province = app
+            .world()
+            .resource::<Game>()
+            .simulation
+            .settlements
+            .iter()
+            .position(|site| !site.populations.is_empty())
+            .unwrap();
+        app.world_mut().resource_mut::<Game>().hovered = Some(province);
+        apply(&mut app, Action::Hovered);
+        for recipe in 0..22 {
+            let inspector = app.world().resource::<Inspector>();
+            assert_eq!(inspector.recipe, recipe);
+            assert!(
+                inspector
+                    .content(app.world().resource::<Game>())
+                    .contains(&format!("recipe {}/22", recipe + 1))
+            );
+            apply(&mut app, Action::Next);
+        }
+        assert_eq!(app.world().resource::<Inspector>().recipe, 0);
+        apply(&mut app, Action::FactoryCount(i32::MAX));
+        assert_eq!(app.world().resource::<Inspector>().factory_count, 1000);
+        apply(&mut app, Action::FactoryCount(i32::MIN));
+        assert_eq!(app.world().resource::<Inspector>().factory_count, 1);
+        apply(&mut app, Action::FactoryCount(26));
+        let before = app.world().resource::<Game>().simulation.settlements[province]
+            .industries
+            .len();
+        app.world_mut()
+            .spawn((Action::ConstructFactory, Interaction::Pressed));
+        app.update();
+        app.update();
+        let game = app.world().resource::<Game>();
+        let industries = &game.simulation.settlements[province].industries;
+        assert_eq!(industries.len(), before + 1);
+        assert_eq!(industries.last().unwrap().size, 27.0);
+        assert_eq!(
+            industries
+                .last()
+                .unwrap()
+                .construction
+                .as_ref()
+                .unwrap()
+                .levels,
+            0
+        );
+        assert!(
+            app.world()
+                .resource::<Inspector>()
+                .message
+                .contains("Created 27")
+        );
+        let count = industries.len();
+        apply(&mut app, Action::Tab(Tab::Markets));
+        apply(&mut app, Action::ConstructFactory);
+        assert_eq!(
+            app.world().resource::<Game>().simulation.settlements[province]
+                .industries
+                .len(),
+            count
         );
         Ok(())
     }
