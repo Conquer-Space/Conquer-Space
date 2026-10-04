@@ -113,6 +113,9 @@ value legends, slice hover readouts and click-to-hide/show entries. Cost/count a
 per-capita/whole-segment modes use the original float pie values and double
 normalization. Hidden slices leave their original angular space empty rather than
 renormalizing the remaining entries. Empty/invalid pies keep the ledger visible.
+Pie plots support cursor-centered wheel zoom and left-drag pan with equal axes,
+outside-image drag capture, and right-click/**Fit pies** reset. Changing scope/page
+resets the view; daily data refresh retains it. Plot wheels do not scroll the panel.
 Spaceport inspection
 also shows loaded fixed-offset local time, retaining the source clock's quirks.
 Infrastructure inspects province transport costs, zoning allocations and power/grid
@@ -160,6 +163,7 @@ a lunar core mission and verifies its delivery. It also writes `target/spaceport
 and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.png`,
 `target/industry-inspector.png`, `target/science-inspector.png`,
 `target/demographics-inspector.png`, `target/demographics-count-inspector.png`,
+`target/demographics-zoomed-inspector.png`,
 `target/construction-inspector.png`,
 `target/civilization-inspector.png`, `target/history-inspector.png`,
 `target/history-zoomed-inspector.png` and
@@ -170,9 +174,9 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all sixteen completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all seventeen completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all sixteen PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all seventeen PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.

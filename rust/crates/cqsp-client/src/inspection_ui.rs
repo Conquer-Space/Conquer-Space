@@ -42,6 +42,7 @@ pub(super) enum Action {
     PerCapita,
     ConsumptionCost,
     ConsumptionSlice(GoodId),
+    PieFit,
     FactoryCount(i32),
     ConstructFactory,
     ChartGood,
@@ -131,7 +132,12 @@ pub(super) struct PieLegend {
 #[derive(Component)]
 pub(super) struct PieImage {
     segment: usize,
-    key: Option<Vec<(GoodId, u32, bool)>>,
+    key: Option<PieKey>,
+}
+#[derive(PartialEq)]
+struct PieKey {
+    samples: Vec<(GoodId, u32, bool)>,
+    view: super::chart::View,
 }
 
 #[derive(Resource)]
@@ -151,6 +157,9 @@ pub(super) struct Inspector {
     consumption_cost: bool,
     hidden_consumption: BTreeSet<GoodId>,
     pie_hover: [Option<GoodId>; 2],
+    pie_views: [super::chart::View; 2],
+    pie_drag: Option<(usize, Vec2)>,
+    pie_pointer_over: bool,
     recipe: usize,
     factory_count: i32,
     message: String,
@@ -179,6 +188,9 @@ impl Inspector {
             consumption_cost: true,
             hidden_consumption: BTreeSet::new(),
             pie_hover: [None; 2],
+            pie_views: [super::pie::FIT; 2],
+            pie_drag: None,
+            pie_pointer_over: false,
             recipe: 0,
             factory_count: 1,
             message: String::new(),
@@ -213,6 +225,21 @@ impl Inspector {
         ) {
             self.factory = 0;
             self.message.clear();
+        }
+        if matches!(
+            action,
+            Action::Tab(_)
+                | Action::Planet
+                | Action::PreviousProvince
+                | Action::NextProvince
+                | Action::Hovered
+                | Action::Ownership
+                | Action::PieFit
+        ) || (self.tab == Tab::Demographics && matches!(action, Action::Previous | Action::Next))
+        {
+            self.pie_views = [super::pie::FIT; 2];
+            self.pie_drag = None;
+            self.pie_hover = [None; 2];
         }
         match action {
             Action::Open => self.open = true,
@@ -363,6 +390,7 @@ impl Inspector {
                     self.hidden_consumption.insert(good);
                 }
             }
+            Action::PieFit => {}
             Action::FactoryCount(change) => {
                 self.factory_count = self.factory_count.saturating_add(change).clamp(1, 1000)
             }
@@ -675,7 +703,7 @@ impl Inspector {
             self.pie_hover[segment]
                 .and_then(|good| values.iter().position(|&(id, _)| id == good))
                 .map_or(
-                    "Click legend: hide/show · hover a slice for its value".into(),
+                    "Legend: hide/show · drag: pan · wheel: zoom · right-click: fit".into(),
                     |index| {
                         format!(
                             "{}: {:.2} · {:.2}%",
@@ -734,6 +762,12 @@ impl Inspector {
                     .map(|(good, value)| (good, value as f32))
                     .collect()
             })
+    }
+    pub(super) fn zoom_pie(&mut self, segment: usize, anchor: (f64, f64), factor: f64) {
+        self.pie_views[segment] = self.pie_views[segment].zoom(anchor, factor);
+    }
+    pub(super) fn pan_pie(&mut self, segment: usize, delta: (f64, f64)) {
+        self.pie_views[segment] = self.pie_views[segment].pan(delta);
     }
     fn demographics(&self, game: &Game) -> String {
         let simulation = &game.simulation;
@@ -1183,13 +1217,11 @@ pub(super) fn chart_controls(
             }
         }
         if hovered && scroll.delta.y != 0.0 {
-            let units = if scroll.unit == MouseScrollUnit::Line {
-                scroll.delta.y
-            } else {
-                scroll.delta.y / 32.0
-            };
-            let factor = (-0.15 * units as f64).exp().clamp(0.1, 10.0);
-            inspector.zoom_plot(&game, (position.x as f64, position.y as f64), factor);
+            inspector.zoom_plot(
+                &game,
+                (position.x as f64, position.y as f64),
+                scroll_zoom(&scroll),
+            );
         }
     }
     if !buttons.pressed(MouseButton::Left) && inspector.plot_drag.is_some() {
@@ -1261,21 +1293,67 @@ pub(super) fn update_plot(
 pub(super) fn pie_controls(
     game: Res<Game>,
     mut inspector: ResMut<Inspector>,
+    buttons: Res<ButtonInput<MouseButton>>,
+    scroll: Res<AccumulatedMouseScroll>,
     plots: Query<(&PieImage, &RelativeCursorPosition)>,
 ) {
     let mut hovered = [None; 2];
+    let mut pointer_over = false;
     if inspector.is_demographics() {
         for (image, cursor) in &plots {
-            let Some(point) = cursor.normalized.filter(|_| cursor.cursor_over) else {
+            let segment = image.segment;
+            if inspector.segment(&game, segment).is_none() {
+                continue;
+            }
+            let Some(point) = cursor
+                .normalized
+                .map(|point| Vec2::new(point.x + 0.5, 0.5 - point.y))
+            else {
                 continue;
             };
+            pointer_over |= cursor.cursor_over;
+            if buttons.just_pressed(MouseButton::Right) && cursor.cursor_over {
+                inspector.pie_views[segment] = super::pie::FIT;
+                inspector.pie_drag = None;
+            }
+            if buttons.just_pressed(MouseButton::Left) && cursor.cursor_over {
+                inspector.pie_drag = Some((segment, point));
+            } else if buttons.pressed(MouseButton::Left)
+                && let Some((captured, previous)) = inspector.pie_drag
+                && captured == segment
+            {
+                let delta = point - previous;
+                if delta != Vec2::ZERO {
+                    inspector.pan_pie(segment, (delta.x as f64, delta.y as f64));
+                    inspector.pie_drag = Some((segment, point));
+                }
+            }
+            if cursor.cursor_over && scroll.delta.y != 0.0 {
+                inspector.zoom_pie(
+                    segment,
+                    (point.x as f64, point.y as f64),
+                    scroll_zoom(&scroll),
+                );
+            }
+            if !cursor.cursor_over {
+                continue;
+            }
             let values = inspector.pie_samples(&game, image.segment);
             let samples: Vec<_> = values.iter().map(|&(_, value)| value).collect();
+            let (x, y) = inspector.pie_views[segment].value_at((point.x as f64, point.y as f64));
             hovered[image.segment] = super::pie::Pie::new(&samples)
-                .and_then(|pie| pie.at((point.x as f64 + 0.5, point.y as f64 + 0.5)))
+                .and_then(|pie| pie.at((x, 1.0 - y)))
                 .map(|index| values[index].0)
                 .filter(|good| !inspector.hidden_consumption.contains(good));
         }
+    }
+    if (!inspector.is_demographics() || !buttons.pressed(MouseButton::Left))
+        && inspector.pie_drag.is_some()
+    {
+        inspector.pie_drag = None;
+    }
+    if inspector.pie_pointer_over != pointer_over {
+        inspector.pie_pointer_over = pointer_over;
     }
     if inspector.pie_hover != hovered {
         inspector.pie_hover = hovered;
@@ -1333,7 +1411,7 @@ pub(super) fn update_pies(
         if inspector.segment(&game, plot.segment).is_none() {
             continue;
         }
-        let key: Vec<_> = values[plot.segment]
+        let samples: Vec<_> = values[plot.segment]
             .iter()
             .map(|&(good, value)| {
                 (
@@ -1343,6 +1421,10 @@ pub(super) fn update_pies(
                 )
             })
             .collect();
+        let key = PieKey {
+            samples,
+            view: inspector.pie_views[plot.segment],
+        };
         if plot.key.as_ref() == Some(&key) {
             continue;
         }
@@ -1350,11 +1432,11 @@ pub(super) fn update_pies(
             .iter()
             .map(|&(_, value)| value)
             .collect();
-        let hidden: Vec<_> = key.iter().map(|&(_, _, hidden)| hidden).collect();
+        let hidden: Vec<_> = key.samples.iter().map(|&(_, _, hidden)| hidden).collect();
         let image = super::rgba_image(
             super::pie::SIZE,
             super::pie::SIZE,
-            super::pie::render(&samples, &hidden),
+            super::pie::render(&samples, &hidden, key.view),
         );
         if plot.key.is_some()
             && let Some(mut existing) = images.get_mut(&node.image)
@@ -1367,6 +1449,14 @@ pub(super) fn update_pies(
     }
 }
 
+fn scroll_zoom(scroll: &AccumulatedMouseScroll) -> f64 {
+    let units = if scroll.unit == MouseScrollUnit::Line {
+        scroll.delta.y
+    } else {
+        scroll.delta.y / 32.0
+    };
+    (-0.15 * units as f64).exp().clamp(0.1, 10.0)
+}
 fn cycle(index: &mut usize, count: usize, previous: bool) {
     if count > 0 {
         *index = (*index + if previous { count - 1 } else { 1 }) % count;
@@ -1503,6 +1593,7 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                         Action::ConsumptionCost,
                         "Consumption count / cost",
                     );
+                    button(bar, font, Action::PieFit, "Fit pies");
                 });
             panel
                 .spawn((
@@ -1704,7 +1795,11 @@ pub(super) fn scroll(
     mouse: Res<AccumulatedMouseScroll>,
     mut panels: Query<(&Panel, &mut ScrollPosition)>,
 ) {
-    if !inspector.open || inspector.plot_pointer_over || mouse.delta.y == 0.0 {
+    if !inspector.open
+        || inspector.plot_pointer_over
+        || inspector.pie_pointer_over
+        || mouse.delta.y == 0.0
+    {
         return;
     }
     let scale = if mouse.unit == MouseScrollUnit::Line {
@@ -2358,6 +2453,149 @@ mod tests {
         apply(&mut app, Action::Close);
         app.update();
         assert_eq!(app.world().resource::<Assets<Image>>().len(), 2);
+        Ok(())
+    }
+
+    #[test]
+    fn pie_mouse_controls_capture_outside_drag_fit_and_isolate_panel_scrolling() -> Result<()> {
+        let mut app = app()?;
+        let plot = app
+            .world_mut()
+            .spawn((
+                PieImage {
+                    segment: 0,
+                    key: None,
+                },
+                ImageNode::default(),
+                RelativeCursorPosition {
+                    normalized: Some(Vec2::new(0.1, -0.1)),
+                    cursor_over: true,
+                },
+            ))
+            .id();
+        let panel = app
+            .world_mut()
+            .spawn((
+                Panel::Overlay,
+                Node::default(),
+                ComputedNode::default(),
+                ScrollPosition::default(),
+            ))
+            .id();
+        apply(&mut app, Action::Open);
+        apply(&mut app, Action::Tab(Tab::Demographics));
+        apply(&mut app, Action::Ownership);
+        apply(&mut app, Action::NextDay);
+        app.update();
+        let before_population = app
+            .world()
+            .resource::<Game>()
+            .simulation
+            .summary(None)
+            .population;
+        let before_tick = app.world().resource::<Game>().simulation.date.tick();
+        let handle = app.world().get::<ImageNode>(plot).unwrap().image.clone();
+        app.world_mut()
+            .resource_mut::<AccumulatedMouseScroll>()
+            .delta = Vec2::Y * 2.0;
+        app.update();
+        app.world_mut()
+            .resource_mut::<AccumulatedMouseScroll>()
+            .delta = Vec2::ZERO;
+        let zoomed = app.world().resource::<Inspector>().pie_views[0];
+        assert!(zoomed.last - zoomed.first < 1.0);
+        // Relative cursor coordinates are f32; compare the exact anchor used by the controller.
+        let point = 0.1_f32 + 0.5;
+        assert_eq!(
+            zoomed.value_at((point as f64, point as f64)),
+            super::super::pie::FIT.value_at((point as f64, point as f64))
+        );
+        assert_eq!(app.world().get::<ScrollPosition>(panel).unwrap().y, 0.0);
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .press(MouseButton::Left);
+        app.update();
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .clear();
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .normalized = Some(Vec2::new(0.2, -0.2));
+        app.update();
+        let panned = app.world().resource::<Inspector>().pie_views[0];
+        assert!(panned.first < zoomed.first && panned.low < zoomed.low);
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .cursor_over = false;
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .normalized = Some(Vec2::new(0.7, -0.2));
+        app.update();
+        assert!(app.world().resource::<Inspector>().pie_views[0].first < panned.first);
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .release(MouseButton::Left);
+        app.update();
+        assert!(app.world().resource::<Inspector>().pie_drag.is_none());
+        assert_eq!(app.world().resource::<Inspector>().pie_hover, [None; 2]);
+        let view = app.world().resource::<Inspector>().pie_views[0];
+        apply(&mut app, Action::NextDay);
+        app.update();
+        assert_eq!(app.world().resource::<Inspector>().pie_views[0], view);
+        app.world_mut()
+            .get_mut::<RelativeCursorPosition>(plot)
+            .unwrap()
+            .cursor_over = true;
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .press(MouseButton::Right);
+        app.update();
+        app.world_mut()
+            .resource_mut::<ButtonInput<MouseButton>>()
+            .reset_all();
+        assert_eq!(
+            app.world().resource::<Inspector>().pie_views,
+            [super::super::pie::FIT; 2]
+        );
+        app.world_mut()
+            .resource_mut::<Inspector>()
+            .zoom_pie(0, (0.5, 0.5), 0.5);
+        apply(&mut app, Action::PieFit);
+        assert_eq!(
+            app.world().resource::<Inspector>().pie_views,
+            [super::super::pie::FIT; 2]
+        );
+        app.world_mut()
+            .resource_mut::<Inspector>()
+            .zoom_pie(0, (0.5, 0.5), 0.5);
+        apply(&mut app, Action::Next);
+        assert_eq!(
+            app.world().resource::<Inspector>().pie_views,
+            [super::super::pie::FIT; 2]
+        );
+        assert_eq!(app.world().get::<ImageNode>(plot).unwrap().image, handle);
+        assert_eq!(app.world().resource::<Assets<Image>>().len(), 1);
+        assert_eq!(
+            app.world()
+                .resource::<Game>()
+                .simulation
+                .summary(None)
+                .population,
+            before_population
+        );
+        assert_eq!(
+            app.world().resource::<Game>().simulation.date.tick(),
+            before_tick + DAY
+        );
+        apply(&mut app, Action::Planet);
+        app.update();
+        assert!(!app.world().resource::<Inspector>().pie_pointer_over);
+        apply(&mut app, Action::Close);
+        app.update();
+        assert!(!app.world().resource::<Inspector>().pie_pointer_over);
         Ok(())
     }
 

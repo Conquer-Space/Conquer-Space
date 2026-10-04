@@ -1074,10 +1074,7 @@ fn smoke_test(
         return;
     }
     smoke.elapsed = 0.0;
-    if matches!(
-        smoke.stage,
-        1 | 3 | 5 | 7 | 9 | 11 | 13 | 15 | 17 | 19 | 21 | 23 | 25 | 27 | 29 | 31
-    ) {
+    if !smoke.stage.is_multiple_of(2) {
         for (text, layout) in &text_layouts {
             assert!(
                 text.0.trim().is_empty() || !layout.glyphs.is_empty(),
@@ -1278,6 +1275,17 @@ fn smoke_test(
             "demographics-count-inspector.png",
         ),
         22 => {
+            for segment in 0..2 {
+                inspector.zoom_pie(segment, (0.5, 0.5), 0.8);
+                inspector.pan_pie(segment, (0.05, 0.025));
+            }
+        }
+        23 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "demographics-zoomed-inspector.png",
+        ),
+        24 => {
             let province = game
                 .simulation
                 .settlements
@@ -1302,21 +1310,21 @@ fn smoke_test(
                 .validate()
                 .expect("Smoke check: valid constructed factory");
         }
-        23 => capture_smoke(
+        25 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "construction-inspector.png",
         ),
-        24 => inspector.apply(
+        26 => inspector.apply(
             inspection_ui::Action::Tab(inspection_ui::Tab::Civilization),
             &mut game,
         ),
-        25 => capture_smoke(
+        27 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "civilization-inspector.png",
         ),
-        26 => {
+        28 => {
             inspector.apply(
                 inspection_ui::Action::Tab(inspection_ui::Tab::History),
                 &mut game,
@@ -1324,22 +1332,22 @@ fn smoke_test(
             inspector.apply(inspection_ui::Action::Next, &mut game);
             inspector.apply(inspection_ui::Action::ChartWindow, &mut game);
         }
-        27 => capture_smoke(
+        29 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "history-inspector.png",
         ),
-        28 => {
+        30 => {
             // The late price series sits at its minimum; keep that band in view.
             inspector.zoom_plot(&game, (0.5, 0.0), 0.5);
             inspector.pan_plot(&game, (0.1, 0.1));
         }
-        29 => capture_smoke(
+        31 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "history-zoomed-inspector.png",
         ),
-        30 => {
+        32 => {
             game.hovered = game
                 .simulation
                 .settlements
@@ -1351,15 +1359,15 @@ fn smoke_test(
                 &mut game,
             );
         }
-        31 => capture_smoke(
+        33 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "infrastructure-inspector.png",
         ),
         _ => {
             assert_eq!(
-                smoke.captures, 16,
-                "Smoke check: all sixteen captures must be verified"
+                smoke.captures, 17,
+                "Smoke check: all seventeen captures must be verified"
             );
             println!("SMOKE: complete.");
             exit.write(AppExit::Success);

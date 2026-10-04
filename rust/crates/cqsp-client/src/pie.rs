@@ -1,8 +1,15 @@
 //! Native consumption pies: source float values, double normalization, 90-degree start.
+use super::chart::View;
 use std::f64::consts::{FRAC_PI_2, TAU};
 
 pub(super) const SIZE: u32 = 240;
 pub(super) const BACKGROUND: [u8; 4] = [4, 15, 29, 255];
+pub(super) const FIT: View = View {
+    first: 0.0,
+    last: 1.0,
+    low: 0.0,
+    high: 1.0,
+};
 const COLORS: [[u8; 4]; 10] = [
     [76, 114, 176, 255],
     [221, 132, 82, 255],
@@ -49,16 +56,16 @@ impl Pie {
         })
     }
 }
-pub(super) fn render(values: &[f32], hidden: &[bool]) -> Vec<u8> {
+pub(super) fn render(values: &[f32], hidden: &[bool], view: View) -> Vec<u8> {
     let pie = Pie::new(values);
     (0..SIZE * SIZE)
         .flat_map(|pixel| {
-            let position = (
+            let (x, y) = view.value_at((
                 (pixel % SIZE) as f64 / SIZE as f64 + 0.5 / SIZE as f64,
-                (pixel / SIZE) as f64 / SIZE as f64 + 0.5 / SIZE as f64,
-            );
+                1.0 - ((pixel / SIZE) as f64 + 0.5) / SIZE as f64,
+            ));
             pie.as_ref()
-                .and_then(|pie| pie.at(position))
+                .and_then(|pie| pie.at((x, 1.0 - y)))
                 .filter(|&index| !hidden.get(index).copied().unwrap_or(false))
                 .map_or(BACKGROUND, color)
         })
@@ -85,8 +92,8 @@ mod tests {
     }
     #[test]
     fn hidden_slices_leave_their_original_angles_empty_without_renormalizing() {
-        let visible = render(&[1.0, 3.0], &[]);
-        let hidden = render(&[1.0, 3.0], &[true, false]);
+        let visible = render(&[1.0, 3.0], &[], FIT);
+        let hidden = render(&[1.0, 3.0], &[true, false], FIT);
         let count = |pixels: &[u8], shade: [u8; 4]| {
             pixels
                 .as_chunks::<4>()
@@ -111,7 +118,7 @@ mod tests {
         ] {
             assert!(Pie::new(&values).is_none());
             assert!(
-                render(&values, &[])
+                render(&values, &[], FIT)
                     .as_chunks::<4>()
                     .0
                     .iter()
@@ -119,5 +126,21 @@ mod tests {
             );
         }
         assert!(Pie::new(&[f32::MAX, f32::MAX]).is_some());
+    }
+    #[test]
+    fn equal_axis_zoom_pan_and_far_offscreen_pies_stay_bounded() {
+        let count = |view| {
+            render(&[1.0], &[], view)
+                .as_chunks::<4>()
+                .0
+                .iter()
+                .filter(|&&pixel| pixel != BACKGROUND)
+                .count()
+        };
+        let zoomed = FIT.zoom((0.5, 0.5), 0.5);
+        assert_eq!(zoomed.last - zoomed.first, zoomed.high - zoomed.low);
+        assert!(count(zoomed) > count(FIT));
+        assert_eq!(count(FIT.pan((10.0, 10.0))), 0);
+        assert_eq!(count(FIT.pan((f64::NAN, 0.0))), count(FIT));
     }
 }

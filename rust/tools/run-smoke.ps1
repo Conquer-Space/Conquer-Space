@@ -25,12 +25,12 @@ try {
     foreach ($capture in @(
         'selection', 'game-view', 'system-view', 'spacecraft-view', 'spaceport-view', 'launched-vehicle',
         'market-inspector', 'industry-inspector', 'science-inspector', 'demographics-inspector',
-        'demographics-count-inspector', 'construction-inspector', 'civilization-inspector',
+        'demographics-count-inspector', 'demographics-zoomed-inspector', 'construction-inspector', 'civilization-inspector',
         'history-inspector', 'history-zoomed-inspector', 'infrastructure-inspector'
     )) {
         $path = Join-Path $start.WorkingDirectory "target/$capture.png"
         $file = Get-Item -LiteralPath $path -ErrorAction Stop
         if ($file.Length -lt 100 -or $file.LastWriteTimeUtc -lt $started) { throw "Missing or stale capture: $path" }
     }
-    Write-Host 'All 16 offscreen PNG captures were written by this run.'
+    Write-Host 'All 17 offscreen PNG captures were written by this run.'
 } finally { $process.Dispose() }

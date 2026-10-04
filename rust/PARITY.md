@@ -211,7 +211,7 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 110 unit tests
+365 market-history records per body and CSV/industry export checks. There are 112 unit tests
 and 25 passing differential tests. Twenty-four live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
@@ -308,7 +308,7 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Sixteen verified captures include the spaceport panel, newly
+native screen actions. Seventeen verified captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 Native inspection tests cover
 all good/field/technology cycles, owned/all province filters, hovered ledgers, one-shot
@@ -324,8 +324,14 @@ Renderer-free tests check all four value modes, float conversion, normalization,
 one-shot hide/show, hover, image reuse, empty scopes and non-mutation. GPU captures
 check visible slices and legend text in both cost/per-capita and count/whole-segment
 modes, including one hidden entry. Empty/negative/non-finite pies retain ledger text
-without undefined geometry. This is native functionality, not an ImPlot pixel match;
-arbitrary pie-axis pan/zoom and original unordered legend traversal remain distinct.
+without undefined geometry. Pie input supports equal-axis, cursor-centered wheel zoom,
+both-axis drag pan, outside-image capture and right-click/Fit reset. Daily refresh
+preserves views; changing scope/page resets them. Hover uses transformed coordinates;
+plot wheels cannot scroll the panel, and close/missing scopes release capture. Bounds
+and pixel work remain finite even far offscreen. Renderer-free input tests check these
+rules, asset reuse and unchanged simulation; an extra GPU capture verifies the
+panned/zoomed pies. This is native functionality, not an ImPlot pixel match; original
+unordered legend traversal and tessellation/palette details are not asserted identical.
 Construction tests cover every recipe, bounded count adjustments,
 one-shot creation, the original idle record and rejection without partial mutation.
 Civilization pages check governor filtering independently of province ownership and
@@ -373,8 +379,9 @@ window is created. Pipe non-launching --paths/--help output in PowerShell too.
 The wrapper now also rejects missing/stale captures by checking each expected PNG's
 size and write time against this run; successful rendering alone cannot conceal a
 failed disk write.
-The updated release bundle has also passed all sixteen captures, including both
-consumption modes, from the external working directory with no asset override.
+The updated release bundle has also passed all seventeen captures, including both
+consumption modes and panned/zoomed pies, from the external working directory with
+no asset override. All 25 differential tests pass in debug and release.
 The original Save::SaveGame returns an empty HJSON value, while metadata only stores
 date/UUID/version. A full simulation/RNG snapshot would be a new feature, not behavior
 already implemented upstream. Metadata/load-menu/settings parity remains open.
