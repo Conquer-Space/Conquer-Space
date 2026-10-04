@@ -17,6 +17,7 @@ try {
     & cl.exe /nologo /MP2 /std:c++20 /utf-8 /EHsc /MT /Gy /DFMT_HEADER_ONLY /DGLM_ENABLE_EXPERIMENTAL `
         "/I$repoRoot/src" "/I$DependencyInclude" "/I$DependencyInclude/luajit" "/I$repoRoot/lib/sol2/include" "/I$repoRoot/lib/hjson-cpp/include/hjson" "/I$repoRoot/lib/tracy/tracy/public" "/Fe$outputDirectory/cpp-reference.exe" `
         "$PSScriptRoot/cpp-reference.cpp" "$repoRoot/src/core/components/market.cpp" `
+        "$repoRoot/src/engine/clientoptions.cpp" `
         "$repoRoot/src/core/components/resourceledger.cpp" "$repoRoot/src/core/components/pid.cpp" `
         "$repoRoot/src/core/components/stardate.cpp" "$repoRoot/src/core/systems/economy/economyconfig.cpp" `
         "$repoRoot/src/core/components/orbit.cpp" "$repoRoot/src/core/loading/loadorbit.cpp" "$repoRoot/src/core/loading/loadutil.cpp" `

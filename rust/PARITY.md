@@ -16,7 +16,7 @@ Successful long runs establish stability, not gameplay parity.
 | Area | Status | Evidence / remaining work |
 | --- | --- | --- |
 | Country/province map and globe picking | Implemented | Original map fixtures, ray/UV tests, offscreen GPU smoke checks; remaining legacy overlays |
-| Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus and settings |
+| Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus |
 | Civilization metadata / native view | Loader reference-tested; native integration | All 199 countries' wallet/capability/research/tax fields, initial city/province lists and capital tags through actual loaders; native capital, wallet/taxes, paged governed sites/province balances and mission queue; governor and province ownership remain distinct |
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
 | Playback / time controls | Original settings reference-tested; source-mapped native pacing | Eleven actual clientctx settings and default index 3/paused state; float millisecond intervals, strict greater-than gate, one 1/2/5/10-tick batch per frame, no backlog catch-up; native pause/slow/fast buttons and keyboard/overlay guards; not execution of full original ManageTick/Application |
@@ -48,7 +48,7 @@ Successful long runs establish stability, not gameplay parity.
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
 | Native replacements for scripted UI/events | Partial | Country selection and civilization/economy/history inspection are native; exploration, side menu and event infrastructure remain |
-| Saves / load / settings / packaging | Metadata component reference-tested; native browser, CLI/store and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; explicit CLI and native metadata save/list/load, fresh-asset loading-scene reset/tick, atomic replacement, six-hex identity separate from economy RNG; application settings and pause menu remain. Locked dev/release bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
+| Saves / load / settings / packaging | Metadata/default graphics reference-tested; native menus and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; CLI/native metadata browser, fresh-asset reset/tick, atomic replacement, six-hex identity separate from economy RNG; source-mapped pause menu, 15 resolution presets, fullscreen/window restoration, isolated Rust preferences. Other application settings and live native-window acceptance remain. Locked bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
 
 ## Compatibility decisions and known gaps
 
@@ -222,7 +222,7 @@ orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
 365 market-history records per body and CSV/industry export checks. There are 119 unit tests
-and 29 passing differential tests in debug and release. Twenty-eight live tests require the reference executable.
+and 30 passing differential tests in debug and release. Twenty-nine live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -318,7 +318,7 @@ or change input. It selects India through a real camera ray, enters the game,
 validates seven daily steps, switches to system/spacecraft views, executes a native
 maneuver and advances another day. It then designs a vehicle, manufactures it over
 90 daily steps, launches it and dispatches/delivers a lunar core mission using the
-native screen actions. Twenty captures include the spaceport panel, newly
+native screen actions. Twenty-two captures include the spaceport panel, newly
 launched vehicle and market/industry/science/demographics/construction/civilization/history/infrastructure inspectors.
 The budget capture applies a national subsidy to a newly constructed player factory
 and verifies the chosen absolute tax across all provinces before rendering. Native
@@ -419,7 +419,7 @@ no asset override. All 26 differential tests pass in debug and release.
 The original Save::SaveGame returns an empty HJSON value, while metadata only stores
 date/UUID/version. A full simulation/RNG snapshot would be a new feature, not behavior
 already implemented upstream. The core/CLI/store now preserves this limited behavior;
-native application settings and pause-menu parity remain open. Thirteen reference cases execute actual
+the source-mapped pause menu and basic display settings are also implemented. Thirteen reference cases execute actual
 GetMetadata/LoadMetadata, including numeric truncation, uint32 wrapping, ignored
 versions, UUID conversion and invalid nonnumeric dates. The load browser defaults
 missing dates to -1, whereas LoadMetadata itself rejects them. Typed validation rejects
@@ -437,6 +437,24 @@ non-mutation. The metadata GPU capture checks the explicit metadata-only warning
 the smoke then loads it and checks date/UUID, default ships and session reset.
 Fixtures are isolated under target/; no normal Rust or original C++ saves are written.
 
+The pause menu halts simulation work without changing playback's paused/running flag.
+Resume, metadata-only Save, Options and Exit Game have native actions; original
+Load Game/Exit To Menu buttons are no-ops and remain so. Three ECS tests cover
+modal shortcut/closing-frame isolation, painting/editor precedence, one-shot disk
+writes, no-op session preservation, all 15 presets, fullscreen/window restoration,
+failed preference writes and exit signaling. Escape uses native key-press edges
+rather than the source's release edges; this is not full input-phase parity.
+The GPU captures exercise pause/options and isolated preference persistence.
+Actual ClientOptions::GetDefaultOptions supplies the C++ graphics-default comparison;
+the resolution-table test extracts all 15 entries from the original source, not
+execution of ImGui. The reference harness disables original user-path access.
+The unified native UI previews display changes and explicitly saves preferences;
+source in-game options preview only, while its separate main-menu Submit persists.
+Rust-only preferences are atomically replaced and exclude audio. Fullscreen selects
+the primary monitor's current mode, restoring windowed dimensions/position (40,40)
+on exit; ECS tests mutate Window components without opening an OS window. Live
+fullscreen, DPI, resize and remaining MSAA/splash/icon settings require acceptance.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production system corpus to larger FSM boundary
@@ -450,6 +468,6 @@ Fixtures are isolated under target/; no normal Rust or original C++ saves are wr
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
    research, projects, modifier controls, event queues and market/history inspection.
-5. Verify remaining pause/menu behavior, application settings, package runtime
+5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.
    Full parity requires documented scenario-level comparisons, not file counts.

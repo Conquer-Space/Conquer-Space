@@ -353,6 +353,15 @@ fn map_factory_painting_matches_original_creation_and_size_only_branch() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual ClientOptions graphics defaults, excluding audio"]
+fn graphics_defaults_match_original_client_options() {
+    compare(
+        &serde_json::to_value(cqsp_core::settings::GraphicsSettings::default()).unwrap(),
+        &reference_output(Some("--graphics-defaults"), ""),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual ApplySubsidy and UI ledger deletion"]
 fn national_recipe_subsidies_match_original_action_and_removal() {
     use cqsp_core::catalog::RecipeId;

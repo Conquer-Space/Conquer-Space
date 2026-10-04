@@ -89,26 +89,9 @@ impl SaveStore {
             "Unsafe save folder identity"
         );
         let directory = self.0.join(format!("{country}_{}", metadata.uuid));
-        fs::create_dir_all(&directory).context("Create save directory")?;
         let path = directory.join("meta.hjson");
         // JSON is valid HJSON; retain only the three original metadata fields.
-        let pending = directory.join(format!("meta-{}.tmp", new_uuid()));
-        let mut file = fs::OpenOptions::new()
-            .write(true)
-            .create_new(true)
-            .open(&pending)
-            .context("Create pending metadata")?;
-        let result = (|| -> Result<()> {
-            file.write_all(serde_json::to_string_pretty(metadata)?.as_bytes())?;
-            file.sync_all()?;
-            drop(file);
-            fs::rename(&pending, &path).context("Replace metadata")?;
-            Ok(())
-        })();
-        if result.is_err() {
-            let _ = fs::remove_file(&pending);
-        }
-        result.context("Write save metadata")?;
+        write_atomic(&path, metadata).context("Write save metadata")?;
         Ok(path)
     }
     pub fn read(directory: &Path) -> Result<Metadata> {
@@ -143,6 +126,37 @@ impl SaveStore {
         entries.sort_by(|a, b| a.name.cmp(&b.name));
         Ok(entries)
     }
+}
+/// Used for metadata and Rust-specific preferences; never leaves a partial destination file.
+pub(crate) fn write_atomic(path: &Path, value: &impl Serialize) -> Result<()> {
+    let directory = path
+        .parent()
+        .filter(|path| !path.as_os_str().is_empty())
+        .unwrap_or(Path::new("."));
+    fs::create_dir_all(directory).context("Create output directory")?;
+    let pending = directory.join(format!(
+        "{}-{}.tmp",
+        path.file_name()
+            .context("Output needs a filename")?
+            .to_string_lossy(),
+        new_uuid()
+    ));
+    let mut file = fs::OpenOptions::new()
+        .write(true)
+        .create_new(true)
+        .open(&pending)
+        .context("Create pending output")?;
+    let result = (|| -> Result<()> {
+        file.write_all(serde_json::to_string_pretty(value)?.as_bytes())?;
+        file.sync_all()?;
+        drop(file);
+        fs::rename(&pending, path).context("Replace output")?;
+        Ok(())
+    })();
+    if result.is_err() {
+        let _ = fs::remove_file(&pending);
+    }
+    result
 }
 fn safe_name(value: &str) -> bool {
     !value.is_empty()

@@ -27,6 +27,7 @@ use cqsp_core::{
     simulation::Simulation,
 };
 use std::{f32::consts::PI, path::PathBuf, time::Duration};
+mod application_ui;
 mod chart;
 mod construction_ui;
 mod inspection_ui;
@@ -141,6 +142,7 @@ fn main() -> Result<()> {
     let mut smoke = false;
     let mut print_paths = false;
     let mut saves_root = None;
+    let mut settings_path = None;
     let mut args = std::env::args().skip(1);
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -149,6 +151,11 @@ fn main() -> Result<()> {
             }
             "--smoke" => smoke = true,
             "--paths" => print_paths = true,
+            "--settings" => {
+                settings_path = Some(PathBuf::from(
+                    args.next().context("--settings needs a preferences file")?,
+                ))
+            }
             "--saves" => {
                 saves_root = Some(PathBuf::from(
                     args.next().context("--saves needs a directory")?,
@@ -156,7 +163,7 @@ fn main() -> Result<()> {
             }
             "--help" | "-h" => {
                 println!(
-                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--saves DIRECTORY] [--smoke] [--paths]\n--paths: print resolved asset/save directories without launching\n--saves: override the Rust-specific metadata save location\n--smoke: offscreen verification with isolated metadata fixtures\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start; Esc: selection\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
+                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--saves DIRECTORY] [--settings FILE] [--smoke] [--paths]\n--paths: print resolved asset/save/settings locations without launching\n--saves: override the Rust-specific metadata save location\n--settings: override the Rust-specific display preferences file\n--smoke: offscreen verification with isolated metadata/preferences fixtures\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start/back; Esc: pause menu\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
                 );
                 println!("B: owned-province construction painting; Esc cancels painting");
                 return Ok(());
@@ -175,14 +182,24 @@ fn main() -> Result<()> {
     } else {
         saves_root.map_or_else(save_ui::default_root, Ok)?
     };
+    let settings_path = if smoke {
+        std::env::current_dir()?.join("target").join(format!(
+            "settings-smoke-{}.hjson",
+            cqsp_core::save::new_uuid()
+        ))
+    } else {
+        settings_path.map_or_else(application_ui::default_path, Ok)?
+    };
     if print_paths {
         println!(
             "{}",
-            serde_json::json!({"data":data,"client_assets":assets,"saves":saves_root})
+            serde_json::json!({"data":data,"client_assets":assets,"saves":saves_root,"settings":settings_path})
         );
         return Ok(());
     }
     let world = World::load(&data)?;
+    let settings = cqsp_core::settings::GraphicsSettings::load(&settings_path)?;
+    let menu = application_ui::Menu::new(settings_path, settings);
     let saves = save_ui::Saves::new(data.clone(), saves_root);
     let simulation = Simulation::load(&data, &world, 42)?;
     let navigation = Navigation::new(&simulation.solar_system);
@@ -254,10 +271,13 @@ fn main() -> Result<()> {
             ..default()
         })
         .set(WindowPlugin {
-            primary_window: (!smoke).then(|| Window {
-                title: "Conquer Space — Rust / Bevy".into(),
-                resolution: (1280, 800).into(),
-                ..default()
+            primary_window: (!smoke).then(|| {
+                let mut window = Window {
+                    title: "Conquer Space — Rust / Bevy".into(),
+                    ..default()
+                };
+                application_ui::apply_window(settings, &mut window);
+                window
             }),
             exit_condition: if smoke {
                 ExitCondition::DontExit
@@ -292,6 +312,7 @@ fn main() -> Result<()> {
         .insert_resource(spaceport_ui)
         .insert_resource(inspector)
         .insert_resource(saves)
+        .insert_resource(menu)
         .init_resource::<construction_ui::ConstructionTool>()
         .insert_resource(Smoke {
             enabled: smoke,
@@ -308,8 +329,10 @@ fn main() -> Result<()> {
             Update,
             (
                 (
-                    save_ui::controls.run_if(interactive),
-                    save_ui::scroll.run_if(interactive),
+                    application_ui::controls.run_if(interactive),
+                    application_ui::scroll.run_if(interactive),
+                    save_ui::controls.run_if(menu_input),
+                    save_ui::scroll.run_if(menu_input),
                     inspection_ui::controls.run_if(application_input),
                     inspection_ui::chart_controls.run_if(application_input),
                     inspection_ui::pie_controls.run_if(application_input),
@@ -337,6 +360,7 @@ fn main() -> Result<()> {
                     playback_ui::update,
                     save_ui::update,
                     construction_ui::update,
+                    application_ui::update,
                 )
                     .chain(),
                 spaceport_ui::update,
@@ -429,7 +453,7 @@ fn setup(
             panel.spawn((BeginButton, Button, Node { padding: UiRect::all(px(12)), border_radius: BorderRadius::all(px(6)), ..default() },
                 BackgroundColor(Color::srgb(0.15, 0.29, 0.43))))
                 .with_children(|button| { button.spawn((BeginLabel, Text::new("Select a country"), ui_font(&font, 18.0))); });
-            panel.spawn((Text::new("Right drag / arrows: orbit\nWheel: zoom · Left click: select\nTab / Shift+Tab: countries\nEnter: start · Esc: selection\nV: Earth / system view\nM: map mode · R: reset\nF12: save screenshot"),
+            panel.spawn((Text::new("Right drag / arrows: orbit\nWheel: zoom · Left click: select\nTab / Shift+Tab: countries\nEnter: start/back · Esc: pause\nV: Earth / system view\nB: construction painting\nM: map mode · R: reset\nF12: save screenshot"),
                 ui_font(&font, 14.0), TextColor(Color::srgb(0.55, 0.65, 0.77))));
         });
     commands
@@ -462,6 +486,7 @@ fn setup(
     playback_ui::spawn(&mut commands, camera, &font);
     save_ui::spawn(&mut commands, camera, &font);
     construction_ui::spawn(&mut commands, camera, &font);
+    application_ui::spawn(&mut commands, camera, &font);
     inspection_ui::spawn(
         &mut commands,
         camera,
@@ -487,8 +512,17 @@ fn screenshot_path(name: &str) -> Result<PathBuf> {
 fn interactive(smoke: Res<Smoke>) -> bool {
     !smoke.enabled
 }
-fn application_input(smoke: Res<Smoke>, saves: Option<Res<save_ui::Saves>>) -> bool {
-    !smoke.enabled && saves.is_none_or(|saves| !saves.capture_input)
+fn menu_input(smoke: Res<Smoke>, menu: Option<Res<application_ui::Menu>>) -> bool {
+    !smoke.enabled && menu.is_none_or(|menu| !menu.capture_input)
+}
+fn application_input(
+    smoke: Res<Smoke>,
+    saves: Option<Res<save_ui::Saves>>,
+    menu: Option<Res<application_ui::Menu>>,
+) -> bool {
+    !smoke.enabled
+        && saves.is_none_or(|saves| !saves.capture_input)
+        && menu.is_none_or(|menu| !menu.capture_input)
 }
 
 fn world_input(
@@ -496,11 +530,13 @@ fn world_input(
     ui: Res<spaceport_ui::SpaceportUi>,
     inspector: Res<inspection_ui::Inspector>,
     saves: Option<Res<save_ui::Saves>>,
+    menu: Option<Res<application_ui::Menu>>,
 ) -> bool {
     !smoke.enabled
         && !ui.capture_input
         && !inspector.capture_input
         && saves.is_none_or(|saves| !saves.capture_input)
+        && menu.is_none_or(|menu| !menu.capture_input)
 }
 
 fn earth_controls(
@@ -509,12 +545,14 @@ fn earth_controls(
     ui: Res<spaceport_ui::SpaceportUi>,
     inspector: Res<inspection_ui::Inspector>,
     saves: Option<Res<save_ui::Saves>>,
+    menu: Option<Res<application_ui::Menu>>,
 ) -> bool {
     !smoke.enabled
         && !navigation.active
         && !ui.capture_input
         && !inspector.capture_input
         && saves.is_none_or(|saves| !saves.capture_input)
+        && menu.is_none_or(|menu| !menu.capture_input)
 }
 
 fn globe_mesh() -> Mesh {
@@ -612,6 +650,7 @@ fn selection_controls(
     mut game: ResMut<Game>,
     navigation: Res<Navigation>,
     construction: Option<Res<construction_ui::ConstructionTool>>,
+    menu: Option<Res<application_ui::Menu>>,
 ) {
     if construction.is_some_and(|tool| tool.capture_input) {
         return;
@@ -637,7 +676,9 @@ fn selection_controls(
         let country = game.ordered_countries[index];
         game.session.select(country);
     }
-    if keyboard.just_pressed(KeyCode::Escape) {
+    if keyboard.just_pressed(KeyCode::Escape)
+        && (menu.is_none() || game.session.player_country.is_none())
+    {
         game.session.return_to_selection();
         game.paused = true;
         game.last_tick = 0.0;
@@ -669,6 +710,7 @@ fn selection_controls(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn simulation_controls(
     time: Res<Time>,
     keyboard: Res<ButtonInput<KeyCode>>,
@@ -677,6 +719,7 @@ fn simulation_controls(
     ui: Option<Res<spaceport_ui::SpaceportUi>>,
     inspector: Option<Res<inspection_ui::Inspector>>,
     saves: Option<Res<save_ui::Saves>>,
+    menu: Option<Res<application_ui::Menu>>,
 ) {
     if game.session.player_country.is_none() {
         return;
@@ -684,7 +727,9 @@ fn simulation_controls(
     if game.simulation.date == StarDate::default() {
         game.simulation.tick();
     }
-    if saves.is_some_and(|saves| saves.open || saves.capture_input) {
+    if saves.is_some_and(|saves| saves.open || saves.capture_input)
+        || menu.is_some_and(|menu| menu.is_open() || menu.capture_input)
+    {
         return;
     }
     let keyboard_enabled =
@@ -898,6 +943,7 @@ fn verify_capture(
     game: Res<Game>,
     saves: Res<save_ui::Saves>,
     construction: Res<construction_ui::ConstructionTool>,
+    menu: Res<application_ui::Menu>,
 ) {
     let pixels = capture
         .image
@@ -909,6 +955,8 @@ fn verify_capture(
     let mut inspection_title = false;
     let mut save_title = false;
     let mut painting_label = false;
+    let mut pause_title = false;
+    let mut graphics_title = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -940,6 +988,8 @@ fn verify_capture(
         inspection_title |= text.0.starts_with("NATIVE INSPECTION");
         save_title |= text.0.starts_with("SAVE / LOAD · METADATA ONLY");
         painting_label |= text.0.starts_with("PAINTING · Esc cancels");
+        pause_title |= text.0 == "PAUSE MENU";
+        graphics_title |= text.0 == "DISPLAY OPTIONS · SILENT";
     }
     assert!(
         checked >= 8,
@@ -950,7 +1000,21 @@ fn verify_capture(
         !saves.open || save_title,
         "Smoke check: metadata browser header clipped away"
     );
-    if construction.armed && !navigation.active && !saves.open && !inspector.open && !ui.open {
+    assert!(
+        menu.screen != application_ui::Screen::Pause || pause_title,
+        "Smoke check: pause header missing"
+    );
+    assert!(
+        menu.screen != application_ui::Screen::Graphics || graphics_title,
+        "Smoke check: display options header missing"
+    );
+    if construction.armed
+        && !navigation.active
+        && !saves.open
+        && !inspector.open
+        && !ui.open
+        && !menu.is_open()
+    {
         assert!(
             painting_label,
             "Smoke check: construction painting status missing"
@@ -1052,7 +1116,7 @@ fn verify_capture(
         assert_eq!(verified, 2, "Smoke check: both policy sliders must render");
         println!("SMOKE: verified both policy slider fill bars.");
     }
-    if navigation.active && !ui.open && !inspector.open && !saves.open {
+    if navigation.active && !ui.open && !inspector.open && !saves.open && !menu.is_open() {
         let mut orbit_pixels = 0;
         for y in 0..pixels.height() {
             for x in 330..pixels.width() - 330 {
@@ -1176,6 +1240,7 @@ fn smoke_test(
     mut inspector: ResMut<inspection_ui::Inspector>,
     mut saves: ResMut<save_ui::Saves>,
     mut construction: ResMut<construction_ui::ConstructionTool>,
+    mut menu: ResMut<application_ui::Menu>,
 ) {
     if !smoke.enabled {
         return;
@@ -1540,6 +1605,46 @@ fn smoke_test(
             "construction-painting.png",
         ),
         38 => {
+            construction.apply(construction_ui::Action::Toggle, &game);
+            let tick = game.simulation.date.tick();
+            menu.apply(application_ui::Action::OpenPause)
+                .expect("Open smoke pause menu");
+            menu.apply(application_ui::Action::LoadGame)
+                .expect("Original no-op load");
+            assert_eq!(game.simulation.date.tick(), tick);
+            assert!(game.session.player_country.is_some());
+        }
+        39 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "pause-menu.png",
+        ),
+        40 => {
+            menu.apply(application_ui::Action::OpenGraphics)
+                .expect("Open smoke display options");
+            menu.apply(application_ui::Action::Next)
+                .expect("Next original resolution");
+            menu.apply(application_ui::Action::Fullscreen)
+                .expect("Select fullscreen without an OS window");
+            menu.apply(application_ui::Action::Persist)
+                .expect("Write isolated smoke preferences");
+            assert_eq!(
+                (menu.settings.window.width, menu.settings.window.height),
+                (1280, 800)
+            );
+            assert!(menu.settings.full_screen);
+        }
+        41 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "display-options.png",
+        ),
+        42 => {
+            menu.apply(application_ui::Action::CloseGraphics)
+                .expect("Return to pause");
+            assert_eq!(menu.screen, application_ui::Screen::Pause);
+            menu.apply(application_ui::Action::Resume)
+                .expect("Resume without changing playback");
             saves
                 .apply(
                     save_ui::Action::Open,
@@ -1559,12 +1664,12 @@ fn smoke_test(
                 )
                 .expect("Save isolated smoke metadata");
         }
-        39 => capture_smoke(
+        43 => capture_smoke(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "metadata-browser.png",
         ),
-        40 => {
+        44 => {
             let uuid = game.simulation.uuid.clone();
             let tick = game.simulation.date.tick();
             saves
@@ -1584,8 +1689,8 @@ fn smoke_test(
         }
         _ => {
             assert_eq!(
-                smoke.captures, 20,
-                "Smoke check: all twenty captures must be verified"
+                smoke.captures, 22,
+                "Smoke check: all twenty-two captures must be verified"
             );
             assert!(!construction.armed, "Load must cancel stale painting");
             println!("SMOKE: complete.");

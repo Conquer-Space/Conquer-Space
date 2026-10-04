@@ -53,6 +53,7 @@ pub(super) fn update(
     ports: Res<SpaceportUi>,
     inspector: Res<Inspector>,
     saves: Option<Res<super::save_ui::Saves>>,
+    menu: Option<Res<super::application_ui::Menu>>,
     mut panels: Query<&mut Node, With<Panel>>,
     mut labels: Query<&mut Text, With<Status>>,
 ) {
@@ -60,6 +61,7 @@ pub(super) fn update(
         && !ports.open
         && !inspector.open
         && saves.is_none_or(|saves| !saves.open)
+        && menu.is_none_or(|menu| !menu.is_open())
     {
         Display::Flex
     } else {

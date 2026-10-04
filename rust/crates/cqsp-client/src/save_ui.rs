@@ -299,11 +299,14 @@ pub(super) fn scroll(
         }
     }
 }
+#[allow(clippy::too_many_arguments)]
 pub(super) fn update(
     saves: Option<Res<Saves>>,
     game: Res<Game>,
+    navigation: Res<Navigation>,
     inspector: Res<Inspector>,
     ports: Res<SpaceportUi>,
+    menu: Option<Res<super::application_ui::Menu>>,
     mut panels: Query<(Entity, &Panel, &mut Node)>,
     children: Query<&Children>,
     mut texts: Query<(&mut Text, Option<&Content>)>,
@@ -313,7 +316,13 @@ pub(super) fn update(
     };
     for (entity, panel, mut node) in &mut panels {
         let shown = match panel {
-            Panel::Launcher => !saves.open && !ports.open && !inspector.open,
+            Panel::Launcher => {
+                !saves.open
+                    && !navigation.active
+                    && !ports.open
+                    && !inspector.open
+                    && menu.as_ref().is_none_or(|menu| !menu.is_open())
+            }
             Panel::Overlay => saves.open,
         };
         let display = if shown { Display::Flex } else { Display::None };

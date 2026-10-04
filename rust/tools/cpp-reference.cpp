@@ -18,6 +18,7 @@
 #include "core/actions/economy/subsidyhelper.h"
 #include "core/util/save/save.h"
 #include "client/components/clientctx.h"
+#include "engine/clientoptions.h"
 #include "core/components/colony.h"
 #include "core/components/history.h"
 #include "core/components/infrastructure.h"
@@ -72,6 +73,10 @@
 #include <spdlog/sinks/null_sink.h>
 
 using namespace cqsp::core::components;
+// ClientOptions defaults are tested; legacy settings persistence is deliberately unreachable.
+namespace cqsp::core::util {
+std::string GetCqspAppDataPath() { throw std::logic_error("Reference fixtures may not access original user settings"); }
+}
 void PrintVector(const glm::dvec3& vector);
 Hjson::Value ReadInput() {
     return Hjson::Unmarshal(std::string(std::istreambuf_iterator<char>(std::cin), {}));
@@ -1517,6 +1522,14 @@ void PrintRandom() {
 }
 
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--graphics-defaults") {
+        cqsp::client::ClientOptions options;
+        const auto defaults = options.GetDefaultOptions();
+        Hjson::Value graphics(Hjson::Type::Map);
+        graphics["window"] = defaults["window"];
+        graphics["full_screen"] = defaults["full_screen"];
+        WriteJson(graphics); std::cout << '\n'; return 0;
+    }
     if (argc == 2 && std::string(argv[1]) == "--playback-settings") {
         cqsp::client::ctx::PauseOptions defaults;
         Hjson::Value output(Hjson::Type::Map), speeds(Hjson::Type::Vector);

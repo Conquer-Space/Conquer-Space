@@ -11,6 +11,11 @@ availability on another PC is not established by local package verification.
 Keep the entire assets directory beside both executables.
 
 Use cqsp-client.exe --help for controls, or --paths to inspect asset resolution.
+Escape opens the pause menu after starting. Options provides the original 15
+resolution presets and fullscreen; audio is intentionally unavailable. Save
+preferences writes only %LOCALAPPDATA%/ConquerSpaceRust/settings.hjson; --settings
+FILE overrides it. Metadata saves default to ConquerSpaceRust/saves there, with
+--saves DIRECTORY as an override. Original C++ settings/saves are not touched.
 Release builds use the original game's GUI subsystem: double-clicking the client
 does not create a separate console. Pipe --paths/--help output when using PowerShell.
 Use the supplied run-smoke.ps1 -Executable ./cqsp-client.exe for the silent,

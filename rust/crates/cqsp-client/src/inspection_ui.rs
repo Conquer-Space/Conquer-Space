@@ -1845,11 +1845,13 @@ pub(super) fn scroll(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(super) fn update(
     inspector: Res<Inspector>,
     ports: Res<spaceport_ui::SpaceportUi>,
     game: Res<Game>,
     saves: Option<Res<super::save_ui::Saves>>,
+    menu: Option<Res<super::application_ui::Menu>>,
     mut panels: Query<(Entity, &Panel, &mut Node)>,
     children: Query<&Children>,
     mut texts: Query<(&mut Text, Option<&Label>)>,
@@ -1874,6 +1876,7 @@ pub(super) fn update(
                     && !ports.open
                     && !inspector.open
                     && saves.as_ref().is_none_or(|saves| !saves.open)
+                    && menu.as_ref().is_none_or(|menu| !menu.is_open())
             }
         };
         let display = if shown { Display::Flex } else { Display::None };
@@ -1954,10 +1957,16 @@ pub(crate) mod tests {
             .init_resource::<ButtonInput<MouseButton>>()
             .init_resource::<AccumulatedMouseScroll>()
             .add_message::<KeyboardInput>()
+            .add_message::<AppExit>()
             .add_systems(
                 Update,
                 (
-                    super::super::save_ui::controls,
+                    (
+                        super::super::application_ui::controls,
+                        super::super::application_ui::scroll,
+                        super::super::save_ui::controls.run_if(super::super::menu_input),
+                    )
+                        .chain(),
                     controls.run_if(super::super::application_input),
                     chart_controls.run_if(super::super::application_input),
                     pie_controls.run_if(super::super::application_input),
@@ -1967,8 +1976,12 @@ pub(crate) mod tests {
                     super::super::construction_ui::controls.run_if(super::super::world_input),
                     super::super::selection_controls.run_if(super::super::world_input),
                     scroll.run_if(super::super::application_input),
-                    super::super::save_ui::scroll,
-                    super::super::save_ui::update,
+                    super::super::save_ui::scroll.run_if(super::super::menu_input),
+                    (
+                        super::super::save_ui::update,
+                        super::super::application_ui::update,
+                    )
+                        .chain(),
                     spaceport_ui::update,
                     update,
                     update_plot,

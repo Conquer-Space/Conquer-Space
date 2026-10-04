@@ -592,10 +592,13 @@ pub(super) fn update(
     game: Res<Game>,
     inspector: Option<Res<super::inspection_ui::Inspector>>,
     saves: Option<Res<super::save_ui::Saves>>,
+    menu: Option<Res<super::application_ui::Menu>>,
     mut panels: Query<(&Panel, &mut Node)>,
     mut labels: Query<(&Label, &mut Text)>,
 ) {
-    let inspecting = inspector.is_some_and(|ui| ui.open) || saves.is_some_and(|saves| saves.open);
+    let inspecting = inspector.is_some_and(|ui| ui.open)
+        || saves.is_some_and(|saves| saves.open)
+        || menu.is_some_and(|menu| menu.is_open());
     for (panel, mut node) in &mut panels {
         let shown = match panel {
             Panel::Overlay => ui.open,

@@ -68,9 +68,22 @@ It returns to country selection, not the previously played state. The default is
 Neither opening the browser nor `--paths` creates folders. Offscreen smoke writes
 only isolated fixtures under `target/`, never your normal save directory.
 
+Escape opens the native pause menu after starting: Resume preserves the playback
+setting, Save writes metadata, Options opens display preferences and Exit Game exits.
+Load Game and Exit To Menu remain explicit no-ops like the original pause menu.
+The metadata browser is available on Earth/before selection; in system view use
+the pause menu for Save/Options, or V to return to Earth for the browser.
+Display options include all 15 original resolution presets and fullscreen on the
+primary monitor's current video mode. Leaving fullscreen restores the stored
+windowed dimensions at (40,40). Defaults are 1280×720, decorated and windowed.
+Changes preview immediately; Save preferences explicitly persists them to
+`%LOCALAPPDATA%/ConquerSpaceRust/settings.hjson` (`--settings FILE` overrides it).
+No audio preferences/backend or original C++ settings files are used. MSAA, splash
+and icon preferences and live fullscreen/DPI acceptance remain unfinished.
+
 Right-drag or arrow keys orbit the globe; wheel zooms; left-click selects a province's
 country. Tab/Shift+Tab cycle countries (including ones too small to click on the 2K map).
-Enter or the sidebar button starts the game view; Escape returns to selection.
+Enter or the sidebar button starts/returns to selection; Escape opens the pause menu.
 M toggles terrain/political maps, R resets the camera, F12 writes `target/conquer-space.png`.
 Closing the window exits normally.
 
@@ -204,7 +217,8 @@ and `target/launched-vehicle.png`. Finally it captures `target/market-inspector.
 `target/construction-inspector.png`,
 `target/civilization-inspector.png`, `target/history-inspector.png`,
 `target/history-zoomed-inspector.png`, `target/infrastructure-inspector.png`,
-`target/budget-inspector.png`, `target/construction-painting.png` and
+`target/budget-inspector.png`, `target/construction-painting.png`,
+`target/pause-menu.png`, `target/display-options.png` and
 `target/metadata-browser.png`, then loads the fixture and checks fresh-session reset.
 Inspect the images and console for shader/rendering errors; process success alone
 does not prove a correct render. The core tests cover original data ingestion, picking,
@@ -212,9 +226,9 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all twenty completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-two completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all twenty PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all twenty-two PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.

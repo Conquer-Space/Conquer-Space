@@ -174,6 +174,7 @@ pub(super) fn update(
     ports: Res<super::spaceport_ui::SpaceportUi>,
     inspector: Res<super::inspection_ui::Inspector>,
     saves: Option<Res<super::save_ui::Saves>>,
+    menu: Option<Res<super::application_ui::Menu>>,
     mut panels: Query<(Entity, &mut Node), With<Panel>>,
     children: Query<&Children>,
     mut texts: Query<(&mut Text, Option<&Content>)>,
@@ -190,6 +191,7 @@ pub(super) fn update(
         && !ports.open
         && !inspector.open
         && saves.is_none_or(|saves| !saves.open);
+    let shown = shown && menu.is_none_or(|menu| !menu.is_open());
     for (entity, mut node) in &mut panels {
         let display = if shown { Display::Flex } else { Display::None };
         if node.display != display {
