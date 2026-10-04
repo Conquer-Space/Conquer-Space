@@ -322,6 +322,7 @@ pub(super) fn update(
     inspector: Res<Inspector>,
     saves: Option<Res<Saves>>,
     mut panels: Query<(Entity, &Panel, &mut Node)>,
+    navigation_menu: Option<Res<super::navigation_ui::Menu>>,
     children: Query<&Children>,
     mut texts: Query<(&mut Text, Option<&Content>)>,
 ) {
@@ -339,7 +340,9 @@ pub(super) fn update(
             }
             Panel::Overlay(screen) => menu.screen == *screen,
         };
-        let shown = shown && super::event_ui::pending(&game).is_none();
+        let shown = shown
+            && super::event_ui::pending(&game).is_none()
+            && navigation_menu.as_ref().is_none_or(|menu| !menu.open);
         let display = if shown { Display::Flex } else { Display::None };
         if node.display != display {
             node.display = display;

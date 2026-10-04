@@ -336,6 +336,22 @@ impl SolarSystem {
         self.ships.push(Spacecraft::new(name, parent, orbit));
         Ok(id)
     }
+    pub fn set_ship_visible(&mut self, id: ShipId, visible: bool) -> Result<()> {
+        let ship = self.ships.get_mut(id.0).context("Unknown spacecraft")?;
+        ensure!(
+            ship.status == crate::flight::FlightStatus::Orbiting,
+            "Spacecraft has no live orbit"
+        );
+        ship.visible_orbit = visible;
+        Ok(())
+    }
+    pub fn set_all_ship_orbits_visible(&mut self, visible: bool) {
+        for ship in &mut self.ships {
+            if ship.status == crate::flight::FlightStatus::Orbiting {
+                ship.visible_orbit = visible;
+            }
+        }
+    }
 }
 
 fn optional_unit(
@@ -410,6 +426,38 @@ struct SatelliteEntry {
 mod tests {
     use super::*;
     use crate::default_data_path;
+
+    #[test]
+    fn orbit_filter_changes_only_live_visibility_not_physics() -> Result<()> {
+        use crate::flight::FlightStatus;
+        let mut system = SolarSystem::load(&default_data_path())?;
+        assert!(system.ships.iter().all(|ship| !ship.visible_orbit));
+        let positions: Vec<_> = system
+            .ships
+            .iter()
+            .map(|ship| ship.kinematics.absolute_position())
+            .collect();
+        system.ships[0].status = FlightStatus::Docked(0);
+        system.ships[1].status = FlightStatus::Crashed;
+        assert!(system.set_ship_visible(ShipId(usize::MAX), true).is_err());
+        assert!(system.set_ship_visible(ShipId(0), true).is_err());
+        system.set_ship_visible(ShipId(2), true)?;
+        assert!(system.ships[2].visible_orbit);
+        system.set_all_ship_orbits_visible(false);
+        assert!(system.ships.iter().all(|ship| !ship.visible_orbit));
+        system.set_all_ship_orbits_visible(true);
+        assert!(system.ships.iter().skip(2).all(|ship| ship.visible_orbit));
+        assert!(!system.ships[0].visible_orbit && !system.ships[1].visible_orbit);
+        assert_eq!(
+            positions,
+            system
+                .ships
+                .iter()
+                .map(|ship| ship.kinematics.absolute_position())
+                .collect::<Vec<_>>()
+        );
+        Ok(())
+    }
 
     #[test]
     fn body_ground_track_uses_rotation_tilt_and_rejects_zero_position() -> Result<()> {

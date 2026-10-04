@@ -423,6 +423,7 @@ pub(super) fn update(
     saves: Option<Res<super::save_ui::Saves>>,
     menu: Option<Res<super::application_ui::Menu>>,
     search: Option<Res<super::search_ui::Search>>,
+    navigation_menu: Option<Res<super::navigation_ui::Menu>>,
     mut panels: Query<(Entity, &Panel, &mut Node)>,
     mut choices: Query<(&Action, &mut Node, &mut BackgroundColor), Without<Panel>>,
     mut results: Query<&mut ScrollPosition, With<SearchResults>>,
@@ -449,6 +450,7 @@ pub(super) fn update(
     let shown = shown
         && menu.is_none_or(|menu| !menu.is_open())
         && search.is_none_or(|search| !search.open)
+        && navigation_menu.is_none_or(|menu| !menu.open)
         && super::event_ui::pending(&game).is_none();
     for (entity, panel, mut node) in &mut panels {
         let visible = shown && (matches!(panel, Panel::Toolbar) || tool.searching);

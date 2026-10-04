@@ -421,6 +421,7 @@ impl Simulation {
             .name
             .clone();
         let ship = self.solar_system.launch_ship(name, parent, orbit)?;
+        self.solar_system.ships[ship.0].visible_orbit = true;
         self.settlements[city]
             .spaceport
             .as_mut()
@@ -663,6 +664,7 @@ impl Simulation {
         let time = self.date.seconds();
         let body = &self.solar_system.bodies[target.0];
         let ship = &mut self.solar_system.ships[id.0];
+        ship.visible_orbit = true;
         if common == target {
             ship.queue_command(Trigger::Maneuver, Command::ExitSoi(body.radius * 5.0));
             ship.queue_burn(
@@ -885,6 +887,7 @@ mod tests {
             FRAC_PI_2,
         )?;
         let ship = &simulation.solar_system.ships[id.0];
+        assert!(ship.visible_orbit);
         assert!((ship.orbit.inclination.to_degrees() - 28.46).abs() < 1e-10);
         assert!(
             simulation.settlements[city]

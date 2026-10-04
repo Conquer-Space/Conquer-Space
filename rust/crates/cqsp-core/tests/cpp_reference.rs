@@ -20,6 +20,126 @@ use std::{
 };
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; actual SatelliteLoader/OrbitalSystem plus source-mapped OrbitFilter branches"]
+fn imported_visibility_and_filter_actions_match_original_orbit_tags() {
+    use cqsp_core::{
+        flight::FlightStatus,
+        read_entries,
+        solar_system::{BodyId, ShipId},
+    };
+    let data = default_data_path();
+    let mut system = SolarSystem::load(&data).unwrap();
+    let bodies: Vec<_> = system
+        .bodies
+        .iter()
+        .map(|body| {
+            json!({
+                "identifier":body.identifier, "name":body.name, "mu":body.mu,
+                "sma":body.orbit.semi_major_axis, "parent":body.parent.map(|id| id.0)
+            })
+        })
+        .collect();
+    let satellites =
+        read_entries::<Value>(&data.join("data/planet_data/earth/satellites")).unwrap();
+    let mut roots = vec![system.sun];
+    roots.extend(&system.bodies[system.sun.0].children);
+    roots.sort_by(|a, b| {
+        system.bodies[a.0]
+            .orbit
+            .semi_major_axis
+            .total_cmp(&system.bodies[b.0].orbit.semi_major_axis)
+    });
+    fn walk(system: &SolarSystem, id: BodyId, depth: usize, rows: &mut Vec<Value>) {
+        rows.push(json!([id.0, depth, usize::from(id != system.sun)]));
+        if id == system.sun {
+            return;
+        }
+        for &child in &system.bodies[id.0].children {
+            walk(system, child, depth + 1, rows);
+        }
+        for (index, _) in system
+            .ships
+            .iter()
+            .enumerate()
+            .filter(|(_, ship)| ship.parent == id)
+        {
+            rows.push(json!([system.bodies.len() + index, depth + 1, 0]));
+        }
+    }
+    let mut tree = Vec::new();
+    for id in roots {
+        walk(&system, id, 0, &mut tree);
+    }
+    let mut actions = vec![json!(["hide"]), json!(["launch"]), json!(["show"])];
+    actions.extend((0..64).map(|id| json!(["toggle", id])));
+    actions.extend([
+        json!(["show"]),
+        json!(["dock", 0]),
+        json!(["hide"]),
+        json!(["launch"]),
+        json!(["show"]),
+        json!(["toggle", 64]),
+        json!(["hide"]),
+        json!(["show"]),
+    ]);
+    let reference = reference_output(
+        Some("--orbit-filter"),
+        &json!({"bodies":bodies,"satellites":satellites,"actions":actions}).to_string(),
+    );
+    fn snapshot(system: &SolarSystem) -> Value {
+        let visible: Vec<_> = system.ships.iter().map(|ship| ship.visible_orbit).collect();
+        let paths: Vec<_> = std::iter::repeat_n(true, system.bodies.len())
+            .chain(
+                system
+                    .ships
+                    .iter()
+                    .map(|ship| ship.status == FlightStatus::Orbiting && ship.visible_orbit),
+            )
+            .collect();
+        let rows: Vec<_> = system
+            .ships
+            .iter()
+            .enumerate()
+            .filter(|(_, ship)| ship.status == FlightStatus::Orbiting)
+            .map(|(id, _)| id)
+            .collect();
+        json!({"visible":visible,"paths":paths,"rows":rows})
+    }
+    let mut snapshots = vec![snapshot(&system)];
+    for action in &actions {
+        match action[0].as_str().unwrap() {
+            "hide" => system.set_all_ship_orbits_visible(false),
+            "show" => system.set_all_ship_orbits_visible(true),
+            "toggle" => {
+                let id = ShipId(action[1].as_u64().unwrap() as usize);
+                system
+                    .set_ship_visible(id, !system.ships[id.0].visible_orbit)
+                    .unwrap();
+            }
+            "dock" => {
+                system.ships[action[1].as_u64().unwrap() as usize].status = FlightStatus::Docked(0)
+            }
+            "launch" => {
+                let id = system
+                    .launch_ship(
+                        "Tag fixture".into(),
+                        system.body_id("earth").unwrap(),
+                        Orbit {
+                            semi_major_axis: 7000.0,
+                            ..Orbit::default()
+                        },
+                    )
+                    .unwrap();
+                system.set_ship_visible(id, true).unwrap();
+            }
+            _ => unreachable!(),
+        }
+        snapshots.push(snapshot(&system));
+    }
+    compare(&json!({"tree":tree,"snapshots":snapshots}), &reference);
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual province color bindings and source-mapped centroids/search"]
 fn province_centers_and_search_membership_match_original_bindings() {
     use cqsp_core::{read_entries, search::SearchTarget};
@@ -2077,6 +2197,8 @@ fn lunar_mission_case(seed: Option<u64>) {
             .land_on_moon(moon, &simulation.solar_system.bodies[moon.0], target, 0.0)
             .unwrap();
         simulation.solar_system.ships[ship.0].cargo = Some(vec![mission]);
+        // This controlled fixture stands in for SysSpacePort's explicit launch tag.
+        simulation.solar_system.ships[ship.0].visible_orbit = true;
         ship
     };
     let mut samples = Vec::new();
@@ -2148,6 +2270,10 @@ fn lunar_mission_case(seed: Option<u64>) {
         usize::from(simulation.missions[mission.0].in_progress)
     ]);
     let expected = reference["samples"].as_array().unwrap();
+    assert_eq!(
+        json!(simulation.solar_system.ships[ship.0].visible_orbit),
+        reference["visible_orbit"]
+    );
     assert_eq!(
         samples.len(),
         expected.len(),

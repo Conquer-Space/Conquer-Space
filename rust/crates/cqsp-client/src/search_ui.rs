@@ -172,6 +172,7 @@ pub(super) fn controls(
     saves: Option<Res<super::save_ui::Saves>>,
     menu: Option<Res<super::application_ui::Menu>>,
     construction: Option<Res<super::construction_ui::ConstructionTool>>,
+    navigation_menu: Option<Res<super::navigation_ui::Menu>>,
     buttons: Query<(&Action, &Interaction), Changed<Interaction>>,
     hover: Query<&Interaction, Or<(With<Panel>, With<Results>, With<Action>)>>,
 ) {
@@ -190,6 +191,7 @@ pub(super) fn controls(
         || saves.is_some_and(|ui| ui.capture_input)
         || menu.is_some_and(|ui| ui.capture_input)
         || construction.is_some_and(|ui| ui.searching)
+        || navigation_menu.is_some_and(|ui| ui.capture_input)
     {
         events.clear();
         return;
@@ -263,6 +265,7 @@ pub(super) fn update(
     search: Option<Res<Search>>,
     game: Res<Game>,
     mut panels: Query<(&mut Node, &Children), With<Panel>>,
+    navigation_menu: Option<Res<super::navigation_ui::Menu>>,
     mut texts: Query<(&mut Text, Option<&Content>)>,
     children: Query<&Children>,
     mut lists: Query<(Entity, &Results, &ComputedNode, &mut ScrollPosition)>,
@@ -271,6 +274,7 @@ pub(super) fn update(
 ) {
     let Some(search) = search else { return };
     let shown = search.open
+        && navigation_menu.is_none_or(|menu| !menu.open)
         && game.session.player_country.is_some()
         && super::event_ui::pending(&game).is_none();
     for (mut node, descendants) in &mut panels {

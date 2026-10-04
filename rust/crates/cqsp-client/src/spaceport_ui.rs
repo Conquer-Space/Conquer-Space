@@ -590,18 +590,21 @@ pub(super) fn scroll(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 pub(super) fn update(
     ui: Res<SpaceportUi>,
     game: Res<Game>,
     inspector: Option<Res<super::inspection_ui::Inspector>>,
     saves: Option<Res<super::save_ui::Saves>>,
     menu: Option<Res<super::application_ui::Menu>>,
+    navigation_menu: Option<Res<super::navigation_ui::Menu>>,
     mut panels: Query<(&Panel, &mut Node)>,
     mut labels: Query<(&Label, &mut Text)>,
 ) {
     let inspecting = inspector.is_some_and(|ui| ui.open)
         || saves.is_some_and(|saves| saves.open)
-        || menu.is_some_and(|menu| menu.is_open());
+        || menu.is_some_and(|menu| menu.is_open())
+        || navigation_menu.is_some_and(|menu| menu.open);
     for (panel, mut node) in &mut panels {
         let shown = match panel {
             Panel::Overlay => ui.open,

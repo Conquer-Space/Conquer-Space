@@ -9,6 +9,7 @@
 #include <iterator>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
@@ -41,6 +42,7 @@
 #include "core/components/pid.h"
 #include "core/components/stardate.h"
 #include "core/loading/loadorbit.h"
+#include "core/loading/loadsatellites.h"
 #include "core/loading/loadcities.h"
 #include "core/loading/projectloader.h"
 #include "core/loading/fields.h"
@@ -979,7 +981,8 @@ void PrintLunarMission() {
     auto step = universe.get<ColonizationTarget>(target).steps;
     int core_count = universe.all_of<Colony>(target) ? universe.get<Colony>(target).components.size() : 0;
     std::cout << "],\"delivery\":[" << landing_tick << ',' << unload_tick << ',' << static_cast<int>(step) << ',' << core_count << ','
-        << (universe.all_of<MissionInProgress>(mission) ? 1 : 0) << "]}\n";
+        << (universe.all_of<MissionInProgress>(mission) ? 1 : 0) << "],\"visible_orbit\":"
+        << (universe.all_of<cqsp::client::ctx::VisibleOrbit>(ship) ? "true" : "false") << "}\n";
 }
 
 void PrintPopulation() {
@@ -1651,7 +1654,98 @@ void PrintProvinceSearch() {
     output["centers"] = centers; output["matches"] = matches;
     WriteJson(output);
 }
+void PrintOrbitFilter() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("orbit-filter-reference");
+    auto input = ReadInput();
+    std::vector<entt::entity> entities;
+    std::unordered_map<entt::entity, int> indices;
+    for (int index = 0; index < input["bodies"].size(); ++index) {
+        const auto& row = input["bodies"][index];
+        auto entity = universe.create(); entities.push_back(entity); indices[entity] = index;
+        universe.emplace<Name>(entity, row["name"].to_string());
+        universe.emplace<bodies::Body>(entity).GM = row["mu"].to_double();
+        universe.emplace<bodies::Planet>(entity); // PlanetLoader tags every natural body, including Sun/Moon.
+        universe.emplace<bodies::OrbitalSystem>(entity);
+        universe.emplace<types::Orbit>(entity).semi_major_axis = row["sma"].to_double();
+        universe.planets[row["identifier"].to_string()] = entity;
+    }
+    universe.sun = universe.planets.at("sun");
+    for (int index = 0; index < input["bodies"].size(); ++index) {
+        const auto& parent = input["bodies"][index]["parent"];
+        if (parent.type() == Hjson::Type::Null) continue;
+        auto reference = entities.at(parent.to_int64());
+        universe.get<types::Orbit>(entities[index]).reference_body = reference;
+        universe.get<bodies::OrbitalSystem>(reference).bodies.push_back(entities[index]);
+    }
+    const int body_count = entities.size();
+    cqsp::core::loading::SatelliteLoader loader(universe);
+    loader.LoadHjson(input["satellites"]); // Actual HJSON loader; no VisibleOrbit is added.
+    auto earth = universe.planets.at("earth");
+    for (auto entity : universe.get<bodies::OrbitalSystem>(earth).children) {
+        indices[entity] = entities.size(); entities.push_back(entity);
+    }
+    Hjson::Value output(Hjson::Type::Map), tree(Hjson::Type::Vector), snapshots(Hjson::Type::Vector);
+    std::vector<entt::entity> roots {universe.sun};
+    const auto& planets = universe.get<bodies::OrbitalSystem>(universe.sun).bodies;
+    roots.insert(roots.end(), planets.begin(), planets.end());
+    std::sort(roots.begin(), roots.end(), [&](auto a, auto b) {
+        return universe.get<types::Orbit>(a).semi_major_axis < universe.get<types::Orbit>(b).semi_major_axis;
+    });
+    // Source-mapped MainTree/DoChildTree, with every branch expanded; real OrbitalSystem::all().
+    auto walk = [&](auto&& walk, entt::entity entity, int depth) -> void {
+        tree.push_back(Numbers({static_cast<double>(indices.at(entity)), static_cast<double>(depth),
+            entity != universe.sun && universe.all_of<bodies::OrbitalSystem>(entity) ? 1.0 : 0.0}));
+        if (entity != universe.sun && universe.all_of<bodies::OrbitalSystem>(entity))
+            for (auto child : universe.get<bodies::OrbitalSystem>(entity).all()) walk(walk, child, depth + 1);
+    };
+    for (auto entity : roots) walk(walk, entity, 0);
+    output["tree"] = tree;
+    using cqsp::client::ctx::VisibleOrbit;
+    auto capture = [&] {
+        Hjson::Value state(Hjson::Type::Map), visible(Hjson::Type::Vector), paths(Hjson::Type::Vector), rows(Hjson::Type::Vector);
+        for (int index = 0; index < entities.size(); ++index) {
+            auto entity = entities[index];
+            const bool orbit = universe.all_of<types::Orbit>(entity);
+            const bool tag = universe.all_of<VisibleOrbit>(entity);
+            // DrawAllOrbits draws planets independently of VisibleOrbit; compare eligibility, not duplicate draws.
+            paths.push_back(orbit && (index < body_count || tag));
+            if (index < body_count) continue;
+            visible.push_back(tag);
+            if (orbit) rows.push_back(index - body_count);
+        }
+        state["visible"] = visible; state["paths"] = paths; state["rows"] = rows;
+        snapshots.push_back(state);
+    };
+    capture();
+    for (int index = 0; index < input["actions"].size(); ++index) {
+        const auto& action = input["actions"][index];
+        const auto kind = action[0].to_string();
+        if (kind == "hide" || kind == "show") {
+            // Source-mapped OrbitFilter checkbox branches over the actual EnTT Orbit view.
+            for (auto entity : universe.view<types::Orbit>()) {
+                if (kind == "hide") universe.remove<VisibleOrbit>(entity);
+                else universe.get_or_emplace<VisibleOrbit>(entity);
+            }
+        } else if (kind == "launch") {
+            auto entity = universe.create(); entities.push_back(entity);
+            universe.emplace<ships::Ship>(entity); universe.emplace<types::Orbit>(entity);
+            universe.emplace<VisibleOrbit>(entity); // provincewindow.cpp / SysSpacePort launch action.
+        } else {
+            auto entity = entities.at(body_count + action[1].to_int64());
+            if (kind == "dock") universe.remove<types::Orbit>(entity); // CommandLandBody removes Orbit, keeps tag.
+            else if (kind == "toggle") {
+                if (universe.all_of<VisibleOrbit>(entity)) universe.remove<VisibleOrbit>(entity);
+                else universe.emplace<VisibleOrbit>(entity);
+            } else throw std::invalid_argument("Unknown orbit filter action");
+        }
+        capture();
+    }
+    output["snapshots"] = snapshots;
+    WriteJson(output);
+}
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--orbit-filter") { PrintOrbitFilter(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--province-search") { PrintProvinceSearch(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--event-queues") { PrintEventQueues(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--graphics-defaults") {

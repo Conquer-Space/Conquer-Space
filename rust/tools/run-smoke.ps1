@@ -26,11 +26,11 @@ try {
         'selection', 'game-view', 'system-view', 'spacecraft-view', 'spaceport-view', 'launched-vehicle',
         'market-inspector', 'industry-inspector', 'science-inspector', 'demographics-inspector',
         'demographics-count-inspector', 'demographics-zoomed-inspector', 'construction-inspector', 'civilization-inspector',
-        'history-inspector', 'history-zoomed-inspector', 'infrastructure-inspector', 'budget-inspector', 'construction-painting', 'construction-search', 'event-choice', 'event-notice', 'search-body', 'search-province', 'province-focus', 'pause-menu', 'display-options', 'metadata-browser'
+        'history-inspector', 'history-zoomed-inspector', 'infrastructure-inspector', 'budget-inspector', 'construction-painting', 'construction-search', 'event-choice', 'event-notice', 'search-body', 'search-province', 'province-focus', 'pause-menu', 'display-options', 'metadata-browser', 'system-tree', 'orbit-filter', 'orbits-hidden', 'orbits-visible'
     )) {
         $path = Join-Path $start.WorkingDirectory "target/$capture.png"
         $file = Get-Item -LiteralPath $path -ErrorAction Stop
         if ($file.Length -lt 100 -or $file.LastWriteTimeUtc -lt $started) { throw "Missing or stale capture: $path" }
     }
-    Write-Host 'All 28 offscreen PNG captures were written by this run.'
+    Write-Host 'All 32 offscreen PNG captures were written by this run.'
 } finally { $process.Dispose() }

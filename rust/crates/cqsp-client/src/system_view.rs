@@ -66,6 +66,14 @@ pub(super) enum Focus {
     Body(BodyId),
     Ship(ShipId),
 }
+impl Focus {
+    fn visible(self, system: &SolarSystem) -> bool {
+        match self {
+            Self::Body(_) => true,
+            Self::Ship(id) => system.ships[id.0].visible_orbit,
+        }
+    }
+}
 
 #[derive(Resource)]
 pub(super) struct Navigation {
@@ -611,7 +619,7 @@ pub(super) fn controls(
         let frame = navigation.frame(system);
         let picked = markers
             .iter()
-            .filter(|(focus, _)| frame.includes(**focus, system))
+            .filter(|(focus, _)| frame.includes(**focus, system) && focus.visible(system))
             .filter_map(|(focus, transform)| {
                 camera
                     .0
@@ -661,7 +669,7 @@ pub(super) fn update(
         }
     }
     for (&focus, mut transform, mut visibility) in &mut markers {
-        let visible = navigation.active && frame.includes(focus, system);
+        let visible = navigation.active && frame.includes(focus, system) && focus.visible(system);
         *visibility = if visible {
             Visibility::Visible
         } else {
@@ -726,7 +734,7 @@ pub(super) fn update(
         && let Focus::Ship(id) = navigation.focus
     {
         let ship = &system.ships[id.0];
-        if ship.status == FlightStatus::Orbiting {
+        if ship.status == FlightStatus::Orbiting && ship.visible_orbit {
             let body = &system.bodies[ship.parent.0];
             let radius = (body.radius / frame.span).clamp(0.018, 0.6) as f32;
             let center = frame.point(body.kinematics.absolute_position());

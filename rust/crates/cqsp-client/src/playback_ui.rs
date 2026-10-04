@@ -48,12 +48,14 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
             bar.spawn((Status, Text::default(), ui_font(font, 14.0)));
         });
 }
+#[allow(clippy::too_many_arguments)]
 pub(super) fn update(
     game: Res<Game>,
     ports: Res<SpaceportUi>,
     inspector: Res<Inspector>,
     saves: Option<Res<super::save_ui::Saves>>,
     menu: Option<Res<super::application_ui::Menu>>,
+    navigation_menu: Option<Res<super::navigation_ui::Menu>>,
     mut panels: Query<&mut Node, With<Panel>>,
     mut labels: Query<&mut Text, With<Status>>,
 ) {
@@ -62,6 +64,7 @@ pub(super) fn update(
         && !inspector.open
         && saves.is_none_or(|saves| !saves.open)
         && menu.is_none_or(|menu| !menu.is_open())
+        && navigation_menu.is_none_or(|menu| !menu.open)
         && super::event_ui::pending(&game).is_none()
     {
         Display::Flex

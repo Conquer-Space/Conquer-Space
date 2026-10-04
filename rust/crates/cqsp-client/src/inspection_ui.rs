@@ -1853,6 +1853,7 @@ pub(super) fn update(
     saves: Option<Res<super::save_ui::Saves>>,
     menu: Option<Res<super::application_ui::Menu>>,
     mut panels: Query<(Entity, &Panel, &mut Node)>,
+    navigation_menu: Option<Res<super::navigation_ui::Menu>>,
     children: Query<&Children>,
     mut texts: Query<(&mut Text, Option<&Label>)>,
 ) {
@@ -1879,7 +1880,9 @@ pub(super) fn update(
                     && menu.as_ref().is_none_or(|menu| !menu.is_open())
             }
         };
-        let shown = shown && super::event_ui::pending(&game).is_none();
+        let shown = shown
+            && super::event_ui::pending(&game).is_none()
+            && navigation_menu.as_ref().is_none_or(|menu| !menu.open);
         let display = if shown { Display::Flex } else { Display::None };
         if node.display != display {
             node.display = display;
@@ -1970,6 +1973,13 @@ pub(crate) mod tests {
                         super::super::search_ui::scroll
                             .run_if(super::super::event_ui::input_available),
                         (
+                            super::super::navigation_ui::controls,
+                            super::super::navigation_ui::scroll,
+                        )
+                            .chain()
+                            .run_if(super::super::event_ui::input_available)
+                            .run_if(super::super::search_ui::input_available),
+                        (
                             super::super::application_ui::controls,
                             super::super::application_ui::scroll,
                             super::super::save_ui::controls.run_if(super::super::menu_input),
@@ -1988,7 +1998,8 @@ pub(crate) mod tests {
                         )
                             .chain()
                             .run_if(super::super::event_ui::input_available)
-                            .run_if(super::super::search_ui::input_available),
+                            .run_if(super::super::search_ui::input_available)
+                            .run_if(super::super::navigation_ui::input_available),
                     )
                         .chain(),
                     super::super::simulation_controls,
@@ -1997,6 +2008,7 @@ pub(crate) mod tests {
                         super::super::application_ui::update,
                         super::super::event_ui::update,
                         super::super::search_ui::update,
+                        super::super::navigation_ui::update,
                     )
                         .chain(),
                     spaceport_ui::update,

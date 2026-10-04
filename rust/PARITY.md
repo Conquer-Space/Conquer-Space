@@ -43,6 +43,7 @@ Successful long runs establish stability, not gameplay parity.
 | Maneuver planning | Reference-tested components and command integration | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner integrated into three original-system lunar return/docking scenarios; broader planet-transfer comparisons remain |
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
+| Star-system tree / orbit filter | Actual satellite loader and source-mapped registry behavior reference-tested; native UI integrated | Sorted roots, natural-before-ship branches, all live craft, single/double-click distinction, individual/global ship tags and new-launch visibility; planetary paths unaffected by HideAll. Native modal/paging, ordering and 0.5-second double-click threshold are not ImGui layout/input parity |
 | Industry modifiers / factory controls | Reference-tested components; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded and industry gain/cap wiring tested |
 | National subsidies / absolute taxes / labor view | Subsidy action reference-tested; native integration | 286 snapshots across all 22 recipes through actual ApplySubsidy, initial lists/stale ownership, fractional/full/raw finite amounts, future factories and repeated UI ledger erasure; native sliders, full lock, one-shot controls and national labor ledgers; global province-only taxes source-mapped and Rust-tested, not actual ImGui execution |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
@@ -519,6 +520,37 @@ passed a 365-day renderer-free simulation. Visual inspection confirms the search
 headings/results and the Illinois surface view; the smoke checks gold glyphs and
 10,733 distinct center-surface texture colors. Audio/Lua remain excluded.
 
+The star-system milestone adds native tree/filter integration and a visibility flag
+shared by ship markers, mouse picking, orbital paths and selected ground tracks.
+All 64 imported satellites lack VisibleOrbit in the actual SatelliteLoader. Vehicles
+and cargo launched through their original UI/system actions receive it. Global
+hide/show changes only current Orbit entities; a checked hide-all box is not a rule
+for future launches, individual toggles do not change that box, and show-all resets
+prior individual choices. Planetary paths are drawn independently of the tag. Docked
+and crashed native tombstones are excluded from live tree/filter rows; global changes
+leave docked flags untouched, matching the removed Orbit component upstream.
+
+The new C++ corpus uses actual SatelliteLoader, OrbitalSystem::all(), EnTT Orbit/Planet/
+VisibleOrbit components and source-mapped tree/filter/renderer-eligibility branches.
+It compares all 75 expanded rows and 76 visibility snapshots, including every imported
+ship's individual toggle, hide/show, new launches and docking. It does not execute
+ImGui, OpenGL, model rendering or duplicate planetary draws. Existing actual SysSpacePort
+lunar comparisons now also check its launch visibility tag. Five ECS tests and one
+core test cover pagination, collapse guards, double-click focus without implicit
+visibility, invalid/inactive IDs, non-mutating physics, new launches, modal keyboard/
+closing-frame capture, running time, scroll/display isolation and selection reset.
+The tree is a native paged modal, not the original always-visible 200×400 panel.
+Rows follow stable asset order rather than EnTT filter traversal; the native
+double-click threshold is 0.5 seconds and source mouse-release phases/tooltips remain.
+The Rust-only O/G display overrides remain separate from the source-mapped filter.
+This milestone passes 153 unit tests, warning-free Clippy and all 33 differential
+tests in debug/release (32 live comparisons plus the recorded corpus). Both debug
+and packaged release produce all 32 fresh offscreen captures, with identical tree,
+filter and hidden/visible-orbit images. The release run uses an external working
+directory and executable-relative assets; its 365-day simulation and silent
+dependency audit pass. No native window or audio device is opened. These establish
+the documented slice, not complete UI/rendering or whole-game parity.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production system corpus to larger FSM boundary
@@ -531,7 +563,7 @@ headings/results and the Illinois surface view; the smoke checks gold glyphs and
 3. Extend native spaceport screens with filtering/inspection detail and dispatch
    boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
-   supported project/modifier controls, side-menu mappings, star-system tree/orbit filter
+   supported project/modifier controls, side-menu mappings, production-summary detail
    and further market/history inspection. Distinguish source stubs from implemented workflows.
 5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.

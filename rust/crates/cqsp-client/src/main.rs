@@ -32,6 +32,7 @@ mod chart;
 mod construction_ui;
 mod event_ui;
 mod inspection_ui;
+mod navigation_ui;
 mod pie;
 mod playback_ui;
 mod save_ui;
@@ -172,6 +173,7 @@ fn main() -> Result<()> {
                 println!(
                     "Left Ctrl+P: body/province search; Enter zooms, clicking focuses the planet"
                 );
+                println!("T: star-system tree / orbit filter; double-click names to focus");
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -323,6 +325,7 @@ fn main() -> Result<()> {
         .init_resource::<construction_ui::ConstructionTool>()
         .init_resource::<event_ui::Events>()
         .init_resource::<search_ui::Search>()
+        .init_resource::<navigation_ui::Menu>()
         .insert_resource(Smoke {
             enabled: smoke,
             stage: 0,
@@ -347,6 +350,11 @@ fn main() -> Result<()> {
                     search_ui::scroll
                         .run_if(interactive)
                         .run_if(event_ui::input_available),
+                    (navigation_ui::controls, navigation_ui::scroll)
+                        .chain()
+                        .run_if(interactive)
+                        .run_if(event_ui::input_available)
+                        .run_if(search_ui::input_available),
                     (
                         application_ui::controls.run_if(interactive),
                         application_ui::scroll.run_if(interactive),
@@ -361,7 +369,8 @@ fn main() -> Result<()> {
                     )
                         .chain()
                         .run_if(event_ui::input_available)
-                        .run_if(search_ui::input_available),
+                        .run_if(search_ui::input_available)
+                        .run_if(navigation_ui::input_available),
                 )
                     .chain(),
                 (
@@ -374,12 +383,14 @@ fn main() -> Result<()> {
                 )
                     .chain()
                     .run_if(event_ui::input_available)
-                    .run_if(search_ui::input_available),
+                    .run_if(search_ui::input_available)
+                    .run_if(navigation_ui::input_available),
                 simulation_controls.run_if(interactive),
                 system_view::controls
                     .run_if(world_input)
                     .run_if(event_ui::input_available)
-                    .run_if(search_ui::input_available),
+                    .run_if(search_ui::input_available)
+                    .run_if(navigation_ui::input_available),
                 system_view::sync_ships,
                 system_view::update,
                 update_globe,
@@ -392,6 +403,7 @@ fn main() -> Result<()> {
                     application_ui::update,
                     event_ui::update,
                     search_ui::update,
+                    navigation_ui::update,
                 )
                     .chain(),
                 spaceport_ui::update,
@@ -524,6 +536,7 @@ fn setup(
     );
     application_ui::spawn(&mut commands, camera, &font);
     search_ui::spawn(&mut commands, camera, &font);
+    navigation_ui::spawn(&mut commands, camera, &font);
     let event_image = images.add(initial.event.clone());
     event_ui::spawn(
         &mut commands,
@@ -789,6 +802,7 @@ fn simulation_controls(
     construction: Option<Res<construction_ui::ConstructionTool>>,
     events: Option<Res<event_ui::Events>>,
     search: Option<Res<search_ui::Search>>,
+    navigation_menu: Option<Res<navigation_ui::Menu>>,
 ) {
     if game.session.player_country.is_none()
         || event_ui::pending(&game).is_some()
@@ -807,7 +821,8 @@ fn simulation_controls(
     let keyboard_enabled = ui.is_none_or(|ui| !ui.capture_input)
         && inspector.is_none_or(|ui| !ui.capture_input)
         && construction.is_none_or(|tool| !tool.capture_input)
-        && search.is_none_or(|search| !search.capture_input);
+        && search.is_none_or(|search| !search.capture_input)
+        && navigation_menu.is_none_or(|menu| !menu.capture_input);
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
         game.playback_action(playback_ui::Action::Toggle);
     }
@@ -1019,7 +1034,7 @@ fn verify_capture(
     construction: Res<construction_ui::ConstructionTool>,
     menu: Res<application_ui::Menu>,
     event_images: Query<(&ComputedNode, &UiGlobalTransform), With<event_ui::EventImage>>,
-    search: Res<search_ui::Search>,
+    (search, navigation_menu): (Res<search_ui::Search>, Res<navigation_ui::Menu>),
 ) {
     let pixels = capture
         .image
@@ -1036,6 +1051,7 @@ fn verify_capture(
     let mut recipe_title = false;
     let mut event_heading = false;
     let mut search_heading = false;
+    let mut tree_heading = false;
     for (text, node, transform) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -1064,7 +1080,13 @@ fn verify_capture(
             text.0
         );
         checked += 1;
-        if text.0 == "EVENT" || text.0 == "SEARCH BODIES / PROVINCES" {
+        if [
+            "EVENT",
+            "SEARCH BODIES / PROVINCES",
+            "STAR SYSTEM / ORBIT FILTER",
+        ]
+        .contains(&text.0.as_str())
+        {
             let mut gold = 0;
             for y in min.y..max.y {
                 for x in min.x..max.x {
@@ -1086,6 +1108,7 @@ fn verify_capture(
         recipe_title |= text.0 == "SEARCH CONSTRUCTION RECIPES";
         event_heading |= text.0 == "EVENT";
         search_heading |= text.0 == "SEARCH BODIES / PROVINCES";
+        tree_heading |= text.0 == "STAR SYSTEM / ORBIT FILTER";
     }
     assert!(
         checked
@@ -1132,6 +1155,14 @@ fn verify_capture(
         assert!(
             search_heading,
             "Smoke check: body/province search header missing"
+        );
+        smoke.captures += 1;
+        return;
+    }
+    if navigation_menu.open {
+        assert!(
+            tree_heading,
+            "Smoke check: star-system menu heading missing"
         );
         smoke.captures += 1;
         return;
@@ -1406,7 +1437,7 @@ fn smoke_test(
     mut inspector: ResMut<inspection_ui::Inspector>,
     mut saves: ResMut<save_ui::Saves>,
     mut construction: ResMut<construction_ui::ConstructionTool>,
-    mut menu: ResMut<application_ui::Menu>,
+    (mut menu, mut navigation_menu): (ResMut<application_ui::Menu>, ResMut<navigation_ui::Menu>),
     mut events: ResMut<event_ui::Events>,
     mut search: ResMut<search_ui::Search>,
 ) {
@@ -1494,6 +1525,13 @@ fn smoke_test(
         6 => {
             navigation.cycle_ship(&game.simulation.solar_system, false);
             assert!(matches!(navigation.focus, Focus::Ship(_)));
+            if let Focus::Ship(id) = navigation.focus {
+                // Explicit orbit-filter action: imported satellites start hidden upstream.
+                game.simulation
+                    .solar_system
+                    .set_ship_visible(id, true)
+                    .unwrap();
+            }
             navigation
                 .apply(FlightAction::CircularizePeriapsis, &mut game)
                 .expect("Smoke maneuver action");
@@ -1967,10 +2005,112 @@ fn smoke_test(
             assert!(game.session.player_country.is_none());
             assert!(game.paused && !navigation.active && !inspector.open && !ui.open);
         }
+        57 => {
+            assert_eq!(smoke.captures, 28);
+            assert!(!navigation_menu.open && !navigation_menu.hide_all);
+            assert!(
+                game.simulation
+                    .solar_system
+                    .ships
+                    .iter()
+                    .all(|ship| !ship.visible_orbit)
+            );
+            let country = game
+                .world
+                .countries
+                .iter()
+                .position(|country| country.identifier == "usa")
+                .unwrap();
+            game.session.select(country);
+            game.session.start();
+            navigation.active = true;
+            let earth = game.simulation.solar_system.body_id("earth").unwrap();
+            navigation_menu
+                .apply(navigation_ui::Action::Open, &mut game, &mut navigation, 0.0)
+                .unwrap();
+            navigation_menu
+                .apply(
+                    navigation_ui::Action::Expand(earth),
+                    &mut game,
+                    &mut navigation,
+                    0.0,
+                )
+                .unwrap();
+        }
+        58 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "system-tree.png",
+        ),
+        59 => {
+            for action in [
+                navigation_ui::Action::Filter,
+                navigation_ui::Action::HideAll,
+                navigation_ui::Action::ToggleShip(cqsp_core::solar_system::ShipId(0)),
+            ] {
+                navigation_menu
+                    .apply(action, &mut game, &mut navigation, 0.0)
+                    .unwrap();
+            }
+            assert!(
+                navigation_menu.hide_all && game.simulation.solar_system.ships[0].visible_orbit
+            );
+        }
+        60 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "orbit-filter.png",
+        ),
+        61 => {
+            for action in [
+                navigation_ui::Action::ToggleShip(cqsp_core::solar_system::ShipId(0)),
+                navigation_ui::Action::Close,
+            ] {
+                navigation_menu
+                    .apply(action, &mut game, &mut navigation, 0.0)
+                    .unwrap();
+            }
+            assert!(
+                game.simulation
+                    .solar_system
+                    .ships
+                    .iter()
+                    .all(|ship| !ship.visible_orbit)
+            );
+        }
+        62 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "orbits-hidden.png",
+        ),
+        63 => {
+            navigation_menu
+                .apply(
+                    navigation_ui::Action::HideAll,
+                    &mut game,
+                    &mut navigation,
+                    0.0,
+                )
+                .unwrap();
+            assert!(
+                !navigation_menu.hide_all
+                    && game
+                        .simulation
+                        .solar_system
+                        .ships
+                        .iter()
+                        .all(|ship| ship.visible_orbit)
+            );
+        }
+        64 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "orbits-visible.png",
+        ),
         _ => {
             assert_eq!(
-                smoke.captures, 28,
-                "Smoke check: all twenty-eight captures must be verified"
+                smoke.captures, 32,
+                "Smoke check: all thirty-two captures must be verified"
             );
             assert!(!construction.armed, "Load must cancel stale painting");
             println!("SMOKE: complete.");

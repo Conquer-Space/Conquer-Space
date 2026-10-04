@@ -92,6 +92,8 @@ pub enum FlightEvent {
 #[derive(Debug)]
 pub struct Spacecraft {
     pub name: String,
+    /// Original clientctx::VisibleOrbit also controls ship icons/models/ground tracks.
+    pub visible_orbit: bool,
     pub parent: BodyId,
     pub model: Option<String>,
     pub orbit: Orbit,
@@ -109,6 +111,7 @@ impl Spacecraft {
     pub fn new(name: String, parent: BodyId, orbit: Orbit) -> Self {
         Self {
             name,
+            visible_orbit: false,
             parent,
             model: None,
             orbit,

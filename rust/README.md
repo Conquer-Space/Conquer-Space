@@ -119,6 +119,15 @@ V switches Earth/system views after starting. In system view, Tab/Shift+Tab cycl
 natural bodies; Q/Shift+Q cycle spacecraft at the current body; Backspace selects
 the parent and E focuses Earth. Click a marker to focus it. Drag/arrows/wheel control
 the camera; O toggles orbit paths and G toggles the selected spacecraft's ground track.
+T opens the native star-system tree/orbit filter. Expand arrows reveal natural bodies
+before spacecraft; Previous/Next reach every row. Double-click names to focus them;
+a single click does not move the camera. Imported satellites start hidden. Individual
+visibility toggles control ship markers, paths and ground tracks. Hide-all changes
+current ship flags, not planetary paths or future launches; show-all overwrites
+individual hidden choices. Manufactured vehicles and dispatched cargo start visible.
+The modal captures shortcuts/closing clicks while running time continues. This is
+functional native integration, not the original always-visible 200×400 ImGui layout,
+EnTT row ordering or system double-click timing; native timing is 0.5 seconds.
 Select a spacecraft to use the maneuver buttons;
 brackets adjust their target radius by 10%. Distances are center-to-center kilometers,
 not altitude. Planet textures come from the original asset manifest and rotate with
