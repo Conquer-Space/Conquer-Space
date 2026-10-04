@@ -22,9 +22,9 @@ Successful long runs establish stability, not gameplay parity.
 | Goods / jobs / recipes / economy config | Implemented | Original 56 goods, 5 jobs, 22 recipes; defaults, units, construction-cost scaling; full loader differential corpus remains |
 | Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; zoning, power grids, resource amenability remain |
 | Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
-| Construction-sector labor demand | Implemented | `InfrastructureSim` demand and purchase-cost calculation; power infrastructure remains |
+| Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
-| Labor distribution / labor market | Implemented | Weekly hours, integer-truncated drift, daily job demand; entity traversal order and invalid conversions need differential review |
+| Labor distribution / labor market | Reference-tested controlled system scenario | Actual SysLaborDistribution/SysLaborMarket: six cases and 12 weekly steps, drift caps/truncation, wages, zero demand, empty/tiny workforces, weekly hours and daily job demand; mixed-direction unordered traversal and invalid conversions remain |
 | Industry state machine / production / construction | Reference-tested controlled system scenario | Actual SysProduction: nine cases spanning all eight states, 12 steps, injected noise, shortage interruption, construction completion, taxes and partial/full subsidies; broader recipe/transition corpus and original RNG sequence remain |
 | Local markets / shortages / planetary trade | Reference-tested controlled system scenario | Actual SysMarket/SysPlanetaryTrade/MarketReset: three provinces, 12 daily steps, retained imports/exports, configurable local versus hard-coded planetary pricing, zero demand, shortage recovery, labor access and port depletion; whole-economy traversal remains |
 | Population history | Controlled scenario reference-tested | Population/SOL/employment summaries match actual original daily history; legacy graph UI remains |
@@ -66,6 +66,10 @@ Successful long runs establish stability, not gameplay parity.
   undefined in C++; Rust records `None` and counts it in diagnostics. Employment
   totals use wide saturating arithmetic instead of overflowing the C++ `int`.
   These cases require an explicit compatibility policy before declaring parity.
+- Market reset clears demand before weekly labor distribution. Construction purchases
+  register consumption, not demand; they do not reopen positive job-drift gates.
+  A regression test guards this ordering distinction. The controlled labor corpus
+  covers order-independent flows, not every mixed-direction unordered-map traversal.
 - Recipes with invalid output/job references or industry size below one fail
   clearly instead of propagating undefined entities/clamp bounds. Unit parsing
   is tested for bundled data, not every malformed legacy input.
@@ -150,8 +154,8 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 67 unit tests
-plus 11 differential tests (ten live tests require the reference executable).
+365 market-history records and CSV/industry export checks. There are 68 unit tests
+plus 12 differential tests (11 live tests require the reference executable).
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
@@ -163,6 +167,10 @@ ratios remain unchanged and supplied resources clear, matching the source. The
 interplanetary fixture controls which port EnTT traverses first; it does not prove
 equivalence of every possible registry order. Numeric reference output bypasses
 the legacy HJSON encoder's invalid scientific `.0` suffix without changing values.
+Labor/construction comparisons use six cases over 12 weekly steps, checking job
+counts, hours, employment, daily demand, purchased consumption and sector cost.
+Undefined unsigned unemployment conversions are excluded explicitly, not accepted
+as platform-dependent reference values. Mixed-direction traversal remains a gap.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking
@@ -191,8 +199,8 @@ which do not create native windows.
 ## Next acceptance gates
 
 1. Extend the existing population/production system corpus to all recipes, larger
-   FSM boundary grids, labor and combined tick ordering. Controlled shortage
-   interruption, taxes/subsidies and local/planetary/interplanetary trade are covered.
+   FSM boundary grids, mixed-direction labor and combined tick ordering. Controlled
+   labor, construction demand, shortages, taxes/subsidies and trade are covered.
 2. Extend the spacecraft system harness to return flights, SOI edge ordering,
    different launch epochs and the near-circular post-burn trajectory.
 3. Extend native spaceport screens with filtering/inspection detail and dispatch

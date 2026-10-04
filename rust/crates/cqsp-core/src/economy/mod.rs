@@ -250,6 +250,10 @@ impl Market {
         (cost, tax)
     }
 
+    pub fn labor_demand(&self, good: GoodId) -> f64 {
+        (self.supply[good] - 2.0 * self.demand[good]) / (40.0 / 7.0)
+    }
+
     pub fn determine_prices(&mut self, base_prices: &Ledger, deviation: f64) {
         for index in 0..base_prices.values().len() {
             let good = GoodId(index);

@@ -330,7 +330,7 @@ impl Simulation {
                 .construction
                 .purchase_labor(&mut settlement.market, default_labor);
         }
-        // Original system order matters: weekly labor sees infrastructure demand and old ratios.
+        // Weekly labor sees old ratios, but reset demand: purchases only change consumption.
         if self.date.due(WEEK) {
             for settlement in &mut self.settlements {
                 for population in &mut settlement.populations {
@@ -412,9 +412,7 @@ impl Simulation {
         self.process_interplanetary_trade();
         for settlement in &mut self.settlements {
             for (index, job) in self.catalog.jobs.iter().enumerate() {
-                settlement.job_demands[index] = (settlement.market.supply[job.good]
-                    - 2.0 * settlement.market.demand[job.good])
-                    / (40.0 / 7.0);
+                settlement.job_demands[index] = settlement.market.labor_demand(job.good);
             }
         }
         self.history.push(self.summary(None));

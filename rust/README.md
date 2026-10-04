@@ -137,6 +137,10 @@ completion boundaries. This is subsystem evidence, not whole-economy seed parity
 Local/planetary markets and interplanetary order resolution also run against the
 original systems, including retained trade, shortages, non-default pricing/access,
 port stockpile depletion, repeated orders and first-port allocation.
+Weekly labor, daily labor-market signals and construction-sector purchases are
+compared against original systems across drift limits, wage changes, zero demand
+and small/empty workforces. Undefined unemployment conversions are not accepted
+as portable behavior; unordered mixed-direction drift still needs broader coverage.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.

@@ -313,6 +313,151 @@ fn market_values(market: &Market) -> Value {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares original weekly labor and construction demand"]
+fn labor_drift_hours_demands_and_construction_costs_match_original_systems() {
+    use cqsp_core::{catalog::JobId, economy::industry::ConstructionSector};
+    let data = default_data_path();
+    let mut simulation = Simulation::load(&data, &World::load(&data).unwrap(), 42).unwrap();
+    let cases = [
+        (0, [1_000_000, 2_000_000, 3_000_000, 4_000_000, 5_000_000]),
+        (1, [100, 250, 5, 0, 1000]),
+        (10, [0, 0, 0, 0, 1]),
+        (
+            1000,
+            [
+                200_000_000,
+                100_000_000,
+                100_000_000,
+                100_000_000,
+                100_000_000,
+            ],
+        ),
+        (0, [1001, 999, 1001, 1, 0]),
+        (0, [0; 5]),
+    ];
+    let catalog = &simulation.catalog;
+    let count = catalog.goods.len();
+    assert_eq!(catalog.jobs.len(), 5);
+    let mut populations: Vec<_> = simulation
+        .settlements
+        .iter_mut()
+        .flat_map(|site| std::mem::take(&mut site.populations))
+        .take(cases.len())
+        .collect();
+    assert_eq!(populations.len(), cases.len());
+    for (population, (_, workers)) in populations.iter_mut().zip(cases) {
+        population.jobs = workers
+            .into_iter()
+            .enumerate()
+            .map(|(index, amount)| (JobId(index), amount))
+            .collect();
+    }
+    let mut sectors: Vec<_> = cases
+        .iter()
+        .map(|&(capacity, _)| ConstructionSector {
+            capacity,
+            current: 0,
+            cost: 777.0,
+        })
+        .collect();
+    let mut markets: Vec<_> = cases
+        .iter()
+        .map(|_| {
+            Market::new(
+                &catalog.base_prices,
+                &catalog.labor_goods,
+                catalog.config.market_config,
+            )
+        })
+        .collect();
+    let default_labor = catalog.jobs[catalog.default_job.0].good;
+    let mut weeks = Vec::new();
+    let mut samples = Vec::new();
+    for week in 0..12 {
+        let mut values: Vec<_> = catalog
+            .base_prices
+            .values()
+            .iter()
+            .map(|&price| [price, 1.0, 0.0, 0.0, 0.0])
+            .collect();
+        for (index, job) in catalog.jobs.iter().enumerate() {
+            values[job.good.0] = [
+                if week >= 4 && JobId(index) == catalog.default_job {
+                    20.0
+                } else {
+                    10.0
+                },
+                if week == 8 {
+                    1e8
+                } else {
+                    [1.0, 2.0, 4.0, 12.0, 2.5][index]
+                },
+                if week == 0 || week >= 9 { 0.0 } else { 1000.0 },
+                (index * 7 + week) as f64,
+                0.05 + week as f64 * 0.01,
+            ];
+        }
+        for market in &mut markets {
+            market.reset();
+            for (index, &[price, ratio, demand, supply, tax]) in values.iter().enumerate() {
+                let good = GoodId(index);
+                market.price[good] = price;
+                market.sd_ratio[good] = ratio;
+                market.demand[good] = demand;
+                market.supply[good] = supply;
+                market.taxation[good] = tax;
+            }
+        }
+        for (sector, market) in sectors.iter_mut().zip(&mut markets) {
+            sector.purchase_labor(market, default_labor);
+        }
+        weeks.push(values);
+        let mut rows = Vec::new();
+        for (index, population) in populations.iter_mut().enumerate() {
+            let market = &markets[index];
+            population.redistribute_labor(market, catalog);
+            let mut hours = Ledger::new(count);
+            hours.add(&population.labor_hours);
+            let workers: Vec<_> = (0..catalog.jobs.len())
+                .map(|job| population.jobs[&JobId(job)])
+                .collect();
+            let demands: Vec<_> = catalog
+                .jobs
+                .iter()
+                .map(|job| market.labor_demand(job.good))
+                .collect();
+            rows.push(json!({"workers": workers, "hours": hours.values(), "employed": population.employed,
+                "unemployment": population.unemployment_rate, "demands": demands,
+                "consumption": market.consumption.values(), "construction_cost": sectors[index].cost}));
+        }
+        samples.push(rows);
+    }
+    let goods: Vec<_> = catalog
+        .base_prices
+        .values()
+        .iter()
+        .enumerate()
+        .map(|(index, price)| {
+            json!([
+                price,
+                usize::from(catalog.labor_goods.contains(&GoodId(index)))
+            ])
+        })
+        .collect();
+    let jobs: Vec<_> = catalog.jobs.iter().map(|job| job.good.0).collect();
+    compare(
+        &json!(samples),
+        &reference_output(
+            Some("--labor"),
+            &json!({
+        "goods": goods, "jobs": jobs, "default_job": catalog.default_job.0, "cases": cases,
+        "weeks": weeks})
+            .to_string(),
+        ),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual local and planetary trade systems"]
 fn local_markets_and_planetary_trade_match_original_systems() {
     use cqsp_core::{

@@ -41,6 +41,9 @@
 #include "core/systems/economy/sysproduction.h"
 #include "core/systems/economy/sysmarket.h"
 #include "core/systems/economy/sysplanetarytrade.h"
+#include "core/systems/economy/syslabordistribution.h"
+#include "core/systems/economy/syslabormarket.h"
+#include "core/systems/economy/sysinfrastructure.h"
 #include "core/systems/movement/sysorbit.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/null_sink.h>
@@ -246,6 +249,84 @@ void PrintInterplanetary() {
         }
         result["differences"] = differences; result["shipments"] = shipments;
         output.push_back(result);
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintLabor() {
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    RegisterGoods(universe, input["goods"]);
+    const int count = universe.GoodCount();
+    std::vector<entt::entity> jobs, provinces, populations;
+    for (int index = 0; index < input["jobs"].size(); ++index) {
+        auto entity = universe.create(); jobs.push_back(entity);
+        universe.emplace<Labor>(entity).good = ToGoodEntity(input["jobs"][index].to_double());
+    }
+    universe.default_job = jobs[static_cast<size_t>(input["default_job"].to_double())];
+    for (int index = 0; index < input["cases"].size(); ++index) {
+        auto province = universe.create(); provinces.push_back(province);
+        universe.emplace<Market>(province, count);
+        universe.emplace<Settlement>(province);
+        auto& sector = universe.emplace<infrastructure::ConstructionSector>(province);
+        sector.construction_capacity = static_cast<int>(input["cases"][index][0].to_double());
+        sector.construction_cost = 777.0;
+        auto population = universe.create(); populations.push_back(population);
+        universe.get<Settlement>(province).population.push_back(population);
+        auto& segment = universe.emplace<PopulationSegment>(population);
+        for (int job = 0; job < jobs.size(); ++job) segment.labor.labor_distribution[jobs[job]] = input["cases"][index][1][job].to_double();
+    }
+    cqsp::core::systems::SysLaborDistribution distribution(game);
+    cqsp::core::systems::SysLaborMarket labor_market(game);
+    cqsp::core::systems::InfrastructureSim infrastructure(game);
+    cqsp::core::systems::SysMarketReset reset(game);
+    distribution.Init(); labor_market.Init();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int week = 0; week < input["weeks"].size(); ++week) {
+        reset.DoSystem();
+        for (auto province : provinces) {
+            auto& market = universe.get<Market>(province);
+            for (int good = 0; good < count; ++good) {
+                const auto& row = input["weeks"][week][good];
+                market.price[ToGoodEntity(good)] = row[0].to_double();
+                market.sd_ratio[ToGoodEntity(good)] = row[1].to_double();
+                market.demand[ToGoodEntity(good)] = row[2].to_double();
+                market.supply[ToGoodEntity(good)] = row[3].to_double();
+                market.taxation[ToGoodEntity(good)] = row[4].to_double();
+            }
+        }
+        infrastructure.DoSystem();
+        // Purchases change consumption, not the controlled market-demand ledger.
+        distribution.DoSystem(); labor_market.DoSystem();
+        Hjson::Value rows(Hjson::Type::Vector);
+        for (int index = 0; index < provinces.size(); ++index) {
+            const auto& segment = universe.get<PopulationSegment>(populations[index]);
+            const auto& market = universe.get<Market>(provinces[index]);
+            const auto& sector = universe.get<infrastructure::ConstructionSector>(provinces[index]);
+            Hjson::Value row(Hjson::Type::Map), workers(Hjson::Type::Vector), demands(Hjson::Type::Vector);
+            ResourceLedger hours(count);
+            for (const auto& [good, amount] : segment.labor.labor_hours) hours[good] += amount;
+            double employed = 0.0, workforce = 0.0;
+            for (auto job : jobs) {
+                auto amount = segment.labor.labor_distribution.at(job);
+                workers.push_back(amount);
+                workforce += amount;
+                employed += amount / market.sd_ratio[universe.get<Labor>(job).good];
+                double demand = 0;
+                for (const auto& [entity, value] : universe.get<Settlement>(provinces[index]).job_demands) if (entity == job) demand = value;
+                demands.push_back(demand);
+            }
+            row["workers"] = workers; row["hours"] = LedgerValues(hours, count); row["demands"] = demands;
+            row["employed"] = segment.employed_amount;
+            // Negative/nonfinite float-to-uint64 conversion is undefined; never bless its result.
+            double rate = (1.0 - employed) / workforce;
+            row["unemployment"] = rate >= 0.0 && std::isfinite(rate) ? Hjson::Value(segment.unemployment_rate) : Hjson::Value(Hjson::Type::Null);
+            row["consumption"] = LedgerValues(market.consumption, count);
+            row["construction_cost"] = sector.construction_cost;
+            rows.push_back(row);
+        }
+        output.push_back(rows);
     }
     WriteJson(output); std::cout << '\n';
 }
@@ -708,6 +789,7 @@ int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--interplanetary") { PrintInterplanetary(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--labor") { PrintLabor(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--population") { PrintPopulation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--manufacturing") { PrintManufacturing(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production") { PrintProduction(); return 0; }

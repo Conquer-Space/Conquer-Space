@@ -210,4 +210,36 @@ mod tests {
         add_drift(&mut drift, JobId(0), 0.75);
         assert_eq!(drift[&JobId(0)], 0);
     }
+
+    #[test]
+    fn construction_purchases_do_not_open_the_reset_labor_demand_gate() -> Result<()> {
+        use crate::economy::industry::ConstructionSector;
+        let catalog = Catalog::load(&crate::default_data_path())?;
+        let mut population = Population::load(
+            serde_json::from_value(serde_json::json!({"size":2_000_000}))?,
+            &catalog,
+        )?;
+        let other = JobId((catalog.default_job.0 + 1) % catalog.jobs.len());
+        population.jobs = (0..catalog.jobs.len()).map(|job| (JobId(job), 0)).collect();
+        population.jobs.insert(other, 1_000_000);
+        let mut market = Market::new(
+            &catalog.base_prices,
+            &catalog.labor_goods,
+            MarketConfig::default(),
+        );
+        market.reset();
+        for job in &catalog.jobs {
+            market.price[job.good] = 10.0;
+            market.sd_ratio[job.good] = 4.0;
+        }
+        let default_labor = catalog.jobs[catalog.default_job.0].good;
+        market.price[default_labor] = 20.0;
+        ConstructionSector::default().purchase_labor(&mut market, default_labor);
+        assert!(market.consumption[default_labor] > 0.0);
+        assert_eq!(market.demand[default_labor], 0.0);
+        population.redistribute_labor(&market, &catalog);
+        assert_eq!(population.jobs[&catalog.default_job], 0);
+        assert!(population.jobs[&other] < 1_000_000);
+        Ok(())
+    }
 }
