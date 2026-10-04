@@ -20,6 +20,74 @@ use std::{
 };
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual goods/labor/zoning/recipe/config loaders"]
+fn economic_catalog_and_defaults_match_original_loaders() {
+    use cqsp_core::{
+        catalog::{Catalog, ProductionType},
+        read_entries,
+    };
+    let data = default_data_path();
+    let config: Value =
+        serde_hjson::from_str(&fs::read_to_string(data.join("data/economy_config.hjson")).unwrap())
+            .unwrap();
+    let zoning: Value =
+        serde_hjson::from_str(&fs::read_to_string(data.join("data/real_estate.hjson")).unwrap())
+            .unwrap();
+    let bundled = json!({
+        "config": config, "zoning": zoning,
+        "goods": read_entries::<Value>(&data.join("data/goods")).unwrap(),
+        "jobs": read_entries::<Value>(&data.join("data/labor")).unwrap(),
+        "recipes": read_entries::<Value>(&data.join("data/recipes")).unwrap(),
+    });
+    let controlled = serde_json::from_str(include_str!("fixtures/catalog.json")).unwrap();
+    for input in [bundled, controlled] {
+        let catalog = Catalog::from_definitions(
+            serde_json::from_value(input.clone()).unwrap(),
+            serde_json::from_value(input["config"].clone()).unwrap(),
+        )
+        .unwrap();
+        let goods: Vec<_> = catalog.goods.iter().map(|good| {
+            let consumption = good.consumption.as_ref().map(|value| [value.autonomous_consumption, value.marginal_propensity]);
+            let kinds: Vec<_> = ["mineral", "raw", "capital", "labor", "fluid", "intermediate"].map(|tag| usize::from(good.tags.iter().any(|value| value == tag))).into();
+            json!({"identifier":good.identifier, "name":good.name, "price":good.price,
+                "physical":[good.mass.unwrap_or(0.0),good.volume.unwrap_or(0.0)],
+                "energy":good.energy, "unit":good.unit, "consumption":consumption, "tags":good.tags, "kinds":kinds})
+        }).collect();
+        let jobs: Vec<_> = catalog.jobs.iter().map(|job| json!({"identifier":job.identifier, "name":job.name, "good":catalog.goods[job.good.0].identifier})).collect();
+        let resources = |values: &[(GoodId, f64)]| -> serde_json::Map<String, Value> {
+            values
+                .iter()
+                .map(|&(good, amount)| (catalog.goods[good.0].identifier.clone(), json!(amount)))
+                .collect()
+        };
+        let recipes: serde_json::Map<_, _> = catalog.recipes.iter().map(|recipe| {
+            let workers: serde_json::Map<_, _> = recipe.workers.iter().map(|&(job, count)| (catalog.jobs[job.0].identifier.clone(), json!(count))).collect();
+            let kind = match recipe.kind { ProductionType::Factory => 0, ProductionType::Mine => 1, ProductionType::Service => 2 };
+            (recipe.identifier.clone(), json!({"name":recipe.name,"input":resources(&recipe.input),"output":[recipe.output.0.0 as f64,recipe.output.1],
+                "capital":resources(&recipe.capital),"power":recipe.power,"kind":kind,"fixed":resources(&recipe.fixed_cost),"scaling":resources(&recipe.scaling_cost),
+                "workers":workers,"construction_ticks":recipe.construction_ticks,"construction_cost":resources(&recipe.construction_cost),"zoning":recipe.zoning}))
+        }).collect();
+        let good_ids: serde_json::Map<_, _> = catalog
+            .goods
+            .iter()
+            .map(|good| {
+                (
+                    good.identifier.clone(),
+                    json!(catalog.good(&good.identifier).unwrap().0),
+                )
+            })
+            .collect();
+        let market = catalog.config.market_config;
+        let production = catalog.config.production_config;
+        compare(
+            &json!({"goods":goods,"good_ids":good_ids,"jobs":jobs,"recipes":recipes,"zoning":catalog.zoning,"default_job":catalog.jobs[catalog.default_job.0].identifier,
+            "config":[market.base_price_deviation,market.shortage_level,market.default_market_access,production.profit_multiplier,production.max_factory_delta,production.factory_min_utilization,production.construction_limit as f64,production.underutilization_limit]}),
+            &reference_output(Some("--catalog"), &input.to_string()),
+        );
+    }
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares original time-zone loader and clock"]
 fn timezone_definitions_and_clock_match_original() {
     use cqsp_core::timezones::TimeZones;

@@ -183,6 +183,10 @@ and small/empty workforces. Undefined unemployment conversions are not accepted
 as portable behavior; unordered mixed-direction drift still needs broader coverage.
 Science-field and technology definitions also compare against the actual source
 loaders, including defaults and directed/duplicate graph-reference handling.
+The full economy catalog also compares actual goods/labor/zoning/recipe/config loaders:
+56 goods, five jobs, ten zoning types and 22 recipes, plus controlled physical units,
+invalid-good rejection, duplicate lookup, first-tag default jobs, tag precedence,
+missing references, empty-map merging and construction-time/cost defaults.
 Civilization metadata and initial owned lists match actual original loaders for all
 199 countries. Capital tags remain province-only, and only the USA has a bundled
 space-program tag. All-body daily market history matches actual SysMarketHistory,

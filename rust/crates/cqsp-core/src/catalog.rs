@@ -6,7 +6,10 @@ use crate::{
     units::{Unit, read_unit},
 };
 use anyhow::{Context, Result, ensure};
-use serde::Deserialize;
+use serde::{
+    Deserialize, Deserializer,
+    de::{DeserializeOwned, Error},
+};
 use serde_json::Value;
 use std::{
     collections::{BTreeMap, HashMap},
@@ -14,7 +17,8 @@ use std::{
     path::Path,
 };
 
-#[derive(Debug, Deserialize)]
+#[derive(Default, Debug, Deserialize)]
+#[serde(default)]
 pub struct Consumption {
     pub autonomous_consumption: f64,
     pub marginal_propensity: f64,
@@ -51,7 +55,6 @@ pub enum ProductionType {
     Mine,
     Factory,
     Service,
-    Unspecified,
 }
 
 #[derive(Debug)]
@@ -75,6 +78,7 @@ pub struct Catalog {
     pub goods: Vec<Good>,
     pub jobs: Vec<Job>,
     pub recipes: Vec<Recipe>,
+    pub zoning: BTreeMap<String, Option<String>>,
     pub default_job: JobId,
     pub labor_goods: Vec<GoodId>,
     pub base_prices: Ledger,
@@ -85,20 +89,42 @@ pub struct Catalog {
     recipe_ids: HashMap<String, RecipeId>,
 }
 
+/// Original loader inputs, also accepted directly by reference scenarios.
+#[derive(Deserialize)]
+pub struct CatalogDefinitions {
+    goods: Vec<GoodEntry>,
+    jobs: Vec<JobEntry>,
+    recipes: Vec<RecipeEntry>,
+    #[serde(default)]
+    zoning: Vec<ZoneEntry>,
+}
+
 impl Catalog {
     pub fn load(data: &Path) -> Result<Self> {
         let config_path = data.join("data/economy_config.hjson");
         let value: Value = serde_hjson::from_str(&fs::read_to_string(&config_path)?)?;
         let config = serde_json::from_value(value).context("Reading economy configuration")?;
+        Self::from_definitions(
+            CatalogDefinitions {
+                goods: read_entries(&data.join("data/goods"))?,
+                jobs: read_entries(&data.join("data/labor"))?,
+                recipes: read_entries(&data.join("data/recipes"))?,
+                zoning: serde_hjson::from_str(&fs::read_to_string(
+                    data.join("data/real_estate.hjson"),
+                )?)?,
+            },
+            config,
+        )
+    }
+
+    pub fn from_definitions(
+        definitions: CatalogDefinitions,
+        config: EconomyConfig,
+    ) -> Result<Self> {
         let mut goods = Vec::new();
         let mut good_ids = HashMap::new();
         let mut diagnostics = Vec::new();
-        for entry in read_entries::<GoodEntry>(&data.join("data/goods"))? {
-            ensure!(
-                !good_ids.contains_key(&entry.identifier),
-                "Duplicate good {}",
-                entry.identifier
-            );
+        for entry in definitions.goods {
             let physical = match (&entry.mass, &entry.volume) {
                 (Some(mass), Some(volume)) => {
                     match (read_unit(mass, Unit::Mass), read_unit(volume, Unit::Volume)) {
@@ -114,7 +140,15 @@ impl Catalog {
                 }
                 _ => None,
             };
-            good_ids.insert(entry.identifier.clone(), GoodId(goods.len()));
+            if good_ids
+                .insert(entry.identifier.clone(), GoodId(goods.len()))
+                .is_some()
+            {
+                diagnostics.push(format!(
+                    "Duplicate good {}: last lookup wins",
+                    entry.identifier
+                ));
+            }
             goods.push(Good {
                 name: entry.name.unwrap_or_else(|| entry.identifier.clone()),
                 identifier: entry.identifier,
@@ -130,20 +164,27 @@ impl Catalog {
         let mut jobs = Vec::new();
         let mut job_ids = HashMap::new();
         let mut default_job = None;
-        for entry in read_entries::<JobEntry>(&data.join("data/labor"))? {
-            ensure!(
-                !job_ids.contains_key(&entry.identifier),
-                "Duplicate job {}",
-                entry.identifier
-            );
+        for entry in definitions.jobs {
             let good = *good_ids
                 .get(&entry.good)
                 .with_context(|| format!("Unknown labor good {}", entry.good))?;
             let id = JobId(jobs.len());
             if entry.tags.iter().any(|tag| tag == "default") {
-                default_job = Some(id);
+                if default_job.is_none() {
+                    default_job = Some(id);
+                } else {
+                    diagnostics.push(format!(
+                        "{}: default job already selected; first tag wins",
+                        entry.identifier
+                    ));
+                }
             }
-            job_ids.insert(entry.identifier.clone(), id);
+            if job_ids.insert(entry.identifier.clone(), id).is_some() {
+                diagnostics.push(format!(
+                    "Duplicate job {}: last lookup wins",
+                    entry.identifier
+                ));
+            }
             jobs.push(Job {
                 name: entry.name.unwrap_or_else(|| entry.identifier.clone()),
                 identifier: entry.identifier,
@@ -162,6 +203,11 @@ impl Catalog {
             goods,
             jobs,
             recipes: Vec::new(),
+            zoning: definitions
+                .zoning
+                .into_iter()
+                .map(|zone| (zone.identifier, zone.name))
+                .collect(),
             default_job: default_job.context("No default job")?,
             labor_goods,
             base_prices,
@@ -171,12 +217,7 @@ impl Catalog {
             job_ids,
             recipe_ids: HashMap::new(),
         };
-        for entry in read_entries::<RecipeEntry>(&data.join("data/recipes"))? {
-            ensure!(
-                !catalog.recipe_ids.contains_key(&entry.identifier),
-                "Duplicate recipe {}",
-                entry.identifier
-            );
+        for entry in definitions.recipes {
             ensure!(
                 entry.output.len() == 1,
                 "{}: expected exactly one recipe output",
@@ -227,10 +268,25 @@ impl Catalog {
                         .into_iter()
                         .map(|(good, amount)| (good, amount / seconds))
                         .collect();
+                    let zoning = construction
+                        .zoning
+                        .into_iter()
+                        .filter(|(zone, _)| {
+                            if catalog.zoning.contains_key(zone) {
+                                true
+                            } else {
+                                catalog.diagnostics.push(format!(
+                                    "{}: unknown zoning {zone}; skipped like the C++ loader",
+                                    entry.identifier
+                                ));
+                                false
+                            }
+                        })
+                        .collect();
                     (
                         StarDate::ticks_from_seconds(seconds as i32 as f64),
                         costs,
-                        construction.zoning,
+                        zoning,
                     )
                 } else {
                     (12 * WEEK as i32, Vec::new(), BTreeMap::new())
@@ -238,17 +294,22 @@ impl Catalog {
             let kind = entry
                 .tags
                 .iter()
-                .fold(ProductionType::Unspecified, |kind, tag| {
-                    match tag.as_str() {
-                        "raw" => ProductionType::Mine,
-                        "factory" => ProductionType::Factory,
-                        "service" => ProductionType::Service,
-                        _ => kind,
-                    }
+                .fold(ProductionType::Factory, |kind, tag| match tag.as_str() {
+                    "raw" => ProductionType::Mine,
+                    "factory" => ProductionType::Factory,
+                    "service" => ProductionType::Service,
+                    _ => kind,
                 });
-            catalog
+            if catalog
                 .recipe_ids
-                .insert(entry.identifier.clone(), RecipeId(catalog.recipes.len()));
+                .insert(entry.identifier.clone(), RecipeId(catalog.recipes.len()))
+                .is_some()
+            {
+                catalog.diagnostics.push(format!(
+                    "Duplicate recipe {}: last lookup wins",
+                    entry.identifier
+                ));
+            }
             catalog.recipes.push(Recipe {
                 name: entry.name.unwrap_or_else(|| entry.identifier.clone()),
                 identifier: entry.identifier,
@@ -302,6 +363,7 @@ struct GoodEntry {
     price: f64,
     #[serde(default)]
     tags: Vec<String>,
+    #[serde(default, deserialize_with = "cloned_object")]
     consumption: Option<Consumption>,
     mass: Option<Value>,
     volume: Option<Value>,
@@ -319,6 +381,12 @@ struct JobEntry {
     good: String,
     #[serde(default)]
     tags: Vec<String>,
+}
+
+#[derive(Deserialize)]
+struct ZoneEntry {
+    identifier: String,
+    name: Option<String>,
 }
 
 #[derive(Default, Deserialize)]
@@ -347,14 +415,64 @@ struct RecipeEntry {
     output: BTreeMap<String, f64>,
     #[serde(default)]
     cost: RecipeCost,
+    #[serde(default, deserialize_with = "cloned_object")]
     construction: Option<ConstructionEntry>,
     #[serde(default)]
     tags: Vec<String>,
 }
 
+fn cloned_object<'de, D: Deserializer<'de>, T: DeserializeOwned>(
+    input: D,
+) -> std::result::Result<Option<T>, D::Error> {
+    // Original Hjson::Merge calls clone(), which turns an empty map into Undefined.
+    Option::<Value>::deserialize(input)?
+        .filter(|value| !value.as_object().is_some_and(|object| object.is_empty()))
+        .map(serde_json::from_value)
+        .transpose()
+        .map_err(D::Error::custom)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn original_defaults_duplicate_lookup_and_unknown_resources_are_preserved() -> Result<()> {
+        let input: Value = serde_json::from_str(include_str!("../tests/fixtures/catalog.json"))?;
+        let catalog = Catalog::from_definitions(
+            serde_json::from_value(input.clone())?,
+            serde_json::from_value(input["config"].clone())?,
+        )?;
+        assert_eq!(catalog.goods.len(), 5);
+        assert!(catalog.good("broken").is_none());
+        assert_eq!(catalog.good("matter"), Some(GoodId(4)));
+        assert_eq!(catalog.goods[1].mass, Some(2000.0));
+        assert_eq!(catalog.goods[2].mass, None);
+        assert!(catalog.goods[2].consumption.is_none());
+        assert!(catalog.goods[3].consumption.is_none());
+        assert_eq!(
+            catalog.goods[1]
+                .consumption
+                .as_ref()
+                .unwrap()
+                .marginal_propensity,
+            0.0
+        );
+        assert_eq!(catalog.default_job, JobId(0));
+        assert_eq!(catalog.recipes[0].kind, ProductionType::Factory);
+        assert_eq!(catalog.recipes[0].construction_ticks, 12 * WEEK as i32);
+        assert_eq!(catalog.recipes[1].kind, ProductionType::Service);
+        assert_eq!(catalog.recipes[1].construction_ticks, 0);
+        assert_eq!(catalog.recipes[1].construction_cost, [(GoodId(4), 0.1)]);
+        assert_eq!(catalog.recipes[1].input, [(GoodId(4), 7.0)]);
+        assert_eq!(
+            catalog.recipes[1].zoning,
+            BTreeMap::from([("industrial".into(), 5)])
+        );
+        assert_eq!(catalog.recipes[2].construction_ticks, 2);
+        assert_eq!(catalog.recipes[2].kind, ProductionType::Mine);
+        assert_eq!(catalog.recipes[3].construction_ticks, 12 * WEEK as i32);
+        Ok(())
+    }
     #[test]
     fn original_catalog_and_config_load() -> Result<()> {
         let catalog = Catalog::load(&crate::default_data_path())?;

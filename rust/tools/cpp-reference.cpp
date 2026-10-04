@@ -40,6 +40,11 @@
 #include "core/loading/timezoneloader.h"
 #include "core/loading/loadcountries.h"
 #include "core/loading/provinceloader.h"
+#include "core/loading/loadgoods.h"
+#include "core/loading/laborloader.h"
+#include "core/loading/recipeloader.h"
+#include "core/loading/zoningloader.h"
+#include "core/loading/economyloader.h"
 #include "core/systems/history/sysmarkethistory.h"
 #include "core/systems/economy/economyconfig.h"
 #include "core/systems/economy/sysspaceport.h"
@@ -362,6 +367,79 @@ void PrintGroundTracks() {
         auto ground = cqsp::core::util::GetGroundTrack(rotation, position);
         output.push_back(Numbers({rotation.x, rotation.y, rotation.z, rotation.w, ground.r_latitude(), ground.r_longitude()}));
     }
+    WriteJson(output); std::cout << '\n';
+}
+
+void PrintCatalog() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Universe universe("catalog-reference");
+    auto input = ReadInput();
+    cqsp::core::loading::LoadEconomyConfig(universe, input["config"]);
+    cqsp::core::loading::GoodLoader goods(universe);
+    cqsp::core::loading::LaborLoader jobs(universe);
+    cqsp::core::loading::ZoningLoader zoning(universe);
+    cqsp::core::loading::RecipeLoader recipes(universe);
+    goods.LoadHjson(input["goods"]); jobs.LoadHjson(input["jobs"]);
+    zoning.LoadHjson(input["zoning"]); recipes.LoadHjson(input["recipes"]);
+    auto name = [&](entt::entity entity) {
+        return universe.all_of<Name>(entity) ? universe.get<Name>(entity).name : universe.get<Identifier>(entity).identifier;
+    };
+    auto resources = [&](const ResourceVector& values) {
+        Hjson::Value output(Hjson::Type::Map);
+        for (const auto& [good, amount] : values) output[universe.get<Identifier>(universe.good_vector[static_cast<int>(good)]).identifier] = Number(amount);
+        return output;
+    };
+    Hjson::Value output(Hjson::Type::Map), good_rows(Hjson::Type::Vector), job_rows(Hjson::Type::Vector), recipe_rows(Hjson::Type::Map), zones(Hjson::Type::Map);
+    for (auto entity : universe.good_vector) {
+        Hjson::Value value(Hjson::Type::Map), tags(Hjson::Type::Vector);
+        value["identifier"] = universe.get<Identifier>(entity).identifier; value["name"] = name(entity);
+        value["price"] = universe.get<Price>(entity).price;
+        auto& good = universe.get<Good>(entity);
+        value["physical"] = Numbers({good.mass, good.volume});
+        value["energy"] = universe.all_of<Energy>(entity) ? Number(universe.get<Energy>(entity).energy) : Hjson::Value(Hjson::Type::Null);
+        value["unit"] = universe.all_of<Unit>(entity) ? Hjson::Value(universe.get<Unit>(entity).unit_name) : Hjson::Value(Hjson::Type::Null);
+        value["consumption"] = Hjson::Value(Hjson::Type::Null);
+        if (auto* consumption = universe.try_get<ConsumerGood>(entity)) value["consumption"] = Numbers({consumption->autonomous_consumption, consumption->marginal_propensity});
+        if (auto* component = universe.try_get<Tags>(entity)) for (const auto& tag : component->tags) tags.push_back(tag);
+        value["tags"] = tags;
+        value["kinds"] = Numbers({double(universe.all_of<Mineral>(entity)), double(universe.all_of<RawGood>(entity)), double(universe.all_of<CapitalGood>(entity)), double(universe.all_of<LaborGood>(entity)), double(universe.all_of<FluidGood>(entity)), double(universe.all_of<IntermediateGood>(entity))});
+        good_rows.push_back(value);
+    }
+    // Input order is the same as the Rust catalog's stable file traversal.
+    for (int index = 0; index < input["jobs"].size(); ++index) {
+        auto identifier = input["jobs"][index]["identifier"].to_string();
+        auto entity = universe.jobs[identifier];
+        Hjson::Value value(Hjson::Type::Map);
+        value["identifier"] = identifier; value["name"] = name(entity);
+        value["good"] = universe.get<Identifier>(universe.good_vector[static_cast<int>(universe.get<Labor>(entity).good)]).identifier;
+        job_rows.push_back(value);
+    }
+    for (const auto& [identifier, entity] : universe.zoning) zones[identifier] = universe.all_of<Name>(entity) ? Hjson::Value(name(entity)) : Hjson::Value(Hjson::Type::Null);
+    for (const auto& [identifier, entity] : universe.recipes) {
+        Hjson::Value value(Hjson::Type::Map), workers(Hjson::Type::Map), allocation(Hjson::Type::Map);
+        auto& recipe = universe.get<Recipe>(entity); auto& cost = universe.get<ConstructionCost>(entity);
+        value["name"] = name(entity); value["input"] = resources(recipe.input);
+        value["output"] = Numbers({double(static_cast<int>(recipe.output.entity)), recipe.output.amount});
+        value["capital"] = resources(recipe.capitalcost); value["power"] = Number(recipe.power_cost);
+        value["kind"] = static_cast<int>(recipe.type);
+        if (auto* upkeep = universe.try_get<RecipeCost>(entity)) {
+            value["fixed"] = resources(upkeep->fixed); value["scaling"] = resources(upkeep->scaling);
+        } else {
+            value["fixed"] = Hjson::Value(Hjson::Type::Map); value["scaling"] = Hjson::Value(Hjson::Type::Map);
+        }
+        for (const auto& [job, count] : recipe.workers.workers) workers[universe.get<Identifier>(job).identifier] = static_cast<int64_t>(count);
+        for (const auto& [zone, amount] : cost.zoning) allocation[universe.get<Identifier>(zone).identifier] = amount;
+        value["workers"] = workers; value["construction_ticks"] = cost.time;
+        value["construction_cost"] = resources(cost.cost); value["zoning"] = allocation;
+        recipe_rows[identifier] = value;
+    }
+    auto& market = universe.economy_config.market_config; auto& production = universe.economy_config.production_config;
+    output["goods"] = good_rows; output["jobs"] = job_rows; output["recipes"] = recipe_rows; output["zoning"] = zones;
+    output["default_job"] = universe.get<Identifier>(universe.default_job).identifier;
+    output["config"] = Numbers({market.base_price_deviation, market.shortage_level, market.default_market_access, production.profit_multiplier, production.max_factory_delta, production.factory_min_utilization, double(production.construction_limit), production.underutilization_limit});
+    Hjson::Value ids(Hjson::Type::Map);
+    for (const auto& [identifier, entity] : universe.goods) ids[identifier] = static_cast<int>(universe.good_map[entity]);
+    output["good_ids"] = ids;
     WriteJson(output); std::cout << '\n';
 }
 
@@ -1051,6 +1129,7 @@ void PrintRandom() {
 
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
+    if (argc == 2 && std::string(argv[1]) == "--catalog") { PrintCatalog(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--civilizations") { PrintCivilizations(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--planet-histories") { PrintPlanetHistories(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--factory-creation") { PrintFactoryCreation(); return 0; }

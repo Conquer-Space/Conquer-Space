@@ -21,7 +21,7 @@ Successful long runs establish stability, not gameplay parity.
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
 | Time-zone definitions / city bindings | Loader and clock reference-tested; native display | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
-| Goods / jobs / recipes / economy config | Implemented | Original 56 goods, 5 jobs, 22 recipes; defaults, units, construction-cost scaling; full loader differential corpus remains |
+| Goods / jobs / zoning / recipes / economy config | Loader reference-tested | Actual original loaders compare all 56 goods, five jobs, ten zoning definitions and 22 recipes; controlled defaults, physical units, invalid-good rejection, duplicate good lookup, first default-job tag, recipe type/tag precedence, missing resources/zoning, empty-map merge and construction-cost scaling |
 | Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; zoning, power grids, resource amenability remain |
 | Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
@@ -211,9 +211,9 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records per body and CSV/industry export checks. There are 95 unit tests
-and 21 differential tests: 20 pass, while the explicit seeded lunar acceptance
-gate currently fails. Twenty live tests require the reference executable.
+365 market-history records per body and CSV/industry export checks. There are 96 unit tests
+and 22 differential tests: 21 pass, while the explicit seeded lunar acceptance
+gate currently fails. Twenty-one live tests require the reference executable.
 Population/wallet/market-reset scenarios compare 30 daily results; nine industry
 cases compare 12 steps against actual SysProduction with controlled normal samples.
 An additional all-recipe corpus uses real StdRandom and the fixture's EnTT order:
@@ -242,6 +242,12 @@ Science comparisons execute the actual loaders on the bundled definitions and a
 controlled graph with duplicate/self/missing references, duplicate technology fields,
 tags, fractional difficulty and defaults. `cqsp-sim --science-json NEW_PATH` exports
 the loaded definitions without overwriting existing files; this is not a game save.
+Economy catalog comparisons execute GoodLoader/LaborLoader/ZoningLoader/RecipeLoader
+and LoadEconomyConfig on the bundled definitions plus controlled units/defaults,
+invalid mass rejection, duplicate good lookup, first-tag default jobs, tag precedence,
+missing references, empty-map cloning and fractional/invalid construction durations.
+Empty consumption/construction maps disappear during the original Hjson merge;
+the port preserves this rather than creating extra components from empty objects.
 Time-zone comparisons execute TimezoneLoader on all 107 definitions plus controlled
 duplicates, missing offsets, numeric strings, booleans and malformed numeric strings.
 Eight clock boundaries per zone compare actual GetHour/GetMinute. The city-loader

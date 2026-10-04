@@ -1,0 +1,22 @@
+{
+  "config": {"market_config": {"default_market_access": 0.3}},
+  "goods": [
+    {"identifier": "labor", "tags": ["labor"]},
+    {"identifier": "matter", "mass": "2t", "volume": "3m3", "price": 4, "tags": ["raw", "mineral", "capital", "fluid", "intermediate"], "energy": 25, "unit": "tonne", "consumption": {"autonomous_consumption": 0.5}},
+    {"identifier": "broken", "mass": "oops", "volume": "1m3"},
+    {"identifier": "nonphysical", "mass": "9kg", "tags": ["consumer"]},
+    {"identifier": "output", "consumption": {}},
+    {"identifier": "matter", "name": "Final matter", "mass": "5kg", "volume": "6m3", "price": 8}
+  ],
+  "jobs": [
+    {"identifier": "first", "good": "labor", "tags": ["default"]},
+    {"identifier": "second", "good": "labor", "tags": ["default"]}
+  ],
+  "zoning": [{"identifier": "industrial", "name": "Industrial"}],
+  "recipes": [
+    {"identifier": "default", "output": {"output": 2}},
+    {"identifier": "invalid_time", "input": {"missing": 3, "matter": 7}, "output": {"output": 1}, "cost": {"power": "3MW", "capital": {"matter": 1}, "labor": {"first": 6}, "fixed": {"matter": 2}, "scaling": {"output": 3}}, "construction": {"time": "invalid", "cost": {"matter": 10}, "zoning": {"industrial": 5, "missing": 9}}, "tags": ["raw", "service"]},
+    {"identifier": "fractional_time", "output": {"output": 3}, "construction": {"time": "1200.9s", "cost": {"matter": 120}}, "tags": ["factory", "raw"]},
+    {"identifier": "empty_construction", "output": {"output": 1}, "cost": {}, "construction": {}}
+  ]
+}
