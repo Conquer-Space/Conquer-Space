@@ -14,6 +14,8 @@
 #include "core/actions/maneuver/rendezvous.h"
 #include "core/actions/maneuver/commands.h"
 #include "core/components/colony.h"
+#include "core/components/history.h"
+#include "core/components/infrastructure.h"
 #include "core/components/name.h"
 #include "core/components/organizations.h"
 #include "core/components/population.h"
@@ -33,12 +35,29 @@
 #include "core/systems/economy/sysspaceport.h"
 #include "core/systems/economy/syslaunchvehicleproduction.h"
 #include "core/systems/economy/sysinterplanetarytrade.h"
+#include "core/systems/economy/sysfinance.h"
+#include "core/systems/economy/sysmarketreset.h"
+#include "core/systems/economy/syspopulation.h"
+#include "core/systems/economy/sysproduction.h"
 #include "core/systems/movement/sysorbit.h"
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/null_sink.h>
 
 using namespace cqsp::core::components;
 void PrintVector(const glm::dvec3& vector);
+Hjson::Value ReadInput() {
+    return Hjson::Unmarshal(std::string(std::istreambuf_iterator<char>(std::cin), {}));
+}
+Hjson::Value Numbers(std::initializer_list<double> values) {
+    Hjson::Value row(Hjson::Type::Vector);
+    for (double value : values) row.push_back(value);
+    return row;
+}
+Hjson::Value LedgerValues(const ResourceLedger& ledger, int count) {
+    Hjson::Value row(Hjson::Type::Vector);
+    for (int good = 0; good < count; ++good) row.push_back(ledger[ToGoodEntity(good)]);
+    return row;
+}
 
 // Suppress the reference Game's logging side effects, not its simulation behavior.
 // This avoids original app-data log files and keeps stdout exclusively machine-readable.
@@ -61,7 +80,7 @@ void PrintLunarMission() {
     cqsp::core::Game game;
     auto& universe = game.GetUniverse();
     universe.random = std::make_unique<ControlledRandom>();
-    auto input = Hjson::Unmarshal(std::string(std::istreambuf_iterator<char>(std::cin), {}));
+    auto input = ReadInput();
     std::vector<entt::entity> body_entities;
     for (int index = 0; index < input["bodies"].size(); ++index) {
         const auto& row = input["bodies"][index];
@@ -132,6 +151,209 @@ void PrintLunarMission() {
     int core_count = universe.all_of<Colony>(target) ? universe.get<Colony>(target).components.size() : 0;
     std::cout << "],\"delivery\":[" << landing_tick << ',' << unload_tick << ',' << static_cast<int>(step) << ',' << core_count << ','
         << (universe.all_of<MissionInProgress>(mission) ? 1 : 0) << "]}\n";
+}
+
+void PrintPopulation() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    int count = input["goods"].size();
+    for (int index = 0; index < count; ++index) {
+        auto entity = universe.create();
+        universe.good_vector.push_back(entity);
+        universe.good_map[entity] = ToGoodEntity(index);
+        const auto& row = input["goods"][index];
+        if (row[1].type() != Hjson::Type::Null) {
+            universe.emplace<ConsumerGood>(entity, row[1].to_double(), row[2].to_double());
+            universe.consumergoods.push_back(entity);
+        }
+    }
+    auto province = universe.create();
+    universe.emplace<Settlement>(province);
+    universe.emplace<infrastructure::CityInfrastructure>(province);
+    auto& market = universe.emplace<Market>(province, count);
+    std::vector<entt::entity> populations;
+    for (int index = 0; index < input["populations"].size(); ++index) {
+        const auto& row = input["populations"][index];
+        auto entity = universe.create();
+        populations.push_back(entity);
+        universe.get<Settlement>(province).population.push_back(entity);
+        auto& segment = universe.emplace<PopulationSegment>(entity);
+        segment.population = row[0].to_double(); segment.standard_of_living = row[1].to_double();
+        segment.income = row[3].to_double(); segment.spending = row[4].to_double(); segment.employed_amount = row[5].to_double();
+        for (int good = 0; good < count; ++good) segment.labor.labor_hours.emplace_back(ToGoodEntity(good), row[6][good].to_double());
+        universe.emplace<Wallet>(entity) = row[2].to_double();
+    }
+    cqsp::core::systems::SysPopulationConsumption consumption(game);
+    cqsp::core::systems::SysWalletReset wallets(game);
+    cqsp::core::systems::SysMarketReset markets(game);
+    consumption.Init();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int day = 0; day < input["days"].to_double(); ++day) {
+        universe.date.SetDate(day * StarDate::DAY);
+        wallets.DoSystem(); markets.DoSystem();
+        for (int good = 0; good < count; ++good) {
+            market.price[ToGoodEntity(good)] = input["goods"][good][0].to_double() * (1.0 + day * 0.05);
+            market.taxation[ToGoodEntity(good)] = input["goods"][good][3].to_double();
+        }
+        consumption.DoSystem();
+        Hjson::Value result(Hjson::Type::Map), rows(Hjson::Type::Vector);
+        for (auto entity : populations) {
+            const auto& segment = universe.get<PopulationSegment>(entity);
+            auto& wallet = universe.get<Wallet>(entity);
+            rows.push_back(Numbers({wallet.GetBalance(), wallet.GetChange(), wallet.GetGDPChange(), segment.standard_of_living,
+                segment.income, segment.spending, segment.average_wage, segment.sol_pid.proportional, segment.sol_pid.integral, segment.sol_pid.derivative}));
+        }
+        result["populations"] = rows;
+        result["production"] = LedgerValues(market.production, count);
+        result["consumption"] = LedgerValues(market.consumption, count);
+        const auto& history = universe.ctx().at<PopulationHistory>();
+        result["history"] = Numbers({history.population.back(), history.sol.back(), history.employment.back(), history.employment_rate.back()});
+        output.push_back(result);
+    }
+    std::cout << Hjson::MarshalJson(output) << '\n';
+}
+
+void PrintManufacturing() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    auto input = ReadInput();
+    auto province = universe.create();
+    universe.emplace<Market>(province, 1).price[ToGoodEntity(0)] = 10.0;
+    auto project_template = universe.create();
+    universe.emplace<ProjectTemplate>(project_template).cost.emplace_back(ToGoodEntity(0), 1000.0);
+    std::vector<entt::entity> cities, projects, results;
+    for (int index = 0; index < input["projects"].size(); ++index) {
+        const auto& row = input["projects"][index];
+        auto city = universe.create(); cities.push_back(city);
+        universe.emplace<City>(city, row[0].to_double() == 1 ? province : entt::null);
+        universe.emplace<infrastructure::SpacePort>(city, 1);
+        auto result = universe.create(); results.push_back(result);
+        auto project = universe.create(); projects.push_back(project);
+        auto& component = universe.emplace<Project>(project);
+        component.max_progress = row[1].to_double(); component.result = result;
+        component.project_template = row[2].to_double() == 1 ? project_template : entt::null;
+        universe.get<infrastructure::SpacePort>(city).projects.push_back(project);
+    }
+    cqsp::core::systems::SysLaunchVehicleProduction production(game);
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int day = 0; day < input["days"].to_double(); ++day) {
+        production.DoSystem();
+        Hjson::Value rows(Hjson::Type::Vector);
+        for (int index = 0; index < cities.size(); ++index) {
+            auto& port = universe.get<infrastructure::SpacePort>(cities[index]);
+            Hjson::Value row(Hjson::Type::Vector);
+            if (universe.valid(projects[index])) row.push_back(universe.get<Project>(projects[index]).progress);
+            else row.push_back(Hjson::Value(Hjson::Type::Null));
+            row.push_back(port.projects.size()); row.push_back(port.stored_launch_vehicles.size());
+            row.push_back(universe.get<Market>(province).consumption.GetSum());
+            rows.push_back(row);
+        }
+        output.push_back(rows);
+    }
+    std::cout << Hjson::MarshalJson(output) << '\n';
+}
+
+void PrintProduction() {
+    spdlog::set_level(spdlog::level::off);
+    cqsp::core::Game game;
+    auto& universe = game.GetUniverse();
+    universe.random = std::make_unique<ControlledRandom>();
+    auto input = ReadInput();
+    const int count = input["prices"].size();
+    auto recipe_entity = universe.create();
+    auto& recipe = universe.emplace<Recipe>(recipe_entity);
+    auto read_vector = [](const Hjson::Value& values, ResourceVector& target) {
+        for (int index = 0; index < values.size(); ++index) target.emplace_back(ToGoodEntity(values[index][0].to_double()), values[index][1].to_double());
+    };
+    const auto& recipe_input = input["recipe"];
+    read_vector(recipe_input["input"], recipe.input);
+    read_vector(recipe_input["capital"], recipe.capitalcost);
+    recipe.output = {ToGoodEntity(recipe_input["output"][0].to_double()), recipe_input["output"][1].to_double()};
+    recipe.power_cost = recipe_input["power"].to_double();
+    for (int index = 0; index < recipe_input["workers"].size(); ++index) {
+        auto labor = universe.create();
+        universe.emplace<Labor>(labor).good = ToGoodEntity(recipe_input["workers"][index][0].to_double());
+        recipe.workers.workers.emplace_back(labor, static_cast<uint32_t>(recipe_input["workers"][index][1].to_double()));
+    }
+    auto& cost = universe.emplace<ConstructionCost>(recipe_entity);
+    cost.time = recipe_input["construction_time"].to_double();
+    read_vector(recipe_input["construction_cost"], cost.cost);
+    auto& config = universe.economy_config.production_config;
+    config.profit_multiplier = input["config"][0].to_double();
+    config.max_factory_delta = input["config"][1].to_double();
+    config.factory_min_utilization = input["config"][2].to_double();
+    std::vector<entt::entity> provinces, industries, countries;
+    for (int index = 0; index < input["cases"].size(); ++index) {
+        const auto& row = input["cases"][index];
+        auto country = universe.create(); countries.push_back(country);
+        universe.emplace<OrganizationIncome>(country);
+        auto province = universe.create(); provinces.push_back(province);
+        universe.emplace<Province>(province, country);
+        universe.emplace<Settlement>(province).population.push_back(country); // Only the nonempty guard is used by this system.
+        universe.emplace<infrastructure::CityInfrastructure>(province);
+        auto& sector = universe.emplace<infrastructure::ConstructionSector>(province);
+        sector.construction_capacity = 1000; sector.construction_cost = 2.0;
+        universe.emplace<Market>(province, count);
+        universe.emplace<IndustrialZone>(province);
+        auto industry = universe.create(); industries.push_back(industry);
+        universe.get<IndustrialZone>(province).industries.push_back(industry);
+        universe.emplace<Wallet>(industry);
+        universe.emplace<Employer>(industry);
+        auto& production = universe.emplace<ProductionUnit>(industry);
+        production.recipe = recipe_entity;
+        production.state = static_cast<IndustryState>(static_cast<int>(row[0].to_double()));
+        production.size = row[1].to_double(); production.utilization = row[2].to_double();
+        production.profit = row[3].to_double(); production.revenue = row[4].to_double();
+        production.continuous_gains = row[5].to_double(); production.stability = row[6].to_double();
+        production.cumulative_pr = row[7].to_double(); production.shortage = row[8].to_double() == 1;
+        production.output_subsidy = row[9].to_double();
+        if (row[10].type() != Hjson::Type::Null) universe.emplace<Construction>(industry,
+            static_cast<int>(row[10][0].to_double()), static_cast<int>(row[10][1].to_double()), static_cast<int>(row[10][2].to_double()));
+    }
+    cqsp::core::systems::SysProduction production(game);
+    cqsp::core::systems::SysWalletReset wallets(game);
+    cqsp::core::systems::SysMarketReset markets(game);
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int day = 0; day < input["days"].to_double(); ++day) {
+        wallets.DoSystem(); markets.DoSystem();
+        for (auto province : provinces) {
+            auto& market = universe.get<Market>(province);
+            for (int good = 0; good < count; ++good) {
+                market.price[ToGoodEntity(good)] = input["prices"][good].to_double() * (1.0 + day * 0.01);
+                market.taxation[ToGoodEntity(good)] = 0.05;
+                market.chronic_shortages[ToGoodEntity(good)] = good == input["shortage_good"].to_double() && day >= 2 && day <= 4 ? 7.0 : 0.0;
+            }
+        }
+        production.DoSystem();
+        Hjson::Value rows(Hjson::Type::Vector);
+        for (int index = 0; index < industries.size(); ++index) {
+            auto industry = industries[index];
+            const auto& value = universe.get<ProductionUnit>(industry);
+            auto& wallet = universe.get<Wallet>(industry);
+            const auto& market = universe.get<Market>(provinces[index]);
+            Hjson::Value row(Hjson::Type::Map);
+            row["industry"] = Numbers({static_cast<double>(value.state), value.size, value.utilization, value.diff,
+                value.shortage ? 1.0 : 0.0, value.cumulative_pr, static_cast<double>(value.continuous_gains), static_cast<double>(value.stability),
+                value.expertise, value.revenue, value.material_costs, value.wage_cost, value.tax_cost, value.construction_cost,
+                value.profit, value.output_subsidy_amount, value.amount_sold, value.power_consumption,
+                wallet.GetBalance(), wallet.GetChange(), wallet.GetGDPChange()});
+            row["construction"] = Hjson::Value(Hjson::Type::Null);
+            if (universe.all_of<Construction>(industry)) {
+                const auto& job = universe.get<Construction>(industry);
+                row["construction"] = Numbers({static_cast<double>(job.progress), static_cast<double>(job.maximum), static_cast<double>(job.levels)});
+            }
+            row["production"] = LedgerValues(market.production, count);
+            row["consumption"] = LedgerValues(market.consumption, count);
+            row["totals"] = Numbers({market.GDP, universe.get<OrganizationIncome>(countries[index]).income_taxes,
+                static_cast<double>(universe.get<infrastructure::ConstructionSector>(provinces[index]).current_construction)});
+            rows.push_back(row);
+        }
+        output.push_back(rows);
+    }
+    std::cout << Hjson::MarshalJson(output) << '\n';
 }
 
 std::vector<Hjson::Value> ReadEntries(const std::filesystem::path& directory) {
@@ -309,6 +531,9 @@ void PrintLoadedOrbits() {
 
 int main(int argc, char** argv) {
     std::cout << std::setprecision(17);
+    if (argc == 2 && std::string(argv[1]) == "--population") { PrintPopulation(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--manufacturing") { PrintManufacturing(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--production") { PrintProduction(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--orbit-grid") {
         PrintOrbitGrid();
         return 0;

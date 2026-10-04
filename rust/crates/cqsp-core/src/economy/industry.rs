@@ -285,7 +285,11 @@ impl Industry {
         self.construction_cost = 0.0;
         self.tax_cost = 0.0;
         let mut tax_income = 0.0;
-        if let Some(construction) = &mut self.construction {
+        if self.state == IndustryState::Construction {
+            let construction = self
+                .construction
+                .as_mut()
+                .expect("Construction state requires a job");
             let mut amount = construction.levels as f64 * DAY as f64;
             let costs = scaled(&recipe.construction_cost, construction.levels as f64);
             if costs
@@ -365,6 +369,30 @@ pub(crate) struct IndustryEntry {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn interrupted_construction_retains_the_job_without_progress_or_spending() -> Result<()> {
+        let catalog = Catalog::load(&crate::default_data_path())?;
+        let id = catalog.recipe("farming").unwrap();
+        let mut industry = Industry::new(id, 32)?;
+        industry.state = IndustryState::Shortage;
+        industry.construction = Some(Construction {
+            progress: 12,
+            maximum: 1000,
+            levels: 2,
+        });
+        let mut market = Market::new(
+            &catalog.base_prices,
+            &catalog.labor_goods,
+            catalog.config.market_config,
+        );
+        let mut sector = ConstructionSector::default();
+        industry.produce(&catalog, &mut market, &mut sector);
+        assert_eq!(industry.construction.as_ref().unwrap().progress, 12);
+        assert_eq!(industry.construction_cost, 0.0);
+        assert_eq!(sector.current, 0);
+        assert_eq!(industry.wallet.gdp_change, 0.0);
+        Ok(())
+    }
     #[test]
     fn construction_labor_costs_include_tax_and_zero_capacity_has_no_demand() {
         let prices = super::super::Ledger::filled(1, 10.0);

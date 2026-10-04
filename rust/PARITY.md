@@ -23,13 +23,13 @@ Successful long runs establish stability, not gameplay parity.
 | Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; zoning, power grids, resource amenability remain |
 | Wallet and market resets | Implemented | Daily schedule, retained trade/prices/shortages; full tick comparison remains |
 | Construction-sector labor demand | Implemented | `InfrastructureSim` demand and purchase-cost calculation; power infrastructure remains |
-| Population consumption | Implemented | Previous-income/SOL ordering, debt, double demand, labor output, daily summary tests; actual C++ system harness remains |
+| Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
 | Labor distribution / labor market | Implemented | Weekly hours, integer-truncated drift, daily job demand; entity traversal order and invalid conversions need differential review |
-| Industry state machine / production / construction | Implemented | Eight states, utilization, expertise, labor/material inputs, taxes, subsidies, construction spending; broader transition corpus and original RNG sequence remain |
+| Industry state machine / production / construction | Reference-tested controlled system scenario | Actual SysProduction: nine cases spanning all eight states, 12 steps, injected noise, shortage interruption, construction completion, taxes and partial/full subsidies; broader recipe/transition corpus and original RNG sequence remain |
 | Local markets / shortages / planetary trade | Implemented | Price caps, shortages, retained trade, imports/exports, Earth/Moon markets and spaceport coupling; original system harness remains |
-| Population history | Implemented | Daily domain snapshots; legacy graph UI remains |
+| Population history | Controlled scenario reference-tested | Population/SOL/employment summaries match actual original daily history; legacy graph UI remains |
 | Market history / CSV / industry export | Implemented for Earth | Daily planetary snapshots, original CSV column schema and production-unit export fields; CSV numeric/date formatting and empty-zone omission are not byte-identical, inspection graphs remain |
-| Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen | Editable designs/orbit parameters, project progress, manufacture/launch, LIFO cargo queues, selected ports/vehicles/goods; manufacturing/trade whole-system differential tests remain |
+| Spaceports / launch vehicles / interplanetary trade | Implemented core and native screen; manufacturing reference-tested | Actual SysLaunchVehicleProduction: zero/day/day+one/90-day boundaries, template guard and invalid province; trade whole-system differential tests remain |
 | Natural bodies / satellite assets | Implemented, orbit loader reference-tested | All 11 celestial bodies and 64 registered HJSON satellites; parent resolution, gravity, mass/SOI, rotation, terrain/atmosphere metadata; original `LoadOrbit` comparison for all 75 entries |
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
 | Spacecraft movement / trigger commands | Implemented; lunar delivery reference-tested | Actual original SysOrbit/SysSpacePort scenario compares sampled states, queues, landing/unload ticks and colony core/stage; broader SOI, return flights and command boundary corpus remain |
@@ -103,6 +103,10 @@ Successful long runs establish stability, not gameplay parity.
   still require a compatibility policy.
 - Existing map issues (missing colors/owners, duplicate colors, unmapped land)
   remain visible. Original assets are not rewritten to conceal inconsistencies.
+- A construction component can remain attached after shortages force a different
+  industry state. Progress and spending occur only in the Construction state,
+  matching the original switch; mere component presence must not keep billing.
+  The original-system corpus caught and guards the previous Rust discrepancy.
 - Spaceport delivery queues are LIFO and do not consume launch vehicles, purchase
   goods or enforce launchpad/capacity limits in the source. Manual vehicle launch
   does consume one manufactured vehicle. Valid/missing project templates both
@@ -146,8 +150,13 @@ reviewed when the baseline changes, not blindly accepted after a mismatch. Live
 orbit checks cover all 75 asset definitions and 518 propagated states, with the
 same 1e-12 relative/absolute component tolerance as the component harness. The
 combined economy/orbital simulation has passed 365 daily validation steps, including
-365 market-history records and CSV/industry export checks. There are 66 unit tests
-plus six differential tests (five live tests require the reference executable).
+365 market-history records and CSV/industry export checks. There are 67 unit tests
+plus nine differential tests (eight live tests require the reference executable).
+Population/wallet/market-reset scenarios compare 30 daily results; nine industry
+cases compare 12 steps against actual SysProduction with controlled normal samples.
+Manufacturing compares 92 steps at zero/day/day-plus-one/90-day boundaries and the
+invalid-province/template guards. These are controlled subsystem scenarios, not a
+seed-identical run of the entire original economy.
 The cargo scenario dispatches a real Earth-to-Moon mission on ten-minute ticks,
 lands on a lunar province and verifies unloading at the following daily economic
 step. A second scenario runs the actual original systems with controlled parking
@@ -175,9 +184,9 @@ which do not create native windows.
 
 ## Next acceptance gates
 
-1. Build an original-system differential harness for population, production and
-   trade with controlled entity order and injected random samples. Add all FSM
-   transition boundaries, construction shortages and taxation/subsidy cases.
+1. Extend the existing population/production system corpus to all recipes, larger
+   FSM boundary grids, labor/local/planetary/interplanetary trade and combined
+   tick ordering. Controlled shortage interruption and taxes/subsidies are covered.
 2. Extend the spacecraft system harness to return flights, SOI edge ordering,
    different launch epochs and the near-circular post-burn trajectory.
 3. Extend native spaceport screens with filtering/inspection detail and differential

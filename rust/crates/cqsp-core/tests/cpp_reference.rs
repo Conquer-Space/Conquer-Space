@@ -514,6 +514,354 @@ fn lunar_trajectory_and_delivery_match_original_systems() {
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; runs original population and wallet/market reset systems"]
+fn population_consumption_and_history_match_original_daily_systems() {
+    let data = default_data_path();
+    let mut simulation = Simulation::load(&data, &World::load(&data).unwrap(), 42).unwrap();
+    let mut populations: Vec<_> = simulation
+        .settlements
+        .iter_mut()
+        .filter_map(|site| site.populations.pop())
+        .take(2)
+        .collect();
+    assert_eq!(populations.len(), 2);
+    let catalog = &simulation.catalog;
+    let good_count = catalog.goods.len();
+    for (index, population) in populations.iter_mut().enumerate() {
+        population.size = [100, 250][index];
+        population.standard_of_living = [10.0, 1.0][index];
+        population.wallet.assign([10000.0, -10.0][index]);
+        population.income = [100.0, 0.0][index];
+        population.spending = [80.0, 0.0][index];
+        population.employed = [4, 0][index];
+        population.labor_hours = vec![(catalog.labor_goods[index], [4.0, 0.25][index])];
+    }
+    let input_populations: Vec<_> = populations
+        .iter()
+        .map(|population| {
+            let mut hours = Ledger::new(good_count);
+            hours.add(&population.labor_hours);
+            json!([
+                population.size,
+                population.standard_of_living,
+                population.wallet.balance,
+                population.income,
+                population.spending,
+                population.employed,
+                hours.values()
+            ])
+        })
+        .collect();
+    let goods: Vec<_> = catalog
+        .goods
+        .iter()
+        .enumerate()
+        .map(|(index, good)| {
+            json!([
+                good.price,
+                good.consumption
+                    .as_ref()
+                    .map(|value| value.autonomous_consumption),
+                good.consumption
+                    .as_ref()
+                    .map(|value| value.marginal_propensity),
+                index as f64 * 0.001
+            ])
+        })
+        .collect();
+    let days = 30;
+    let reference = reference_output(
+        Some("--population"),
+        &json!({"days": days, "goods": goods, "populations": input_populations}).to_string(),
+    );
+    let autonomous: Vec<_> = catalog
+        .goods
+        .iter()
+        .enumerate()
+        .filter_map(|(index, good)| {
+            good.consumption
+                .as_ref()
+                .map(|value| (GoodId(index), value.autonomous_consumption * DAY as f64))
+        })
+        .collect();
+    let marginal: Vec<_> = catalog
+        .goods
+        .iter()
+        .enumerate()
+        .filter_map(|(index, good)| {
+            good.consumption
+                .as_ref()
+                .map(|value| (GoodId(index), value.marginal_propensity * DAY as f64))
+        })
+        .collect();
+    let mut market = Market::new(
+        &catalog.base_prices,
+        &catalog.labor_goods,
+        catalog.config.market_config,
+    );
+    let mut samples = Vec::new();
+    for day in 0..days {
+        market.reset();
+        for (index, good) in catalog.goods.iter().enumerate() {
+            market.price[GoodId(index)] = good.price * (1.0 + day as f64 * 0.05);
+            market.taxation[GoodId(index)] = index as f64 * 0.001;
+        }
+        for population in &mut populations {
+            population.wallet.reset();
+            population.consume(&mut market, &autonomous, &marginal);
+        }
+        let rows: Vec<_> = populations
+            .iter()
+            .map(|population| {
+                json!([
+                    population.wallet.balance,
+                    population.wallet.change,
+                    population.wallet.gdp_change,
+                    population.standard_of_living,
+                    population.income,
+                    population.spending,
+                    population.average_wage,
+                    population.sol_pid.proportional,
+                    population.sol_pid.integral,
+                    population.sol_pid.derivative
+                ])
+            })
+            .collect();
+        let total: u64 = populations.iter().map(|population| population.size).sum();
+        let employed: u64 = populations
+            .iter()
+            .map(|population| population.employed)
+            .sum();
+        let sol: f64 = populations
+            .iter()
+            .map(|population| population.standard_of_living * population.size as f64)
+            .sum();
+        samples.push(json!({"populations": rows, "production": market.production.values(),
+            "consumption": market.consumption.values(), "history": [total as f64, sol / total as f64, employed as f64, employed as f64 / total as f64 * 100.0]}));
+    }
+    compare(&json!(samples), &reference);
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; runs actual launch vehicle production boundaries"]
+fn manufacturing_boundaries_match_original_system() {
+    use cqsp_core::{
+        solar_system::BodyId,
+        spaceflight::{ManufacturingProject, SpacePort, TemplateId, VehicleId},
+    };
+    let cases = [
+        (true, 0, false),
+        (true, DAY, true),
+        (true, DAY + 1, true),
+        (true, 90 * DAY, false),
+        (false, DAY, true),
+    ];
+    let input: Vec<_> = cases
+        .map(|(parent, duration, template)| {
+            json!([usize::from(parent), duration, usize::from(template)])
+        })
+        .into();
+    let days = 92;
+    let reference = reference_output(
+        Some("--manufacturing"),
+        &json!({"days": days, "projects": input}).to_string(),
+    );
+    let mut ports: Vec<_> = cases
+        .iter()
+        .enumerate()
+        .map(|(index, &(_, duration, template))| {
+            let mut port = SpacePort::new(BodyId(0), 1);
+            let mut project = ManufacturingProject::new(VehicleId(index), duration);
+            project.template = template.then_some(TemplateId(0));
+            port.projects.push(project);
+            port
+        })
+        .collect();
+    let mut samples = Vec::new();
+    for _ in 0..days {
+        let rows: Vec<_> = ports
+            .iter_mut()
+            .zip(cases)
+            .map(|(port, (valid_parent, _, _))| {
+                if valid_parent {
+                    port.manufacture();
+                }
+                assert!(
+                    port.projects
+                        .iter()
+                        .all(|project| project.total_cost == 0.0 && project.last_cost == 0.0)
+                );
+                json!([
+                    port.projects.first().map(|project| project.progress),
+                    port.projects.len(),
+                    port.stored_launch_vehicles.len(),
+                    0.0
+                ])
+            })
+            .collect();
+        samples.push(rows);
+    }
+    compare(&json!(samples), &reference);
+}
+
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; runs the actual eight-state production system with controlled noise"]
+fn industry_states_construction_taxes_and_subsidies_match_original_system() {
+    use cqsp_core::{
+        catalog::Catalog,
+        economy::industry::{Construction, ConstructionSector, Industry, IndustryState},
+    };
+    let catalog = Catalog::load(&default_data_path()).unwrap();
+    let id = catalog.recipe("farming").unwrap();
+    let recipe = &catalog.recipes[id.0];
+    let config = catalog.config.production_config;
+    let states = [
+        IndustryState::Steady,
+        IndustryState::Maximum,
+        IndustryState::Minimum,
+        IndustryState::Construction,
+        IndustryState::Demolishing,
+        IndustryState::Shrinking,
+        IndustryState::Expanding,
+        IndustryState::Shortage,
+        IndustryState::Construction,
+    ];
+    let mut industries: Vec<_> = states
+        .iter()
+        .enumerate()
+        .map(|(index, &state)| {
+            let mut industry = Industry::new(id, 32).unwrap();
+            industry.state = state;
+            industry.utilization = if state == IndustryState::Shrinking {
+                20.0
+            } else {
+                32.0
+            };
+            industry.revenue = 1000.0;
+            industry.profit = if matches!(
+                state,
+                IndustryState::Minimum | IndustryState::Demolishing | IndustryState::Shrinking
+            ) {
+                -500.0
+            } else {
+                500.0
+            };
+            industry.continuous_gains = if industry.profit < 0.0 {
+                -((30 * DAY) as i32)
+            } else {
+                (30 * DAY) as i32
+            };
+            industry.cumulative_profit_ratio = if industry.profit < 0.0 { -6.0 } else { 6.0 };
+            industry.shortage = state == IndustryState::Shortage || index == 8;
+            industry.output_subsidy = [0.0, 0.2, 1.0][index % 3];
+            if state == IndustryState::Construction {
+                industry.construction = Some(Construction {
+                    progress: 0,
+                    maximum: 3 * DAY as i32,
+                    levels: 2,
+                });
+            }
+            industry
+        })
+        .collect();
+    let cases: Vec<_> = industries
+        .iter()
+        .map(|industry| {
+            json!([
+                industry.state as usize,
+                industry.size,
+                industry.utilization,
+                industry.profit,
+                industry.revenue,
+                industry.continuous_gains,
+                industry.stability,
+                industry.cumulative_profit_ratio,
+                usize::from(industry.shortage),
+                industry.output_subsidy,
+                industry
+                    .construction
+                    .as_ref()
+                    .map(|job| [job.progress, job.maximum, job.levels])
+            ])
+        })
+        .collect();
+    let entries = |values: &[(GoodId, f64)]| {
+        values
+            .iter()
+            .map(|&(good, amount)| json!([good.0, amount]))
+            .collect::<Vec<_>>()
+    };
+    let workers: Vec<_> = recipe
+        .workers
+        .iter()
+        .map(|&(job, amount)| json!([catalog.jobs[job.0].good.0, amount]))
+        .collect();
+    let shortage_good = recipe
+        .input
+        .first()
+        .map_or(catalog.labor_goods[0], |&(good, _)| good);
+    let days = 12;
+    let reference = reference_output(Some("--production"), &json!({
+        "prices": catalog.base_prices.values(), "config": [config.profit_multiplier, config.max_factory_delta, config.factory_min_utilization],
+        "cases": cases, "days": days, "shortage_good": shortage_good.0,
+        "recipe": {"input": entries(&recipe.input), "capital": entries(&recipe.capital), "output": [recipe.output.0.0 as f64, recipe.output.1],
+            "power": recipe.power, "workers": workers, "construction_time": recipe.construction_ticks, "construction_cost": entries(&recipe.construction_cost)}
+    }).to_string());
+    let mut markets: Vec<_> = (0..states.len())
+        .map(|_| {
+            Market::new(
+                &catalog.base_prices,
+                &catalog.labor_goods,
+                catalog.config.market_config,
+            )
+        })
+        .collect();
+    let mut sectors: Vec<_> = (0..states.len())
+        .map(|_| ConstructionSector {
+            cost: 2.0,
+            ..ConstructionSector::default()
+        })
+        .collect();
+    let mut taxes = vec![0.0; states.len()];
+    let mut samples = Vec::new();
+    for day in 0..days {
+        for (market, (industry, sector)) in markets
+            .iter_mut()
+            .zip(industries.iter_mut().zip(&mut sectors))
+        {
+            market.reset();
+            market.gdp = 0.0;
+            industry.wallet.reset();
+            sector.current = 0;
+            for (index, good) in catalog.goods.iter().enumerate() {
+                market.price[GoodId(index)] = good.price * (1.0 + day as f64 * 0.01);
+                market.taxation[GoodId(index)] = 0.05;
+                market.chronic_shortages[GoodId(index)] =
+                    if GoodId(index) == shortage_good && (2..=4).contains(&day) {
+                        7.0
+                    } else {
+                        0.0
+                    };
+            }
+            industry.advance_state(recipe, config, |mean, sd| mean + sd * 0.4);
+        }
+        let rows: Vec<_> = industries.iter_mut().enumerate().map(|(index, industry)| {
+            taxes[index] += industry.produce(&catalog, &mut markets[index], &mut sectors[index]);
+            json!({"industry": [industry.state as usize as f64, industry.size, industry.utilization, industry.diff,
+                f64::from(industry.shortage), industry.cumulative_profit_ratio, industry.continuous_gains as f64, industry.stability as f64,
+                industry.expertise, industry.revenue, industry.material_costs, industry.wage_cost, industry.tax_cost, industry.construction_cost,
+                industry.profit, industry.subsidy_amount, industry.amount_sold, industry.power_consumption,
+                industry.wallet.balance, industry.wallet.change, industry.wallet.gdp_change],
+                "construction": industry.construction.as_ref().map(|job| [job.progress, job.maximum, job.levels]),
+                "production": markets[index].production.values(), "consumption": markets[index].consumption.values(),
+                "totals": [markets[index].gdp, taxes[index], sectors[index].current as f64]})
+        }).collect();
+        samples.push(rows);
+    }
+    compare(&json!(samples), &reference);
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; requires Visual Studio and the legacy headers"]
 fn all_loaded_orbits_match_live_cpp_across_fifty_years() {
     let system = SolarSystem::load(&default_data_path()).unwrap();

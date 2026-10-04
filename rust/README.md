@@ -130,6 +130,10 @@ The actual C++ movement/spaceport systems also execute a controlled Earth-to-Moo
 colony delivery. Sampled non-degenerate states/queues and exact landing/unload ticks
 match Rust; a nearly circular sample compares physical state instead of its
 rounding-dependent apsis (details and tolerances in `PARITY.md`).
+The reference suite now also runs the original population/reset, industry production
+and launch-vehicle production systems. Controlled daily scenarios cover debt/wages,
+all eight industry states, interrupted construction, taxes/subsidies and manufacturing
+completion boundaries. This is subsystem evidence, not whole-economy seed parity.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.
