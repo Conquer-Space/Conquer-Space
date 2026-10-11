@@ -792,6 +792,20 @@ documented fail-safe policy, not a claim about undefined upstream behavior.
 These comparisons execute real component code with source-mapped UI branches,
 not ImGui, whole trajectories or the full original client loop.
 
+This milestone passes 177 unit tests (83 client, 94 core), warning-free Clippy,
+format checks and all 38 differential tests in debug/release (37 live comparisons
+plus the recorded corpus). The final silent release bundle passes all 49 offscreen
+captures from a fresh external working directory, all four focused maneuver
+captures separately and the renderer-free 365-day stability run. Visible modal
+headings/fields and rendered glyph pixels are asserted; only covered background
+labels are excluded from text checks. Visual inspection confirms readable target
+lists, action buttons, double-precision drafts, valid epoch/state vectors and full
+queues. The focused fixture explicitly initializes game time and synthetic-ship
+kinematics; it does not substitute an uninitialized state for launch acceptance.
+No OS game window or audio device opens, so live-window/DPI acceptance and
+whole-game functional parity remain open. Build packages and captures stay under
+ignored target directories; no installer, registry or upstream-branch change is made.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production corpus to mixed-direction labor,

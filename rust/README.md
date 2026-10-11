@@ -11,7 +11,7 @@ ten-minute ticks, with parent-centered positions and next-tick predictions. Kepl
 propagation, orbital burns and state-vector conversion are C++ reference-tested.
 Spacecraft now execute timed burns, trigger queues, SOI transitions, crashes and
 landing commands. A native system view exposes body/ship selection, orbital paths,
-inspection and basic maneuver controls. Spaceports now dispatch missions and cargo,
+inspection and editable maneuver/rendezvous/landing controls. Spaceports now dispatch missions and cargo,
 manufacture/launch vehicles and progress lunar colonization. The core includes 250
 Moon provinces, native spaceport/vehicle/mission screens and an upstream-compatible
 metadata save/load browser; much of the remaining UI is still being ported. See
@@ -349,6 +349,11 @@ population fields, matching the C++ loader. Initial economic population is
 It loads all 75 orbital definitions through the original
 C++ HJSON loader and checks all 74 moving orbits at seven times spanning 50 years.
 It compares actual original sources, not an independent formula replica.
+Spacecraft controls additionally compare 810 planner/queue fixtures across all ten
+non-Sun bodies: three epochs, eccentricities, inclinations and radius inputs, nine
+planner branches and rendezvous diagnostics. Each body must produce at least one
+valid queue for every branch. This executes the original planners and PushManeuvers
+with source-mapped UI choices, not ImGui or complete interplanetary trajectories.
 The actual C++ movement/spaceport systems also execute a controlled Earth-to-Moon
 colony delivery. Sampled non-degenerate states/queues and exact landing/unload ticks
 match Rust; a nearly circular sample compares physical state instead of its
