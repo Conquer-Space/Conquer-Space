@@ -31,7 +31,7 @@ Successful long runs establish stability, not gameplay parity.
 | Native demographics / factory construction | Implemented; creation action reference-tested | Paged population, employment, jobs, spending/income, education, wallets and consumption toggles; two native pies per page with colored values, hover and hide/show legends; source float values, double normalization and hidden-angle behavior; all 22 recipes, cost/revenue preview and 1–1,000 factory count; 66 CreateFactory comparisons, one-shot button and invalid/non-mutating guards |
 | Map construction painting | Native implementation; actual creation with source-mapped guards | Separate ConstructionMenu behavior: owned provinces only, empty-zone CreateFactory without a construction job, otherwise enlarge the last size without changing recipe/utilization/job; 528 comparisons across 22 recipes, 1/5/10 counts, ownership/type/empty cases; Left Shift wins over Ctrl, native recipe cycles/searchable selector, UI/input/close isolation |
 | Labor distribution / labor market | Reference-tested controlled system scenario | Actual SysLaborDistribution/SysLaborMarket: six cases and 12 weekly steps, drift caps/truncation, wages, zero demand, empty/tiny workforces, weekly hours and daily job demand; mixed-direction unordered traversal and invalid conversions remain |
-| Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, 4,752 seeded samples and 63,162 strict-boundary samples covering all states and three sizes; profit/gain/stability comparisons, utilization clamps, shortage precedence, construction completion, taxes/subsidies and follow-up ticks; broader configurations and multi-site ordering remain |
+| Industry state machine / production / construction | Reference-tested controlled and seeded scenarios | Actual SysProduction: all 22 recipes, 4,752 prior seeded samples and 126,324 controlled/seeded strict-boundary samples covering all states and three sizes; profit/gain/stability comparisons, utilization clamps, seeded shortage-noise floor, construction completion, taxes/subsidies and follow-up ticks; broader configurations and multi-site ordering remain |
 | Original random generator | Reference-tested for MSVC 14.51 | MT19937, canonical doubles, normal/integer distributions, rejection and discarded spare samples; six seeds, 12,000 exact raw words and 30,000 mixed sequences; whole-game sample assignment still depends on traversal |
 | Local markets / shortages / planetary trade | Reference-tested controlled system scenario | Actual SysMarket/SysPlanetaryTrade/MarketReset: three provinces, 12 daily steps, retained imports/exports, configurable local versus hard-coded planetary pricing, zero demand, shortage recovery, labor access and port depletion; whole-economy traversal remains |
 | Population history | Controlled scenario reference-tested; native interactive graphs | Global population/SOL/employment/employment-rate series, retaining original employed/population denominator and daily sample-index X axis; native pan, cursor-centered zoom, readout and fit/reset |
@@ -719,9 +719,11 @@ in debug/release (35 live comparisons plus the recorded corpus). The silent rele
 bundle passes both focused tooltip captures from a fresh external directory and
 the renderer-free 365-day run. Offscreen checks assert every tooltip text block
 and actual green gain pixels; covered table cells are excluded from underlying-text
-checks without weakening the separate construction-bar scenario. Full 45-capture
-release and focused debug checks are being verified separately. No native window
-or audio device opens; this does not establish whole-game parity.
+checks without weakening the separate construction-bar scenario. The full 45-capture
+release check also passes, including vehicles-to-inspection closure; focused debug
+checks pass too. Visual inspection confirms readable fields, gain color and duplicate
+modifier contributions. No native window or audio device opens; this does not
+establish whole-game parity.
 
 ## Strict production transition boundaries
 
@@ -730,14 +732,17 @@ The actual SysProduction corpus now adds 957 initial cases per recipe across siz
 profit +/-5, sustained gains +/-30 days, five-day stability, minimum utilization,
 size-minus-one and maximum utilization. Shortage precedence/recovery and five
 construction progress boundaries with zero/one/two levels are included. Every
-case runs three daily production steps: 63,162 samples across all 22 recipes.
+case runs three daily production steps with both controlled noise and original
+seed 42: 126,324 samples across all 22 recipes. Every recipe explicitly asserts
+that seeded samples hit the source's 0.02 shortage-noise floor. Case construction
+is shared, so controlled/seeded runs exercise identical initial boundaries.
 The same shared comparator retains the prior 4,752 seeded samples and controlled
 12-day scenario; outputs include state/counters, utilization, construction jobs,
 all production/consumption ledgers, taxes, wallets and sector totals.
 
 The expanded grid passes in debug/release without changing gameplay formulas or
 loosening the existing 1e-12 relative floating-point comparison. The complete
-release differential suite passes all 37 tests (36 live plus the recorded corpus),
+debug/release differential suite passes all 37 tests (36 live plus the recorded corpus),
 and Clippy remains warning-free. These cases establish the tested FSM boundaries,
 not arbitrary configurations, invalid C++ conversions or whole-economy traversal.
 Mixed-direction labor, combined multi-site ordering and broader stochastic

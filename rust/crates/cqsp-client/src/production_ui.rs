@@ -391,6 +391,22 @@ mod tests {
             app.world().get::<Node>(card).unwrap().display,
             Display::Flex
         );
+        let mut search = super::super::super::search_ui::Search::default();
+        search.open = true;
+        app.insert_resource(search);
+        app.update();
+        assert_eq!(
+            app.world().get::<Node>(card).unwrap().display,
+            Display::None
+        );
+        app.world_mut()
+            .resource_mut::<super::super::super::search_ui::Search>()
+            .open = false;
+        app.update();
+        assert_eq!(
+            app.world().get::<Node>(card).unwrap().display,
+            Display::Flex
+        );
         apply(&mut app, Action::Next);
         app.update();
         let expected = {

@@ -3008,114 +3008,127 @@ fn every_recipe_with_original_random_stream_matches_production_system() {
 #[test]
 #[ignore = "Run tools/build-reference.ps1 first; compares actual SysProduction at strict FSM boundaries for all recipes"]
 fn industry_transition_boundary_grid_matches_original_system() {
-    use cqsp_core::{
-        catalog::{Catalog, RecipeId},
-        economy::industry::{Construction, Industry, IndustryState},
-    };
+    use cqsp_core::catalog::{Catalog, RecipeId};
     let catalog = Catalog::load(&default_data_path()).unwrap();
     assert_eq!(catalog.recipes.len(), 22);
+    for seed in [None, Some(42)] {
+        for recipe in 0..catalog.recipes.len() {
+            let cases = production_boundary_cases(&catalog, RecipeId(recipe));
+            assert_eq!(cases.len(), 957);
+            let shortage_floors = compare_production_cases(&catalog, cases, 3, seed);
+            if seed.is_some() {
+                assert!(
+                    shortage_floors > 0,
+                    "Seeded corpus must exercise the shortage noise floor"
+                );
+            }
+        }
+    }
+}
+
+fn production_boundary_cases(
+    catalog: &cqsp_core::catalog::Catalog,
+    recipe: cqsp_core::catalog::RecipeId,
+) -> Vec<cqsp_core::economy::industry::Industry> {
+    use cqsp_core::economy::industry::{Construction, Industry, IndustryState};
     let sustained = 30 * DAY as i32;
     let stable = 5 * DAY as i32;
-    for recipe in 0..catalog.recipes.len() {
-        let mut cases = Vec::new();
-        for size in [1, 32, 1000] {
-            let minimum = catalog
-                .config
-                .production_config
-                .minimum_utilization(size as f64);
-            for state in [
-                IndustryState::Steady,
-                IndustryState::Maximum,
-                IndustryState::Minimum,
-                IndustryState::Construction,
-                IndustryState::Demolishing,
-                IndustryState::Shrinking,
-                IndustryState::Expanding,
-                IndustryState::Shortage,
-            ] {
-                let create = || {
-                    let mut industry = Industry::new(RecipeId(recipe), size).unwrap();
-                    industry.state = state;
-                    industry.revenue = 999.9999; // ProfitMargin denominator is exactly 1000.
-                    industry.shortage = state == IndustryState::Shortage;
-                    if state == IndustryState::Construction {
-                        industry.construction = Some(Construction {
-                            progress: 0,
-                            maximum: DAY as i32,
-                            levels: 1,
-                        });
-                    }
-                    industry
-                };
-                for sign in [-1.0, 1.0] {
-                    for neighbor in [-1e-12, 0.0, 1e-12] {
-                        let mut industry = create();
-                        industry.profit = sign * 500.0;
-                        industry.cumulative_profit_ratio = sign * 4.5 + neighbor;
-                        industry.continuous_gains = sign as i32 * (sustained - DAY as i32);
-                        industry.stability = stable - DAY as i32;
-                        cases.push(industry);
-                    }
-                    for neighbor in [-1, 0, 1] {
-                        let mut industry = create();
-                        industry.profit = sign * 500.0;
-                        industry.cumulative_profit_ratio = sign * 6.0;
-                        industry.continuous_gains =
-                            sign as i32 * (sustained - DAY as i32) + neighbor;
-                        cases.push(industry);
-                    }
+    let mut cases = Vec::new();
+    for size in [1, 32, 1000] {
+        let minimum = catalog
+            .config
+            .production_config
+            .minimum_utilization(size as f64);
+        for state in [
+            IndustryState::Steady,
+            IndustryState::Maximum,
+            IndustryState::Minimum,
+            IndustryState::Construction,
+            IndustryState::Demolishing,
+            IndustryState::Shrinking,
+            IndustryState::Expanding,
+            IndustryState::Shortage,
+        ] {
+            let create = || {
+                let mut industry = Industry::new(recipe, size).unwrap();
+                industry.state = state;
+                industry.revenue = 999.9999; // ProfitMargin denominator is exactly 1000.
+                industry.shortage = state == IndustryState::Shortage;
+                if state == IndustryState::Construction {
+                    industry.construction = Some(Construction {
+                        progress: 0,
+                        maximum: DAY as i32,
+                        levels: 1,
+                    });
+                }
+                industry
+            };
+            for sign in [-1.0, 1.0] {
+                for neighbor in [-1e-12, 0.0, 1e-12] {
+                    let mut industry = create();
+                    industry.profit = sign * 500.0;
+                    industry.cumulative_profit_ratio = sign * 4.5 + neighbor;
+                    industry.continuous_gains = sign as i32 * (sustained - DAY as i32);
+                    industry.stability = stable - DAY as i32;
+                    cases.push(industry);
                 }
                 for neighbor in [-1, 0, 1] {
-                    for utilization in [
-                        minimum - 1e-9,
-                        minimum,
-                        minimum + 1e-9,
-                        size as f64 - 1.0 - 1e-9,
-                        size as f64 - 1.0,
-                        size as f64 - 1.0 + 1e-9,
-                    ] {
-                        let mut industry = create();
-                        industry.utilization = utilization;
-                        industry.stability = stable - DAY as i32 + neighbor;
-                        cases.push(industry);
-                    }
+                    let mut industry = create();
+                    industry.profit = sign * 500.0;
+                    industry.cumulative_profit_ratio = sign * 6.0;
+                    industry.continuous_gains = sign as i32 * (sustained - DAY as i32) + neighbor;
+                    cases.push(industry);
                 }
+            }
+            for neighbor in [-1, 0, 1] {
                 for utilization in [
                     minimum - 1e-9,
                     minimum,
                     minimum + 1e-9,
-                    size as f64 - 1e-9,
-                    size as f64,
-                    size as f64 + 1e-9,
+                    size as f64 - 1.0 - 1e-9,
+                    size as f64 - 1.0,
+                    size as f64 - 1.0 + 1e-9,
                 ] {
                     let mut industry = create();
                     industry.utilization = utilization;
-                    industry.profit = -500.0;
+                    industry.stability = stable - DAY as i32 + neighbor;
                     cases.push(industry);
                 }
-                for shortage in [false, true] {
-                    let mut industry = create();
-                    industry.shortage = shortage;
-                    cases.push(industry);
-                }
-                if state == IndustryState::Construction {
-                    for progress in [-1, 0, DAY as i32 - 1, DAY as i32, DAY as i32 + 1] {
-                        for levels in [0, 1, 2] {
-                            let mut industry = create();
-                            industry.construction = Some(Construction {
-                                progress,
-                                maximum: DAY as i32,
-                                levels,
-                            });
-                            cases.push(industry);
-                        }
+            }
+            for utilization in [
+                minimum - 1e-9,
+                minimum,
+                minimum + 1e-9,
+                size as f64 - 1e-9,
+                size as f64,
+                size as f64 + 1e-9,
+            ] {
+                let mut industry = create();
+                industry.utilization = utilization;
+                industry.profit = -500.0;
+                cases.push(industry);
+            }
+            for shortage in [false, true] {
+                let mut industry = create();
+                industry.shortage = shortage;
+                cases.push(industry);
+            }
+            if state == IndustryState::Construction {
+                for progress in [-1, 0, DAY as i32 - 1, DAY as i32, DAY as i32 + 1] {
+                    for levels in [0, 1, 2] {
+                        let mut industry = create();
+                        industry.construction = Some(Construction {
+                            progress,
+                            maximum: DAY as i32,
+                            levels,
+                        });
+                        cases.push(industry);
                     }
                 }
             }
         }
-        assert_eq!(cases.len(), 957);
-        compare_production_cases(&catalog, cases, 3, None);
     }
+    cases
 }
 
 fn production_case(identifier: &str, seed: Option<u64>) {
@@ -3182,8 +3195,8 @@ fn compare_production_cases(
     mut industries: Vec<cqsp_core::economy::industry::Industry>,
     days: usize,
     seed: Option<u64>,
-) {
-    use cqsp_core::economy::industry::ConstructionSector;
+) -> usize {
+    use cqsp_core::economy::industry::{ConstructionSector, IndustryState};
     let recipe = &catalog.recipes[industries[0].recipe.0];
     let config = catalog.config.production_config;
     let count = industries.len();
@@ -3246,6 +3259,7 @@ fn compare_production_cases(
         .collect();
     let mut taxes = vec![0.0; count];
     let mut samples = Vec::new();
+    let mut shortage_floors = 0;
     let mut random = cqsp_core::random::LegacyRandom::new(seed.unwrap_or(42));
     for day in 0..days {
         for (market, (industry, sector)) in markets
@@ -3273,6 +3287,8 @@ fn compare_production_cases(
             industry.advance_state(recipe, config, |mean, sd| {
                 seed.map_or_else(|| mean + sd * 0.4, |_| random.normal(mean, sd))
             });
+            shortage_floors +=
+                usize::from(industry.state == IndustryState::Shortage && industry.diff == 0.02);
         }
         let rows: Vec<_> = industries.iter_mut().enumerate().map(|(index, industry)| {
             taxes[index] += industry.produce(catalog, &mut markets[index], &mut sectors[index]);
@@ -3288,6 +3304,7 @@ fn compare_production_cases(
         samples.push(rows);
     }
     compare(&json!(samples), &reference);
+    shortage_floors
 }
 
 #[test]

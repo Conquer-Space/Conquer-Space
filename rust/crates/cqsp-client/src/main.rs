@@ -2516,6 +2516,7 @@ fn smoke_test(
         ),
         87 => {
             smoke_usa(&mut game);
+            ui.apply(spaceport_ui::Action::Close, &mut game).unwrap();
             inspector.apply(inspection_ui::Action::Open, &mut game);
             inspector.apply(
                 inspection_ui::Action::Tab(inspection_ui::Tab::Production),
