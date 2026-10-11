@@ -1581,6 +1581,7 @@ fn cycle(index: &mut usize, count: usize, previous: bool) {
 }
 
 pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>, game: &Game) {
+    production::spawn_tooltip(commands, camera, font);
     let goods = game.simulation.catalog.goods.len();
     commands
         .spawn((
@@ -1724,6 +1725,16 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
                     button(bar, font, Action::Subsidy(-0.1), "Subsidy -10%");
                     button(bar, font, Action::Subsidy(0.1), "Subsidy +10%");
                     button(bar, font, Action::BoostExpertise, "Boost expertise");
+                    bar.spawn((
+                        production::Expertise,
+                        Interaction::default(),
+                        Text::default(),
+                        ui_font(font, 15.0),
+                        Node {
+                            padding: UiRect::all(px(6)),
+                            ..default()
+                        },
+                    ));
                 });
             panel
                 .spawn((
@@ -2078,8 +2089,9 @@ pub(crate) mod tests {
                 stage: 0,
                 elapsed: 0.0,
                 captures: 0,
-                expected_captures: 43,
-                end_stage: 86,
+                expected_captures: 45,
+                end_stage: 90,
+                inspection_hover: None,
             })
             .insert_resource(Game {
                 world,
@@ -2158,6 +2170,7 @@ pub(crate) mod tests {
                     update_pies,
                     budget::update,
                     production::update,
+                    production::update_tooltip,
                     super::super::construction_ui::update,
                 )
                     .chain(),

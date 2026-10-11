@@ -116,6 +116,7 @@ struct Smoke {
     captures: u8,
     expected_captures: u8,
     end_stage: u8,
+    inspection_hover: Option<inspection_ui::production::Hover>,
 }
 
 #[derive(Resource)]
@@ -150,6 +151,7 @@ fn main() -> Result<()> {
     let mut inspection_smoke = false;
     let mut policy_smoke = false;
     let mut vehicle_smoke = false;
+    let mut tooltip_smoke = false;
     let mut print_paths = false;
     let mut saves_root = None;
     let mut settings_path = None;
@@ -171,6 +173,10 @@ fn main() -> Result<()> {
             "--smoke-vehicles" => {
                 smoke = true;
                 vehicle_smoke = true;
+            }
+            "--smoke-tooltips" => {
+                smoke = true;
+                tooltip_smoke = true;
             }
             "--paths" => print_paths = true,
             "--settings" => {
@@ -195,6 +201,7 @@ fn main() -> Result<()> {
                 println!("--smoke-inspection: offscreen production and exploration checks only");
                 println!("--smoke-policy: offscreen subsidy, labor and tax checks only");
                 println!("--smoke-vehicles: offscreen vehicle list, filter and design checks only");
+                println!("--smoke-tooltips: offscreen factory and modifier tooltip checks only");
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -350,7 +357,9 @@ fn main() -> Result<()> {
         .init_resource::<sidebar_ui::Sidebar>()
         .insert_resource(Smoke {
             enabled: smoke,
-            stage: if vehicle_smoke {
+            stage: if tooltip_smoke {
+                87
+            } else if vehicle_smoke {
                 79
             } else if policy_smoke {
                 71
@@ -361,22 +370,27 @@ fn main() -> Result<()> {
             },
             elapsed: 0.0,
             captures: 0,
-            expected_captures: if vehicle_smoke || policy_smoke {
+            expected_captures: if tooltip_smoke {
+                2
+            } else if vehicle_smoke || policy_smoke {
                 4
             } else if inspection_smoke {
                 3
             } else {
-                43
+                45
             },
-            end_stage: if vehicle_smoke {
+            end_stage: if tooltip_smoke {
+                90
+            } else if vehicle_smoke {
                 86
             } else if policy_smoke {
                 78
             } else if inspection_smoke {
                 70
             } else {
-                86
+                90
             },
+            inspection_hover: None,
         })
         .insert_resource(InitialAssets {
             terrain: terrain_image,
@@ -466,6 +480,7 @@ fn main() -> Result<()> {
                 inspection_ui::update_pies,
                 inspection_ui::budget::update,
                 inspection_ui::production::update,
+                inspection_ui::production::update_tooltip,
                 smoke_test,
             )
                 .chain(),
@@ -1075,6 +1090,7 @@ fn verify_capture(
         &ComputedNode,
         &UiGlobalTransform,
         Option<&inspection_ui::production::Cell>,
+        Option<&inspection_ui::production::TooltipGlyph>,
     )>,
     navigation: Res<Navigation>,
     mut smoke: ResMut<Smoke>,
@@ -1082,9 +1098,14 @@ fn verify_capture(
     inspector: Res<inspection_ui::Inspector>,
     camera: Single<(&Camera, &GlobalTransform), With<Camera3d>>,
     markers: Query<(&Focus, &Transform)>,
-    (plots, production_fills): (
+    (plots, production_fills, tooltip_cards): (
         Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PlotImage>>,
         Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::production::Progress>>,
+        Query<(
+            &inspection_ui::production::TooltipCard,
+            &ComputedNode,
+            &UiGlobalTransform,
+        )>,
     ),
     pies: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::PieImage>>,
     policy_fills: Query<(&ComputedNode, &UiGlobalTransform), With<inspection_ui::budget::Fill>>,
@@ -1116,7 +1137,15 @@ fn verify_capture(
     let mut policy_heading = false;
     let mut vehicle_heading = false;
     let mut vehicle_filtered = false;
-    for (text, node, transform, production_cell) in &text_nodes {
+    let mut tooltip_checked = 0;
+    let tooltip_bounds: Vec<_> = tooltip_cards
+        .iter()
+        .filter(|(_, node, _)| !node.is_empty())
+        .map(|(_, node, transform)| {
+            Rect::from_center_size(transform.affine().translation, node.size())
+        })
+        .collect();
+    for (text, node, transform, production_cell, tooltip_glyph) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
         }
@@ -1125,11 +1154,24 @@ fn verify_capture(
         let max = (center + node.size() / 2.0)
             .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
             .as_uvec2();
+        let covered = tooltip_glyph.is_none()
+            && tooltip_bounds
+                .iter()
+                // A floating tooltip may cover the glyphs but only part of their flex cell.
+                .any(|bounds| {
+                    bounds.min.x < max.x as f32
+                        && bounds.max.x > min.x as f32
+                        && bounds.min.y < max.y as f32
+                        && bounds.max.y > min.y as f32
+                });
         let mut bright = 0;
+        let mut green = 0;
         for y in min.y..max.y {
             for x in min.x..max.x {
                 let channels = pixels.get_pixel(x, y).0;
-                if if production_cell.is_some() {
+                let [r, g, b] = channels;
+                green += usize::from(g > 100 && r < 80 && b < 80);
+                if if production_cell.is_some() || tooltip_glyph.is_some() {
                     channels.iter().any(|channel| *channel > 100)
                 } else {
                     channels.iter().all(|channel| *channel > 100)
@@ -1139,11 +1181,15 @@ fn verify_capture(
             }
         }
         assert!(
-            bright >= 3,
+            covered || bright >= 3,
             "Smoke check: text is laid out but not rendered: {:?}",
             text.0
         );
-        checked += 1;
+        checked += usize::from(!covered);
+        tooltip_checked += usize::from(tooltip_glyph.is_some());
+        if tooltip_glyph.is_some() && text.0.starts_with("Expertise:") {
+            assert!(green > 20, "Factory expertise gain must render green");
+        }
         if [
             "EVENT",
             "SEARCH BODIES / PROVINCES",
@@ -1198,6 +1244,40 @@ fn verify_capture(
         "Smoke check: expected visible text nodes, checked {checked}"
     );
     println!("SMOKE: verified rendered pixels for {checked} text blocks.");
+    if let Some(hover) = smoke.inspection_hover {
+        let card = tooltip_cards
+            .iter()
+            .find(|(_, node, _)| !node.is_empty())
+            .expect("Visible inspection tooltip")
+            .0;
+        match hover {
+            inspection_ui::production::Hover::Factory(_) => {
+                assert_eq!(tooltip_checked, 21, "Every factory detail must render");
+                for prefix in [
+                    "Transport Costs:",
+                    "Throughput:",
+                    "Expertise:",
+                    "Max Expertise:",
+                    "Output Subsidy:",
+                ] {
+                    assert!(
+                        card.lines.iter().any(|line| line.text.starts_with(prefix)),
+                        "Missing factory detail {prefix}"
+                    );
+                }
+            }
+            inspection_ui::production::Hover::MaxExpertise => {
+                assert_eq!(
+                    tooltip_checked, 4,
+                    "Modifier value/sum and both contributions must render"
+                );
+                assert_eq!(card.lines[0].text, "Value: 3.5");
+                assert_eq!(card.lines[1].text, "Modifier: 2");
+                assert_eq!(card.lines[2].text, "Higher Expertise: +1");
+                assert_eq!(card.lines[3].text, card.lines[2].text);
+            }
+        }
+    }
     if let Some(event) = event_ui::pending(&game) {
         assert!(event_heading, "Smoke check: event header missing");
         if event.image == "core:rocket-event" {
@@ -1295,16 +1375,20 @@ fn verify_capture(
             production_columns, 9,
             "All production columns must be visible"
         );
-        let (node, transform) = production_fills
-            .iter()
-            .find(|(node, _)| !node.is_empty())
-            .expect("Smoke construction bar");
-        let center = transform.affine().translation.as_uvec2();
-        let [r, g, b] = pixels.get_pixel(center.x, center.y).0;
-        assert!(
-            node.size().x > 10.0 && g > 120 && g as u16 > r as u16 * 2 && g > b,
-            "Production construction fill missing"
-        );
+        // The separate production scenario supplies a construction job; hover-only
+        // scenarios start from the unchanged factory data, which has none.
+        if smoke.inspection_hover.is_none() {
+            let (node, transform) = production_fills
+                .iter()
+                .find(|(node, _)| !node.is_empty())
+                .expect("Smoke construction bar");
+            let center = transform.affine().translation.as_uvec2();
+            let [r, g, b] = pixels.get_pixel(center.x, center.y).0;
+            assert!(
+                node.size().x > 10.0 && g > 120 && g as u16 > r as u16 * 2 && g > b,
+                "Production construction fill missing"
+            );
+        }
     }
     if inspector.is_exploration() {
         assert!(exploration_heading, "Exploration orbit information missing");
@@ -2429,6 +2513,34 @@ fn smoke_test(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "vehicle-designed.png",
+        ),
+        87 => {
+            smoke_usa(&mut game);
+            inspector.apply(inspection_ui::Action::Open, &mut game);
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Production),
+                &mut game,
+            );
+            smoke.inspection_hover = Some(inspection_ui::production::Hover::Factory(0));
+        }
+        88 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "factory-tooltip.png",
+        ),
+        89 => {
+            inspector.apply(
+                inspection_ui::Action::Tab(inspection_ui::Tab::Industries),
+                &mut game,
+            );
+            inspector.apply(inspection_ui::Action::BoostExpertise, &mut game);
+            inspector.apply(inspection_ui::Action::BoostExpertise, &mut game);
+            smoke.inspection_hover = Some(inspection_ui::production::Hover::MaxExpertise);
+        }
+        90 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "modifier-tooltip.png",
         ),
         _ => panic!("Unknown smoke stage {}", smoke.stage),
     }

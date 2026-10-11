@@ -1,21 +1,25 @@
 //! Source `NumberToHumanString` suffixes, rounding and fmt-style default doubles.
 pub fn human_integer(value: i64) -> String {
-    scaled(value as f64).unwrap_or_else(|| value.to_string())
+    scaled(value as f64, (value as f64).abs()).unwrap_or_else(|| value.to_string())
 }
 
 pub fn human_float(value: f64) -> String {
-    scaled(value).unwrap_or_else(|| float(value))
+    human_with_magnitude(value, value.abs())
 }
 
-fn scaled(value: f64) -> Option<String> {
+pub(crate) fn human_with_magnitude(value: f64, magnitude: f64) -> String {
+    scaled(value, magnitude).unwrap_or_else(|| float(value))
+}
+
+fn scaled(value: f64, magnitude: f64) -> Option<String> {
     const SUFFIXES: [&str; 17] = [
         "k", "M", "B", "T", "Qa", "Qn", "Sx", "Sp", "O", "N", "De", "Ud", "Dd", "Td", "Qd", "Qi",
         "Sd",
     ];
-    if !value.is_finite() || value.abs() < 1000.0 {
+    if !value.is_finite() || !magnitude.is_finite() || magnitude < 1000.0 {
         return None;
     }
-    let exponent = (value.abs().log10() / 3.0) as usize;
+    let exponent = (magnitude.log10() / 3.0) as usize;
     // Preserve the source's unused last suffix, not a saturating suffix lookup.
     if exponent >= SUFFIXES.len() {
         return None;

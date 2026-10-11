@@ -110,6 +110,41 @@ impl ModifiableValue {
     pub fn base(&self) -> f64 {
         self.base
     }
+    pub fn tooltip(&self, catalog: &ModifierCatalog) -> Vec<crate::tooltips::Line> {
+        use crate::{
+            number_display::{float, human_with_magnitude},
+            tooltips::Line,
+        };
+        let modifier = match self.op {
+            ModifierOp::Additive => float(self.sum),
+            ModifierOp::Multiplicative => format!("{}%", float((self.sum - 1.0) * 100.0)),
+        };
+        // The source formatter assigns abs(value) to a copy of the modifier,
+        // applying its sum a second time when choosing the display suffix.
+        let magnitude = match self.op {
+            ModifierOp::Additive => self.value.abs() + self.sum,
+            ModifierOp::Multiplicative => self.value.abs() * self.sum,
+        };
+        let mut lines = vec![
+            Line::plain(format!(
+                "Value: {}",
+                human_with_magnitude(self.value, magnitude)
+            )),
+            Line::plain(format!("Modifier: {modifier}")),
+        ];
+        lines.extend(self.modifiers.iter().map(|&(id, amount)| {
+            let name = catalog
+                .entries
+                .get(id.0)
+                .map_or("Null Entity!", |modifier| modifier.name.as_str());
+            Line::plain(format!(
+                "{name}: {}{}",
+                if amount > 0.0 { "+" } else { "" },
+                float(amount)
+            ))
+        }));
+        lines
+    }
     pub fn set_base(&mut self, value: f64) {
         self.base = value;
         self.combine();
@@ -163,6 +198,26 @@ mod tests {
         },
     };
 
+    #[test]
+    fn tooltip_suffix_selection_preserves_source_modifier_assignment() -> Result<()> {
+        let catalog = ModifierCatalog::load(&default_data_path())?;
+        for (base, amount, expected) in [(998.75, 1.0, "1 k"), (-500.0, -1500.0, "-2000")] {
+            let mut value = ModifiableValue::new(base, ModifierOp::Additive);
+            value.apply(ModifierId(0), amount);
+            assert_eq!(
+                value.tooltip(&catalog)[0].text,
+                format!("Value: {expected}")
+            );
+        }
+        let mut value = ModifiableValue::new(-1235.125, ModifierOp::Multiplicative);
+        for _ in 0..40 {
+            value.apply(ModifierId(0), 1.0);
+        }
+        let lines = value.tooltip(&catalog);
+        assert_eq!(lines[0].text, "Value: -0.05 M");
+        assert_eq!(lines.len(), 42);
+        Ok(())
+    }
     #[test]
     fn original_modifier_changes_industry_cap_and_removes_one_duplicate() -> Result<()> {
         let catalog = ModifierCatalog::load(&default_data_path())?;

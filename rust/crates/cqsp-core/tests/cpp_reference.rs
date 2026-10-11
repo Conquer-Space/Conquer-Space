@@ -127,6 +127,152 @@ fn production_summary_columns_colors_progress_and_number_formats_match_source() 
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; actual factory/name/modifier components with source-mapped tooltip projection"]
+fn factory_and_modifier_tooltip_fields_match_source() {
+    use cqsp_core::{
+        catalog::Catalog,
+        economy::industry::{Industry, IndustryState},
+        modifiers::{Modifier, ModifierCatalog, ModifierTarget},
+    };
+    let catalog = Catalog::load(&default_data_path()).unwrap();
+    let states = [
+        IndustryState::Steady,
+        IndustryState::Maximum,
+        IndustryState::Minimum,
+        IndustryState::Construction,
+        IndustryState::Demolishing,
+        IndustryState::Shrinking,
+        IndustryState::Expanding,
+        IndustryState::Shortage,
+    ];
+    let mut factories = Vec::new();
+    let mut expected = Vec::new();
+    for (state_index, state) in states.into_iter().enumerate() {
+        for scale in [1.0, -1.0, 1e-5, 1e8] {
+            for gain in [0.0001, -0.0001, 0.0, -0.0] {
+                let values = [
+                    -1235.125 * scale,
+                    1235.99 * scale,
+                    999.999 * scale,
+                    1.00001 * scale,
+                    12345.123 * scale,
+                    1000.999 * scale,
+                    123456.789 * scale,
+                    999.99 * scale,
+                    1235.125 * scale,
+                    0.0123456789 * scale,
+                    -1000.999 * scale,
+                    0.125 * scale,
+                    1.23456789 * scale,
+                    gain,
+                    1.5,
+                    0.123456789 * scale,
+                    -1235.125 * scale,
+                    -999999.999 * scale,
+                    1000000.125 * scale,
+                ];
+                let mut industry = Industry::new(catalog.recipe("farming").unwrap(), 1).unwrap();
+                industry.state = state;
+                industry.continuous_gains = (state_index as i32 - 4) * 144;
+                industry.wallet.balance = values[0];
+                industry.size = values[1];
+                industry.utilization = values[2];
+                industry.diff = values[3];
+                industry.material_costs = values[4];
+                industry.wage_cost = values[5];
+                industry.power_consumption = values[6];
+                industry.construction_cost = values[7];
+                industry.maintenance = values[8];
+                industry.transport = values[9];
+                industry.tax_cost = values[10];
+                industry.throughput = values[11];
+                industry.expertise = values[12];
+                industry.expertise_gain.set_base(values[13]);
+                industry.max_expertise.set_base(values[14]);
+                industry.output_subsidy = values[15];
+                industry.subsidy_amount = values[16];
+                industry.profit = values[17];
+                industry.revenue = values[18];
+                factories.push(
+                    json!({"state":state_index,"gains":industry.continuous_gains,"values":values}),
+                );
+                expected.push(industry.tooltip(&catalog));
+            }
+        }
+    }
+    let names = ["Higher Expertise", "Zero modifier", "Loss"];
+    let modifiers = ModifierCatalog {
+        entries: names
+            .map(|name| Modifier {
+                identifier: name.into(),
+                name: name.into(),
+                target: ModifierTarget::MaxExpertise,
+                amount: 0.0,
+            })
+            .into(),
+        diagnostics: Vec::new(),
+    };
+    let mut cases = Vec::new();
+    let mut modifier_expected = Vec::new();
+    for additive in [true, false] {
+        for base in [-1235.125, 0.0, 1.5, 1000.999] {
+            for entries in [
+                vec![],
+                vec![(0, 1.0)],
+                vec![(0, 1.0), (0, 1.0), (2, -0.25)],
+                vec![(0, -0.8), (2, -0.8)],
+                vec![(1, -0.0), (1, 0.0), (0, 1e-5), (99, -1.23456789)],
+                (0..40).map(|_| (0, 1.0)).collect(),
+            ] {
+                let mut value = ModifiableValue::new(
+                    base,
+                    if additive {
+                        ModifierOp::Additive
+                    } else {
+                        ModifierOp::Multiplicative
+                    },
+                );
+                for &(id, amount) in &entries {
+                    value.apply(ModifierId(id), amount);
+                }
+                modifier_expected.push(value.tooltip(&modifiers));
+                cases.push(json!({"additive":additive,"base":base,"entries":entries}));
+            }
+        }
+    }
+    let reference = reference_output(
+        Some("--tooltips"),
+        &json!({"factories":factories,"names":names,"modifiers":cases}).to_string(),
+    );
+    for (section, expected) in [("factories", &expected), ("modifiers", &modifier_expected)] {
+        let actual = reference[section].as_array().unwrap();
+        assert_eq!(actual.len(), expected.len(), "{section} cases");
+        for (index, expected) in expected.iter().enumerate() {
+            let actual = actual[index].as_array().unwrap();
+            assert_eq!(
+                actual.len(),
+                expected.len(),
+                "{section} case {index} line count"
+            );
+            for (line, expected) in expected.iter().enumerate() {
+                assert_eq!(
+                    actual[line]["text"].as_str().unwrap(),
+                    expected.text,
+                    "{section} case {index} line {line}"
+                );
+                for (channel, expected) in expected.color.iter().enumerate() {
+                    assert_eq!(
+                        actual[line]["color"][channel].as_f64().unwrap(),
+                        f64::from(*expected),
+                        "{section} case {index} line {line} channel {channel}"
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; actual LaunchVehicle/SpaceCapability/Name with source-mapped design/filter/detail"]
 fn vehicle_float_designs_filtering_and_inspection_match_source() {
     use cqsp_core::{number_display::float, spaceflight::LaunchVehicle};

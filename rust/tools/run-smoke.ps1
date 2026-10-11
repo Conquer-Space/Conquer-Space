@@ -1,13 +1,13 @@
 param(
     [Parameter(Mandatory)][string]$Executable,
     [string]$WorkingDirectory = (Get-Location).Path,
-    [ValidateSet('Full', 'Inspection', 'Policy', 'Vehicles')][string]$Scenario = 'Full'
+    [ValidateSet('Full', 'Inspection', 'Policy', 'Vehicles', 'Tooltips')][string]$Scenario = 'Full'
 )
 $ErrorActionPreference = 'Stop'
 $start = [Diagnostics.ProcessStartInfo]::new()
 $start.FileName = (Resolve-Path -LiteralPath $Executable).Path
 $start.WorkingDirectory = (Resolve-Path -LiteralPath $WorkingDirectory).Path
-$start.Arguments = switch ($Scenario) { 'Inspection' { '--smoke-inspection' } 'Policy' { '--smoke-policy' } 'Vehicles' { '--smoke-vehicles' } default { '--smoke' } }
+$start.Arguments = switch ($Scenario) { 'Inspection' { '--smoke-inspection' } 'Policy' { '--smoke-policy' } 'Vehicles' { '--smoke-vehicles' } 'Tooltips' { '--smoke-tooltips' } default { '--smoke' } }
 $start.UseShellExecute = $false
 $start.CreateNoWindow = $true
 $start.RedirectStandardOutput = $true
@@ -23,7 +23,8 @@ try {
     $errors = $stderr.GetAwaiter().GetResult()
     if ($errors) { Write-Host $errors }
     if ($process.ExitCode -ne 0) { throw "Offscreen smoke failed with exit code $($process.ExitCode)" }
-    $captures = if ($Scenario -eq 'Inspection') { @('production-summary', 'exploration-moon', 'exploration-sun') } elseif ($Scenario -eq 'Policy') { @('subsidy-editor', 'subsidy-list', 'labor-market', 'tax-last-page') } elseif ($Scenario -eq 'Vehicles') { @('vehicle-browser', 'vehicle-filter', 'vehicle-design', 'vehicle-designed') } else { @(
+    $captures = if ($Scenario -eq 'Inspection') { @('production-summary', 'exploration-moon', 'exploration-sun') } elseif ($Scenario -eq 'Policy') { @('subsidy-editor', 'subsidy-list', 'labor-market', 'tax-last-page') } elseif ($Scenario -eq 'Vehicles') { @('vehicle-browser', 'vehicle-filter', 'vehicle-design', 'vehicle-designed') } elseif ($Scenario -eq 'Tooltips') { @('factory-tooltip', 'modifier-tooltip') } else { @(
+        'factory-tooltip', 'modifier-tooltip',
         'vehicle-browser', 'vehicle-filter', 'vehicle-design', 'vehicle-designed',
         'subsidy-editor', 'subsidy-list', 'labor-market', 'tax-last-page', 'selection', 'game-view', 'system-view', 'spacecraft-view', 'spaceport-view', 'launched-vehicle',
         'market-inspector', 'industry-inspector', 'science-inspector', 'demographics-inspector',

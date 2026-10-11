@@ -18,7 +18,9 @@ satellites start hidden, launched ships visible. Hide-all leaves planetary paths
 and future launches unaffected; show-all overwrites individual visibility choices.
 The native sidebar's Buildings route opens worldwide Production, not construction
 painting. All nine summary columns and construction bars use original fields;
-hover Size/Revenue for shortages/items sold. Exploration inspects every natural
+hover Size/Revenue for shortages/items sold, or a factory name for full details.
+Max Expertise in Industries shows the modifier sum and individual contributions.
+Exploration inspects every natural
 body's orbit without moving the camera. Economy offers subsidy/labor tabs and an
 explicit recipe picker; Budget has a separate paged absolute-tax table.
 Space Access requires the source space-program tag. Projects/Situations
@@ -37,7 +39,8 @@ offscreen GPU acceptance run, which waits for both dev and release builds. Captu
 are written beneath target/ in the current working directory; no OS window opens.
 Add -Scenario Inspection for just production and the Moon/Sun exploration screens;
 add -Scenario Policy for four subsidy/labor/tax screens, or -Scenario Vehicles for
-four vehicle list/filter/design screens. Full verifies all 43 captures.
+four vehicle list/filter/design screens. Add -Scenario Tooltips for factory details
+and modifier contributions. Full verifies all 45 captures.
 cqsp-sim.exe --days 365 --seed 42 runs renderer-free stability checks.
 
 The port and original game are GPL-3.0-or-later; see LICENSE.txt. Font notices are

@@ -19,6 +19,7 @@ pub mod solar_system;
 pub mod spaceflight;
 pub mod surface;
 pub mod timezones;
+pub mod tooltips;
 pub mod units;
 use anyhow::{Context, Result, bail, ensure};
 use serde::Deserialize;

@@ -22,6 +22,18 @@ pub enum IndustryState {
 }
 
 impl IndustryState {
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::Steady => "Steady State",
+            Self::Maximum => "Maximum Production",
+            Self::Minimum => "Minimum Production",
+            Self::Construction => "Construction",
+            Self::Demolishing => "Demolishing",
+            Self::Shrinking => "Shrinking",
+            Self::Expanding => "Expanding",
+            Self::Shortage => "Shortage",
+        }
+    }
     fn expertise_gain(self) -> f64 {
         match self {
             Self::Steady | Self::Maximum | Self::Minimum | Self::Shortage => 0.0001,
@@ -95,6 +107,8 @@ pub struct Industry {
     pub construction_cost: f64,
     pub profit: f64,
     pub power_consumption: f64,
+    pub transport: f64,
+    pub throughput: f64,
     pub output_subsidy: f64,
     pub subsidy_amount: f64,
     pub amount_sold: f64,
@@ -128,6 +142,8 @@ impl Industry {
             construction_cost: 0.0,
             profit: 0.0,
             power_consumption: 0.0,
+            transport: 0.0,
+            throughput: 1.0,
             output_subsidy: 0.0,
             subsidy_amount: 0.0,
             amount_sold: 0.0,
@@ -343,6 +359,7 @@ impl Industry {
         self.power_consumption = recipe.power * self.utilization;
         let (wage_costs, income_taxes) = market.purchase(&self.workers);
         self.wage_cost = wage_costs;
+        self.transport = 0.0;
         self.tax_cost += taxes + income_taxes;
         self.revenue = self.amount_sold * market.price[recipe.output.0];
         self.profit =

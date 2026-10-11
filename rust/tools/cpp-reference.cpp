@@ -1868,7 +1868,92 @@ void PrintProductionSummary() {
     WriteJson(output); std::cout << '\n';
 }
 
+Hjson::Value TooltipLine(std::string text, double r = 1, double g = 1, double b = 1) {
+    Hjson::Value line(Hjson::Type::Map);
+    line["text"] = std::move(text);
+    line["color"] = Numbers({r, g, b});
+    return line;
+}
+// Actual factory/name/modifier components and fmt; joined tooltip lines are
+// source-mapped from systooltips.cpp/modifiertooltip.cpp, not ImGui execution.
+void PrintTooltips() {
+    const auto input = ReadInput();
+    cqsp::core::Universe universe("tooltip-reference");
+    cqsp::core::Node province(universe), recipe(universe);
+    province.emplace<IndustrialZone>();
+    recipe.emplace<Recipe>();
+    recipe.emplace<Name>("Farming");
+    Hjson::Value output(Hjson::Type::Map);
+    output["factories"] = Hjson::Value(Hjson::Type::Vector);
+    for (int index = 0; index < input["factories"].size(); ++index) {
+        const auto row = input["factories"][index];
+        auto factory = cqsp::core::actions::CreateFactory(province, recipe, 1);
+        auto& p = factory.get<ProductionUnit>();
+        const auto v = row["values"];
+        factory.get<Wallet>() = v[0].to_double();
+        p.size = v[1].to_double(); p.utilization = v[2].to_double(); p.diff = v[3].to_double();
+        p.material_costs = v[4].to_double(); p.wage_cost = v[5].to_double(); p.power_consumption = v[6].to_double();
+        p.construction_cost = v[7].to_double(); p.maintenance = v[8].to_double(); p.transport = v[9].to_double();
+        p.tax_cost = v[10].to_double(); p.throughput = v[11].to_double(); p.expertise = v[12].to_double();
+        p.expertise_gain = v[13].to_double(); p.max_expertise = v[14].to_double();
+        p.output_subsidy = v[15].to_double(); p.output_subsidy_amount = v[16].to_double();
+        p.profit = v[17].to_double(); p.revenue = v[18].to_double();
+        p.state = static_cast<IndustryState>(row["state"].to_int64());
+        p.continuous_gains = static_cast<int>(row["gains"].to_int64());
+        Hjson::Value lines(Hjson::Type::Vector);
+        auto raw = [&](std::string label, double value) { lines.push_back(TooltipLine(fmt::format("{}: {}", label, value))); };
+        auto human = [&](std::string label, double value) { lines.push_back(TooltipLine(fmt::format("{}: {}", label, cqsp::util::NumberToHumanString(value)))); };
+        lines.push_back(TooltipLine(cqsp::core::util::GetName(universe, factory)));
+        lines.push_back(TooltipLine(cqsp::core::util::GetEntityType(universe, factory)));
+        human("Wallet", factory.get<Wallet>().GetBalance());
+        raw("Size", p.size); raw("Utilization", p.utilization); raw("Last Tick Difference", p.diff);
+        human("Material Cost", p.material_costs); human("Wage Cost", p.wage_cost);
+        lines.push_back(TooltipLine(fmt::format("Power consumption: {} W", cqsp::util::NumberToHumanString(p.power_consumption))));
+        human("Construction Cost", p.construction_cost); human("Maintenance Cost", p.maintenance);
+        human("Transport Costs", p.transport);
+        lines.push_back(TooltipLine(fmt::format("State: {}", IndustryStateToString(p.state))));
+        human("Taxes", p.tax_cost);
+        lines.push_back(TooltipLine(fmt::format("Continous Gains: {}", p.continuous_gains)));
+        raw("Throughput", p.throughput);
+        double gain = p.expertise_gain;
+        auto expertise = fmt::format("Expertise: {} ({}{} per day)", p.expertise, gain > 0 ? "+" : "", gain);
+        lines.push_back(gain > 0 ? TooltipLine(expertise, 0, 1, 0) : gain < 0 ? TooltipLine(expertise, 1, 0, 0) : TooltipLine(expertise));
+        raw("Max Expertise", p.max_expertise);
+        lines.push_back(TooltipLine(fmt::format("Output Subsidy: {}% ({})", p.output_subsidy * 100., cqsp::util::NumberToHumanString(p.output_subsidy_amount))));
+        human("Profit", p.profit); human("Revenue", p.revenue);
+        output["factories"].push_back(lines);
+    }
+    std::vector<entt::entity> names;
+    for (int index = 0; index < input["names"].size(); ++index) {
+        auto entity = universe.create();
+        universe.emplace<Name>(entity, input["names"][index].to_string());
+        names.push_back(entity);
+    }
+    output["modifiers"] = Hjson::Value(Hjson::Type::Vector);
+    for (int index = 0; index < input["modifiers"].size(); ++index) {
+        const auto row = input["modifiers"][index];
+        auto capture = [&](auto modifier, bool additive) {
+            for (int item = 0; item < row["entries"].size(); ++item) {
+                const auto entry = row["entries"][item];
+                int id = static_cast<int>(entry[0].to_int64());
+                modifier.modifiers.emplace_back(id >= 0 && id < names.size() ? names[id] : entt::null, entry[1].to_double());
+            }
+            modifier.recalculate();
+            Hjson::Value lines(Hjson::Type::Vector);
+            lines.push_back(TooltipLine(fmt::format("Value: {}", cqsp::util::NumberToHumanString(modifier))));
+            lines.push_back(TooltipLine(additive ? fmt::format("Modifier: {}", modifier.sum) : fmt::format("Modifier: {}%", (modifier.sum - 1) * 100)));
+            for (const auto& [entity, amount] : modifier.modifiers)
+                lines.push_back(TooltipLine(fmt::format("{}: {}{}", cqsp::core::util::GetName(universe, entity), amount > 0 ? "+" : "", amount)));
+            output["modifiers"].push_back(lines);
+        };
+        if (static_cast<bool>(row["additive"])) capture(AdditiveModifier(row["base"].to_double()), true);
+        else capture(MultiplicativeModifier(row["base"].to_double()), false);
+    }
+    std::cout << std::setprecision(17); WriteJson(output); std::cout << '\n';
+}
+
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--tooltips") { PrintTooltips(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production-summary") { PrintProductionSummary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--orbit-filter") { PrintOrbitFilter(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--province-search") { PrintProvinceSearch(); return 0; }

@@ -31,10 +31,11 @@ Release clients use the Windows GUI subsystem, matching the original release:
 double-clicking does not open a separate console. Pipe `--help`/`--paths` output
 in PowerShell. The supplied `run-smoke.ps1 -Executable ./cqsp-client.exe` waits
 for offscreen GPU checks to complete, including GUI-subsystem releases.
-The default scenario verifies all 43 screens. Add `-Scenario Inspection` for a
+The default scenario verifies all 45 screens. Add `-Scenario Inspection` for a
 focused three-screen production/Moon/Sun check (`--smoke-inspection` directly).
 Use `-Scenario Policy` for four subsidy/labor/tax screens (`--smoke-policy`).
 Use `-Scenario Vehicles` for four vehicle list/filter/design screens (`--smoke-vehicles`).
+Use `-Scenario Tooltips` for factory details and modifier contributions (`--smoke-tooltips`).
 
 The Rust app is deliberately **silent**: no music, effects or sound-device backend
 are built in. Original sound assets are left untouched. Run
@@ -294,10 +295,14 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all twenty-eight completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all 45 completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all twenty-eight PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all 45 PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
+Floating-card captures verify every tooltip text block, excluding overlapped table
+cells from underlying-text checks. Factory name hover exposes all 21 source-mapped
+details; Max Expertise hover shows the modifier sum and individual contributions.
+These add `target/factory-tooltip.png` and `target/modifier-tooltip.png`.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.
 Focused-spacecraft captures also verify texture color variation and ground-track

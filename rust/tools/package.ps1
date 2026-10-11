@@ -12,7 +12,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Cargo metadata failed' }
     & $Cargo build --locked --workspace --bins --profile $Profile
     if ($LASTEXITCODE -ne 0) { throw 'Package build failed' }
-    & "$PSScriptRoot/verify-silent.ps1" -Cargo $Cargo
+    & "$PSScriptRoot/verify-silent.ps1" -Cargo $Cargo | ForEach-Object { Write-Host $_ }
     $binaryFolder = Join-Path $metadata.target_directory $(if ($Profile -eq 'dev') { 'debug' } else { 'release' })
     # Always create a fresh directory: never replace an existing build or user data.
     $packageRoot = Join-Path $rustRoot "target/packages/cqsp-rust-$Profile-$([guid]::NewGuid().ToString('N').Substring(0, 8))"

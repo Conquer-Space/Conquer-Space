@@ -44,11 +44,11 @@ Successful long runs establish stability, not gameplay parity.
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
 | Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
 | Star-system tree / orbit filter | Actual satellite loader and source-mapped registry behavior reference-tested; native UI integrated | Sorted roots, natural-before-ship branches, all live craft, single/double-click distinction, individual/global ship tags and new-launch visibility; planetary paths unaffected by HideAll. Native modal/paging, ordering and 0.5-second double-click threshold are not ImGui layout/input parity |
-| Industry modifiers / factory controls | Reference-tested components; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; original modifier asset loaded and industry gain/cap wiring tested |
+| Industry modifiers / factory controls | Reference-tested components and source-mapped tooltip; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; native cap hover preserves contribution order/duplicates, signs and source suffix-selection quirk |
 | National subsidies / absolute taxes / labor view | Subsidy action reference-tested; native integration | 286 snapshots across all 22 recipes through actual ApplySubsidy, initial lists/stale ownership, fractional/full/raw finite amounts, future factories and repeated UI ledger erasure; native sliders, full lock, one-shot controls and national labor ledgers; global province-only taxes source-mapped and Rust-tested, not actual ImGui execution |
 | Research / projects / missions | Project loader reference-tested; vehicle/mission core + UI implemented | Native province/stage/core selection, auto/explicit dispatch, five colony stages/core delivery and boundary tests; research and other project workflows remain |
 | Science fields / technologies | Loader reference-tested; native inspection | All 11 fields and seven technologies match actual LoadFields/LoadTechnologies, plus defaults, directed/duplicate references, descriptions, actions, field sets and integer difficulty; native screens expose the loaded definitions and country research |
-| Production summary | Actual formatter/factory names and source-mapped columns reference-tested; native global table | All nine columns, eight state colors, shortage/delta colors, float construction progress independent of state, truncating monetary fields, employer counts and items-sold hover; stable native paging and abbreviated entity tooltip remain layout/detail differences |
+| Production summary | Actual formatter/factory names and source-mapped columns/tooltips reference-tested; native global table | All nine columns, eight state colors, shortage/delta colors, float construction progress independent of state, truncating monetary fields, employer counts and items-sold hover; factory name hover exposes 21 normal-factory entity fields; native paging/layout and gain-fragment presentation differ |
 | Native replacements for scripted UI/events | Native event queues/modals/search/sidebar and exploration inspector implemented | Country selection and civilization/economy/history inspection are native; player queue/front-only display, actionless Ok, typed tutorial effects, hover text and full-queue clearing; tutorial stays disabled. Native body/province search/centroids and click-versus-Enter focus; sidebar routes, SpaceCapability guard and real Lua/RmlUi exploration body/orbit inspector are ported. Additional interface detail and source coexistence/layout remain |
 | Saves / load / settings / packaging | Metadata/default graphics reference-tested; native menus and executable-relative bundling implemented | Actual GetMetadata/LoadMetadata and empty SaveGame, numeric date/truncation/uint32 wrapping, ignored version and invalid-date rejection; CLI/native metadata browser, fresh-asset reset/tick, atomic replacement, six-hex identity separate from economy RNG; source-mapped pause menu, 15 resolution presets, fullscreen/window restoration, isolated Rust preferences. Other application settings and live native-window acceptance remain. Locked bundles exclude audio/Lua; runtime/driver prerequisites and redistribution review remain |
 
@@ -688,8 +688,40 @@ comparisons pass in debug and release; the recorded component corpus also passes
 The silent release bundle passes all four focused captures from a fresh external
 working directory. Visual inspection confirms one filtered result while the
 previous selection's details remain visible, and the empty/zero creation draft.
-The expanded 43-capture full release scenario is being verified separately;
+The expanded 43-capture full release scenario also passes from a fresh external directory;
 this milestone does not establish whole-game parity or native-window acceptance.
+
+## Factory and modifier hover details
+
+Production name hover now opens a floating card with the source's 21 normal-factory
+fields: name/type, wallet, capacity/utilization/difference, every cost, state, taxes,
+the `Continous Gains` label, throughput, expertise/gain/cap, subsidy, profit and
+revenue. Transport resets to zero during production and throughput defaults to one,
+as upstream. Max Expertise in Industries shows the value, additive/multiplicative
+sum and every contribution in order, retaining duplicates and signed values.
+Unknown contribution IDs use the source's `Null Entity!` name. No removal control
+is invented. The original number formatter reapplies the modifier to abs(value)
+when selecting its suffix; the port now preserves that quirk and tests it directly.
+
+The card refreshes live fields, reuses unchanged children, clamps to the viewport
+and clears on missing rows, closed inspection, events and search/tree overlays.
+128 factory cases cover all states, four scales and positive/negative/zero gains;
+48 modifier cases cover both operations, signs, clamps, duplicates, unknown IDs
+and long contribution lists. Comparisons use actual CreateFactory, Name/GetName,
+modifier components and fmt with source-mapped tooltip field projection, not an
+execution of ImGui. The native card colors the joined expertise line rather than
+only its gain fragment; separators/inline fragments and richer non-factory entity
+tooltips remain presentation/detail gaps. Arbitrary scripted component combinations
+are not claimed covered.
+
+This slice passes 168 unit tests, warning-free Clippy and all 36 differential tests
+in debug/release (35 live comparisons plus the recorded corpus). The silent release
+bundle passes both focused tooltip captures from a fresh external directory and
+the renderer-free 365-day run. Offscreen checks assert every tooltip text block
+and actual green gain pixels; covered table cells are excluded from underlying-text
+checks without weakening the separate construction-bar scenario. Full 45-capture
+release and focused debug checks are being verified separately. No native window
+or audio device opens; this does not establish whole-game parity.
 
 ## Next acceptance gates
 
@@ -704,7 +736,7 @@ this milestone does not establish whole-game parity or native-window acceptance.
    filtering/detail and float design comparisons. Manufacturing, trade orders and
    lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
-   supported project/modifier controls, richer production/entity tooltips,
+   supported project/modifier controls, remaining entity tooltips,
    and further market/history inspection. Distinguish source stubs from implemented workflows.
 5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.
