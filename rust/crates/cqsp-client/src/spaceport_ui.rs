@@ -12,6 +12,8 @@ use cqsp_core::{
     spaceflight::{LaunchVehicle, MissionId, VehicleId},
 };
 use std::fmt::Write;
+#[path = "vehicle_ui.rs"]
+pub(super) mod vehicles;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub(super) enum Field {
@@ -25,6 +27,7 @@ pub(super) enum Field {
     Node,
     Periapsis,
     Amount,
+    Search,
 }
 impl Field {
     const ALL: [Self; 10] = [
@@ -51,7 +54,15 @@ impl Field {
             Self::Node => "Ascending node (degrees)",
             Self::Periapsis => "Periapsis angle (degrees)",
             Self::Amount => "Cargo amount",
+            Self::Search => "Filter vehicles",
         }
+    }
+    fn next(self, vehicles: bool, previous: bool) -> Option<Self> {
+        if self == Self::Search {
+            return None;
+        }
+        let count = if vehicles { 4 } else { Self::ALL.len() };
+        Some(Self::ALL[(self as usize + if previous { count - 1 } else { 1 }) % count])
     }
 }
 
@@ -75,12 +86,20 @@ pub(super) enum Action {
     NextGood,
     QueueGoods,
     NextDay,
+    Vehicles,
+    Ports,
+    AddVehicle,
+    CancelDesign,
+    SelectVehicle(VehicleId),
+    VehiclePage(bool),
 }
 #[derive(Component)]
 pub(super) enum Panel {
     Overlay,
     Launcher,
     Background,
+    Ports,
+    Vehicles,
 }
 #[derive(Component)]
 pub(super) enum Label {
@@ -105,10 +124,15 @@ pub(super) struct SpaceportUi {
     mission: Option<MissionId>,
     good: usize,
     message: String,
+    vehicles: bool,
+    browser: vehicles::Browser,
 }
 impl SpaceportUi {
     pub fn editing(&self) -> bool {
         self.focused.is_some()
+    }
+    pub fn viewing_vehicles(&self) -> bool {
+        self.open && self.vehicles
     }
     pub fn new(simulation: &Simulation) -> Self {
         let moon = simulation.solar_system.body_id("moon");
@@ -149,18 +173,63 @@ impl SpaceportUi {
             vehicle: None,
             mission: None,
             good: 0,
+            vehicles: false,
+            browser: vehicles::Browser::default(),
             message:
                 "Click a field to edit. Ctrl+A replaces; Tab moves; Enter finishes. P / Esc closes."
                     .into(),
         }
     }
     fn number(&self, field: Field) -> Result<f64> {
-        let number: f64 = self.values[field as usize]
+        let number: f64 = self
+            .value(field)
             .trim()
             .parse()
             .with_context(|| format!("{} needs a number", field.label()))?;
         ensure!(number.is_finite(), "{} must be finite", field.label());
         Ok(number)
+    }
+    fn value(&self, field: Field) -> &str {
+        if field == Field::Search {
+            &self.browser.query
+        } else if self.vehicles && (field as usize) < 4 {
+            &self.browser.draft[field as usize]
+        } else {
+            &self.values[field as usize]
+        }
+    }
+    fn value_mut(&mut self, field: Field) -> &mut String {
+        if field == Field::Search {
+            &mut self.browser.query
+        } else if self.vehicles && (field as usize) < 4 {
+            &mut self.browser.draft[field as usize]
+        } else {
+            &mut self.values[field as usize]
+        }
+    }
+    pub fn enter_text(&mut self, text: &str) {
+        let Some(field) = self.focused else {
+            return;
+        };
+        let text: String = text.chars().filter(|ch| !ch.is_control()).collect();
+        if text.is_empty() {
+            return;
+        }
+        if self.replace {
+            self.value_mut(field).clear();
+        }
+        self.replace = false;
+        let value = self.value_mut(field);
+        // Original arrays hold 254 payload bytes plus NUL; never split UTF-8.
+        for ch in text.chars() {
+            if value.len() + ch.len_utf8() > 254 {
+                break;
+            }
+            value.push(ch);
+        }
+        if field == Field::Search {
+            self.browser.page = 0;
+        }
     }
     pub fn apply(&mut self, action: Action, game: &mut Game) -> Result<()> {
         let country = game
@@ -176,8 +245,38 @@ impl SpaceportUi {
         let simulation = &mut game.simulation;
         match action {
             Action::Edit(_) => unreachable!(),
-            Action::Open => self.open = true,
+            Action::Open | Action::Ports => {
+                self.open = true;
+                self.vehicles = false;
+            }
+            Action::Vehicles => {
+                ensure!(
+                    simulation.countries[country].space_program,
+                    "This country has no space capability"
+                );
+                self.open = true;
+                self.vehicles = true;
+            }
             Action::Close => self.open = false,
+            Action::AddVehicle => self.browser.creating = true,
+            Action::CancelDesign => self.browser.creating = false,
+            Action::SelectVehicle(id) => {
+                ensure!(
+                    simulation.countries[country].vehicles.contains(&id),
+                    "Unknown country vehicle"
+                );
+                self.browser.selected = Some(id);
+            }
+            Action::VehiclePage(previous) => {
+                let count = self
+                    .browser
+                    .results(game)
+                    .len()
+                    .div_ceil(vehicles::PAGE_SIZE)
+                    .max(1);
+                self.browser.page =
+                    (self.browser.page + if previous { count - 1 } else { 1 }) % count;
+            }
             Action::NextPort => {
                 ensure!(!self.ports.is_empty(), "No spaceports in loaded data");
                 self.port = (self.port + 1) % self.ports.len();
@@ -191,14 +290,20 @@ impl SpaceportUi {
                     .map_or(0, |index| (index + 1) % vehicles.len());
                 self.vehicle = Some(vehicles[next]);
             }
+            Action::Design if self.vehicles && !self.browser.creating => {}
             Action::Design => {
                 let vehicle = LaunchVehicle::design(
-                    self.values[Field::Name as usize].clone(),
+                    self.value(Field::Name).to_owned(),
                     self.number(Field::Reliability)?,
                     self.number(Field::Fairing)?,
                     self.number(Field::Mass)?,
                 )?;
-                self.vehicle = Some(simulation.design_vehicle(country, vehicle)?);
+                let id = simulation.design_vehicle(country, vehicle)?;
+                if self.vehicles {
+                    self.browser.creating = false;
+                } else {
+                    self.vehicle = Some(id);
+                }
                 self.message = "Vehicle design added to your country.".into();
             }
             Action::Manufacture => {
@@ -420,8 +525,9 @@ pub(super) fn spawn(commands: &mut Commands, camera: Entity, font: &Handle<Font>
         BackgroundColor(Color::srgb(0.025, 0.05, 0.09))))
         .with_children(|panel| {
             panel.spawn((Text::new("SPACEPORTS · VEHICLES · LUNAR MISSIONS"), ui_font(font, 22.0), TextColor(Color::srgb(0.9, 0.76, 0.42))));
-            row(panel, |bar| { button(bar, font, Action::NextPort, "Next port"); button(bar, font, Action::NextDay, "Advance day"); button(bar, font, Action::Close, "Close (P / Esc)"); });
-            row(panel, |columns| {
+            row(panel, |bar| { button(bar, font, Action::Ports, "Spaceports / missions"); button(bar, font, Action::Vehicles, "Launch Vehicles"); button(bar, font, Action::NextPort, "Next port"); button(bar, font, Action::NextDay, "Advance day"); button(bar, font, Action::Close, "Close (P / Esc)"); });
+            panel.spawn((Panel::Vehicles, Node { flex_direction: FlexDirection::Column, flex_shrink: 0.0, row_gap: px(10), ..default() })).with_children(|panel| vehicles::spawn(panel, font));
+            panel.spawn((Panel::Ports, Node { flex_wrap: FlexWrap::Wrap, flex_shrink: 0.0, column_gap: px(10), row_gap: px(6), ..default() })).with_children(|columns| {
                 columns.spawn(Node { width: percent(49), flex_direction: FlexDirection::Column, row_gap: px(7), ..default() }).with_children(|column| {
                     column.spawn((Label::Port, Text::default(), ui_font(font, 15.0)));
                     row(column, |bar| { button(bar, font, Action::NextVehicle, "Next design"); button(bar, font, Action::Manufacture, "Manufacture"); });
@@ -515,16 +621,9 @@ pub(super) fn controls(
         match event.key_code {
             KeyCode::Enter => ui.focused = None,
             KeyCode::Tab => {
-                ui.focused = Some(
-                    Field::ALL[(field as usize
-                        + if keyboard.pressed(KeyCode::ShiftLeft)
-                            || keyboard.pressed(KeyCode::ShiftRight)
-                        {
-                            Field::ALL.len() - 1
-                        } else {
-                            1
-                        })
-                        % Field::ALL.len()],
+                ui.focused = field.next(
+                    ui.vehicles,
+                    keyboard.pressed(KeyCode::ShiftLeft) || keyboard.pressed(KeyCode::ShiftRight),
                 );
                 ui.replace = true;
             }
@@ -536,26 +635,20 @@ pub(super) fn controls(
             }
             KeyCode::Backspace => {
                 if ui.replace {
-                    ui.values[field as usize].clear();
+                    ui.value_mut(field).clear();
                 } else {
-                    ui.values[field as usize].pop();
+                    ui.value_mut(field).pop();
                 }
                 ui.replace = false;
+                if field == Field::Search {
+                    ui.browser.page = 0;
+                }
             }
             _ if !keyboard.pressed(KeyCode::ControlLeft)
                 && !keyboard.pressed(KeyCode::ControlRight) =>
             {
                 if let Some(text) = &event.text {
-                    let text: String = text.chars().filter(|ch| !ch.is_control()).collect();
-                    if !text.is_empty() {
-                        if ui.replace {
-                            ui.values[field as usize].clear();
-                        }
-                        ui.replace = false;
-                        let remaining =
-                            255usize.saturating_sub(ui.values[field as usize].chars().count());
-                        ui.values[field as usize].extend(text.chars().take(remaining));
-                    }
+                    ui.enter_text(text);
                 }
             }
             _ => {}
@@ -610,6 +703,8 @@ pub(super) fn update(
             Panel::Overlay => ui.open,
             Panel::Launcher => !ui.open && !inspecting && game.session.player_country.is_some(),
             Panel::Background => !ui.open && !inspecting,
+            Panel::Ports => ui.open && !ui.vehicles,
+            Panel::Vehicles => ui.open && ui.vehicles,
         };
         let shown = shown && super::event_ui::pending(&game).is_none();
         let display = if shown { Display::Flex } else { Display::None };
@@ -630,7 +725,7 @@ pub(super) fn update(
                     "{}: {}{}{}",
                     field.label(),
                     if focused && ui.replace { "[" } else { "" },
-                    ui.values[field as usize],
+                    ui.value(field),
                     if focused {
                         if ui.replace { "]" } else { " |" }
                     } else {
@@ -683,7 +778,13 @@ mod tests {
             .add_message::<KeyboardInput>()
             .add_systems(
                 Update,
-                (controls, super::super::simulation_controls, update).chain(),
+                (
+                    controls,
+                    super::super::simulation_controls,
+                    update,
+                    vehicles::update,
+                )
+                    .chain(),
             );
         Ok(app)
     }
@@ -709,6 +810,213 @@ mod tests {
         app.world_mut()
             .resource_mut::<ButtonInput<KeyCode>>()
             .reset_all();
+    }
+
+    #[test]
+    fn vehicle_browser_has_source_defaults_retains_drafts_and_does_not_select_new_designs()
+    -> Result<()> {
+        let mut app = app()?;
+        apply(&mut app, Action::Vehicles)?;
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().browser.draft,
+            ["", "0", "0", "0"]
+        );
+        apply(&mut app, Action::AddVehicle)?;
+        apply(&mut app, Action::Design)?;
+        assert!(!app.world().resource::<SpaceportUi>().browser.creating);
+        assert!(
+            app.world()
+                .resource::<SpaceportUi>()
+                .browser
+                .selected
+                .is_none()
+        );
+        assert_eq!(app.world().resource::<Game>().simulation.vehicles.len(), 1);
+        apply(&mut app, Action::AddVehicle)?;
+        app.world_mut().resource_mut::<SpaceportUi>().browser.draft =
+            ["Fractional", "99.123456789", "123.456789", "0.000123456789"].map(str::to_owned);
+        apply(&mut app, Action::CancelDesign)?;
+        apply(&mut app, Action::Close)?;
+        apply(&mut app, Action::Vehicles)?;
+        apply(&mut app, Action::AddVehicle)?;
+        apply(&mut app, Action::Design)?;
+        let vehicle = &app.world().resource::<Game>().simulation.vehicles[1];
+        assert_eq!(vehicle.reliability, f64::from(99.123456789_f64 as f32));
+        assert_eq!(
+            vehicle.fairing_size,
+            f64::from(123.456789_f64 as f32 / 100.0)
+        );
+        assert!(
+            app.world()
+                .resource::<SpaceportUi>()
+                .browser
+                .selected
+                .is_none()
+        );
+        apply(&mut app, Action::SelectVehicle(VehicleId(1)))?;
+        assert!(
+            app.world()
+                .resource::<SpaceportUi>()
+                .browser
+                .content(app.world().resource::<Game>())
+                .contains("Fractional\nReliability:")
+        );
+        apply(&mut app, Action::Ports)?;
+        assert!(app.world().resource::<SpaceportUi>().vehicle.is_none());
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().value(Field::Name),
+            "New Launch Vehicle"
+        );
+        apply(&mut app, Action::Vehicles)?;
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().browser.selected,
+            Some(VehicleId(1))
+        );
+        Ok(())
+    }
+    #[test]
+    fn vehicle_filter_pages_country_only_results_and_retains_hidden_selection() -> Result<()> {
+        let mut app = app()?;
+        let country = app
+            .world()
+            .resource::<Game>()
+            .session
+            .player_country
+            .unwrap();
+        for index in 0..18 {
+            app.world_mut()
+                .resource_mut::<Game>()
+                .simulation
+                .design_vehicle(
+                    country,
+                    LaunchVehicle::design(format!("Rocket {index:02}"), 95.0, 10.0, 5.0)?,
+                )?;
+        }
+        app.world_mut()
+            .resource_mut::<Game>()
+            .simulation
+            .design_vehicle(
+                (country + 1) % 199,
+                LaunchVehicle::design("Foreign Rocket".into(), 95.0, 10.0, 5.0)?,
+            )?;
+        apply(&mut app, Action::Vehicles)?;
+        assert_eq!(
+            app.world()
+                .resource::<SpaceportUi>()
+                .browser
+                .results(app.world().resource::<Game>())
+                .len(),
+            18
+        );
+        let row = app
+            .world_mut()
+            .spawn((
+                vehicles::ResultRow(0),
+                Action::SelectVehicle(VehicleId(usize::MAX)),
+                Interaction::None,
+                Node::default(),
+                BackgroundColor::default(),
+            ))
+            .id();
+        for expected in [0, 8, 16, 0] {
+            app.update();
+            assert!(
+                matches!(app.world().get::<Action>(row), Some(Action::SelectVehicle(id)) if id.0 == expected)
+            );
+            apply(&mut app, Action::VehiclePage(false))?;
+        }
+        apply(&mut app, Action::SelectVehicle(VehicleId(0)))?;
+        apply(&mut app, Action::Edit(Field::Search))?;
+        key(&mut app, KeyCode::KeyR, Some("rOcKeT 09"));
+        assert_eq!(app.world().resource::<SpaceportUi>().browser.page, 0);
+        assert_eq!(
+            app.world()
+                .resource::<SpaceportUi>()
+                .browser
+                .results(app.world().resource::<Game>()),
+            [VehicleId(9)]
+        );
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().browser.selected,
+            Some(VehicleId(0))
+        );
+        assert!(
+            matches!(app.world().get::<Action>(row), Some(Action::SelectVehicle(id)) if id.0 == 9)
+        );
+        *app.world_mut().get_mut::<Interaction>(row).unwrap() = Interaction::Pressed;
+        app.update();
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().browser.selected,
+            Some(VehicleId(9))
+        );
+        app.world_mut()
+            .resource_mut::<SpaceportUi>()
+            .browser
+            .selected = Some(VehicleId(0));
+        app.update();
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().browser.selected,
+            Some(VehicleId(0)),
+            "Held result is not selected twice"
+        );
+        apply(&mut app, Action::Edit(Field::Search))?;
+        key(&mut app, KeyCode::KeyM, Some("missing"));
+        assert!(
+            app.world()
+                .resource::<SpaceportUi>()
+                .browser
+                .results(app.world().resource::<Game>())
+                .is_empty()
+        );
+        assert_eq!(app.world().get::<Node>(row).unwrap().display, Display::None);
+        apply(&mut app, Action::Close)?;
+        apply(&mut app, Action::Vehicles)?;
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().browser.query,
+            "missing"
+        );
+        assert_eq!(
+            app.world().resource::<SpaceportUi>().browser.selected,
+            Some(VehicleId(0))
+        );
+        assert!(apply(&mut app, Action::SelectVehicle(VehicleId(18))).is_err());
+        assert!(apply(&mut app, Action::SelectVehicle(VehicleId(usize::MAX))).is_err());
+        assert_eq!(app.world().resource::<Game>().simulation.date.tick(), 0);
+        Ok(())
+    }
+    #[test]
+    fn vehicle_search_and_name_use_utf8_safe_source_byte_limits_and_capture_shortcuts() -> Result<()>
+    {
+        let mut app = app()?;
+        apply(&mut app, Action::Vehicles)?;
+        for field in [Field::Search, Field::Name] {
+            apply(&mut app, Action::Edit(field))?;
+            key(&mut app, KeyCode::KeyN, Some(&"字".repeat(100)));
+            assert_eq!(
+                app.world().resource::<SpaceportUi>().value(field).len(),
+                252
+            );
+            key(&mut app, KeyCode::KeyP, Some("é"));
+            assert_eq!(
+                app.world().resource::<SpaceportUi>().value(field).len(),
+                254
+            );
+            key(&mut app, KeyCode::KeyI, Some("x"));
+            assert_eq!(
+                app.world().resource::<SpaceportUi>().value(field).len(),
+                254
+            );
+            key(&mut app, KeyCode::Backspace, None);
+            assert_eq!(
+                app.world().resource::<SpaceportUi>().value(field).len(),
+                252
+            );
+            key(&mut app, KeyCode::Enter, None);
+        }
+        assert!(app.world().resource::<SpaceportUi>().open);
+        assert!(app.world().resource::<Game>().paused);
+        assert_eq!(app.world().resource::<Game>().simulation.date.tick(), 0);
+        Ok(())
     }
 
     #[test]

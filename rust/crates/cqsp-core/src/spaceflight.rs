@@ -36,22 +36,27 @@ impl LaunchVehicle {
     /// These conversions intentionally match the original design window, not its labels.
     pub fn design(name: String, reliability: f64, fairing: f64, mass: f64) -> Result<Self> {
         ensure!(
-            reliability.is_finite()
-                && (0.0..=100.0).contains(&reliability)
-                && fairing.is_finite()
-                && fairing >= 0.0
-                && mass.is_finite()
-                && mass >= 0.0,
+            reliability.is_finite() && fairing.is_finite() && mass.is_finite(),
             "Invalid launch vehicle design"
+        );
+        let [reliability, fairing, mass] = [reliability, fairing, mass].map(|value| value as f32);
+        ensure!(
+            reliability.is_finite() && fairing.is_finite() && mass.is_finite(),
+            "Design exceeds float input range"
         );
         Ok(Self {
             name,
             delta_v: 0.0,
-            reliability,
-            fairing_size: fairing / 100.0,
-            mass_to_orbit: mass,
+            reliability: f64::from(reliability),
+            fairing_size: f64::from(fairing / 100.0),
+            mass_to_orbit: f64::from(mass),
             manufacture_time: 90 * DAY,
         })
+    }
+    pub fn matches(&self, query: &str) -> bool {
+        self.name
+            .to_ascii_lowercase()
+            .contains(&query.to_ascii_lowercase())
     }
 }
 
@@ -829,6 +834,28 @@ mod tests {
         Ok(())
     }
     #[test]
+    fn designs_keep_float_inputs_signed_manual_values_and_reject_non_finite_values() -> Result<()> {
+        let vehicle = LaunchVehicle::design("Signed".into(), 125.5, -10.123456789, -1.75)?;
+        assert_eq!(vehicle.reliability, 125.5);
+        assert_eq!(
+            vehicle.fairing_size,
+            f64::from(-10.123456789_f64 as f32 / 100.0)
+        );
+        assert_eq!(vehicle.mass_to_orbit, -1.75);
+        for value in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY, f64::MAX] {
+            for inputs in [[value, 0.0, 0.0], [0.0, value, 0.0], [0.0, 0.0, value]] {
+                assert!(
+                    LaunchVehicle::design("Invalid".into(), inputs[0], inputs[1], inputs[2])
+                        .is_err()
+                );
+            }
+        }
+        assert!(vehicle.matches("sIGnEd"));
+        assert!(vehicle.matches(""));
+        assert!(!vehicle.matches("missing"));
+        Ok(())
+    }
+    #[test]
     fn manufacturing_finishes_at_boundary_without_charging_template_costs() -> Result<()> {
         let mut simulation = load()?;
         let city = cape(&simulation);
@@ -838,7 +865,10 @@ mod tests {
             LaunchVehicle::design("Test rocket".into(), 95.0, 10.0, 5.0)?,
         )?;
         assert_eq!(simulation.vehicles[vehicle.0].reliability, 95.0);
-        assert_eq!(simulation.vehicles[vehicle.0].fairing_size, 0.1);
+        assert_eq!(
+            simulation.vehicles[vehicle.0].fairing_size,
+            f64::from(0.1_f32)
+        );
         assert!(
             simulation
                 .launch_vehicle(

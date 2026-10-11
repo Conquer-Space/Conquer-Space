@@ -31,9 +31,10 @@ Release clients use the Windows GUI subsystem, matching the original release:
 double-clicking does not open a separate console. Pipe `--help`/`--paths` output
 in PowerShell. The supplied `run-smoke.ps1 -Executable ./cqsp-client.exe` waits
 for offscreen GPU checks to complete, including GUI-subsystem releases.
-The default scenario verifies all 39 screens. Add `-Scenario Inspection` for a
+The default scenario verifies all 43 screens. Add `-Scenario Inspection` for a
 focused three-screen production/Moon/Sun check (`--smoke-inspection` directly).
 Use `-Scenario Policy` for four subsidy/labor/tax screens (`--smoke-policy`).
+Use `-Scenario Vehicles` for four vehicle list/filter/design screens (`--smoke-vehicles`).
 
 The Rust app is deliberately **silent**: no music, effects or sound-device backend
 are built in. Original sound assets are left untouched. Run
@@ -178,6 +179,16 @@ null parent is displayed as `Null Entity!`, matching the source name helper.
 **Space Access** requires the source space-program tag. Projects has no implemented
 source window, and Situations retains the previous sidebar selection as upstream.
 Sidebar/inspection layout is native, not an exact ImGui/RmlUi reproduction.
+Space Access opens the launch-vehicle browser: country-only insertion-ordered
+designs, eight per page, ASCII case-insensitive filtering and a separate retained
+selection. Filtering can hide the selected row without hiding its details.
+The source design draft starts with an empty name and zero numeric fields;
+creating closes the editor without selecting the new vehicle. Draft/filter/selection
+survive reopening. Names and queries allow 254 UTF-8 bytes without splitting a
+character. Designs retain float input/division precision and the original display's
+reliability-times-100 quirk. Manual signed/out-of-range finite inputs remain possible
+as in ImGui's unclamped text entry; non-finite/float-overflow values are rejected.
+The separate Spaceports / missions view retains its convenience draft/selection.
 
 The separate map toolbar cycles all recipes and toggles **Construct / cancel (B)**.
 **Search recipes** opens the native, case-insensitive picker. Opening clears its

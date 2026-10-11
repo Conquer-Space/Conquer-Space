@@ -23,6 +23,8 @@ body's orbit without moving the camera. Economy offers subsidy/labor tabs and an
 explicit recipe picker; Budget has a separate paged absolute-tax table.
 Space Access requires the source space-program tag. Projects/Situations
 retain their upstream unimplemented behavior. I also opens native inspection.
+Space Access now opens country-only Launch Vehicles with retained filtering/details
+and a source-default design editor; use Spaceports / missions for the extended port view.
 Escape opens the pause menu after starting. Options provides the original 15
 resolution presets and fullscreen; audio is intentionally unavailable. Save
 preferences writes only %LOCALAPPDATA%/ConquerSpaceRust/settings.hjson; --settings
@@ -34,7 +36,8 @@ Use the supplied run-smoke.ps1 -Executable ./cqsp-client.exe for the silent,
 offscreen GPU acceptance run, which waits for both dev and release builds. Captures
 are written beneath target/ in the current working directory; no OS window opens.
 Add -Scenario Inspection for just production and the Moon/Sun exploration screens;
-add -Scenario Policy for four subsidy/labor/tax screens. Full verifies all 39 captures.
+add -Scenario Policy for four subsidy/labor/tax screens, or -Scenario Vehicles for
+four vehicle list/filter/design screens. Full verifies all 43 captures.
 cqsp-sim.exe --days 365 --seed 42 runs renderer-free stability checks.
 
 The port and original game are GPL-3.0-or-later; see LICENSE.txt. Font notices are

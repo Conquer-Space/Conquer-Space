@@ -115,6 +115,7 @@ struct Smoke {
     elapsed: f32,
     captures: u8,
     expected_captures: u8,
+    end_stage: u8,
 }
 
 #[derive(Resource)]
@@ -148,6 +149,7 @@ fn main() -> Result<()> {
     let mut smoke = false;
     let mut inspection_smoke = false;
     let mut policy_smoke = false;
+    let mut vehicle_smoke = false;
     let mut print_paths = false;
     let mut saves_root = None;
     let mut settings_path = None;
@@ -165,6 +167,10 @@ fn main() -> Result<()> {
             "--smoke-policy" => {
                 smoke = true;
                 policy_smoke = true;
+            }
+            "--smoke-vehicles" => {
+                smoke = true;
+                vehicle_smoke = true;
             }
             "--paths" => print_paths = true,
             "--settings" => {
@@ -188,6 +194,7 @@ fn main() -> Result<()> {
                 println!("T: star-system tree / orbit filter; double-click names to focus");
                 println!("--smoke-inspection: offscreen production and exploration checks only");
                 println!("--smoke-policy: offscreen subsidy, labor and tax checks only");
+                println!("--smoke-vehicles: offscreen vehicle list, filter and design checks only");
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -343,7 +350,9 @@ fn main() -> Result<()> {
         .init_resource::<sidebar_ui::Sidebar>()
         .insert_resource(Smoke {
             enabled: smoke,
-            stage: if policy_smoke {
+            stage: if vehicle_smoke {
+                79
+            } else if policy_smoke {
                 71
             } else if inspection_smoke {
                 65
@@ -352,12 +361,21 @@ fn main() -> Result<()> {
             },
             elapsed: 0.0,
             captures: 0,
-            expected_captures: if policy_smoke {
+            expected_captures: if vehicle_smoke || policy_smoke {
                 4
             } else if inspection_smoke {
                 3
             } else {
-                39
+                43
+            },
+            end_stage: if vehicle_smoke {
+                86
+            } else if policy_smoke {
+                78
+            } else if inspection_smoke {
+                70
+            } else {
+                86
             },
         })
         .insert_resource(InitialAssets {
@@ -442,6 +460,7 @@ fn main() -> Result<()> {
                 )
                     .chain(),
                 spaceport_ui::update,
+                spaceport_ui::vehicles::update,
                 inspection_ui::update,
                 inspection_ui::update_plot,
                 inspection_ui::update_pies,
@@ -1095,6 +1114,8 @@ fn verify_capture(
     let mut production_columns = 0;
     let mut exploration_heading = false;
     let mut policy_heading = false;
+    let mut vehicle_heading = false;
+    let mut vehicle_filtered = false;
     for (text, node, transform, production_cell) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
@@ -1163,6 +1184,9 @@ fn verify_capture(
         ]
         .iter()
         .any(|heading| text.0.starts_with(heading));
+        vehicle_heading |= text.0.starts_with("LAUNCH VEHICLES:");
+        vehicle_filtered |=
+            text.0.starts_with("LAUNCH VEHICLES:") && text.0.contains("· 1 matches · page 1 / 1");
     }
     assert!(
         checked
@@ -1287,6 +1311,12 @@ fn verify_capture(
     }
     if inspector.is_budget() || inspector.is_economy() {
         assert!(policy_heading, "Policy workflow heading missing");
+    }
+    if ui.viewing_vehicles() {
+        assert!(vehicle_heading, "Launch vehicle browser/detail missing");
+        if matches!(smoke.stage, 83 | 87) {
+            assert!(vehicle_filtered, "Vehicle filter must show just Rocket 11");
+        }
     }
     if inspector.is_demographics() {
         let mut verified = 0;
@@ -1497,6 +1527,18 @@ fn capture_smoke(commands: &mut Commands, target: &SmokeTarget, name: &str) {
             screenshot_path(name).expect("Smoke screenshot directory"),
         ));
 }
+fn smoke_usa(game: &mut Game) -> usize {
+    let usa = game
+        .world
+        .countries
+        .iter()
+        .position(|country| country.identifier == "usa")
+        .unwrap();
+    game.session.return_to_selection();
+    game.session.select(usa);
+    game.session.start();
+    usa
+}
 
 #[allow(clippy::too_many_arguments)]
 fn smoke_test(
@@ -1529,6 +1571,16 @@ fn smoke_test(
         return;
     }
     smoke.elapsed = 0.0;
+    if smoke.stage > smoke.end_stage {
+        assert_eq!(
+            smoke.captures, smoke.expected_captures,
+            "Smoke check: every requested capture must be verified"
+        );
+        assert!(!construction.armed, "Load must cancel stale painting");
+        println!("SMOKE: complete.");
+        exit.write(AppExit::Success);
+        return;
+    }
     if !smoke.stage.is_multiple_of(2) {
         for (text, layout) in &text_layouts {
             assert!(
@@ -2205,14 +2257,7 @@ fn smoke_test(
         ),
         65 => {
             if game.session.player_country.is_none() {
-                let usa = game
-                    .world
-                    .countries
-                    .iter()
-                    .position(|country| country.identifier == "usa")
-                    .unwrap();
-                game.session.select(usa);
-                game.session.start();
+                smoke_usa(&mut game);
             }
             game.simulation
                 .settlements
@@ -2261,16 +2306,9 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "exploration-sun.png",
         ),
-        71 if smoke.expected_captures != 3 => {
+        71 => {
             if game.session.player_country.is_none() {
-                let usa = game
-                    .world
-                    .countries
-                    .iter()
-                    .position(|country| country.identifier == "usa")
-                    .unwrap();
-                game.session.select(usa);
-                game.session.start();
+                smoke_usa(&mut game);
             }
             sidebar.select(
                 sidebar_ui::Selection::Economy,
@@ -2333,15 +2371,66 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "tax-last-page.png",
         ),
-        _ => {
-            assert_eq!(
-                smoke.captures, smoke.expected_captures,
-                "Smoke check: every requested capture must be verified"
+        79 => {
+            let usa = smoke_usa(&mut game);
+            for index in 0..12 {
+                let vehicle = cqsp_core::spaceflight::LaunchVehicle::design(
+                    format!("Rocket {index:02}"),
+                    95.123456789,
+                    10.123456789,
+                    5.123456789,
+                )
+                .unwrap();
+                game.simulation.design_vehicle(usa, vehicle).unwrap();
+            }
+            sidebar.select(
+                sidebar_ui::Selection::Space,
+                &mut game,
+                &mut inspector,
+                &mut ui,
             );
-            assert!(!construction.armed, "Load must cancel stale painting");
-            println!("SMOKE: complete.");
-            exit.write(AppExit::Success);
+            let first = game.simulation.countries[usa].vehicles[0];
+            ui.apply(spaceport_ui::Action::SelectVehicle(first), &mut game)
+                .unwrap();
         }
+        80 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "vehicle-browser.png",
+        ),
+        81 => {
+            ui.apply(spaceport_ui::Action::VehiclePage(false), &mut game)
+                .unwrap();
+            ui.apply(
+                spaceport_ui::Action::Edit(spaceport_ui::Field::Search),
+                &mut game,
+            )
+            .unwrap();
+            ui.enter_text("ROCKET 11");
+        }
+        82 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "vehicle-filter.png",
+        ),
+        83 => {
+            ui.apply(spaceport_ui::Action::AddVehicle, &mut game)
+                .unwrap();
+        }
+        84 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "vehicle-design.png",
+        ),
+        85 => {
+            ui.apply(spaceport_ui::Action::Design, &mut game).unwrap();
+        }
+        86 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "vehicle-designed.png",
+        ),
+        _ => panic!("Unknown smoke stage {}", smoke.stage),
     }
     smoke.stage += 1;
 }

@@ -646,8 +646,50 @@ apply, ledger-only removal, labor ownership independence and seven-page dragging
 Focused Policy smoke checks four fresh offscreen screens with pixel/text assertions.
 This slice passes 160 unit tests and the silent dependency audit. The four-screen
 check passes in debug and an executable-relative release bundle from a fresh
-working directory. The full scenario is extended to 39 captures; whole-game
+working directory. The full release scenario passes all 39 captures. All 34 prior
+differential tests and warning-free Clippy also pass; whole-game
 parity and native-window acceptance are still open.
+
+## Launch-vehicle browser and float design inputs
+
+Space Access now opens the source's country-only Launch Vehicles workflow, guarded
+by SpaceCapability, instead of the extended port panel. All designs remain reachable
+in insertion order with native eight-row paging. ASCII case-insensitive substring
+filtering includes every design for an empty query, and does not clear a hidden
+selection or its inspection detail. Browser selection/draft are independent of the
+extended spaceport view. The source creator begins with an empty name and three
+zero float inputs; design adds to the country's list, closes the editor and does
+not auto-select. Draft, selection, filter and editor state survive reopening.
+
+Designs now widen float inputs only after the source's float fairing / 100 division.
+Earlier Rust double arithmetic differed for fractional values. The source's finite
+manual signed/out-of-range entries remain valid: DragFloat's fairing/mass bounds
+are equal (unbounded), and reliability text entry lacks AlwaysClamp. Rust rejects
+non-finite and float-overflow inputs rather than storing invalid values. Detail
+preserves reliability * 100, raw fmt-style double strings, tons and the source's
+`Faring Size` label. The original 255-byte name/search buffers become 254 payload
+bytes plus a conceptual terminator; native editing never splits UTF-8. Native
+inline creator and paging remain presentation differences from two ImGui windows.
+
+A new actual-component/source-mapped corpus uses LaunchVehicle, SpaceCapability,
+Name/GetName and fmt with the original conversion/filter/detail branches. Seven
+designs cover zero/empty names, fractional rounding, float integer precision,
+subnormals, signed zero, signed manual values and large finite floats; nine queries
+cover case, punctuation, empty/missing and UTF-8 byte matching. Numeric fields are
+compared bit-for-bit, detail strings exactly, and list membership/order exactly.
+This does not execute original ImGui. Three native workflow tests cover drafts,
+no auto-selection, independent views, 18 designs/three pages, foreign/invalid IDs,
+one-shot clicks, retained hidden selection, byte bounds and shortcut capture;
+a core test covers signed/invalid design inputs. Four focused offscreen captures
+exercise list, single-result filtering with retained detail, creation and return.
+
+This slice passes 164 unit tests and warning-free Clippy. All 34 live C++
+comparisons pass in debug and release; the recorded component corpus also passes.
+The silent release bundle passes all four focused captures from a fresh external
+working directory. Visual inspection confirms one filtered result while the
+previous selection's details remain visible, and the empty/zero creation draft.
+The expanded 43-capture full release scenario is being verified separately;
+this milestone does not establish whole-game parity or native-window acceptance.
 
 ## Next acceptance gates
 
@@ -658,8 +700,9 @@ parity and native-window acceptance are still open.
 2. Extend spacecraft comparisons to broader planet transfers and malformed command
    boundaries; seeded outbound missions, lunar returns, SOI ordering and three
    launch epochs are covered.
-3. Extend native spaceport screens with filtering/inspection detail and dispatch
-   boundary corpora; manufacturing, trade orders and lunar delivery are reference-tested.
+3. Extend spaceport dispatch boundary corpora; the native vehicle browser now has
+   filtering/detail and float design comparisons. Manufacturing, trade orders and
+   lunar delivery are reference-tested.
 4. Replace remaining Lua-driven interfaces with native screens/actions; complete
    supported project/modifier controls, richer production/entity tooltips,
    and further market/history inspection. Distinguish source stubs from implemented workflows.

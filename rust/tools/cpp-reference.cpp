@@ -1049,6 +1049,48 @@ void PrintPopulation() {
     WriteJson(output); std::cout << '\n';
 }
 
+void PrintVehicles() {
+    // Actual LaunchVehicle/SpaceCapability/Name; conversion/filter/detail branches
+    // are mapped from launchvehiclewindow.cpp, not execution of ImGui.
+    cqsp::core::Universe universe;
+    auto country = universe.create();
+    auto& capability = universe.emplace<SpaceCapability>(country);
+    auto input = ReadInput();
+    Hjson::Value output, values(Hjson::Type::Vector), details(Hjson::Type::Vector);
+    for (int index = 0; index < input["designs"].size(); ++index) {
+        const auto& row = input["designs"][index];
+        auto entity = universe.create();
+        auto& vehicle = universe.emplace<LaunchVehicle>(entity);
+        float reliability = static_cast<float>(row[1].to_double());
+        float fairing = static_cast<float>(row[2].to_double());
+        float mass = static_cast<float>(row[3].to_double());
+        vehicle.reliability = static_cast<double>(reliability);
+        vehicle.fairing_size = static_cast<double>(fairing / 100.f);
+        vehicle.mass_to_orbit = static_cast<double>(mass);
+        vehicle.manufacture_time = StarDate::DAY * 90;
+        universe.emplace<Name>(entity, row[0].to_string());
+        capability.launch_vehicle_list.push_back(entity);
+        values.push_back(Numbers({vehicle.reliability, vehicle.fairing_size, vehicle.mass_to_orbit, static_cast<double>(vehicle.manufacture_time)}));
+        details.push_back(fmt::format("{}\nReliability: {}%\nMass to Orbit: {} tons\nFaring Size: {} m3", cqsp::core::util::GetName(universe, entity), vehicle.reliability * 100, vehicle.mass_to_orbit, vehicle.fairing_size));
+    }
+    auto lower = [](std::string value) {
+        std::transform(value.begin(), value.end(), value.begin(), [](unsigned char c) { return std::tolower(c); });
+        return value;
+    };
+    Hjson::Value matches(Hjson::Type::Vector);
+    for (int index = 0; index < input["queries"].size(); ++index) {
+        auto query = lower(input["queries"][index].to_string());
+        Hjson::Value found(Hjson::Type::Vector);
+        for (int vehicle_index = 0; vehicle_index < capability.launch_vehicle_list.size(); ++vehicle_index) {
+            auto name = lower(cqsp::core::util::GetName(universe, capability.launch_vehicle_list[vehicle_index]));
+            if (query.empty() || name.find(query) != std::string::npos) found.push_back(vehicle_index);
+        }
+        matches.push_back(found);
+    }
+    output["values"] = values; output["details"] = details; output["matches"] = matches;
+    WriteJson(output);
+}
+
 void PrintManufacturing() {
     spdlog::set_level(spdlog::level::off);
     cqsp::core::Game game;
@@ -1868,6 +1910,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--population") { PrintPopulation(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--combined-economy") { PrintCombinedEconomy(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--manufacturing") { PrintManufacturing(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--vehicles") { PrintVehicles(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production") { PrintProduction(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--orbit-grid") {
         PrintOrbitGrid();

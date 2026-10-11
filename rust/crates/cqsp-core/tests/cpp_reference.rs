@@ -127,6 +127,74 @@ fn production_summary_columns_colors_progress_and_number_formats_match_source() 
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; actual LaunchVehicle/SpaceCapability/Name with source-mapped design/filter/detail"]
+fn vehicle_float_designs_filtering_and_inspection_match_source() {
+    use cqsp_core::{number_display::float, spaceflight::LaunchVehicle};
+    let designs = [
+        ("", 0.0, 0.0, 0.0),
+        ("Atlas / Centaur", 95.0, 10.0, 5.0),
+        ("ATLAS II", 99.123456789, 123.456789, 0.000123456789),
+        ("lunar rocket", 100.0, 500.0, 16777217.0),
+        ("étoile Alpha", -0.0, 1e-40, -0.0),
+        ("Signed manual inputs", -2.5, -10.123456, -1.75),
+        ("Unclamped reliability", 125.5, 3e38, 3e38),
+    ];
+    let vehicles: Vec<_> = designs
+        .iter()
+        .map(|&(name, reliability, fairing, mass)| {
+            LaunchVehicle::design(name.into(), reliability, fairing, mass).unwrap()
+        })
+        .collect();
+    let queries = [
+        "", "aTlAs", " / ", "ROCKET", "Alpha", "étoile", "ÉTOILE", "missing", "manual",
+    ];
+    let reference = reference_output(
+        Some("--vehicles"),
+        &json!({"designs":designs,"queries":queries}).to_string(),
+    );
+    for (index, vehicle) in vehicles.iter().enumerate() {
+        // JSON roundtrips preserve bits, so guard float truncation/division exactly.
+        for (column, value) in [
+            vehicle.reliability,
+            vehicle.fairing_size,
+            vehicle.mass_to_orbit,
+            vehicle.manufacture_time as f64,
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            assert_eq!(
+                value.to_bits(),
+                reference["values"][index][column]
+                    .as_f64()
+                    .unwrap()
+                    .to_bits(),
+                "design {index}, field {column}"
+            );
+        }
+        let detail = format!(
+            "{}\nReliability: {}%\nMass to Orbit: {} tons\nFaring Size: {} m3",
+            vehicle.name,
+            float(vehicle.reliability * 100.0),
+            float(vehicle.mass_to_orbit),
+            float(vehicle.fairing_size)
+        );
+        assert_eq!(reference["details"][index], detail);
+    }
+    let matches: Vec<_> = queries
+        .into_iter()
+        .map(|query| {
+            vehicles
+                .iter()
+                .enumerate()
+                .filter_map(|(index, vehicle)| vehicle.matches(query).then_some(index))
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    assert_eq!(reference["matches"], json!(matches));
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; actual SatelliteLoader/OrbitalSystem plus source-mapped OrbitFilter branches"]
 fn imported_visibility_and_filter_actions_match_original_orbit_tags() {
     use cqsp_core::{

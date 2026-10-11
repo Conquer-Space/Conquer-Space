@@ -56,7 +56,7 @@ impl Sidebar {
                     .is_some_and(|country| game.simulation.countries[country].space_program)
                 {
                     ports
-                        .apply(spaceport_ui::Action::Open, game)
+                        .apply(spaceport_ui::Action::Vehicles, game)
                         .expect("Open space window");
                 }
                 None

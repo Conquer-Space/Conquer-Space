@@ -2078,7 +2078,8 @@ pub(crate) mod tests {
                 stage: 0,
                 elapsed: 0.0,
                 captures: 0,
-                expected_captures: 35,
+                expected_captures: 43,
+                end_stage: 86,
             })
             .insert_resource(Game {
                 world,
@@ -2151,6 +2152,7 @@ pub(crate) mod tests {
                     )
                         .chain(),
                     spaceport_ui::update,
+                    spaceport_ui::vehicles::update,
                     update,
                     update_plot,
                     update_pies,
