@@ -3005,15 +3005,126 @@ fn every_recipe_with_original_random_stream_matches_production_system() {
     }
 }
 
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; compares actual SysProduction at strict FSM boundaries for all recipes"]
+fn industry_transition_boundary_grid_matches_original_system() {
+    use cqsp_core::{
+        catalog::{Catalog, RecipeId},
+        economy::industry::{Construction, Industry, IndustryState},
+    };
+    let catalog = Catalog::load(&default_data_path()).unwrap();
+    assert_eq!(catalog.recipes.len(), 22);
+    let sustained = 30 * DAY as i32;
+    let stable = 5 * DAY as i32;
+    for recipe in 0..catalog.recipes.len() {
+        let mut cases = Vec::new();
+        for size in [1, 32, 1000] {
+            let minimum = catalog
+                .config
+                .production_config
+                .minimum_utilization(size as f64);
+            for state in [
+                IndustryState::Steady,
+                IndustryState::Maximum,
+                IndustryState::Minimum,
+                IndustryState::Construction,
+                IndustryState::Demolishing,
+                IndustryState::Shrinking,
+                IndustryState::Expanding,
+                IndustryState::Shortage,
+            ] {
+                let create = || {
+                    let mut industry = Industry::new(RecipeId(recipe), size).unwrap();
+                    industry.state = state;
+                    industry.revenue = 999.9999; // ProfitMargin denominator is exactly 1000.
+                    industry.shortage = state == IndustryState::Shortage;
+                    if state == IndustryState::Construction {
+                        industry.construction = Some(Construction {
+                            progress: 0,
+                            maximum: DAY as i32,
+                            levels: 1,
+                        });
+                    }
+                    industry
+                };
+                for sign in [-1.0, 1.0] {
+                    for neighbor in [-1e-12, 0.0, 1e-12] {
+                        let mut industry = create();
+                        industry.profit = sign * 500.0;
+                        industry.cumulative_profit_ratio = sign * 4.5 + neighbor;
+                        industry.continuous_gains = sign as i32 * (sustained - DAY as i32);
+                        industry.stability = stable - DAY as i32;
+                        cases.push(industry);
+                    }
+                    for neighbor in [-1, 0, 1] {
+                        let mut industry = create();
+                        industry.profit = sign * 500.0;
+                        industry.cumulative_profit_ratio = sign * 6.0;
+                        industry.continuous_gains =
+                            sign as i32 * (sustained - DAY as i32) + neighbor;
+                        cases.push(industry);
+                    }
+                }
+                for neighbor in [-1, 0, 1] {
+                    for utilization in [
+                        minimum - 1e-9,
+                        minimum,
+                        minimum + 1e-9,
+                        size as f64 - 1.0 - 1e-9,
+                        size as f64 - 1.0,
+                        size as f64 - 1.0 + 1e-9,
+                    ] {
+                        let mut industry = create();
+                        industry.utilization = utilization;
+                        industry.stability = stable - DAY as i32 + neighbor;
+                        cases.push(industry);
+                    }
+                }
+                for utilization in [
+                    minimum - 1e-9,
+                    minimum,
+                    minimum + 1e-9,
+                    size as f64 - 1e-9,
+                    size as f64,
+                    size as f64 + 1e-9,
+                ] {
+                    let mut industry = create();
+                    industry.utilization = utilization;
+                    industry.profit = -500.0;
+                    cases.push(industry);
+                }
+                for shortage in [false, true] {
+                    let mut industry = create();
+                    industry.shortage = shortage;
+                    cases.push(industry);
+                }
+                if state == IndustryState::Construction {
+                    for progress in [-1, 0, DAY as i32 - 1, DAY as i32, DAY as i32 + 1] {
+                        for levels in [0, 1, 2] {
+                            let mut industry = create();
+                            industry.construction = Some(Construction {
+                                progress,
+                                maximum: DAY as i32,
+                                levels,
+                            });
+                            cases.push(industry);
+                        }
+                    }
+                }
+            }
+        }
+        assert_eq!(cases.len(), 957);
+        compare_production_cases(&catalog, cases, 3, None);
+    }
+}
+
 fn production_case(identifier: &str, seed: Option<u64>) {
     use cqsp_core::{
         catalog::Catalog,
-        economy::industry::{Construction, ConstructionSector, Industry, IndustryState},
+        economy::industry::{Construction, Industry, IndustryState},
     };
     let catalog = Catalog::load(&default_data_path()).unwrap();
     let id = catalog.recipe(identifier).unwrap();
-    let recipe = &catalog.recipes[id.0];
-    let config = catalog.config.production_config;
     let states = [
         IndustryState::Steady,
         IndustryState::Maximum,
@@ -3025,7 +3136,7 @@ fn production_case(identifier: &str, seed: Option<u64>) {
         IndustryState::Shortage,
         IndustryState::Construction,
     ];
-    let mut industries: Vec<_> = states
+    let industries: Vec<_> = states
         .iter()
         .enumerate()
         .map(|(index, &state)| {
@@ -3063,6 +3174,19 @@ fn production_case(identifier: &str, seed: Option<u64>) {
             industry
         })
         .collect();
+    compare_production_cases(&catalog, industries, 12, seed);
+}
+
+fn compare_production_cases(
+    catalog: &cqsp_core::catalog::Catalog,
+    mut industries: Vec<cqsp_core::economy::industry::Industry>,
+    days: usize,
+    seed: Option<u64>,
+) {
+    use cqsp_core::economy::industry::ConstructionSector;
+    let recipe = &catalog.recipes[industries[0].recipe.0];
+    let config = catalog.config.production_config;
+    let count = industries.len();
     let cases: Vec<_> = industries
         .iter()
         .map(|industry| {
@@ -3099,14 +3223,13 @@ fn production_case(identifier: &str, seed: Option<u64>) {
         .input
         .first()
         .map_or(catalog.labor_goods[0], |&(good, _)| good);
-    let days = 12;
     let reference = reference_output(Some("--production"), &json!({
         "prices": catalog.base_prices.values(), "config": [config.profit_multiplier, config.max_factory_delta, config.factory_min_utilization],
         "cases": cases, "days": days, "shortage_good": shortage_good.0, "seed": seed,
         "recipe": {"input": entries(&recipe.input), "capital": entries(&recipe.capital), "output": [recipe.output.0.0 as f64, recipe.output.1],
             "power": recipe.power, "workers": workers, "construction_time": recipe.construction_ticks, "construction_cost": entries(&recipe.construction_cost)}
     }).to_string());
-    let mut markets: Vec<_> = (0..states.len())
+    let mut markets: Vec<_> = (0..count)
         .map(|_| {
             Market::new(
                 &catalog.base_prices,
@@ -3115,13 +3238,13 @@ fn production_case(identifier: &str, seed: Option<u64>) {
             )
         })
         .collect();
-    let mut sectors: Vec<_> = (0..states.len())
+    let mut sectors: Vec<_> = (0..count)
         .map(|_| ConstructionSector {
             cost: 2.0,
             ..ConstructionSector::default()
         })
         .collect();
-    let mut taxes = vec![0.0; states.len()];
+    let mut taxes = vec![0.0; count];
     let mut samples = Vec::new();
     let mut random = cqsp_core::random::LegacyRandom::new(seed.unwrap_or(42));
     for day in 0..days {
@@ -3152,7 +3275,7 @@ fn production_case(identifier: &str, seed: Option<u64>) {
             });
         }
         let rows: Vec<_> = industries.iter_mut().enumerate().map(|(index, industry)| {
-            taxes[index] += industry.produce(&catalog, &mut markets[index], &mut sectors[index]);
+            taxes[index] += industry.produce(catalog, &mut markets[index], &mut sectors[index]);
             json!({"industry": [industry.state as usize as f64, industry.size, industry.utilization, industry.diff,
                 f64::from(industry.shortage), industry.cumulative_profit_ratio, industry.continuous_gains as f64, industry.stability as f64,
                 industry.expertise, industry.revenue, industry.material_costs, industry.wage_cost, industry.tax_cost, industry.construction_cost,

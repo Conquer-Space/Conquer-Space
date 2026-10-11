@@ -371,6 +371,10 @@ An additional 66-case movement corpus compares 16,008 ticks at three epochs,
 including every command kind, lunar return/docking, SOI boundaries, crash handling,
 current/future centers and complete burn/command queues. It preserves the original
 late self-destruct update and ascending-node angle wrapping.
+The production suite also compares 63,162 daily samples at strict profit,
+sustained-gain, stability, utilization, shortage and construction boundaries across
+all eight states, three sizes and all 22 recipes. This does not establish arbitrary
+configuration or whole-economy traversal parity.
 
 Next: remaining native interfaces and broader
 economy differential coverage. These components are not yet whole-game parity verified.
