@@ -31,11 +31,13 @@ Release clients use the Windows GUI subsystem, matching the original release:
 double-clicking does not open a separate console. Pipe `--help`/`--paths` output
 in PowerShell. The supplied `run-smoke.ps1 -Executable ./cqsp-client.exe` waits
 for offscreen GPU checks to complete, including GUI-subsystem releases.
-The default scenario verifies all 45 screens. Add `-Scenario Inspection` for a
+The default scenario verifies all 49 screens. Add `-Scenario Inspection` for a
 focused three-screen production/Moon/Sun check (`--smoke-inspection` directly).
 Use `-Scenario Policy` for four subsidy/labor/tax screens (`--smoke-policy`).
 Use `-Scenario Vehicles` for four vehicle list/filter/design screens (`--smoke-vehicles`).
 Use `-Scenario Tooltips` for factory details and modifier contributions (`--smoke-tooltips`).
+Use `-Scenario Maneuvers` for editable spacecraft controls, rendezvous, landing
+and full orbital/queue inspection (`--smoke-maneuvers`).
 
 The Rust app is deliberately **silent**: no music, effects or sound-device backend
 are built in. Original sound assets are left untouched. Run
@@ -139,7 +141,23 @@ not altitude. Planet textures come from the original asset manifest and rotate w
 their axial tilt/day length. The inspector reports surface latitude/longitude; the
 magenta ground path projects one future spacecraft orbit onto the current planet.
 Body/ship markers remain enlarged for visibility and planets are unlit; original
-lighting/ship models and the complete spacecraft interface remain to be ported.
+lighting/ship-model appearance is outside the functional-parity acceptance target.
+
+**Full spacecraft controls** opens editable, independently retained apoapsis,
+periapsis, new-orbit and departure radii. Values are double-precision and center-relative,
+including scientific notation; click to edit, Ctrl+A replaces, Tab/Shift+Tab changes
+fields, Enter finishes and Escape first ends editing, then closes. Circularization,
+departure, rendezvous (both burns), maneuver-to-point (first burn) and plane matching
+use the original reference-tested planners. Rendezvous targets include every live
+sibling body/spacecraft with native paging; transfer/landing targets are natural
+child bodies, not a hardcoded Moon. Land uses the selected body's first settlement
+and original trigger sequence. Targets and drafts persist on reopening; stale targets,
+absent landing sites and non-finite plans fail without partially appending queues.
+The orbit/vectors/queues view exposes all original orbital fields and burn times,
+plus trigger-command names. The modal captures world shortcuts but leaves playback
+unchanged. The original Lambert button and unused fixed-anomaly marker have no
+functional simulation consumer and are not invented as new features. Broader
+planetary trajectories and live native-window input acceptance remain open.
 
 P or the **Spaceports & missions** button opens the native space screen. Design a
 vehicle, select a port and manufacture it (90 daily steps), then set orbit parameters
@@ -295,14 +313,17 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all 45 completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all 49 completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all 45 PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all 49 PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Floating-card captures verify every tooltip text block, excluding overlapped table
 cells from underlying-text checks. Factory name hover exposes all 21 source-mapped
 details; Max Expertise hover shows the modifier sum and individual contributions.
 These add `target/factory-tooltip.png` and `target/modifier-tooltip.png`.
+Spacecraft checks add `target/spacecraft-controls.png`, `target/spacecraft-rendezvous.png`,
+`target/spacecraft-landing.png` and `target/spacecraft-queues.png`. Opaque modal bounds
+exclude covered background labels; every visible maneuver field and heading is checked.
 Consumption captures verify actual slice pixels in both population pies, including
 cost/per-capita and count/whole-segment modes with a hidden legend entry.
 Focused-spacecraft captures also verify texture color variation and ground-track

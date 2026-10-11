@@ -3308,6 +3308,136 @@ fn compare_production_cases(
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; actual orbital planners and PushManeuvers, source-mapped spacecraft actions"]
+fn spacecraft_action_queues_and_rendezvous_diagnostics_match_original_components() {
+    use cqsp_core::flight::{Burn, Spacecraft};
+    fn values(orbit: Orbit) -> Value {
+        json!([
+            orbit.semi_major_axis,
+            orbit.eccentricity,
+            orbit.inclination,
+            orbit.ascending_node,
+            orbit.periapsis_argument,
+            orbit.mean_anomaly,
+            orbit.epoch,
+            orbit.true_anomaly,
+            orbit.mu
+        ])
+    }
+    let mut system = SolarSystem::load(&default_data_path()).unwrap();
+    let earth = system.body_id("earth").unwrap();
+    let mut inputs = Vec::new();
+    let mut expected = Vec::new();
+    let mut coverage = vec![[false; 9]; system.bodies.len()];
+    for tick in [0, 144, 10000] {
+        let time = tick as f64 * 600.0;
+        system.update(time);
+        for (index, parent) in system
+            .bodies
+            .iter()
+            .enumerate()
+            .filter(|(_, body)| body.parent.is_some())
+        {
+            let parent_id = cqsp_core::solar_system::BodyId(index);
+            let scale = if parent_id == earth {
+                1.0
+            } else {
+                parent.radius * 2.0 / 12000.0
+            };
+            for eccentricity in [0.0, 0.00001, 0.25] {
+                for inclination in [0.01, 0.3, 1.0] {
+                    let mut source = Orbit {
+                        semi_major_axis: 12000.0 * scale,
+                        eccentricity,
+                        inclination,
+                        ascending_node: 0.2,
+                        periapsis_argument: 0.4,
+                        mean_anomaly: 0.5,
+                        mu: parent.mu,
+                        ..Orbit::default()
+                    };
+                    source.update(time);
+                    let mut target = Orbit {
+                        semi_major_axis: 22000.0 * scale,
+                        eccentricity: 0.0,
+                        inclination: 0.7,
+                        ascending_node: 1.2,
+                        ..source
+                    };
+                    target.update(time);
+                    for radius in [8500.0, 12345.678901234, 30000.0] {
+                        let radius = radius * scale;
+                        let departure = if parent_id == earth {
+                            150000000.123456
+                        } else {
+                            parent.orbit.semi_major_axis * 1.05
+                        };
+                        let state = source.state_at_anomaly(source.true_anomaly);
+                        let input = json!({"tick": tick, "source": values(source), "target": values(target),
+                        "parent": values(parent.orbit), "parent_motion": [parent.kinematics.state.position.x,
+                            parent.kinematics.state.position.y, parent.kinematics.state.position.z, parent.kinematics.state.velocity.x,
+                            parent.kinematics.state.velocity.y, parent.kinematics.state.velocity.z], "radius": radius, "departure": departure});
+                        let intercept = source.coplanar_intercept(target, time);
+                        let plans: [Option<Vec<Burn>>; 9] = [
+                            Some(vec![source.circularize_at_periapsis()]),
+                            Some(vec![source.circularize_at_apoapsis()]),
+                            Some(vec![source.set_apoapsis(radius)]),
+                            Some(vec![source.set_periapsis(radius)]),
+                            source.hohmann_transfer(radius).map(Vec::from),
+                            Some(intercept.into()),
+                            Some(vec![intercept[0]]),
+                            Some(vec![source.match_planes(target)]),
+                            Some(vec![source.depart_body(state, parent, departure)]),
+                        ];
+                        let output: Vec<Value> = plans
+                            .into_iter()
+                            .map(|plan| {
+                                let Some(plan) = plan else { return Value::Null };
+                                let mut ship = Spacecraft::new("fixture".into(), parent_id, source);
+                                if ship.queue_burns(plan, time).is_err() {
+                                    return Value::Null;
+                                }
+                                json!(
+                                    ship.maneuvers
+                                        .iter()
+                                        .map(|burn| [
+                                            burn.delta_v.x,
+                                            burn.delta_v.y,
+                                            burn.delta_v.z,
+                                            burn.time
+                                        ])
+                                        .collect::<Vec<_>>()
+                                )
+                            })
+                            .collect();
+                        for (index, plan) in output.iter().enumerate() {
+                            coverage[parent_id.0][index] |= !plan.is_null();
+                        }
+                        inputs.push(input);
+                        expected.push(json!({"diagnostics": [source.phase_angle(target, time), source.transfer_angle(target),
+                        source.ascending_anomaly(target), source.time_to_anomaly(source.ascending_anomaly(target))], "plans": output}));
+                    }
+                }
+            }
+        }
+    }
+    assert_eq!(inputs.len(), 810);
+    for (parent, covered) in system.bodies.iter().zip(coverage) {
+        if parent.parent.is_some() {
+            assert!(
+                covered.iter().all(|valid| *valid),
+                "{} must exercise every valid planner path: {covered:?}",
+                parent.name
+            );
+        }
+    }
+    compare(
+        &json!(expected),
+        &reference_output(Some("--spacecraft-actions"), &json!(inputs).to_string()),
+    );
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; requires Visual Studio and the legacy headers"]
 fn all_loaded_orbits_match_live_cpp_across_fifty_years() {
     let system = SolarSystem::load(&default_data_path()).unwrap();

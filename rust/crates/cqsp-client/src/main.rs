@@ -32,6 +32,7 @@ mod chart;
 mod construction_ui;
 mod event_ui;
 mod inspection_ui;
+mod maneuver_ui;
 mod navigation_ui;
 mod pie;
 mod playback_ui;
@@ -152,6 +153,7 @@ fn main() -> Result<()> {
     let mut policy_smoke = false;
     let mut vehicle_smoke = false;
     let mut tooltip_smoke = false;
+    let mut maneuver_smoke = false;
     let mut print_paths = false;
     let mut saves_root = None;
     let mut settings_path = None;
@@ -178,6 +180,10 @@ fn main() -> Result<()> {
                 smoke = true;
                 tooltip_smoke = true;
             }
+            "--smoke-maneuvers" => {
+                smoke = true;
+                maneuver_smoke = true;
+            }
             "--paths" => print_paths = true,
             "--settings" => {
                 settings_path = Some(PathBuf::from(
@@ -202,6 +208,9 @@ fn main() -> Result<()> {
                 println!("--smoke-policy: offscreen subsidy, labor and tax checks only");
                 println!("--smoke-vehicles: offscreen vehicle list, filter and design checks only");
                 println!("--smoke-tooltips: offscreen factory and modifier tooltip checks only");
+                println!(
+                    "--smoke-maneuvers: offscreen spacecraft controls, rendezvous, landing and queues"
+                );
                 return Ok(());
             }
             _ => bail!("Unknown argument: {arg}"),
@@ -355,9 +364,12 @@ fn main() -> Result<()> {
         .init_resource::<search_ui::Search>()
         .init_resource::<navigation_ui::Menu>()
         .init_resource::<sidebar_ui::Sidebar>()
+        .init_resource::<maneuver_ui::Menu>()
         .insert_resource(Smoke {
             enabled: smoke,
-            stage: if tooltip_smoke {
+            stage: if maneuver_smoke {
+                91
+            } else if tooltip_smoke {
                 87
             } else if vehicle_smoke {
                 79
@@ -370,16 +382,20 @@ fn main() -> Result<()> {
             },
             elapsed: 0.0,
             captures: 0,
-            expected_captures: if tooltip_smoke {
+            expected_captures: if maneuver_smoke {
+                4
+            } else if tooltip_smoke {
                 2
             } else if vehicle_smoke || policy_smoke {
                 4
             } else if inspection_smoke {
                 3
             } else {
-                45
+                49
             },
-            end_stage: if tooltip_smoke {
+            end_stage: if maneuver_smoke {
+                98
+            } else if tooltip_smoke {
                 90
             } else if vehicle_smoke {
                 86
@@ -388,7 +404,7 @@ fn main() -> Result<()> {
             } else if inspection_smoke {
                 70
             } else {
-                90
+                98
             },
             inspection_hover: None,
         })
@@ -404,17 +420,26 @@ fn main() -> Result<()> {
                 (
                     event_ui::controls.run_if(interactive),
                     event_ui::scroll.run_if(interactive),
+                    (maneuver_ui::controls, maneuver_ui::scroll)
+                        .chain()
+                        .run_if(world_input)
+                        .run_if(event_ui::input_available)
+                        .run_if(search_ui::input_available)
+                        .run_if(navigation_ui::input_available),
                     search_ui::controls
                         .run_if(interactive)
-                        .run_if(event_ui::input_available),
+                        .run_if(event_ui::input_available)
+                        .run_if(maneuver_ui::input_available),
                     search_ui::scroll
                         .run_if(interactive)
-                        .run_if(event_ui::input_available),
+                        .run_if(event_ui::input_available)
+                        .run_if(maneuver_ui::input_available),
                     (navigation_ui::controls, navigation_ui::scroll)
                         .chain()
                         .run_if(interactive)
                         .run_if(event_ui::input_available)
-                        .run_if(search_ui::input_available),
+                        .run_if(search_ui::input_available)
+                        .run_if(maneuver_ui::input_available),
                     (
                         application_ui::controls.run_if(interactive),
                         application_ui::scroll.run_if(interactive),
@@ -430,7 +455,8 @@ fn main() -> Result<()> {
                         .chain()
                         .run_if(event_ui::input_available)
                         .run_if(search_ui::input_available)
-                        .run_if(navigation_ui::input_available),
+                        .run_if(navigation_ui::input_available)
+                        .run_if(maneuver_ui::input_available),
                 )
                     .chain(),
                 (
@@ -449,14 +475,16 @@ fn main() -> Result<()> {
                     .chain()
                     .run_if(event_ui::input_available)
                     .run_if(search_ui::input_available)
-                    .run_if(navigation_ui::input_available),
+                    .run_if(navigation_ui::input_available)
+                    .run_if(maneuver_ui::input_available),
                 simulation_controls.run_if(interactive),
                 system_view::controls
                     .run_if(world_input)
                     .run_if(sidebar_ui::pointer_available)
                     .run_if(event_ui::input_available)
                     .run_if(search_ui::input_available)
-                    .run_if(navigation_ui::input_available),
+                    .run_if(navigation_ui::input_available)
+                    .run_if(maneuver_ui::input_available),
                 system_view::sync_ships,
                 system_view::update,
                 update_globe,
@@ -471,6 +499,7 @@ fn main() -> Result<()> {
                     search_ui::update,
                     navigation_ui::update,
                     sidebar_ui::update,
+                    maneuver_ui::update,
                 )
                     .chain(),
                 spaceport_ui::update,
@@ -607,6 +636,7 @@ fn setup(
     application_ui::spawn(&mut commands, camera, &font);
     search_ui::spawn(&mut commands, camera, &font);
     navigation_ui::spawn(&mut commands, camera, &font);
+    maneuver_ui::spawn(&mut commands, camera, &font);
     sidebar_ui::spawn(&mut commands, camera, &font);
     let event_image = images.add(initial.event.clone());
     event_ui::spawn(
@@ -869,6 +899,7 @@ fn simulation_controls(
     events: Option<Res<event_ui::Events>>,
     search: Option<Res<search_ui::Search>>,
     navigation_menu: Option<Res<navigation_ui::Menu>>,
+    maneuvers: Option<Res<maneuver_ui::Menu>>,
 ) {
     if game.session.player_country.is_none()
         || event_ui::pending(&game).is_some()
@@ -888,7 +919,8 @@ fn simulation_controls(
         && inspector.is_none_or(|ui| !ui.capture_input)
         && construction.is_none_or(|tool| !tool.capture_input)
         && search.is_none_or(|search| !search.capture_input)
-        && navigation_menu.is_none_or(|menu| !menu.capture_input);
+        && navigation_menu.is_none_or(|menu| !menu.capture_input)
+        && maneuvers.is_none_or(|menu| !menu.capture_input);
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
         game.playback_action(playback_ui::Action::Toggle);
     }
@@ -1086,6 +1118,7 @@ fn human_number(value: f64) -> String {
 fn verify_capture(
     capture: On<ScreenshotCaptured>,
     text_nodes: Query<(
+        Entity,
         &Text,
         &ComputedNode,
         &UiGlobalTransform,
@@ -1114,7 +1147,13 @@ fn verify_capture(
     construction: Res<construction_ui::ConstructionTool>,
     menu: Res<application_ui::Menu>,
     event_images: Query<(&ComputedNode, &UiGlobalTransform), With<event_ui::EventImage>>,
-    (search, navigation_menu): (Res<search_ui::Search>, Res<navigation_ui::Menu>),
+    (search, navigation_menu, maneuvers, maneuver_panels, children): (
+        Res<search_ui::Search>,
+        Res<navigation_ui::Menu>,
+        Res<maneuver_ui::Menu>,
+        Query<(Entity, &ComputedNode, &UiGlobalTransform), With<maneuver_ui::Panel>>,
+        Query<&Children>,
+    ),
 ) {
     let pixels = capture
         .image
@@ -1138,6 +1177,20 @@ fn verify_capture(
     let mut vehicle_heading = false;
     let mut vehicle_filtered = false;
     let mut tooltip_checked = 0;
+    let mut maneuver_heading = false;
+    let mut maneuver_fields = 0;
+    let maneuver_bounds: Vec<_> = maneuver_panels
+        .iter()
+        .filter(|(_, node, _)| !node.is_empty())
+        .map(|(entity, node, transform)| {
+            (
+                Rect::from_center_size(transform.affine().translation, node.size()),
+                children
+                    .iter_descendants(entity)
+                    .collect::<std::collections::HashSet<_>>(),
+            )
+        })
+        .collect();
     let tooltip_bounds: Vec<_> = tooltip_cards
         .iter()
         .filter(|(_, node, _)| !node.is_empty())
@@ -1145,7 +1198,7 @@ fn verify_capture(
             Rect::from_center_size(transform.affine().translation, node.size())
         })
         .collect();
-    for (text, node, transform, production_cell, tooltip_glyph) in &text_nodes {
+    for (entity, text, node, transform, production_cell, tooltip_glyph) in &text_nodes {
         if text.0.trim().is_empty() || node.is_empty() {
             continue;
         }
@@ -1154,7 +1207,13 @@ fn verify_capture(
         let max = (center + node.size() / 2.0)
             .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
             .as_uvec2();
-        let covered = tooltip_glyph.is_none()
+        let covered = maneuver_bounds.iter().any(|(bounds, descendants)| {
+            !descendants.contains(&entity)
+                && bounds.min.x < max.x as f32
+                && bounds.max.x > min.x as f32
+                && bounds.min.y < max.y as f32
+                && bounds.max.y > min.y as f32
+        }) || tooltip_glyph.is_none()
             && tooltip_bounds
                 .iter()
                 // A floating tooltip may cover the glyphs but only part of their flex cell.
@@ -1194,6 +1253,7 @@ fn verify_capture(
             "EVENT",
             "SEARCH BODIES / PROVINCES",
             "STAR SYSTEM / ORBIT FILTER",
+            "SPACECRAFT CONTROLS",
         ]
         .contains(&text.0.as_str())
         {
@@ -1219,6 +1279,17 @@ fn verify_capture(
         event_heading |= text.0 == "EVENT";
         search_heading |= text.0 == "SEARCH BODIES / PROVINCES";
         tree_heading |= text.0 == "STAR SYSTEM / ORBIT FILTER";
+        maneuver_heading |= text.0 == "SPACECRAFT CONTROLS";
+        maneuver_fields += usize::from(
+            [
+                "Apoapsis radius (km):",
+                "Periapsis radius (km):",
+                "New orbit radius (km):",
+                "Leave SOI: parent-orbit radius (km):",
+            ]
+            .iter()
+            .any(|field| text.0.starts_with(field)),
+        );
         production_columns +=
             usize::from(cqsp_core::economy::production_summary::COLUMNS.contains(&text.0.as_str()));
         exploration_heading |= text.0.starts_with("EXPLORATION · ");
@@ -1238,12 +1309,27 @@ fn verify_capture(
         checked
             >= if event_ui::pending(&game).is_some() {
                 4
+            } else if maneuvers.open && maneuvers.tab == maneuver_ui::Tab::Details {
+                7 // Heading, five navigation buttons and the complete details/queue block.
             } else {
                 8
             },
         "Smoke check: expected visible text nodes, checked {checked}"
     );
     println!("SMOKE: verified rendered pixels for {checked} text blocks.");
+    if maneuvers.open {
+        assert!(maneuver_heading, "Spacecraft controls heading must render");
+        if maneuvers.tab == maneuver_ui::Tab::Basic {
+            assert_eq!(
+                maneuver_fields, 4,
+                "Every editable maneuver radius must render"
+            );
+        }
+        println!(
+            "SMOKE: verified native spacecraft {:?} controls.",
+            maneuvers.tab
+        );
+    }
     if let Some(hover) = smoke.inspection_hover {
         let card = tooltip_cards
             .iter()
@@ -1481,7 +1567,13 @@ fn verify_capture(
         assert!(verified >= 1, "Smoke check: edited tax slider must render");
         println!("SMOKE: verified {verified} tax slider fill bars.");
     }
-    if navigation.active && !ui.open && !inspector.open && !saves.open && !menu.is_open() {
+    if navigation.active
+        && !ui.open
+        && !inspector.open
+        && !saves.open
+        && !menu.is_open()
+        && !maneuvers.open
+    {
         if navigation.is_surface_focus() {
             let mut colors = std::collections::HashSet::new();
             for y in 250..550 {
@@ -1639,10 +1731,11 @@ fn smoke_test(
     mut inspector: ResMut<inspection_ui::Inspector>,
     mut saves: ResMut<save_ui::Saves>,
     mut construction: ResMut<construction_ui::ConstructionTool>,
-    (mut menu, mut navigation_menu, mut sidebar): (
+    (mut menu, mut navigation_menu, mut sidebar, mut maneuvers): (
         ResMut<application_ui::Menu>,
         ResMut<navigation_ui::Menu>,
         ResMut<sidebar_ui::Sidebar>,
+        ResMut<maneuver_ui::Menu>,
     ),
     mut events: ResMut<event_ui::Events>,
     mut search: ResMut<search_ui::Search>,
@@ -2542,6 +2635,110 @@ fn smoke_test(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "modifier-tooltip.png",
+        ),
+        91 => {
+            smoke_usa(&mut game);
+            ui.apply(spaceport_ui::Action::Close, &mut game).unwrap();
+            inspector.apply(inspection_ui::Action::Close, &mut game);
+            smoke.inspection_hover = None;
+            game.paused = true;
+            if game.simulation.date == StarDate::default() {
+                game.simulation.date = StarDate::from_tick(0);
+            }
+            let time = game.simulation.date.seconds();
+            let system = &mut game.simulation.solar_system;
+            let earth = system.body_id("earth").unwrap();
+            let id = system
+                .launch_ship(
+                    "Acceptance spacecraft".into(),
+                    earth,
+                    cqsp_core::orbit::Orbit {
+                        semi_major_axis: 12000.0,
+                        inclination: 0.3,
+                        ascending_node: 0.2,
+                        periapsis_argument: 0.4,
+                        mean_anomaly: 0.5,
+                        epoch: time,
+                        mu: system.bodies[earth.0].mu,
+                        ..default()
+                    },
+                )
+                .unwrap();
+            system.update(time);
+            navigation.active = true;
+            navigation.select(Focus::Ship(id), system);
+            maneuvers
+                .apply(maneuver_ui::Action::Open, &mut navigation, &mut game)
+                .unwrap();
+            maneuvers
+                .apply(
+                    maneuver_ui::Action::Edit(maneuver_ui::Field::Apoapsis),
+                    &mut navigation,
+                    &mut game,
+                )
+                .unwrap();
+            maneuvers.enter_text("14567.8901234567");
+        }
+        92 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "spacecraft-controls.png",
+        ),
+        93 => {
+            maneuvers
+                .apply(
+                    maneuver_ui::Action::Tab(maneuver_ui::Tab::Rendezvous),
+                    &mut navigation,
+                    &mut game,
+                )
+                .unwrap();
+            maneuvers
+                .apply(maneuver_ui::Action::Rendezvous, &mut navigation, &mut game)
+                .unwrap();
+        }
+        94 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "spacecraft-rendezvous.png",
+        ),
+        95 => {
+            maneuvers
+                .apply(
+                    maneuver_ui::Action::Tab(maneuver_ui::Tab::Landing),
+                    &mut navigation,
+                    &mut game,
+                )
+                .unwrap();
+            let moon = game.simulation.solar_system.body_id("moon").unwrap();
+            maneuvers
+                .apply(
+                    maneuver_ui::Action::Target(Focus::Body(moon)),
+                    &mut navigation,
+                    &mut game,
+                )
+                .unwrap();
+            maneuvers
+                .apply(maneuver_ui::Action::Land, &mut navigation, &mut game)
+                .unwrap();
+        }
+        96 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "spacecraft-landing.png",
+        ),
+        97 => {
+            maneuvers
+                .apply(
+                    maneuver_ui::Action::Tab(maneuver_ui::Tab::Details),
+                    &mut navigation,
+                    &mut game,
+                )
+                .unwrap();
+        }
+        98 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "spacecraft-queues.png",
         ),
         _ => panic!("Unknown smoke stage {}", smoke.stage),
     }

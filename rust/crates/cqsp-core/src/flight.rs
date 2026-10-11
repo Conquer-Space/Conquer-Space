@@ -66,6 +66,26 @@ pub enum Command {
     Impulse,
     InterceptAndCircularizeBody,
 }
+impl Command {
+    pub fn name(self) -> &'static str {
+        match self {
+            Self::CircularizeAtApoapsis => "Circularize at apoapsis",
+            Self::CircularizeAtPeriapsis => "Circularize at periapsis",
+            Self::SetApoapsis(_) => "Set apoapsis",
+            Self::SetPeriapsis(_) => "Set periapsis",
+            Self::SetInclination(_) => "Set inclination",
+            Self::MatchPlanes(_) => "Match planes",
+            Self::ForceMatchPlanes(_) => "Force match planes",
+            Self::CoplanarIntercept(_) => "Intercept (first burn)",
+            Self::CoplanarInterceptAndTransfer(_) => "Intercept and transfer",
+            Self::ExitSoi(_) => "Leave sphere of influence",
+            Self::Land(_) => "Land at settlement",
+            Self::SelfDestruct => "Self-destruct",
+            Self::Impulse => "Impulse (upstream no-op)",
+            Self::InterceptAndCircularizeBody => "Intercept and circularize (upstream no-op)",
+        }
+    }
+}
 
 #[derive(Clone, Copy, Debug)]
 pub struct TriggeredCommand {
@@ -127,6 +147,15 @@ impl Spacecraft {
     }
     pub fn queue_burn(&mut self, burn: Burn, current_time: f64) -> Result<()> {
         self.maneuvers.push_back(burn.at(current_time)?);
+        Ok(())
+    }
+    /// Validate the whole plan before appending either half of a transfer.
+    pub fn queue_burns(&mut self, burns: impl IntoIterator<Item = Burn>, time: f64) -> Result<()> {
+        let maneuvers = burns
+            .into_iter()
+            .map(|burn| burn.at(time))
+            .collect::<Result<Vec<_>>>()?;
+        self.maneuvers.extend(maneuvers);
         Ok(())
     }
     pub fn queue_command(&mut self, trigger: Trigger, command: Command) {
@@ -286,12 +315,7 @@ impl Spacecraft {
             }
             Command::Impulse | Command::InterceptAndCircularizeBody => Vec::new(),
         };
-        // Validate the entire command before appending either half of a transfer.
-        let maneuvers = burns
-            .into_iter()
-            .map(|burn| burn.at(time))
-            .collect::<Result<Vec<_>>>()?;
-        self.maneuvers.extend(maneuvers);
+        self.queue_burns(burns, time)?;
         self.commands.pop_front();
         Ok(true)
     }
@@ -436,8 +460,7 @@ impl Orbit {
         }
     }
     pub fn match_planes(self, target: Self) -> Burn {
-        let anomaly =
-            normalize_angle(self.anomaly_from_vector(self.normal().cross(target.normal())));
+        let anomaly = self.ascending_anomaly(target);
         let angle = self
             .normal()
             .normalize()
@@ -472,10 +495,8 @@ impl Orbit {
         ]
     }
     pub fn coplanar_intercept(self, target: Self, time: f64) -> [Burn; 2] {
-        let axis = (self.semi_major_axis + target.semi_major_axis) / 2.0;
-        let transfer_angle = PI - PI * (axis * axis * axis / self.mu).sqrt() * target.mean_motion();
-        let phase = target.true_anomaly_at(time) + target.periapsis_argument
-            - (self.true_anomaly_at(time) + self.periapsis_argument);
+        let transfer_angle = self.transfer_angle(target);
+        let phase = self.phase_angle(target, time);
         let relative_motion = self.mean_motion() - target.mean_motion();
         let mut wait = (phase - transfer_angle) / relative_motion;
         if wait < 0.0 {
@@ -486,6 +507,17 @@ impl Orbit {
             burn.delay += wait;
         }
         burns
+    }
+    pub fn phase_angle(self, target: Self, time: f64) -> f64 {
+        target.true_anomaly_at(time) + target.periapsis_argument
+            - (self.true_anomaly_at(time) + self.periapsis_argument)
+    }
+    pub fn transfer_angle(self, target: Self) -> f64 {
+        let axis = (self.semi_major_axis + target.semi_major_axis) / 2.0;
+        PI - PI * (axis * axis * axis / self.mu).sqrt() * target.mean_motion()
+    }
+    pub fn ascending_anomaly(self, target: Self) -> f64 {
+        normalize_angle(self.anomaly_from_vector(self.normal().cross(target.normal())))
     }
     pub fn depart_body(self, state: StateVector, body: &CelestialBody, radius: f64) -> Burn {
         let parent_orbit = body.orbit;
@@ -563,6 +595,34 @@ mod tests {
         Ok((system, ship))
     }
 
+    #[test]
+    fn an_invalid_second_burn_does_not_append_the_first_or_change_existing_commands() -> Result<()>
+    {
+        let (mut system, id) = launch("earth", 12000.0, 0.25)?;
+        let ship = &mut system.ships[id.0];
+        let valid = Burn {
+            delta_v: DVec3::ZERO,
+            delay: 100.0,
+        };
+        ship.queue_burn(valid, 0.0)?;
+        ship.queue_command(Trigger::Crash, Command::Land(12));
+        for invalid in [
+            Burn {
+                delay: f64::INFINITY,
+                ..valid
+            },
+            Burn {
+                delta_v: DVec3::splat(f64::NAN),
+                ..valid
+            },
+        ] {
+            assert!(ship.queue_burns([valid, invalid], 600.0).is_err());
+            assert_eq!(ship.maneuvers.len(), 1);
+            assert_eq!(ship.maneuvers.front().unwrap().time, 100.0);
+            assert_eq!(ship.commands.len(), 1);
+        }
+        Ok(())
+    }
     #[test]
     fn one_overdue_maneuver_runs_per_tick_at_its_own_epoch() -> Result<()> {
         let (mut system, id) = launch("earth", 12000.0, 0.25)?;

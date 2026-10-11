@@ -48,8 +48,9 @@ Successful long runs establish stability, not gameplay parity.
 | Kepler orbits / state vectors / impulses | Reference-tested components | Circular, elliptic and hyperbolic propagation, position/velocity, state recovery, local-frame burns and timing; all 74 moving asset orbits compared at seven times spanning 50 years |
 | Spacecraft movement / trigger commands | Lunar delivery and boundary corpus reference-tested | Actual SysOrbit/SysSpacePort: five bit-exact seeded outbound missions; 66 movement/command cases across three epochs and 16,008 ticks include every command kind, overdue queues, blocked triggers, SOI boundaries, lunar escape and return/docking; malformed command/entity guards and broader planet transfers remain |
 | Maneuver planning | Reference-tested components and command integration | Circularization, apsis/inclination changes, plane matching, Hohmann and coplanar interception compared to actual original functions; body-departure planner integrated into three original-system lunar return/docking scenarios; broader planet-transfer comparisons remain |
+| Spacecraft maneuver interface | Native functional workflows; planners/queues reference-tested | Independent double-precision radius inputs, circularization/departure, paged live sibling targets, rendezvous/two-burn versus point/one-burn actions, plane matching, selected-body transfer/first-settlement landing, all orbital/vector fields and complete burn queue; 810 actual C++ planner/PushManeuvers fixtures across all ten non-Sun bodies. Lambert/fixed-anomaly placeholders do not require invented effects; live window input and broader trajectories remain |
 | Body hierarchy / movement scheduling | Implemented, ancestry helper reference-tested | Ten-minute scheduler and parent-centered/current/next-tick positions; movement is last, daily cargo unloading occurs after arrival; full original-loop comparison remains |
-| Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; enlarged markers, unlit lighting, ship models, complete controls and universe generation remain |
+| Solar-system view | Implemented native view; rotation/ground coordinates reference-tested | Nine original planet textures, axial tilt/day rotation, body/ship focus, orbit overlays, surface-coordinate inspection and selected-ship ground tracks; free-camera movement and universe generation remain. Enlarged markers, unlit lighting and ship models are cosmetic differences outside functional acceptance |
 | Star-system tree / orbit filter | Actual satellite loader and source-mapped registry behavior reference-tested; native UI integrated | Sorted roots, natural-before-ship branches, all live craft, single/double-click distinction, individual/global ship tags and new-launch visibility; planetary paths unaffected by HideAll. Native modal/paging, ordering and 0.5-second double-click threshold are not ImGui layout/input parity |
 | Industry modifiers / factory controls | Reference-tested components and source-mapped tooltip; native integration | Original Boost Expertise action and bounded subsidy controls target a selected factory; additive/multiplicative accumulation, duplicate removal, base reassignment and multiplier clamp; native cap hover preserves contribution order/duplicates, signs and source suffix-selection quirk |
 | National subsidies / absolute taxes / labor view | Subsidy action reference-tested; native integration | 286 snapshots across all 22 recipes through actual ApplySubsidy, initial lists/stale ownership, fractional/full/raw finite amounts, future factories and repeated UI ledger erasure; native sliders, full lock, one-shot controls and national labor ledgers; global province-only taxes source-mapped and Rust-tested, not actual ImGui execution |
@@ -755,21 +756,61 @@ not arbitrary configurations, invalid C++ conversions or whole-economy traversal
 Mixed-direction labor, combined multi-site ordering and broader stochastic
 boundary/configuration coverage remain open.
 
+## Native spacecraft maneuver workflows
+
+The original SpaceshipWindow actions now have a usable native modal, opened from
+the spacecraft toolbar. Four independent retained text fields preserve double
+precision, scientific notation and source defaults; the planners use center-relative
+radii rather than converting the original misleading altitude labels. Basic actions
+include both circularizations, both apsis changes, Hohmann transfer and leaving the
+current body's sphere of influence. Rendezvous targets include natural children
+and every live sibling spacecraft, with paging, selected-target diagnostics,
+two-burn rendezvous, first-burn interception and plane matching. Landing selects
+any natural child instead of hard-coding Moon and uses its first settlement, as
+upstream. Orbit/vector inspection and the complete timed-burn and trigger queues
+remain available without changing playback.
+
+Numeric editing captures world shortcuts and supports Ctrl+A, Backspace,
+Tab/Shift+Tab, Enter and Escape. Drafts and targets survive close/reopen; running
+time continues, and a closing frame cannot leak input into the world. Missing,
+inactive, foreign-parent or settlement-less targets fail without queue mutation.
+All burns are validated before any part of a multi-burn plan is appended. Source
+Lambert buttons and the unconsumed SetTrueAnomaly marker are not given invented
+simulation effects.
+
+Eight UI tests and one transactional core test cover precision/retention, target
+scope/paging, self-interception rejection, one-shot buttons, running-clock/input
+isolation, all-body selection, landing order and details/queue fields. The actual
+C++ planner/PushManeuvers corpus contains 810 fixtures: ten non-Sun bodies, three
+epochs, eccentricities, inclinations and radius inputs. It compares nine planner
+branches and rendezvous diagnostics with the existing 1e-12 relative tolerance.
+Earth's prior 81 fixtures are retained; other radii scale to each body's surface
+and departure inputs to its parent orbit. Each body must exercise every planner
+branch with at least one valid queue, rather than passing on null results alone.
+Non-finite plans are rejected before invoking C++ queue assertions; this is a
+documented fail-safe policy, not a claim about undefined upstream behavior.
+These comparisons execute real component code with source-mapped UI branches,
+not ImGui, whole trajectories or the full original client loop.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production corpus to mixed-direction labor,
    combined multi-site tick ordering and broader configuration/noise boundaries.
    All recipes, seeded production and strict FSM boundary grids are covered. Controlled
    labor, construction demand, shortages, taxes/subsidies and trade are covered.
-2. Extend spacecraft comparisons to broader planet transfers and malformed command
-   boundaries; seeded outbound missions, lunar returns, SOI ordering and three
-   launch epochs are covered.
+2. Extend spacecraft system comparisons to broader planet-transfer trajectories
+   and malformed command boundaries; planners across all ten non-Sun bodies,
+   seeded outbound missions, lunar returns, SOI ordering and three launch epochs
+   are covered.
 3. Extend spaceport dispatch boundary corpora; the native vehicle browser now has
    filtering/detail and float design comparisons. Manufacturing, trade orders and
    lunar delivery are reference-tested.
-4. Replace remaining Lua-driven interfaces with native screens/actions; complete
-   supported project/modifier controls, remaining entity tooltips,
-   and further market/history inspection. Distinguish source stubs from implemented workflows.
+4. Complete remaining functional interfaces: province/resource/science/selected-good
+   price map modes and their information, free-camera movement, supported context
+   and project/modifier actions, remaining entity tooltips and market/history
+   inspection. Resource/science modes also need the province amenability component
+   (upstream independently seeds it from random_device). Distinguish source stubs
+   from implemented workflows; their missing cosmetic layout is not a blocker.
 5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.
    Full parity requires documented scenario-level comparisons, not file counts.

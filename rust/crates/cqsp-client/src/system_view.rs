@@ -67,6 +67,26 @@ pub(super) enum Focus {
     Ship(ShipId),
 }
 impl Focus {
+    pub fn name(self, system: &SolarSystem) -> Option<&str> {
+        match self {
+            Self::Body(id) => system.bodies.get(id.0).map(|body| body.name.as_str()),
+            Self::Ship(id) => system.ships.get(id.0).map(|ship| ship.name.as_str()),
+        }
+    }
+    pub fn orbit_in(self, system: &SolarSystem, parent: BodyId) -> Option<Orbit> {
+        match self {
+            Self::Body(id) => system
+                .bodies
+                .get(id.0)
+                .filter(|body| body.parent == Some(parent))
+                .map(|body| body.orbit),
+            Self::Ship(id) => system
+                .ships
+                .get(id.0)
+                .filter(|ship| ship.parent == parent && ship.status == FlightStatus::Orbiting)
+                .map(|ship| ship.orbit),
+        }
+    }
     fn visible(self, system: &SolarSystem) -> bool {
         match self {
             Self::Body(_) => true,
@@ -308,10 +328,9 @@ impl Navigation {
             anyhow::bail!("Select a spacecraft first");
         };
         let time = game.simulation.date.seconds();
-        let system = &mut game.simulation.solar_system;
+        let system = &game.simulation.solar_system;
         let moon = system.body_id("moon").expect("Loaded Moon");
-        let target = system.bodies[moon.0].orbit;
-        let ship = &mut system.ships[id.0];
+        let ship = system.ships.get(id.0).context("Unknown spacecraft")?;
         ensure!(
             ship.status == FlightStatus::Orbiting && ship.error.is_none(),
             "Spacecraft is not maneuverable"
@@ -335,29 +354,71 @@ impl Navigation {
                     .set_inclination((ship.orbit.inclination + 5.0_f64.to_radians()).min(PI)),
             ],
             FlightAction::MatchMoon => {
-                ensure!(
-                    system.bodies[moon.0].parent == Some(ship.parent),
-                    "Moon must orbit the same parent"
-                );
+                let target = Focus::Body(moon)
+                    .orbit_in(system, ship.parent)
+                    .context("Moon must orbit the same parent")?;
                 vec![ship.orbit.match_planes(target)]
             }
-            FlightAction::TransferMoon => {
+            FlightAction::MatchPlanes(target)
+            | FlightAction::Rendezvous(target)
+            | FlightAction::Intercept(target) => {
+                let target = target
+                    .orbit_in(system, ship.parent)
+                    .context("Target must be a live object orbiting the same parent")?;
+                match action {
+                    FlightAction::MatchPlanes(_) => vec![ship.orbit.match_planes(target)],
+                    FlightAction::Intercept(_) => {
+                        vec![ship.orbit.coplanar_intercept(target, time)[0]]
+                    }
+                    _ => ship.orbit.coplanar_intercept(target, time).into(),
+                }
+            }
+            FlightAction::LeaveSoi => {
+                let body = &system.bodies[ship.parent.0];
                 ensure!(
-                    system.bodies[moon.0].parent == Some(ship.parent),
-                    "Moon must orbit the same parent"
+                    body.parent.is_some(),
+                    "The Sun has no parent sphere to transfer into"
                 );
-                ship.transfer_to_moon(target, time)?;
-                self.message = "Moon transfer sequence queued.".into();
+                vec![
+                    ship.orbit
+                        .depart_body(ship.kinematics.state, body, self.target_radius),
+                ]
+            }
+            FlightAction::TransferMoon | FlightAction::TransferBody(_) => {
+                let body = if let FlightAction::TransferBody(body) = action {
+                    body
+                } else {
+                    moon
+                };
+                let target = Focus::Body(body)
+                    .orbit_in(system, ship.parent)
+                    .context("Target body must orbit the spacecraft's current parent")?;
+                game.simulation.solar_system.ships[id.0].transfer_to_moon(target, time)?;
+                self.message = "Body transfer sequence queued.".into();
+                return Ok(());
+            }
+            FlightAction::LandBody(body) => {
+                let target = system.bodies.get(body.0).context("Unknown landing body")?;
+                ensure!(
+                    ship.parent == body || target.parent == Some(ship.parent),
+                    "Landing body must be the current parent or its child"
+                );
+                let settlement = game
+                    .simulation
+                    .settlements
+                    .iter()
+                    .position(|site| site.body == body)
+                    .context("Target body has no settlement to land on")?;
+                let system = &mut game.simulation.solar_system;
+                system.ships[id.0].land_on_moon(body, &system.bodies[body.0], settlement, time)?;
+                self.message =
+                    "Landing sequence queued for the target body's first settlement.".into();
                 return Ok(());
             }
         };
-        let maneuvers = burns
-            .into_iter()
-            .map(|burn| burn.at(time))
-            .collect::<Result<Vec<_>>>()?;
-        let count = maneuvers.len();
-        ship.maneuvers.extend(maneuvers);
-        self.message = format!("{count} maneuver(s) queued. Space resumes.");
+        let count = burns.len();
+        game.simulation.solar_system.ships[id.0].queue_burns(burns, time)?;
+        self.message = format!("{count} maneuver(s) queued. Playback is unchanged.");
         Ok(())
     }
 }
@@ -400,6 +461,12 @@ pub(super) enum FlightAction {
     InclinationUp,
     MatchMoon,
     TransferMoon,
+    MatchPlanes(Focus),
+    Rendezvous(Focus),
+    Intercept(Focus),
+    LeaveSoi,
+    TransferBody(BodyId),
+    LandBody(BodyId),
 }
 #[derive(Component)]
 pub(super) struct FlightControls;
@@ -418,6 +485,12 @@ pub(super) fn spawn_controls(panel: &mut ChildSpawnerCommands, font: &Handle<Fon
             },
         ))
         .with_children(|controls| {
+            super::ui_button(
+                controls,
+                font,
+                super::maneuver_ui::Action::Open,
+                "Full spacecraft controls",
+            );
             for (action, label) in [
                 (FlightAction::CircularizePeriapsis, "Circularize Pe"),
                 (FlightAction::CircularizeApoapsis, "Circularize Ap"),

@@ -16,6 +16,7 @@
 #include "core/actions/maneuver/basicmaneuver.h"
 #include "core/actions/maneuver/hohmann.h"
 #include "core/actions/maneuver/rendezvous.h"
+#include "core/actions/maneuver/transfers.h"
 #include "core/actions/maneuver/commands.h"
 #include "core/actions/factoryconstructaction.h"
 #include "core/actions/economy/subsidyhelper.h"
@@ -848,6 +849,61 @@ types::Orbit FlightOrbit(const Hjson::Value& row, entt::entity parent) {
     orbit.M0 = row[5].to_double(); orbit.epoch = row[6].to_double(); orbit.v = row[7].to_double();
     orbit.GM = row[8].to_double(); orbit.reference_body = parent;
     return orbit;
+}
+
+// Actual planner + queue components with actions mapped from SpaceshipWindow.
+// No ImGui execution or undefined/non-finite queue construction is claimed.
+void PrintSpacecraftActions() {
+    auto input = ReadInput();
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int index = 0; index < input.size(); ++index) {
+        const auto row = input[index];
+        cqsp::core::Universe universe("spacecraft-ui-reference");
+        universe.date.SetDate(row["tick"].to_int64());
+        auto parent = universe.create(), ship = universe.create();
+        auto& parent_orbit = universe.emplace<types::Orbit>(parent);
+        parent_orbit = FlightOrbit(row["parent"], entt::null);
+        auto& parent_motion = universe.emplace<types::Kinematics>(parent);
+        auto motion = row["parent_motion"];
+        parent_motion.position = glm::dvec3(motion[0].to_double(), motion[1].to_double(), motion[2].to_double());
+        parent_motion.velocity = glm::dvec3(motion[3].to_double(), motion[4].to_double(), motion[5].to_double());
+        auto& orbit = universe.emplace<types::Orbit>(ship);
+        orbit = FlightOrbit(row["source"], parent);
+        types::Orbit target;
+        target = FlightOrbit(row["target"], parent);
+        types::Kinematics kinematics;
+        kinematics.position = types::toVec3(orbit);
+        kinematics.velocity = types::OrbitVelocityToVec3(orbit, orbit.v);
+        const double time = universe.date.ToSecond(), radius = row["radius"].to_double();
+        Hjson::Value result(Hjson::Type::Map), plans(Hjson::Type::Vector);
+        result["diagnostics"] = Numbers({types::CalculatePhaseAngle(orbit, target, time), types::CalculateTransferAngle(orbit, target),
+            types::AscendingTrueAnomaly(orbit, target), orbit.TimeToTrueAnomaly(types::AscendingTrueAnomaly(orbit, target))});
+        auto plan = [&](std::initializer_list<Maneuver_t> burns) {
+            universe.remove<CommandQueue>(ship);
+            if (std::any_of(burns.begin(), burns.end(), [&](const auto& burn) {
+                return !std::isfinite(time + burn.second) || !std::isfinite(burn.first.x) || !std::isfinite(burn.first.y) || !std::isfinite(burn.first.z);
+            })) { plans.push_back(Hjson::Value(Hjson::Type::Null)); return; }
+            cqsp::core::systems::commands::PushManeuvers(universe, ship, burns);
+            Hjson::Value values(Hjson::Type::Vector);
+            for (const auto& burn : universe.get<CommandQueue>(ship).maneuvers)
+                values.push_back(Numbers({burn.delta_v.x, burn.delta_v.y, burn.delta_v.z, burn.time}));
+            plans.push_back(values);
+        };
+        plan({cqsp::core::systems::CircularizeAtPeriapsis(orbit)});
+        plan({cqsp::core::systems::CircularizeAtApoapsis(orbit)});
+        plan({cqsp::core::systems::SetApoapsis(orbit, radius)});
+        plan({cqsp::core::systems::SetPeriapsis(orbit, radius)});
+        auto hohmann = cqsp::core::systems::HohmannTransfer(orbit, radius);
+        if (hohmann) plan({hohmann->first, hohmann->second}); else plans.push_back(Hjson::Value(Hjson::Type::Null));
+        auto intercept = cqsp::core::systems::CoplanarIntercept(orbit, target, time);
+        plan({intercept.first, intercept.second});
+        plan({intercept.first});
+        plan({cqsp::core::systems::MatchPlanes(orbit, target)});
+        plan({cqsp::core::systems::TransferFromBody(universe, orbit, kinematics, row["departure"].to_double())});
+        result["plans"] = plans;
+        output.push_back(result);
+    }
+    WriteJson(output); std::cout << '\n';
 }
 
 void PrintFlightBoundaries() {
@@ -2014,6 +2070,7 @@ int main(int argc, char** argv) {
         return 0;
     }
     if (argc == 2 && std::string(argv[1]) == "--flight-boundaries") { PrintFlightBoundaries(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--spacecraft-actions") { PrintSpacecraftActions(); return 0; }
     if (argc != 1) { std::cerr << "Unknown reference mode; rebuild tools/build-reference.ps1\n"; return 2; }
     Wallet wallet;
     wallet = 100;

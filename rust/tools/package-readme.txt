@@ -40,7 +40,8 @@ are written beneath target/ in the current working directory; no OS window opens
 Add -Scenario Inspection for just production and the Moon/Sun exploration screens;
 add -Scenario Policy for four subsidy/labor/tax screens, or -Scenario Vehicles for
 four vehicle list/filter/design screens. Add -Scenario Tooltips for factory details
-and modifier contributions. Full verifies all 45 captures.
+and modifier contributions. Add -Scenario Maneuvers for editable spacecraft controls,
+rendezvous, landing and orbital/queue inspection. Full verifies all 49 captures.
 cqsp-sim.exe --days 365 --seed 42 runs renderer-free stability checks.
 
 The port and original game are GPL-3.0-or-later; see LICENSE.txt. Font notices are
