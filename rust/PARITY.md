@@ -6,6 +6,13 @@ The baseline is the checked-out C++ sources and bundled assets (upstream `74b678
 Audio is deliberately excluded at the user's request: the Rust application has no
 music, effects or enabled audio backend. `tools/verify-silent.ps1` guards that contract.
 
+The acceptance target is **functional parity**, not pixel/layout parity. Native
+screens may use different layouts, styling, pagination and equivalent input controls,
+provided the original usable actions and information remain available. Cosmetic
+lighting/model differences are not blockers; missing navigation, gameplay actions,
+information and settings are. Upstream placeholders/no-ops do not require invented
+features. Scenario-level simulation and native-window acceptance still apply.
+
 ## Evidence levels
 
 “Reference-tested” means Rust is compared to output from actual original C++
