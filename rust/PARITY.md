@@ -919,7 +919,8 @@ price-mode replacement, per-change refresh, zero denominators, stale hover IDs a
 system-view routing. The fixture initializes the clock before supplying its test
 values, so a first-load economic tick cannot substitute different input data.
 
-All 189 unit tests (89 client, 100 core), formatting and warning-free Clippy pass.
+All 189 unit tests (89 client, 100 core), all 40 debug/release C++ comparisons
+(39 live plus the recorded corpus), formatting and warning-free Clippy pass.
 The final silent release separately passes six focused map captures and the two
 existing tooltip/three inspection captures; visual
 inspection confirms weighted/undefined summary and price readouts remain legible.
