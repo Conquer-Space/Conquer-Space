@@ -185,6 +185,26 @@ pub(super) fn scroll(
     }
 }
 pub(super) fn description(game: &Game) -> String {
+    if matches!(game.map_mode, Mode::Resources | Mode::Science) {
+        let label = game.map_mode.name();
+        let local = game
+            .hovered
+            .and_then(|id| {
+                let site = game.simulation.settlements.get(id)?;
+                let value = site.amenability?;
+                let score = if game.map_mode == Mode::Resources {
+                    value.resources
+                } else {
+                    value.science
+                };
+                Some(format!(
+                    "\n{} · {} amenability: {score} / 10",
+                    site.name, label
+                ))
+            })
+            .unwrap_or_default();
+        return format!("MAP · {label}\nred: low amenability / green: high amenability{local}");
+    }
     if game.map_mode != Mode::Price {
         return format!("MAP · {}", game.map_mode.name());
     }
@@ -239,7 +259,7 @@ pub(super) fn update(
     }
     for mut text in &mut content {
         text.0 = format!(
-            "{}\nChoose a mode, then close to inspect the Earth map.\nSelected good is retained across modes; prices refresh each tick.\nResource/science overlays and other-body maps are not implemented yet.\n{} goods · page {} / {}",
+            "{}\nChoose a mode, then close to inspect the Earth map.\nSelected good is retained across modes; prices refresh each tick.\nResource/science scores are independently generated per province. Other-body maps remain unimplemented.\n{} goods · page {} / {}",
             description(&game),
             game.simulation.catalog.goods.len(),
             menu.page + 1,
@@ -291,6 +311,34 @@ pub(super) fn update(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn amenability_modes_show_the_correct_field_without_changing_goods_or_clock() -> Result<()> {
+        let mut app = super::super::inspection_ui::tests::app()?;
+        let mut game = app.world_mut().resource_mut::<Game>();
+        let mut menu = Menu::default();
+        menu.apply(Action::Open, &mut game)?;
+        let good = game.map_good;
+        let date = game.simulation.date;
+        game.hovered = Some(0);
+        game.simulation.settlements[0].amenability =
+            Some(cqsp_core::surface::ResourceAmenability {
+                science: 9,
+                resources: 2,
+            });
+        for (mode, score) in [(Mode::Resources, 2), (Mode::Science, 9)] {
+            menu.apply(Action::Mode(mode), &mut game)?;
+            let readout = description(&game);
+            assert!(readout.contains(&format!("{} amenability: {score} / 10", mode.name())));
+            assert!(readout.contains("red: low amenability / green: high amenability"));
+            assert_eq!(game.map_good, good);
+            assert_eq!(game.simulation.date, date);
+        }
+        game.simulation.settlements[0].amenability = None;
+        assert!(!description(&game).contains(" / 10"));
+        game.hovered = Some(usize::MAX);
+        assert!(!description(&game).contains(" / 10"));
+        Ok(())
+    }
     #[test]
     fn all_goods_and_modes_are_reachable_without_economy_mutation_and_bad_ids_fail() -> Result<()> {
         let mut app = super::super::inspection_ui::tests::app()?;
@@ -538,6 +586,32 @@ mod tests {
             .unwrap()[offset..offset + 4]
             .to_vec();
         assert_ne!(after, province);
+        {
+            let mut game = app.world_mut().resource_mut::<Game>();
+            let id = game
+                .world
+                .province_at_uv(0.5 + 77.2 / 360.0, 0.5 - 28.6 / 180.0)
+                .unwrap();
+            game.simulation.settlements[id].amenability =
+                Some(cqsp_core::surface::ResourceAmenability {
+                    science: 10,
+                    resources: 1,
+                });
+        }
+        for (mode, ratio) in [(Mode::Resources, 0.1), (Mode::Science, 1.0)] {
+            app.world_mut().resource_mut::<Game>().map_mode = mode;
+            app.update();
+            let image = app
+                .world()
+                .resource::<Assets<Image>>()
+                .get(&overlay)
+                .unwrap()
+                .data
+                .as_ref()
+                .unwrap();
+            let [r, g, b] = cqsp_core::map::mix_scale(ratio).map(|value| (value * 255.0) as u8);
+            assert_eq!(&image[offset..offset + 4], &[r, g, b, 166]);
+        }
         app.world_mut().resource_mut::<Navigation>().active = true;
         app.update();
         assert_eq!(

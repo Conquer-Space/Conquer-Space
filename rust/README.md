@@ -2,7 +2,7 @@
 
 This is an actively developed port, not a complete replacement for the C++ game.
 It loads the original HJSON country/province definitions and 2K Earth textures, displays
-terrain, political, province/domestic and selected-good price maps, supports globe navigation and picking,
+terrain, political, province/domestic, resource/science and selected-good price maps, supports globe navigation and picking,
 and selects a player country before entering the game view. There is no Lua runtime.
 The Earth economy slice loads original goods, jobs, recipes, populations and industries,
 and runs daily consumption/production/markets/trade with weekly labor redistribution.
@@ -31,7 +31,7 @@ Release clients use the Windows GUI subsystem, matching the original release:
 double-clicking does not open a separate console. Pipe `--help`/`--paths` output
 in PowerShell. The supplied `run-smoke.ps1 -Executable ./cqsp-client.exe` waits
 for offscreen GPU checks to complete, including GUI-subsystem releases.
-The default scenario verifies all 53 screens. Add `-Scenario Inspection` for a
+The default scenario verifies all 55 screens. Add `-Scenario Inspection` for a
 focused three-screen production/Moon/Sun check (`--smoke-inspection` directly).
 Use `-Scenario Policy` for four subsidy/labor/tax screens (`--smoke-policy`).
 Use `-Scenario Vehicles` for four vehicle list/filter/design screens (`--smoke-vehicles`).
@@ -39,16 +39,20 @@ Use `-Scenario Tooltips` for factory details and modifier contributions (`--smok
 Use `-Scenario Maneuvers` for editable spacecraft controls, rendezvous, landing
 and full orbital/queue inspection (`--smoke-maneuvers`).
 Use `-Scenario Maps` for the Earth overlay chooser, last goods page, province map
-and controlled price-map fixture (`--smoke-maps`).
+and controlled price/resource/science fixtures (`--smoke-maps`, six captures).
 
 After starting a country, press M in Earth view to choose terrain, country,
-province, domestic-province or selected-good price overlays. All 56 goods are
+province, domestic-province, resource/science or selected-good price overlays. All 56 goods are
 reachable through paged buttons, independently of the chosen mode. Close with M
 or Escape to inspect the map; the hovered province's selected price and configured
 scale are shown in the left HUD. Prices refresh each tick while selection is retained.
 Running playback continues while choosing a map, but game shortcuts do not leak
 through the modal. Before starting, M retains the terrain/country toggle.
-Resource/science amenability overlays and other-body maps remain unfinished.
+Resource/science overlays use each province's independently generated 1–10 scores
+and display the hovered score. Like upstream, these use an OS-seeded MT19937 stream
+separate from economy noise; `--seed` does not make amenability deterministic.
+The controlled loader API allows repeatable reference fixtures without changing
+the normal entropy policy. Other-body maps remain unfinished.
 Province RGB colors come from the original map bindings; the source red-to-green
 price scale uses local price / (base price * (1 + configured deviation)). Native
 border/lighting/color quantization differ; invalid/non-finite scales are transparent
@@ -329,9 +333,9 @@ longitude wrapping, ray intersections, and selection state transitions.
 Shader pipelines compile synchronously to address intermittent missing UI text in
 captures; sibling labels refresh together when their panel changes. Smoke tests now
 render to a fixed-size GPU image **without creating an OS window** and ignore live
-input. They check glyph layouts, actual text/overlay/plot pixels and all 53 completed
+input. They check glyph layouts, actual text/overlay/plot pixels and all 55 completed
 captures. Background tests work while normal game windows are minimized or closed.
-`tools/run-smoke.ps1` also checks that all 53 PNGs were freshly written in the
+`tools/run-smoke.ps1` also checks that all 55 PNGs were freshly written in the
 working directory, so stale images or failed disk writes cannot pass the wrapper.
 Floating-card captures verify every tooltip text block, excluding overlapped table
 cells from underlying-text checks. Factory name hover exposes all 21 source-mapped
@@ -393,7 +397,8 @@ invalid-good rejection, duplicate lookup, first-tag default jobs, tag precedence
 missing references, empty-map merging and construction-time/cost defaults.
 Power/grid/province infrastructure loaders compare all 1,317 province bindings plus
 controlled default-grid, zero/negative capacity/cost and zoning-conversion boundaries.
-Random resource amenability and malformed scalar/unit cases remain outside this corpus.
+Amenability has a separate controlled MT19937/component draw-order corpus and actual
+ProvinceLoader range checks; malformed scalar/unit cases remain outside this corpus.
 Civilization metadata and initial owned lists match actual original loaders for all
 199 countries. Capital tags remain province-only, and only the USA has a bundled
 space-program tag. All-body daily market history matches actual SysMarketHistory,

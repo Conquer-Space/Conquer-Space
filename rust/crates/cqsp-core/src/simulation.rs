@@ -19,6 +19,7 @@ use crate::{
         ColonizationTarget, Colony, LaunchVehicle, Mission, MissionId, PlanetaryMarket,
         ProjectTemplate, SpacePort, VehicleId,
     },
+    surface::ResourceAmenability,
     timezones::{TimeZoneId, TimeZones},
 };
 use anyhow::{Context, Result, ensure};
@@ -51,6 +52,8 @@ pub struct Settlement {
     pub kind: SurfaceKind,
     /// Map-derived province latitude/longitude in radians; absent for unmapped provinces.
     pub province_center: Option<[f64; 2]>,
+    /// ProvinceLoader's independent random component; CityLoader does not add it.
+    pub amenability: Option<ResourceAmenability>,
     pub time_zone: Option<TimeZoneId>,
     pub is_capital: bool,
     pub zoning: BTreeMap<String, ZoningAllocation>,
@@ -143,6 +146,18 @@ pub struct Simulation {
 
 impl Simulation {
     pub fn load(data: &Path, world: &World, seed: u64) -> Result<Self> {
+        let amenability_seed =
+            getrandom::u32().context("Seeding province amenability from the OS")?;
+        Self::load_with_amenability_seed(data, world, seed, amenability_seed)
+    }
+    /// Deterministic loader fixture. Amenability never consumes the economic RNG.
+    pub fn load_with_amenability_seed(
+        data: &Path,
+        world: &World,
+        seed: u64,
+        amenability_seed: u32,
+    ) -> Result<Self> {
+        let mut amenability_random = LegacyRandom::new(amenability_seed as u64);
         let catalog = Catalog::load(data)?;
         let infrastructure = InfrastructureCatalog::load(data, &catalog)?;
         let solar_system = SolarSystem::load(data)?;
@@ -296,6 +311,7 @@ impl Simulation {
                 body,
                 kind,
                 province_center: None,
+                amenability: (!city).then(|| ResourceAmenability::sample(&mut amenability_random)),
                 time_zone,
                 is_capital,
                 zoning: if city {
@@ -838,6 +854,62 @@ impl SettlementEntry {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn amenability_is_province_only_replayable_and_independent_of_economy_noise() -> Result<()> {
+        let data = crate::default_data_path();
+        let world = World::load(&data)?;
+        let mut first = Simulation::load_with_amenability_seed(&data, &world, 42, 7)?;
+        let mut second = Simulation::load_with_amenability_seed(&data, &world, 42, 99)?;
+        let mut expected = LegacyRandom::new(7);
+        let mut differs = false;
+        for (a, b) in first.settlements.iter().zip(&second.settlements) {
+            if a.is_province() {
+                assert_eq!(
+                    a.amenability,
+                    Some(ResourceAmenability::sample(&mut expected))
+                );
+                differs |= a.amenability != b.amenability;
+            } else {
+                assert_eq!(a.amenability, None);
+                assert_eq!(b.amenability, None);
+            }
+        }
+        assert!(differs);
+        let before: Vec<_> = first
+            .settlements
+            .iter()
+            .map(|site| site.amenability)
+            .collect();
+        assert_eq!(
+            first.random.clone().next_u32(),
+            second.random.clone().next_u32()
+        );
+        for _ in 0..7 {
+            first.advance_day();
+            second.advance_day();
+        }
+        assert_eq!(
+            serde_json::to_value(&first.history)?,
+            serde_json::to_value(&second.history)?
+        );
+        for (a, b) in first.settlements.iter().zip(&second.settlements) {
+            assert_eq!(a.market.price, b.market.price);
+            assert_eq!(a.market.trade, b.market.trade);
+        }
+        assert_eq!(
+            first.random.clone().next_u32(),
+            second.random.clone().next_u32()
+        );
+        assert_eq!(
+            before,
+            first
+                .settlements
+                .iter()
+                .map(|site| site.amenability)
+                .collect::<Vec<_>>()
+        );
+        Ok(())
+    }
     #[test]
     fn province_infrastructure_does_not_invent_city_records_or_power_production() -> Result<()> {
         let data = crate::default_data_path();

@@ -8,14 +8,18 @@ pub enum Mode {
     Country,
     Province,
     Domestic,
+    Resources,
+    Science,
     Price,
 }
 impl Mode {
-    pub const ALL: [Self; 5] = [
+    pub const ALL: [Self; 7] = [
         Self::Terrain,
         Self::Country,
         Self::Province,
         Self::Domestic,
+        Self::Resources,
+        Self::Science,
         Self::Price,
     ];
     pub fn name(self) -> &'static str {
@@ -24,6 +28,8 @@ impl Mode {
             Self::Country => "Countries",
             Self::Province => "Provinces",
             Self::Domestic => "Domestic provinces",
+            Self::Resources => "Resources",
+            Self::Science => "Science",
             Self::Price => "Selected-good prices",
         }
     }
@@ -54,6 +60,19 @@ impl Mode {
                     Self::Domestic => country
                         .and_then(|id| world.countries.get(id))
                         .map_or([150; 3], |owner| owner.color),
+                    Self::Resources | Self::Science => {
+                        return settlement.and_then(|site| site.amenability).map_or(
+                            [0; 4],
+                            |value| {
+                                let score = if self == Self::Resources {
+                                    value.resources
+                                } else {
+                                    value.science
+                                };
+                                scale_rgba(score as f32 / 10.0)
+                            },
+                        );
+                    }
                     Self::Price => {
                         return price_scale(simulation, index, good)
                             .map_or([0; 4], |scale| scale.rgba());
@@ -89,19 +108,23 @@ impl PriceScale {
         })
     }
     pub fn color(self) -> [f32; 3] {
-        let amount = self.ratio as f32;
-        std::array::from_fn(|index| {
-            let red = [194.0, 4.0, 4.0][index] / 255.0;
-            let green = [37.0, 243.0, 7.0][index] / 255.0;
-            red * (1.0 - amount) + green * amount
-        })
+        mix_scale(self.ratio as f32)
     }
     pub fn rgba(self) -> [u8; 4] {
-        let [r, g, b] = self
-            .color()
-            .map(|channel| (channel.clamp(0.0, 1.0) * 255.0) as u8);
-        [r, g, b, 166]
+        scale_rgba(self.ratio as f32)
     }
+}
+/// StarSystemController's float red/green MixScale, without an input clamp.
+pub fn mix_scale(amount: f32) -> [f32; 3] {
+    std::array::from_fn(|index| {
+        let red = [194.0, 4.0, 4.0][index] / 255.0;
+        let green = [37.0, 243.0, 7.0][index] / 255.0;
+        red * (1.0 - amount) + green * amount
+    })
+}
+fn scale_rgba(amount: f32) -> [u8; 4] {
+    let [r, g, b] = mix_scale(amount).map(|channel| (channel.clamp(0.0, 1.0) * 255.0) as u8);
+    [r, g, b, 166]
 }
 pub fn price_scale(simulation: &Simulation, province: usize, good: GoodId) -> Option<PriceScale> {
     let site = simulation.settlements.get(province)?;
@@ -118,6 +141,34 @@ mod tests {
     use super::*;
     use crate::{default_data_path, simulation::Simulation};
     use anyhow::Result;
+    #[test]
+    fn amenability_maps_select_the_correct_component_and_leave_missing_pixels_transparent()
+    -> Result<()> {
+        let world = World::load(&default_data_path())?;
+        let mut simulation =
+            Simulation::load_with_amenability_seed(&default_data_path(), &world, 42, 7)?;
+        let (u, v) = (0.5 + 77.2 / 360.0, 0.5 - 28.6 / 180.0);
+        let id = world.province_at_uv(u, v).unwrap();
+        let offset = (((v * world.height as f32) as u32 * world.width
+            + (u * world.width as f32) as u32)
+            * 4) as usize;
+        simulation.settlements[id].amenability = Some(crate::surface::ResourceAmenability {
+            science: 10,
+            resources: 1,
+        });
+        let resource = Mode::Resources.texture(&world, &simulation, None, None, GoodId(usize::MAX));
+        let science = Mode::Science.texture(&world, &simulation, None, None, GoodId(usize::MAX));
+        assert_eq!(&resource[offset..offset + 4], &scale_rgba(0.1));
+        assert_eq!(&science[offset..offset + 4], &scale_rgba(1.0));
+        assert_ne!(&science[offset..offset + 4], &resource[offset..offset + 4]);
+        let ocean = (world.height / 2 * world.width + world.width / 4) as usize * 4;
+        assert_eq!(&resource[ocean..ocean + 4], &[0; 4]);
+        assert_eq!(&science[ocean..ocean + 4], &[0; 4]);
+        simulation.settlements[id].amenability = None;
+        let missing = Mode::Science.texture(&world, &simulation, None, None, GoodId(0));
+        assert_eq!(&missing[offset..offset + 4], &[0; 4]);
+        Ok(())
+    }
     #[test]
     fn price_scale_preserves_configured_denominator_float_mix_and_unclamped_ratios() {
         let low = PriceScale::new(0.0, 10.0, 0.75).unwrap();

@@ -1703,6 +1703,7 @@ name = "cqsp-core"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "getrandom",
  "glam",
  "image",
  "serde",

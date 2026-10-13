@@ -22,7 +22,7 @@ Successful long runs establish stability, not gameplay parity.
 
 | Area | Status | Evidence / remaining work |
 | --- | --- | --- |
-| Country/province map and globe picking | Implemented native Earth modes | Terrain/country/province/domestic and selected-good price overlays, all 56 goods paged, current local price/configured scale readout, per-tick price refresh; original map fixtures, ray/UV and texture tests, offscreen GPU checks. Palette/selection are source-mapped, not execution of StarSystemController; resource/science amenability and other-body maps remain |
+| Country/province map and globe picking | Implemented native Earth modes; amenability component reference-tested | Terrain/country/province/domestic/resource/science and selected-good price overlays, all 56 goods paged, current local price/configured scale and amenability readout, per-tick price refresh; original map fixtures, ray/UV and texture tests, offscreen GPU checks. Palette/selection are source-mapped, not execution of StarSystemController; other-body maps and context/selection transitions remain |
 | Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus |
 | Civilization metadata / native view | Loader reference-tested; native integration | All 199 countries' wallet/capability/research/tax fields, initial city/province lists and capital tags through actual loaders; native capital, wallet/taxes, paged governed sites/province balances and mission queue; governor and province ownership remain distinct |
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
@@ -30,8 +30,8 @@ Successful long runs establish stability, not gameplay parity.
 | Time-zone definitions / city bindings | Loader and clock reference-tested; native display | All 107 fixed-offset definitions, duplicate last-lookup wins, city bindings, eight clock boundaries per zone and controlled conversion/default cases |
 | Wallet / PID / ledgers / production tuning | Reference-tested components | `tools/cpp-reference.cpp`, recorded and live differential tests |
 | Goods / jobs / zoning / recipes / economy config | Loader reference-tested | Actual original loaders compare all 56 goods, five jobs, ten zoning definitions and 22 recipes; controlled defaults, physical units, invalid-good rejection, duplicate good lookup, first default-job tag, recipe type/tag precedence, missing resources/zoning, empty-map merge and construction-cost scaling |
-| Settlement / population / industry ingestion | Implemented for Earth/Moon; city loader reference-tested | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; full economic province-loader comparison and resource amenability remain |
-| Province zoning / transport / power / grids | Bundled bindings reference-tested; native inspection | Actual power/grid/province loaders compare all 1,317 province records plus defaults, empty infrastructure, zero/negative size/cost, missing grid, unknown zoning and uint32 wrapping; plant capacity only, zero production/empty fuel and no invented city records; malformed unit/scalar conversions and nondeterministic resource amenability remain |
+| Settlement / population / industry ingestion | Implemented for Earth/Moon; city and amenability loader reference checks | 1,067 Earth + 250 Moon provinces + 24 cities; initial economic population 360,099,455 and 20 industries; province-only independent amenability stream, controlled MSVC draw-order and actual loader range checks; full economic province-loader comparison remains |
+| Province zoning / transport / power / grids | Bundled bindings reference-tested; native inspection | Actual power/grid/province loaders compare all 1,317 province records plus defaults, empty infrastructure, zero/negative size/cost, missing grid, unknown zoning and uint32 wrapping; plant capacity only, zero production/empty fuel and no invented city records; malformed unit/scalar conversions remain; amenability has separate component/loader checks below |
 | Wallet and market resets | Combined controlled tick scenario reference-tested | Actual Rust tick loop against original resets/labor/consumption/production/markets/trade/history, all 22 recipes and seven weekly boundaries; full multi-site traversal remains |
 | Construction-sector labor demand | Reference-tested controlled system scenario | Actual InfrastructureSim: zero/one/ten/1,000 capacity, changing wages/taxes, preserved zero-capacity cost and consumption-only purchases; power infrastructure remains |
 | Population consumption | Reference-tested controlled system scenario | Actual SysPopulationConsumption/WalletReset/MarketReset: 30 daily steps, positive/debt wallets, prior income/SOL, wages, double demand and all 56 goods; whole-economy ordering remains |
@@ -850,12 +850,50 @@ tests, formatting, warning-free Clippy and the silent dependency audit. Neither
 run creates a native game window. The full 53-capture run preceded that correction;
 it is not claimed as a second full run of the corrected bundle.
 
-This is Earth-map functionality, not all map-mode parity. Resource/science modes
-still need independently generated province amenability; other-body overlays,
+This was Earth-map functionality, not all map-mode parity. Resource/science modes
+were not included in this milestone (added below); other-body overlays,
 automatic selection/context transitions, colonization tints and live-window/DPI
 acceptance remain open. Existing country highlighting/border/lighting treatment
 is native presentation, not pixel parity. No economy formulas or random draws are
 changed to make a map; audio and Lua remain excluded.
+
+## Resource and science amenability maps
+
+All 1,317 Earth/Moon provinces now receive the source ResourceAmenability component;
+the 24 city records do not. Normal loading independently seeds a 32-bit MT19937
+from OS entropy, matching ProvinceLoader's random_device policy rather than
+silently tying the scores to the economy seed. Each field is uniform in 1–10.
+The controlled loader API accepts a separate amenability seed for replay fixtures.
+MSVC's right-to-left evaluation of the original emplace(distrib(gen), distrib(gen))
+places the first draw in resources and the second in science. None of these draws
+touches the economy RNG, and tick systems leave the scores unchanged.
+
+The native Earth chooser now exposes Resources and Science. Their textures use
+the correct component field divided by 10.f with the original red/green float
+MixScale; ocean, unmapped and missing-component pixels stay transparent. The HUD
+shows the hovered province's score and scale legend. Switching these modes retains
+the selected good and running clock; actual image-cache tests cover both modes.
+Other-body rendering is still not implied by loading Moon's scores.
+
+The new differential test checks 12,288 seeded component initializations over six
+seeds with exact integer fields/draw order, and float colors with 1e-7 tolerance.
+Fifteen controlled scores cover the normal range, signed/extreme integers and
+unclamped color interpolation. Another 128 provinces run through the actual
+unmodified ProvinceLoader, with its own OS seed, checking component presence/range
+and projection of the returned fields. The color projection is source-mapped
+glm::mix/HexToRgb, not execution of StarSystemController. Normal independent
+processes are not expected to have identical random province scores.
+
+The slice passes 187 unit tests (88 client, 99 core), warning-free Clippy and all
+39 debug/release C++ comparisons (38 live plus the recorded corpus). A seven-day test
+uses different amenability seeds and confirms identical economic histories,
+market prices/trade and subsequent economy RNG words, while province scores stay
+fixed. Six focused offscreen debug captures verify every visible goods label,
+both mode buttons, distinct rendered resource/science regions, score readouts
+and existing province/price workflows. Visual inspection confirms readable HUD
+and chooser contents. The silent release bundle builds, resolves local assets
+and passes a renderer-free 365-day stability check. Full release GPU acceptance
+is recorded separately when complete; native-window/DPI acceptance remains open.
 
 ## Next acceptance gates
 
@@ -870,11 +908,10 @@ changed to make a map; audio and Lua remain excluded.
 3. Extend spaceport dispatch boundary corpora; the native vehicle browser now has
    filtering/detail and float design comparisons. Manufacturing, trade orders and
    lunar delivery are reference-tested.
-4. Complete remaining functional interfaces: resource/science amenability and
-   other-body map modes, free-camera movement, supported context
+4. Complete remaining functional interfaces: other-body map modes,
+   free-camera movement, supported context
    and project/modifier actions, remaining entity tooltips and market/history
-   inspection. Resource/science modes also need the province amenability component
-   (upstream independently seeds it from random_device). Distinguish source stubs
+   inspection. Distinguish source stubs
    from implemented workflows; their missing cosmetic layout is not a blocker.
 5. Verify remaining menus, application settings/native-window behavior, package runtime
    prerequisites and input/UI flows. Complete-state saves would need a separate design.

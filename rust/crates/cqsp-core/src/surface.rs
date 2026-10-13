@@ -1,10 +1,24 @@
-//! Row-major float centroids used by the original PlanetProvinceLoader.
+//! Province amenability and row-major float centroids from the original loaders.
 use anyhow::{Context, Result, ensure};
 use image::RgbImage;
 use std::{
     collections::HashMap,
     path::{Component, Path},
 };
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ResourceAmenability {
+    pub science: i32,
+    pub resources: i32,
+}
+impl ResourceAmenability {
+    /// MSVC evaluates ProvinceLoader's emplace(distrib(gen), distrib(gen)) right first.
+    pub fn sample(random: &mut crate::random::LegacyRandom) -> Self {
+        let resources = random.int(1, 10);
+        let science = random.int(1, 10);
+        Self { science, resources }
+    }
+}
 
 pub fn load_province_map(data: &Path, identifier: &str) -> Result<RgbImage> {
     let directory = data.join(match identifier {
@@ -66,6 +80,24 @@ pub fn province_centers(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn amenability_uses_two_independent_bounded_draws_in_msvc_field_order() {
+        let mut random = crate::random::LegacyRandom::new(42);
+        let mut expected = random.clone();
+        let mut seen = [[false; 10]; 2];
+        for _ in 0..10_000 {
+            let resources = expected.int(1, 10);
+            let science = expected.int(1, 10);
+            let value = ResourceAmenability::sample(&mut random);
+            assert_eq!(value, ResourceAmenability { science, resources });
+            assert!((1..=10).contains(&value.science));
+            assert!((1..=10).contains(&value.resources));
+            seen[0][value.science as usize - 1] = true;
+            seen[1][value.resources as usize - 1] = true;
+        }
+        assert!(seen.into_iter().flatten().all(|value| value));
+        assert_eq!(random.next_u32(), expected.next_u32());
+    }
     #[test]
     fn centers_use_flat_pixel_weights_and_missing_colors_have_no_coordinate() {
         let map = RgbImage::from_fn(8, 4, |x, y| {

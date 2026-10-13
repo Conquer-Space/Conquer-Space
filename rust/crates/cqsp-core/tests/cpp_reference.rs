@@ -1390,6 +1390,88 @@ fn random_stream_and_mixed_distributions_match_original_msvc() {
     }
 }
 
+#[test]
+#[ignore = "Run tools/build-reference.ps1 first; actual ProvinceLoader/MT19937/component initialization, source-mapped MixScale"]
+fn province_amenability_draw_order_and_float_scales_match_msvc() {
+    use cqsp_core::{map::mix_scale, random::LegacyRandom, surface::ResourceAmenability};
+    let seeds = [0_u64, 1, 42, 5489, i32::MAX as u64, u32::MAX as u64];
+    let scores = [
+        i32::MIN,
+        -10,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        20,
+        i32::MAX,
+    ];
+    let samples = 2048;
+    let provinces: Vec<_> = (0..128)
+        .map(|index| {
+            json!({"identifier":format!("fixture_{index}"),
+        "planet":"earth","country":"","color":[0,0,0]})
+        })
+        .collect();
+    let reference = reference_output(
+        Some("--amenability"),
+        &json!({
+            "seeds":seeds,"samples":samples,"scores":scores,"provinces":provinces
+        })
+        .to_string(),
+    );
+    let project = |value: ResourceAmenability| {
+        json!({
+            "science":value.science,"resources":value.resources,
+            "science_color":mix_scale(value.science as f32 / 10.0),
+            "resource_color":mix_scale(value.resources as f32 / 10.0)
+        })
+    };
+    let seeded: Vec<_> = seeds
+        .into_iter()
+        .map(|seed| {
+            let mut random = LegacyRandom::new(seed);
+            (0..samples)
+                .map(|_| project(ResourceAmenability::sample(&mut random)))
+                .collect::<Vec<_>>()
+        })
+        .collect();
+    // Integer fields/draw order must be exact, not absorbed into a color tolerance.
+    for (rows, reference) in seeded.iter().zip(reference["seeded"].as_array().unwrap()) {
+        for (row, reference) in rows.iter().zip(reference.as_array().unwrap()) {
+            assert_eq!(row["science"], reference["science"]);
+            assert_eq!(row["resources"], reference["resources"]);
+        }
+    }
+    compare_with_tolerance(&json!(seeded), &reference["seeded"], 1e-7);
+    let controlled: Vec<_> = scores
+        .into_iter()
+        .map(|value| {
+            project(ResourceAmenability {
+                science: value,
+                resources: value,
+            })
+        })
+        .collect();
+    compare_with_tolerance(&json!(controlled), &reference["controlled"], 1e-7);
+    let loaded = reference["loaded"].as_array().unwrap();
+    assert_eq!(loaded.len(), provinces.len());
+    for row in loaded {
+        let value = ResourceAmenability {
+            science: row["science"].as_i64().unwrap() as i32,
+            resources: row["resources"].as_i64().unwrap() as i32,
+        };
+        assert!((1..=10).contains(&value.science) && (1..=10).contains(&value.resources));
+        compare_with_tolerance(&project(value), row, 1e-7);
+    }
+}
+
 fn compare_with_tolerance(actual: &Value, expected: &Value, tolerance: f64) {
     compare_at(actual, expected, "$", tolerance);
 }

@@ -396,7 +396,9 @@ fn main() -> Result<()> {
             },
             elapsed: 0.0,
             captures: 0,
-            expected_captures: if map_smoke || maneuver_smoke {
+            expected_captures: if map_smoke {
+                6
+            } else if maneuver_smoke {
                 4
             } else if tooltip_smoke {
                 2
@@ -405,10 +407,10 @@ fn main() -> Result<()> {
             } else if inspection_smoke {
                 3
             } else {
-                53
+                55
             },
             end_stage: if map_smoke {
-                106
+                110
             } else if maneuver_smoke {
                 98
             } else if tooltip_smoke {
@@ -420,7 +422,7 @@ fn main() -> Result<()> {
             } else if inspection_smoke {
                 70
             } else {
-                106
+                110
             },
             inspection_hover: None,
         })
@@ -1406,7 +1408,14 @@ fn verify_capture(
             maps.visible_goods(&game),
             "Every good on the current page must render"
         );
-    } else if !navigation.active && game.map_mode == cqsp_core::map::Mode::Price {
+    } else if !navigation.active
+        && matches!(
+            game.map_mode,
+            cqsp_core::map::Mode::Price
+                | cqsp_core::map::Mode::Resources
+                | cqsp_core::map::Mode::Science
+        )
+    {
         let mut green = 0;
         for y in 230..650 {
             for x in 360..920 {
@@ -1418,9 +1427,12 @@ fn verify_capture(
         }
         assert!(
             green >= 500,
-            "Price map must render its green scale on the globe: {green} pixels"
+            "Informational map must render its green scale on the globe: {green} pixels"
         );
-        println!("SMOKE: verified price map scale ({green} green pixels).");
+        println!(
+            "SMOKE: verified {:?} map scale ({green} green pixels).",
+            game.map_mode
+        );
     }
     if maneuvers.open {
         assert!(maneuver_heading, "Spacecraft controls heading must render");
@@ -2910,6 +2922,28 @@ fn smoke_test(
             &mut commands,
             target.as_ref().expect("Smoke render target"),
             "price-map.png",
+        ),
+        107 => {
+            // Fixed opposite fields make the GPU fixture independent of OS entropy.
+            let hovered = game.hovered.unwrap();
+            for (id, site) in game.simulation.settlements.iter_mut().enumerate() {
+                if let Some(value) = &mut site.amenability {
+                    value.resources = if id == hovered || id % 2 == 0 { 1 } else { 10 };
+                    value.science = if id == hovered || id % 2 == 0 { 10 } else { 1 };
+                }
+            }
+            game.map_mode = cqsp_core::map::Mode::Resources;
+        }
+        108 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "resource-map.png",
+        ),
+        109 => game.map_mode = cqsp_core::map::Mode::Science,
+        110 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "science-map.png",
         ),
         _ => panic!("Unknown smoke stage {}", smoke.stage),
     }

@@ -23,8 +23,8 @@ try {
     $errors = $stderr.GetAwaiter().GetResult()
     if ($errors) { Write-Host $errors }
     if ($process.ExitCode -ne 0) { throw "Offscreen smoke failed with exit code $($process.ExitCode)" }
-    $captures = if ($Scenario -eq 'Inspection') { @('production-summary', 'exploration-moon', 'exploration-sun') } elseif ($Scenario -eq 'Policy') { @('subsidy-editor', 'subsidy-list', 'labor-market', 'tax-last-page') } elseif ($Scenario -eq 'Vehicles') { @('vehicle-browser', 'vehicle-filter', 'vehicle-design', 'vehicle-designed') } elseif ($Scenario -eq 'Tooltips') { @('factory-tooltip', 'modifier-tooltip') } elseif ($Scenario -eq 'Maneuvers') { @('spacecraft-controls', 'spacecraft-rendezvous', 'spacecraft-landing', 'spacecraft-queues') } elseif ($Scenario -eq 'Maps') { @('map-controls', 'map-goods-last', 'province-map', 'price-map') } else { @(
-        'map-controls', 'map-goods-last', 'province-map', 'price-map',
+    $captures = if ($Scenario -eq 'Inspection') { @('production-summary', 'exploration-moon', 'exploration-sun') } elseif ($Scenario -eq 'Policy') { @('subsidy-editor', 'subsidy-list', 'labor-market', 'tax-last-page') } elseif ($Scenario -eq 'Vehicles') { @('vehicle-browser', 'vehicle-filter', 'vehicle-design', 'vehicle-designed') } elseif ($Scenario -eq 'Tooltips') { @('factory-tooltip', 'modifier-tooltip') } elseif ($Scenario -eq 'Maneuvers') { @('spacecraft-controls', 'spacecraft-rendezvous', 'spacecraft-landing', 'spacecraft-queues') } elseif ($Scenario -eq 'Maps') { @('map-controls', 'map-goods-last', 'province-map', 'price-map', 'resource-map', 'science-map') } else { @(
+        'map-controls', 'map-goods-last', 'province-map', 'price-map', 'resource-map', 'science-map',
         'spacecraft-controls', 'spacecraft-rendezvous', 'spacecraft-landing', 'spacecraft-queues',
         'factory-tooltip', 'modifier-tooltip',
         'vehicle-browser', 'vehicle-filter', 'vehicle-design', 'vehicle-designed',

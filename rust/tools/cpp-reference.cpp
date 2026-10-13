@@ -22,6 +22,7 @@
 #include "core/actions/economy/subsidyhelper.h"
 #include "core/util/save/save.h"
 #include "core/util/nameutil.h"
+#include "core/util/color.h"
 #include "core/util/utilnumberdisplay.h"
 #include "client/components/clientctx.h"
 #include "engine/clientoptions.h"
@@ -1627,6 +1628,56 @@ void PrintRandom() {
     WriteJson(result);
 }
 
+void PrintAmenability() {
+    spdlog::set_level(spdlog::level::off);
+    auto input = ReadInput();
+    auto project = [](const ResourceAmenability& component) {
+        // Source-mapped StarSystemController projection, not execution of the client.
+        auto scale = [](int score) {
+            auto [r, g, b] = cqsp::util::HexToRgb("#C20404");
+            auto [rr, gg, bb] = cqsp::util::HexToRgb("#25F307");
+            auto color = glm::mix(glm::vec3(r, g, b) / 255.f,
+                                  glm::vec3(rr, gg, bb) / 255.f, score / 10.f);
+            return Numbers({color.r, color.g, color.b});
+        };
+        Hjson::Value row(Hjson::Type::Map);
+        row["science"] = component.science; row["resources"] = component.resources;
+        row["science_color"] = scale(component.science);
+        row["resource_color"] = scale(component.resources);
+        return row;
+    };
+    Hjson::Value output(Hjson::Type::Map), seeded(Hjson::Type::Vector), controlled(Hjson::Type::Vector);
+    for (int index = 0; index < input["seeds"].size(); ++index) {
+        std::mt19937 gen(static_cast<uint32_t>(input["seeds"][index].to_int64()));
+        std::uniform_int_distribution<> distrib(1, 10);
+        entt::registry registry;
+        auto entity = registry.create();
+        Hjson::Value values(Hjson::Type::Vector);
+        for (int sample = 0; sample < input["samples"].to_int64(); ++sample) {
+            // Exact ProvinceLoader expression checks the compiler's argument/draw order.
+            auto& component = registry.emplace<ResourceAmenability>(entity, distrib(gen), distrib(gen));
+            values.push_back(project(component));
+            registry.remove<ResourceAmenability>(entity);
+        }
+        seeded.push_back(values);
+    }
+    for (int index = 0; index < input["scores"].size(); ++index) {
+        int value = static_cast<int>(input["scores"][index].to_int64());
+        controlled.push_back(project(ResourceAmenability {value, value}));
+    }
+    // Exercise actual unmodified loader with its independent random_device seed.
+    cqsp::core::Universe universe("amenability-reference");
+    auto earth = universe.create(); universe.planets["earth"] = earth;
+    cqsp::core::loading::ProvinceLoader loader(universe);
+    loader.LoadHjson(input["provinces"]);
+    Hjson::Value loaded(Hjson::Type::Vector);
+    for (auto province : universe.get<Settlements>(earth).provinces) {
+        loaded.push_back(project(universe.get<ResourceAmenability>(province)));
+    }
+    output["seeded"] = seeded; output["controlled"] = controlled; output["loaded"] = loaded;
+    WriteJson(output); std::cout << '\n';
+}
+
 void PrintEventQueues() {
     // Actual original component/callback types; selection and clear copy SysEvent::DoUI's branch.
     // This does not execute ImGui, FunctionEvent, or activate the disabled tutorial.
@@ -2043,6 +2094,7 @@ int main(int argc, char** argv) {
     if (argc == 2 && std::string(argv[1]) == "--save-metadata") { PrintSaveMetadata(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--timezones") { PrintTimeZones(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--random") { PrintRandom(); return 0; }
+    if (argc == 2 && std::string(argv[1]) == "--amenability") { PrintAmenability(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--markets") { PrintMarkets(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--interplanetary") { PrintInterplanetary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--labor") { PrintLabor(); return 0; }
