@@ -33,6 +33,7 @@ mod construction_ui;
 mod event_ui;
 mod inspection_ui;
 mod maneuver_ui;
+mod map_ui;
 mod navigation_ui;
 mod pie;
 mod playback_ui;
@@ -48,7 +49,8 @@ struct Game {
     world: World,
     session: Session,
     hovered: Option<usize>,
-    political: bool,
+    map_mode: cqsp_core::map::Mode,
+    map_good: cqsp_core::economy::GoodId,
     ordered_countries: Vec<usize>,
     simulation: Simulation,
     paused: bool,
@@ -154,6 +156,7 @@ fn main() -> Result<()> {
     let mut vehicle_smoke = false;
     let mut tooltip_smoke = false;
     let mut maneuver_smoke = false;
+    let mut map_smoke = false;
     let mut print_paths = false;
     let mut saves_root = None;
     let mut settings_path = None;
@@ -184,6 +187,10 @@ fn main() -> Result<()> {
                 smoke = true;
                 maneuver_smoke = true;
             }
+            "--smoke-maps" => {
+                smoke = true;
+                map_smoke = true;
+            }
             "--paths" => print_paths = true,
             "--settings" => {
                 settings_path = Some(PathBuf::from(
@@ -197,7 +204,7 @@ fn main() -> Result<()> {
             }
             "--help" | "-h" => {
                 println!(
-                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--saves DIRECTORY] [--settings FILE] [--smoke] [--paths]\n--paths: print resolved asset/save/settings locations without launching\n--saves: override the Rust-specific metadata save location\n--settings: override the Rust-specific display preferences file\n--smoke: offscreen verification with isolated metadata/preferences fixtures\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start/back; Esc: pause menu\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: terrain/political map; R: reset camera; F12: screenshot"
+                    "Conquer Space — Rust port (silent)\nUsage: cqsp-client [--data PATH] [--saves DIRECTORY] [--settings FILE] [--smoke] [--paths]\n--paths: print resolved asset/save/settings locations without launching\n--saves: override the Rust-specific metadata save location\n--settings: override the Rust-specific display preferences file\n--smoke: offscreen verification with isolated metadata/preferences fixtures\n\nRight drag / arrows: orbit; wheel: zoom; left click: select\nTab / Shift+Tab: cycle countries; Enter: start/back; Esc: pause menu\nSpace: pause; N: next economy day; -/=: speed\nV: Earth/system; Tab: bodies; Q: spacecraft; Backspace: parent\nP: spaceports, vehicles and lunar missions\nI: markets, industries and science\nO: orbit paths; G: ground track; [/]: maneuver radius; E: focus Earth\nM: Earth map overlays; R: reset camera; F12: screenshot"
                 );
                 println!("B: owned-province construction painting; Esc cancels painting");
                 println!(
@@ -210,6 +217,9 @@ fn main() -> Result<()> {
                 println!("--smoke-tooltips: offscreen factory and modifier tooltip checks only");
                 println!(
                     "--smoke-maneuvers: offscreen spacecraft controls, rendezvous, landing and queues"
+                );
+                println!(
+                    "--smoke-maps: offscreen Earth overlay selection, goods paging, province and price maps"
                 );
                 return Ok(());
             }
@@ -345,7 +355,8 @@ fn main() -> Result<()> {
             world,
             session: Session::default(),
             hovered: None,
-            political: true,
+            map_mode: default(),
+            map_good: cqsp_core::economy::GoodId(0),
             ordered_countries,
             simulation,
             paused: true,
@@ -365,9 +376,12 @@ fn main() -> Result<()> {
         .init_resource::<navigation_ui::Menu>()
         .init_resource::<sidebar_ui::Sidebar>()
         .init_resource::<maneuver_ui::Menu>()
+        .init_resource::<map_ui::Menu>()
         .insert_resource(Smoke {
             enabled: smoke,
-            stage: if maneuver_smoke {
+            stage: if map_smoke {
+                99
+            } else if maneuver_smoke {
                 91
             } else if tooltip_smoke {
                 87
@@ -382,7 +396,7 @@ fn main() -> Result<()> {
             },
             elapsed: 0.0,
             captures: 0,
-            expected_captures: if maneuver_smoke {
+            expected_captures: if map_smoke || maneuver_smoke {
                 4
             } else if tooltip_smoke {
                 2
@@ -391,9 +405,11 @@ fn main() -> Result<()> {
             } else if inspection_smoke {
                 3
             } else {
-                49
+                53
             },
-            end_stage: if maneuver_smoke {
+            end_stage: if map_smoke {
+                106
+            } else if maneuver_smoke {
                 98
             } else if tooltip_smoke {
                 90
@@ -404,7 +420,7 @@ fn main() -> Result<()> {
             } else if inspection_smoke {
                 70
             } else {
-                98
+                106
             },
             inspection_hover: None,
         })
@@ -420,26 +436,39 @@ fn main() -> Result<()> {
                 (
                     event_ui::controls.run_if(interactive),
                     event_ui::scroll.run_if(interactive),
+                    (map_ui::controls, map_ui::scroll)
+                        .chain()
+                        .run_if(world_input)
+                        .run_if(map_ui::earth_view)
+                        .run_if(event_ui::input_available)
+                        .run_if(search_ui::input_available)
+                        .run_if(navigation_ui::input_available)
+                        .run_if(maneuver_ui::input_available),
                     (maneuver_ui::controls, maneuver_ui::scroll)
                         .chain()
                         .run_if(world_input)
                         .run_if(event_ui::input_available)
                         .run_if(search_ui::input_available)
-                        .run_if(navigation_ui::input_available),
+                        .run_if(navigation_ui::input_available)
+                        .run_if(map_ui::input_available),
+                    // Map selection captures shortcuts before any other world interface.
                     search_ui::controls
                         .run_if(interactive)
                         .run_if(event_ui::input_available)
-                        .run_if(maneuver_ui::input_available),
+                        .run_if(maneuver_ui::input_available)
+                        .run_if(map_ui::input_available),
                     search_ui::scroll
                         .run_if(interactive)
                         .run_if(event_ui::input_available)
-                        .run_if(maneuver_ui::input_available),
+                        .run_if(maneuver_ui::input_available)
+                        .run_if(map_ui::input_available),
                     (navigation_ui::controls, navigation_ui::scroll)
                         .chain()
                         .run_if(interactive)
                         .run_if(event_ui::input_available)
                         .run_if(search_ui::input_available)
-                        .run_if(maneuver_ui::input_available),
+                        .run_if(maneuver_ui::input_available)
+                        .run_if(map_ui::input_available),
                     (
                         application_ui::controls.run_if(interactive),
                         application_ui::scroll.run_if(interactive),
@@ -456,7 +485,8 @@ fn main() -> Result<()> {
                         .run_if(event_ui::input_available)
                         .run_if(search_ui::input_available)
                         .run_if(navigation_ui::input_available)
-                        .run_if(maneuver_ui::input_available),
+                        .run_if(maneuver_ui::input_available)
+                        .run_if(map_ui::input_available),
                 )
                     .chain(),
                 (
@@ -476,7 +506,8 @@ fn main() -> Result<()> {
                     .run_if(event_ui::input_available)
                     .run_if(search_ui::input_available)
                     .run_if(navigation_ui::input_available)
-                    .run_if(maneuver_ui::input_available),
+                    .run_if(maneuver_ui::input_available)
+                    .run_if(map_ui::input_available),
                 simulation_controls.run_if(interactive),
                 system_view::controls
                     .run_if(world_input)
@@ -484,7 +515,8 @@ fn main() -> Result<()> {
                     .run_if(event_ui::input_available)
                     .run_if(search_ui::input_available)
                     .run_if(navigation_ui::input_available)
-                    .run_if(maneuver_ui::input_available),
+                    .run_if(maneuver_ui::input_available)
+                    .run_if(map_ui::input_available),
                 system_view::sync_ships,
                 system_view::update,
                 update_globe,
@@ -500,6 +532,7 @@ fn main() -> Result<()> {
                     navigation_ui::update,
                     sidebar_ui::update,
                     maneuver_ui::update,
+                    map_ui::update,
                 )
                     .chain(),
                 spaceport_ui::update,
@@ -637,6 +670,7 @@ fn setup(
     search_ui::spawn(&mut commands, camera, &font);
     navigation_ui::spawn(&mut commands, camera, &font);
     maneuver_ui::spawn(&mut commands, camera, &font);
+    map_ui::spawn(&mut commands, camera, &font);
     sidebar_ui::spawn(&mut commands, camera, &font);
     let event_image = images.add(initial.event.clone());
     event_ui::spawn(
@@ -870,8 +904,12 @@ fn selection_controls(
             game.session.start();
         }
     }
-    if keyboard.just_pressed(KeyCode::KeyM) {
-        game.political = !game.political;
+    if keyboard.just_pressed(KeyCode::KeyM) && game.session.player_country.is_none() {
+        game.map_mode = if game.map_mode == cqsp_core::map::Mode::Terrain {
+            cqsp_core::map::Mode::Country
+        } else {
+            cqsp_core::map::Mode::Terrain
+        };
     }
     if keyboard.just_pressed(KeyCode::F12) {
         match screenshot_path("conquer-space.png") {
@@ -900,6 +938,7 @@ fn simulation_controls(
     search: Option<Res<search_ui::Search>>,
     navigation_menu: Option<Res<navigation_ui::Menu>>,
     maneuvers: Option<Res<maneuver_ui::Menu>>,
+    maps: Option<Res<map_ui::Menu>>,
 ) {
     if game.session.player_country.is_none()
         || event_ui::pending(&game).is_some()
@@ -920,7 +959,8 @@ fn simulation_controls(
         && construction.is_none_or(|tool| !tool.capture_input)
         && search.is_none_or(|search| !search.capture_input)
         && navigation_menu.is_none_or(|menu| !menu.capture_input)
-        && maneuvers.is_none_or(|menu| !menu.capture_input);
+        && maneuvers.is_none_or(|menu| !menu.capture_input)
+        && maps.is_none_or(|menu| !menu.capture_input);
     if keyboard_enabled && keyboard.just_pressed(KeyCode::Space) {
         game.playback_action(playback_ui::Action::Toggle);
     }
@@ -953,12 +993,21 @@ fn simulation_controls(
     }
 }
 
+#[allow(clippy::type_complexity)]
 fn update_globe(
     game: Res<Game>,
     handles: Res<GlobeAssets>,
     mut images: ResMut<Assets<Image>>,
     mut materials: ResMut<Assets<EarthMaterial>>,
-    mut previous: Local<Option<(Option<usize>, bool)>>,
+    mut previous: Local<
+        Option<(
+            Option<usize>,
+            Option<usize>,
+            cqsp_core::map::Mode,
+            cqsp_core::economy::GoodId,
+            StarDate,
+        )>,
+    >,
     navigation: Res<Navigation>,
     mut globe: Single<&mut Visibility, With<EarthGlobe>>,
 ) {
@@ -967,15 +1016,34 @@ fn update_globe(
     } else {
         Visibility::Visible
     };
-    let state = (game.session.selected_country, game.political);
+    let state = (
+        game.session.selected_country,
+        game.session.player_country,
+        game.map_mode,
+        game.map_good,
+        if matches!(
+            game.map_mode,
+            cqsp_core::map::Mode::Price | cqsp_core::map::Mode::Domestic
+        ) {
+            game.simulation.date
+        } else {
+            StarDate::default()
+        },
+    );
     if *previous == Some(state) {
         return;
     }
     if let Some(mut image) = images.get_mut(&handles.political) {
-        image.data = Some(game.world.political_texture(state.0));
+        image.data = Some(game.map_mode.texture(
+            &game.world,
+            &game.simulation,
+            state.0,
+            state.1,
+            game.map_good,
+        ));
     }
     if let Some(mut material) = materials.get_mut(&handles.material) {
-        material.options.x = game.political as u8 as f32;
+        material.options.x = (game.map_mode != cqsp_core::map::Mode::Terrain) as u8 as f32;
     }
     *previous = Some(state);
 }
@@ -1025,12 +1093,16 @@ fn update_hud(
     } else {
         "Click land or use Tab, then start."
     };
+    let note = format!(
+        "{note}\n{}\nM: choose Earth overlay",
+        map_ui::description(&game)
+    );
     for (section, mut text) in &mut hud {
         let content = match section {
             Hud::Phase => phase,
             Hud::Country => &country,
             Hud::Province => &province,
-            Hud::Note => note,
+            Hud::Note => &note,
         };
         // Refresh sibling layouts together: Bevy 0.19 can drop unchanged glyphs
         // when a neighboring text block changes the panel's layout.
@@ -1147,12 +1219,14 @@ fn verify_capture(
     construction: Res<construction_ui::ConstructionTool>,
     menu: Res<application_ui::Menu>,
     event_images: Query<(&ComputedNode, &UiGlobalTransform), With<event_ui::EventImage>>,
-    (search, navigation_menu, maneuvers, maneuver_panels, children): (
+    (search, navigation_menu, maneuvers, maneuver_panels, children, maps, map_panels): (
         Res<search_ui::Search>,
         Res<navigation_ui::Menu>,
         Res<maneuver_ui::Menu>,
         Query<(Entity, &ComputedNode, &UiGlobalTransform), With<maneuver_ui::Panel>>,
         Query<&Children>,
+        Res<map_ui::Menu>,
+        Query<(Entity, &ComputedNode, &UiGlobalTransform), With<map_ui::Panel>>,
     ),
 ) {
     let pixels = capture
@@ -1179,8 +1253,11 @@ fn verify_capture(
     let mut tooltip_checked = 0;
     let mut maneuver_heading = false;
     let mut maneuver_fields = 0;
-    let maneuver_bounds: Vec<_> = maneuver_panels
+    let mut map_heading = false;
+    let mut map_goods = 0;
+    let modal_bounds: Vec<_> = maneuver_panels
         .iter()
+        .chain(map_panels.iter())
         .filter(|(_, node, _)| !node.is_empty())
         .map(|(entity, node, transform)| {
             (
@@ -1207,7 +1284,7 @@ fn verify_capture(
         let max = (center + node.size() / 2.0)
             .min(Vec2::new(pixels.width() as f32, pixels.height() as f32))
             .as_uvec2();
-        let covered = maneuver_bounds.iter().any(|(bounds, descendants)| {
+        let covered = modal_bounds.iter().any(|(bounds, descendants)| {
             !descendants.contains(&entity)
                 && bounds.min.x < max.x as f32
                 && bounds.max.x > min.x as f32
@@ -1254,6 +1331,7 @@ fn verify_capture(
             "SEARCH BODIES / PROVINCES",
             "STAR SYSTEM / ORBIT FILTER",
             "SPACECRAFT CONTROLS",
+            "MAP OVERLAYS",
         ]
         .contains(&text.0.as_str())
         {
@@ -1280,6 +1358,10 @@ fn verify_capture(
         search_heading |= text.0 == "SEARCH BODIES / PROVINCES";
         tree_heading |= text.0 == "STAR SYSTEM / ORBIT FILTER";
         maneuver_heading |= text.0 == "SPACECRAFT CONTROLS";
+        map_heading |= text.0 == "MAP OVERLAYS";
+        if maps.open && (text.0.starts_with("· ") || text.0.starts_with("[selected] ")) {
+            map_goods += 1;
+        }
         maneuver_fields += usize::from(
             [
                 "Apoapsis radius (km):",
@@ -1317,6 +1399,29 @@ fn verify_capture(
         "Smoke check: expected visible text nodes, checked {checked}"
     );
     println!("SMOKE: verified rendered pixels for {checked} text blocks.");
+    if maps.open {
+        assert!(map_heading, "Map overlay heading must render");
+        assert_eq!(
+            map_goods,
+            maps.visible_goods(&game),
+            "Every good on the current page must render"
+        );
+    } else if !navigation.active && game.map_mode == cqsp_core::map::Mode::Price {
+        let mut green = 0;
+        for y in 230..650 {
+            for x in 360..920 {
+                let pixel = pixels.get_pixel(x, y).0;
+                green += usize::from(
+                    pixel[1] as f32 > pixel[0] as f32 * 1.15 && pixel[1] > 45 && pixel[2] < 40,
+                );
+            }
+        }
+        assert!(
+            green >= 500,
+            "Price map must render its green scale on the globe: {green} pixels"
+        );
+        println!("SMOKE: verified price map scale ({green} green pixels).");
+    }
     if maneuvers.open {
         assert!(maneuver_heading, "Spacecraft controls heading must render");
         if maneuvers.tab == maneuver_ui::Tab::Basic {
@@ -1573,6 +1678,7 @@ fn verify_capture(
         && !saves.open
         && !menu.is_open()
         && !maneuvers.open
+        && !maps.open
     {
         if navigation.is_surface_focus() {
             let mut colors = std::collections::HashSet::new();
@@ -1716,7 +1822,7 @@ fn smoke_usa(game: &mut Game) -> usize {
     usa
 }
 
-#[allow(clippy::too_many_arguments)]
+#[allow(clippy::too_many_arguments, clippy::type_complexity)]
 fn smoke_test(
     time: Res<Time>,
     mut smoke: ResMut<Smoke>,
@@ -1731,11 +1837,12 @@ fn smoke_test(
     mut inspector: ResMut<inspection_ui::Inspector>,
     mut saves: ResMut<save_ui::Saves>,
     mut construction: ResMut<construction_ui::ConstructionTool>,
-    (mut menu, mut navigation_menu, mut sidebar, mut maneuvers): (
+    (mut menu, mut navigation_menu, mut sidebar, mut maneuvers, mut maps): (
         ResMut<application_ui::Menu>,
         ResMut<navigation_ui::Menu>,
         ResMut<sidebar_ui::Sidebar>,
         ResMut<maneuver_ui::Menu>,
+        ResMut<map_ui::Menu>,
     ),
     mut events: ResMut<event_ui::Events>,
     mut search: ResMut<search_ui::Search>,
@@ -2740,6 +2847,70 @@ fn smoke_test(
             target.as_ref().expect("Smoke render target"),
             "spacecraft-queues.png",
         ),
+        99 => {
+            smoke_usa(&mut game);
+            ui.apply(spaceport_ui::Action::Close, &mut game).unwrap();
+            inspector.apply(inspection_ui::Action::Close, &mut game);
+            maneuvers
+                .apply(maneuver_ui::Action::Close, &mut navigation, &mut game)
+                .unwrap();
+            smoke.inspection_hover = None;
+            game.paused = true;
+            navigation.active = false;
+            game.hovered = game
+                .world
+                .province_at_uv(0.5 + 77.2 / 360.0, 0.5 - 28.6 / 180.0);
+            maps.apply(map_ui::Action::Open, &mut game).unwrap();
+        }
+        100 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "map-controls.png",
+        ),
+        101 => {
+            let count = game.simulation.catalog.goods.len();
+            for _ in 0..count {
+                maps.apply(map_ui::Action::Page(false), &mut game).unwrap();
+            }
+            maps.apply(
+                map_ui::Action::Good(cqsp_core::economy::GoodId(count - 1)),
+                &mut game,
+            )
+            .unwrap();
+        }
+        102 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "map-goods-last.png",
+        ),
+        103 => {
+            maps.apply(
+                map_ui::Action::Mode(cqsp_core::map::Mode::Province),
+                &mut game,
+            )
+            .unwrap();
+            maps.apply(map_ui::Action::Close, &mut game).unwrap();
+        }
+        104 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "province-map.png",
+        ),
+        105 => {
+            let good = game.simulation.catalog.good("steel").unwrap();
+            game.map_good = good;
+            game.map_mode = cqsp_core::map::Mode::Price;
+            // Controlled low/high fixture; does not pretend to be a naturally evolved economy.
+            let id = game.hovered.unwrap();
+            let base = game.simulation.catalog.goods[good.0].price;
+            game.simulation.settlements[id].market.price[good] = base * 0.25;
+            game.simulation.settlements[0].market.price[good] = base * 1.75;
+        }
+        106 => capture_smoke(
+            &mut commands,
+            target.as_ref().expect("Smoke render target"),
+            "price-map.png",
+        ),
         _ => panic!("Unknown smoke stage {}", smoke.stage),
     }
     smoke.stage += 1;
@@ -2767,7 +2938,8 @@ mod tests {
             simulation,
             session,
             hovered: None,
-            political: true,
+            map_mode: default(),
+            map_good: cqsp_core::economy::GoodId(0),
             ordered_countries: Vec::new(),
             paused: true,
             speed_index: 0,

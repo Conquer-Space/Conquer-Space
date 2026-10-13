@@ -41,7 +41,12 @@ Add -Scenario Inspection for just production and the Moon/Sun exploration screen
 add -Scenario Policy for four subsidy/labor/tax screens, or -Scenario Vehicles for
 four vehicle list/filter/design screens. Add -Scenario Tooltips for factory details
 and modifier contributions. Add -Scenario Maneuvers for editable spacecraft controls,
-rendezvous, landing and orbital/queue inspection. Full verifies all 49 captures.
+rendezvous, landing and orbital/queue inspection. Add -Scenario Maps for the Earth
+overlay chooser, goods paging and province/price maps. Full verifies all 53 captures.
+M opens Earth overlay selection after starting: terrain, countries, provinces,
+domestic provinces and selected-good prices. All 56 goods are paged; close with
+M/Escape to inspect the map and hovered local price. Resource/science and other-body
+overlays remain unfinished. Before starting, M retains terrain/country switching.
 cqsp-sim.exe --days 365 --seed 42 runs renderer-free stability checks.
 
 The port and original game are GPL-3.0-or-later; see LICENSE.txt. Font notices are

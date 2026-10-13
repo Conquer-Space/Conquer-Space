@@ -22,7 +22,7 @@ Successful long runs establish stability, not gameplay parity.
 
 | Area | Status | Evidence / remaining work |
 | --- | --- | --- |
-| Country/province map and globe picking | Implemented | Original map fixtures, ray/UV tests, offscreen GPU smoke checks; remaining legacy overlays |
+| Country/province map and globe picking | Implemented native Earth modes | Terrain/country/province/domestic and selected-good price overlays, all 56 goods paged, current local price/configured scale readout, per-tick price refresh; original map fixtures, ray/UV and texture tests, offscreen GPU checks. Palette/selection are source-mapped, not execution of StarSystemController; resource/science amenability and other-body maps remain |
 | Country selection | Implemented | Ownership, locking, keyboard selection, start/back; remaining legacy menus |
 | Civilization metadata / native view | Loader reference-tested; native integration | All 199 countries' wallet/capability/research/tax fields, initial city/province lists and capital tags through actual loaders; native capital, wallet/taxes, paged governed sites/province balances and mission queue; governor and province ownership remain distinct |
 | Date / scheduling | Reference-tested components | Ten-minute ticks, initial tick zero, Gregorian leap dates, signed hour-offset behavior and native spaceport local time |
@@ -806,6 +806,49 @@ No OS game window or audio device opens, so live-window/DPI acceptance and
 whole-game functional parity remain open. Build packages and captures stay under
 ignored target directories; no installer, registry or upstream-branch change is made.
 
+## Earth informational map overlays
+
+M now opens a native chooser after starting a country in Earth view. Terrain and
+country overlays are joined by asset-colored provinces, domestic provinces with
+foreign country colors, and selected-good local prices. All 56 goods are paged,
+independently selected and retained across mode changes; closing the chooser
+exposes the map and the hovered province's actual price (two-decimal source
+readout) plus its configured maximum and ratio. Price colors use the original
+red/green endpoints and float MixScale input: local price divided by base price
+times one plus the configured deviation. Ratios are not artificially clamped;
+native RGBA quantization clamps color channels for the image. Non-finite scales,
+zero denominators and float overflows produce a transparent diagnostic rather
+than a fabricated price. Ocean/unmapped pixels remain transparent.
+
+The chooser captures game shortcuts and its closing frame, has one-shot buttons,
+scrolling and event priority, and leaves running playback unchanged. The texture
+cache refreshes price maps on tick, good or mode changes without rebuilding static
+country/province textures every clock tick. Original province RGB bindings are
+retained on World records instead of inventing new colors. Domestic ownership
+uses current settlement.country, not governor or an initial country province list.
+
+Four client tests cover all modes/goods, paging, invalid IDs, retention, close-frame
+capture, current-price readout, shortcut isolation, running time, event precedence,
+one-shot actions and actual image-cache refresh/visibility. Two core tests cover
+the scale formula/float boundaries, custom deviation, unclamped ratios, finite
+guards, asset province/domestic/foreign colors, ocean transparency and changed
+market prices. The slice passes 183 unit tests (87 client, 96 core), warning-free
+Clippy and all 38 existing debug/release C++ comparisons. Those comparisons protect
+the imported bindings and underlying market/economy behavior; the new palette and
+native chooser are source-mapped/Rust-tested, not execution of StarSystemController
+or a new live C++ controller differential. The packaged 365-day stability check
+passes. Four focused debug GPU captures verify first/last goods pages and actual
+province/price rendering, including green-scale pixels and every visible good.
+Visual inspection confirms readable lists, local price and distinct low/high
+price regions in the explicitly controlled smoke fixture.
+
+This is Earth-map functionality, not all map-mode parity. Resource/science modes
+still need independently generated province amenability; other-body overlays,
+automatic selection/context transitions, colonization tints and live-window/DPI
+acceptance remain open. Existing country highlighting/border/lighting treatment
+is native presentation, not pixel parity. No economy formulas or random draws are
+changed to make a map; audio and Lua remain excluded.
+
 ## Next acceptance gates
 
 1. Extend the existing population/production corpus to mixed-direction labor,
@@ -819,8 +862,8 @@ ignored target directories; no installer, registry or upstream-branch change is 
 3. Extend spaceport dispatch boundary corpora; the native vehicle browser now has
    filtering/detail and float design comparisons. Manufacturing, trade orders and
    lunar delivery are reference-tested.
-4. Complete remaining functional interfaces: province/resource/science/selected-good
-   price map modes and their information, free-camera movement, supported context
+4. Complete remaining functional interfaces: resource/science amenability and
+   other-body map modes, free-camera movement, supported context
    and project/modifier actions, remaining entity tooltips and market/history
    inspection. Resource/science modes also need the province amenability component
    (upstream independently seeds it from random_device). Distinguish source stubs

@@ -2098,7 +2098,8 @@ pub(crate) mod tests {
                 simulation,
                 session,
                 hovered: None,
-                political: true,
+                map_mode: default(),
+                map_good: cqsp_core::economy::GoodId(0),
                 ordered_countries: Vec::new(),
                 paused: true,
                 speed_index: 0,
@@ -2117,6 +2118,14 @@ pub(crate) mod tests {
                     (
                         super::super::event_ui::controls,
                         super::super::event_ui::scroll,
+                        (super::super::map_ui::controls, super::super::map_ui::scroll)
+                            .chain()
+                            .run_if(super::super::world_input)
+                            .run_if(super::super::map_ui::earth_view)
+                            .run_if(super::super::event_ui::input_available)
+                            .run_if(super::super::search_ui::input_available)
+                            .run_if(super::super::navigation_ui::input_available)
+                            .run_if(super::super::maneuver_ui::input_available),
                         (
                             super::super::maneuver_ui::controls,
                             super::super::maneuver_ui::scroll,
@@ -2125,13 +2134,16 @@ pub(crate) mod tests {
                             .run_if(super::super::world_input)
                             .run_if(super::super::event_ui::input_available)
                             .run_if(super::super::search_ui::input_available)
-                            .run_if(super::super::navigation_ui::input_available),
+                            .run_if(super::super::navigation_ui::input_available)
+                            .run_if(super::super::map_ui::input_available),
                         super::super::search_ui::controls
                             .run_if(super::super::event_ui::input_available)
-                            .run_if(super::super::maneuver_ui::input_available),
+                            .run_if(super::super::maneuver_ui::input_available)
+                            .run_if(super::super::map_ui::input_available),
                         super::super::search_ui::scroll
                             .run_if(super::super::event_ui::input_available)
-                            .run_if(super::super::maneuver_ui::input_available),
+                            .run_if(super::super::maneuver_ui::input_available)
+                            .run_if(super::super::map_ui::input_available),
                         (
                             super::super::navigation_ui::controls,
                             super::super::navigation_ui::scroll,
@@ -2139,7 +2151,8 @@ pub(crate) mod tests {
                             .chain()
                             .run_if(super::super::event_ui::input_available)
                             .run_if(super::super::search_ui::input_available)
-                            .run_if(super::super::maneuver_ui::input_available),
+                            .run_if(super::super::maneuver_ui::input_available)
+                            .run_if(super::super::map_ui::input_available),
                         (
                             super::super::application_ui::controls,
                             super::super::application_ui::scroll,
@@ -2163,7 +2176,8 @@ pub(crate) mod tests {
                             .run_if(super::super::event_ui::input_available)
                             .run_if(super::super::search_ui::input_available)
                             .run_if(super::super::navigation_ui::input_available)
-                            .run_if(super::super::maneuver_ui::input_available),
+                            .run_if(super::super::maneuver_ui::input_available)
+                            .run_if(super::super::map_ui::input_available),
                     )
                         .chain(),
                     super::super::simulation_controls,
@@ -2175,6 +2189,7 @@ pub(crate) mod tests {
                         super::super::navigation_ui::update,
                         super::super::sidebar_ui::update,
                         super::super::maneuver_ui::update,
+                        super::super::map_ui::update,
                     )
                         .chain(),
                     spaceport_ui::update,

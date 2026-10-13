@@ -5,6 +5,7 @@ pub mod economy;
 pub mod events;
 pub mod flight;
 pub mod infrastructure;
+pub mod map;
 pub mod modifiers;
 pub mod number_display;
 pub mod orbit;
@@ -51,6 +52,7 @@ pub struct Province {
     pub identifier: String,
     pub name: String,
     pub country: Option<usize>,
+    pub color: Option<[u8; 3]>,
 }
 
 pub struct World {
@@ -113,8 +115,8 @@ impl World {
             }
             // Province names are country-scoped in the legacy data (e.g. Cordoba).
             // Stable vector indices and unique map colors identify domain entities.
-            if let Some(value) = &entry.color {
-                let color = parse_color(value)?;
+            let color = entry.color.as_ref().map(parse_color).transpose()?;
+            if let Some(color) = color {
                 // Match the C++ loader's last-definition-wins rule, deterministically
                 // ordered by filename. Keep the conflict visible for asset cleanup.
                 if let Some(previous) = colors.insert(color, provinces.len()) {
@@ -131,6 +133,7 @@ impl World {
                 provinces_without_color.push(entry.identifier.clone());
             }
             provinces.push(Province {
+                color,
                 name: entry
                     .name
                     .unwrap_or_else(|| display_identifier(&entry.identifier)),
@@ -220,6 +223,18 @@ impl World {
             rgba.push(if highlighted { 220 } else { 150 });
         }
         rgba
+    }
+    /// Province-indexed tints preserve ocean/unmapped pixels as transparent.
+    pub fn overlay_texture(&self, colors: &[[u8; 4]]) -> Vec<u8> {
+        self.pixels
+            .iter()
+            .flat_map(|province| {
+                province
+                    .and_then(|index| colors.get(index))
+                    .copied()
+                    .unwrap_or([0; 4])
+            })
+            .collect()
     }
 }
 
