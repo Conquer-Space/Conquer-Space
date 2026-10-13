@@ -1146,21 +1146,31 @@ fn update_economy_hud(
     let global = simulation.summary(None);
     let owned = simulation.summary(game.session.player_country);
     let date = simulation.date;
-    let local = game.hovered.map_or(String::new(), |index| {
-        let settlement = &simulation.settlements[index];
-        let population: u64 = settlement
-            .populations
-            .iter()
-            .map(|population| population.size)
-            .sum();
-        format!(
-            "\n\nLOCAL MARKET\n{}\nPopulation: {}\nGDP: {}\nTrade balance: {}",
-            settlement.name,
-            human_number(population as f64),
-            human_number(settlement.market.gdp),
-            human_number(settlement.market.last_trade_deficit)
-        )
-    });
+    let local = game
+        .hovered
+        .and_then(|index| simulation.settlements.get(index))
+        .map_or(String::new(), |settlement| {
+            let price = (game.map_mode == cqsp_core::map::Mode::Price).then(|| {
+                settlement
+                    .market
+                    .price
+                    .values()
+                    .get(game.map_good.0)
+                    .copied()
+                    .unwrap_or(f64::NAN)
+            });
+            let details = settlement
+                .province_tooltip(price)
+                .into_iter()
+                .map(|line| line.text)
+                .collect::<Vec<_>>()
+                .join("\n");
+            format!(
+                "\n\nLOCAL MARKET\n{}\nTrade balance: {}",
+                details,
+                human_number(settlement.market.last_trade_deficit)
+            )
+        });
     hud.0 = format!(
         "{} {:02}:{:02} · {}\nSpeed {}: {}\n\nCOUNTRY\nPopulation: {}\nIndustries: {}\nGDP: {}\n\nGLOBAL\nPopulation: {}\nEmployed: {}\nLiving standard: {:.2}\n\nSpace: pause / resume\nN: next economy day\n- / =: change speed{}",
         date.display(),
@@ -2954,6 +2964,83 @@ fn smoke_test(
 mod tests {
     use super::*;
     use bevy::mesh::VertexAttributeValues;
+
+    #[test]
+    fn province_hover_readout_refreshes_source_fields_and_price_mode_and_clears_stale_data()
+    -> Result<()> {
+        let mut app = inspection_ui::tests::app()?;
+        let hovered = {
+            let mut game = app.world_mut().resource_mut::<Game>();
+            let id = game
+                .simulation
+                .settlements
+                .iter()
+                .position(|site| !site.populations.is_empty())
+                .unwrap();
+            let site = &mut game.simulation.settlements[id];
+            site.populations.truncate(1);
+            site.populations[0].size = 100;
+            site.populations[0].standard_of_living = 3.0;
+            site.market.gdp = 1235.0;
+            game.hovered = Some(id);
+            game.simulation.date = StarDate::from_tick(1);
+            id
+        };
+        let hud = app.world_mut().spawn((EconomyHud, Text::default())).id();
+        app.add_systems(Update, update_economy_hud.after(simulation_controls));
+        app.update();
+        let text = &app.world().get::<Text>(hud).unwrap().0;
+        assert!(
+            text.contains("Population: 100\nStandard of Living: 3"),
+            "{text}"
+        );
+        assert!(text.contains("GDP: 1.24 k"));
+        app.world_mut()
+            .resource_mut::<Game>()
+            .simulation
+            .settlements[hovered]
+            .populations[0]
+            .standard_of_living = 7.0;
+        app.update();
+        assert!(
+            app.world()
+                .get::<Text>(hud)
+                .unwrap()
+                .0
+                .contains("Standard of Living: 7")
+        );
+        {
+            let mut game = app.world_mut().resource_mut::<Game>();
+            game.map_mode = cqsp_core::map::Mode::Price;
+            let good = game.simulation.catalog.good("steel").unwrap();
+            game.map_good = good;
+            game.simulation.settlements[hovered].market.price[good] = 12.345;
+            game.simulation.catalog.goods[good.0].price = 0.0;
+        }
+        app.update();
+        let text = &app.world().get::<Text>(hud).unwrap().0;
+        assert!(text.contains("Price: 12.35"));
+        assert!(!text.contains("Standard of Living:"));
+        app.world_mut().resource_mut::<Game>().hovered = Some(usize::MAX);
+        app.update();
+        assert!(
+            !app.world()
+                .get::<Text>(hud)
+                .unwrap()
+                .0
+                .contains("LOCAL MARKET")
+        );
+        app.world_mut().resource_mut::<Navigation>().active = true;
+        app.update();
+        assert!(
+            app.world()
+                .get::<Text>(hud)
+                .unwrap()
+                .0
+                .starts_with("SYSTEM VIEW")
+        );
+        Ok(())
+    }
 
     #[test]
     fn simulation_keys_step_pause_speed_and_stop_in_selection() -> Result<()> {

@@ -231,7 +231,11 @@ pub(super) fn description(game: &Game) -> String {
                     )
                 },
             );
-            Some(format!("\n{} · Price: {:.2}\n{scale}", site.name, price))
+            Some(format!(
+                "\n{} · Price: {}\n{scale}",
+                site.name,
+                cqsp_core::number_display::fixed(price, 2)
+            ))
         })
         .unwrap_or_default();
     format!(

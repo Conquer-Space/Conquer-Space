@@ -49,6 +49,8 @@ domestic provinces, resources/science and selected-good prices. All 56 goods are
 paged; close with M/Escape to inspect the hovered price or 1-10 amenability score.
 Amenability uses its own OS-seeded MT19937 stream, separate from economy noise.
 Other-body overlays remain unfinished. Before starting, M retains terrain/country switching.
+Province hover shows source-formatted GDP/population and weighted living standard,
+or the two-decimal local price in price mode. Empty-population living standard is undefined.
 cqsp-sim.exe --days 365 --seed 42 runs renderer-free stability checks.
 
 The port and original game are GPL-3.0-or-later; see LICENSE.txt. Font notices are

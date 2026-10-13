@@ -53,6 +53,10 @@ and display the hovered score. Like upstream, these use an OS-seeded MT19937 str
 separate from economy noise; `--seed` does not make amenability deterministic.
 The controlled loader API allows repeatable reference fixtures without changing
 the normal entropy policy. Other-body maps remain unfinished.
+The local HUD also preserves the original province hover fields: name, GDP,
+population and population-weighted living standard. Empty populations show an
+undefined `nan`, like the source calculation; price mode shows the actual
+two-decimal local price instead. Native placement differs from the RmlUi tooltip.
 Province RGB colors come from the original map bindings; the source red-to-green
 price scale uses local price / (base price * (1 + configured deviation)). Native
 border/lighting/color quantization differ; invalid/non-finite scales are transparent

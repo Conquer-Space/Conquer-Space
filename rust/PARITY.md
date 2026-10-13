@@ -892,8 +892,40 @@ fixed. Six focused offscreen debug captures verify every visible goods label,
 both mode buttons, distinct rendered resource/science regions, score readouts
 and existing province/price workflows. Visual inspection confirms readable HUD
 and chooser contents. The silent release bundle builds, resolves local assets
-and passes a renderer-free 365-day stability check. Full release GPU acceptance
-is recorded separately when complete; native-window/DPI acceptance remains open.
+and passes a renderer-free 365-day stability check. The resource/science release
+also passes all 55 fresh offscreen captures (the prior 53 plus both amenability
+maps) from an external working directory, with process exit zero and explicit
+text/overlay pixel assertions. Native-window/DPI acceptance remains open.
+
+## Province hover information
+
+The local hover HUD now carries ProvinceTooltipProvider's original information:
+name/identifier fallback, source-formatted GDP and population, and population-weighted
+standard of living. Price mode replaces those three summary fields with the actual
+two-decimal local price, independently of whether its color scale is defined.
+The native presentation uses the existing HUD rather than a mouse-positioned RmlUi
+card, and retains the extra trade-balance readout. Empty populations keep undefined
+0/0 living standards instead of displaying a fabricated zero; diagnostic NaN
+sign/spelling is normalized to `nan`. Unsigned population formatting and wrapping
+totals preserve the source's uint64 behavior, including values above int64 range.
+
+A new source-mapped provider corpus compares 2,660 projections: normal and price
+branches for all 1,317 loaded provinces, then uneven weights, zero-size/empty groups,
+negative/tiny values, unsigned/wrapping totals, name fallback and fixed-price
+rounding. It executes original Name/Identifier/Market/PopulationSegment components,
+GetName and NumberToHumanString/fmt formatters, not RmlUi or ToolTipWindow itself.
+It passes in both debug and release. Two new core/UI tests cover field aggregation,
+price-mode replacement, per-change refresh, zero denominators, stale hover IDs and
+system-view routing. The fixture initializes the clock before supplying its test
+values, so a first-load economic tick cannot substitute different input data.
+
+All 189 unit tests (89 client, 100 core), formatting and warning-free Clippy pass.
+The final silent release separately passes six focused map captures and the two
+existing tooltip/three inspection captures; visual
+inspection confirms weighted/undefined summary and price readouts remain legible.
+The full 55-capture run above preceded this display-only addition, and is not
+claimed as a second full run of the final bundle. Remaining entity/UI tooltip
+routes, other-body map picking and native-window acceptance are still open.
 
 ## Next acceptance gates
 

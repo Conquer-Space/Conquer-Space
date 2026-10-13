@@ -1983,6 +1983,46 @@ Hjson::Value TooltipLine(std::string text, double r = 1, double g = 1, double b 
 }
 // Actual factory/name/modifier components and fmt; joined tooltip lines are
 // source-mapped from systooltips.cpp/modifiertooltip.cpp, not ImGui execution.
+void PrintProvinceTooltips() {
+    const auto input = ReadInput();
+    cqsp::core::Universe universe("province-tooltip-reference");
+    Hjson::Value output(Hjson::Type::Vector);
+    for (int index = 0; index < input.size(); ++index) {
+        const auto row = input[index];
+        cqsp::core::Node province(universe);
+        province.emplace<Identifier>(row["identifier"].to_string());
+        if (row["name"].type() != Hjson::Type::Null) province.emplace<Name>(row["name"].to_string());
+        province.emplace<Market>(0).GDP = row["gdp"].to_double();
+        auto& settlement = province.emplace<Settlement>();
+        for (int segment = 0; segment < row["population"].size(); ++segment) {
+            auto entity = universe.create();
+            auto& value = universe.emplace<PopulationSegment>(entity);
+            value.population = static_cast<uint64_t>(row["population"][segment][0].to_int64());
+            value.standard_of_living = row["population"][segment][1].to_double();
+            settlement.population.push_back(entity);
+        }
+        // Source-mapped ProvinceTooltipProvider branches; original entity/formatter code.
+        Hjson::Value lines(Hjson::Type::Vector);
+        lines.push_back(cqsp::core::util::GetName(universe, province));
+        if (row["price"].type() != Hjson::Type::Null) {
+            lines.push_back(fmt::format("Price: {:.2f}", row["price"].to_double()));
+        } else {
+            uint64_t population = 0;
+            double sol = 0;
+            for (auto entity : settlement.population) {
+                const auto& segment = universe.get<PopulationSegment>(entity);
+                population += segment.population;
+                sol += segment.standard_of_living * segment.population;
+            }
+            lines.push_back(fmt::format("GDP: {}", cqsp::util::NumberToHumanString(province.get<Market>().GDP)));
+            lines.push_back(fmt::format("Population: {}", cqsp::util::NumberToHumanString(population)));
+            lines.push_back(fmt::format("Standard of Living: {}", sol / population));
+        }
+        output.push_back(lines);
+    }
+    WriteJson(output); std::cout << '\n';
+}
+
 void PrintTooltips() {
     const auto input = ReadInput();
     cqsp::core::Universe universe("tooltip-reference");
@@ -2060,6 +2100,7 @@ void PrintTooltips() {
 }
 
 int main(int argc, char** argv) {
+    if (argc == 2 && std::string(argv[1]) == "--province-tooltips") { PrintProvinceTooltips(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--tooltips") { PrintTooltips(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--production-summary") { PrintProductionSummary(); return 0; }
     if (argc == 2 && std::string(argv[1]) == "--orbit-filter") { PrintOrbitFilter(); return 0; }

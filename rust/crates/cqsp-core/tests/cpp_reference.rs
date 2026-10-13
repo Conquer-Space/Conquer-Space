@@ -127,6 +127,94 @@ fn production_summary_columns_colors_progress_and_number_formats_match_source() 
 }
 
 #[test]
+#[ignore = "Run tools/build-reference.ps1 first; original name/number formatters and components with source-mapped province tooltip branches"]
+fn province_tooltip_fields_and_weighted_living_standard_match_source() {
+    let data = default_data_path();
+    let world = World::load(&data).unwrap();
+    let mut simulation = Simulation::load_with_amenability_seed(&data, &world, 42, 7).unwrap();
+    let mut fixtures = Vec::new();
+    let mut expected = Vec::new();
+    let mut capture = |site: &cqsp_core::simulation::Settlement, price: Option<f64>| {
+        let population: Vec<_> = site
+            .populations
+            .iter()
+            .map(|value| json!([value.size, value.standard_of_living]))
+            .collect();
+        fixtures.push(json!({"identifier":site.identifier,"name":site.named.then_some(&site.name),"gdp":site.market.gdp,"population":population,"price":price}));
+        expected.push(
+            site.province_tooltip(price)
+                .into_iter()
+                .map(|line| line.text)
+                .collect::<Vec<_>>(),
+        );
+    };
+    for site in simulation
+        .settlements
+        .iter()
+        .filter(|site| site.is_province())
+    {
+        capture(site, None);
+        capture(site, Some(12.345));
+    }
+    let mut segments: Vec<_> = simulation
+        .settlements
+        .iter_mut()
+        .flat_map(|site| std::mem::take(&mut site.populations))
+        .take(3)
+        .collect();
+    assert_eq!(segments.len(), 3);
+    let site = &mut simulation.settlements[0];
+    site.populations.append(&mut segments);
+    for (sizes, sol, gdp, named) in [
+        ([100, 300, 0], [2.0, 6.0, 99.0], 1235.0, true),
+        ([0, 0, 0], [0.0; 3], 0.0, false),
+        (
+            [999, 1, 1_000_000_000],
+            [1e-5, -2.0, 0.123456789],
+            -1235.125,
+            true,
+        ),
+        ([i64::MAX as u64; 3], [0.5, 1.0, 1.5], 1e48, false),
+        (
+            [i64::MAX as u64, i64::MAX as u64, 0],
+            [0.5, 1.0, 99.0],
+            -0.0,
+            true,
+        ),
+    ] {
+        site.named = named;
+        site.name = if named {
+            "Weighted fixture".into()
+        } else {
+            site.identifier.clone()
+        };
+        site.market.gdp = gdp;
+        for (index, population) in site.populations.iter_mut().enumerate() {
+            population.size = sizes[index];
+            population.standard_of_living = sol[index];
+        }
+        for price in [None, Some(-0.0), Some(0.00001), Some(12.345), Some(-1e5)] {
+            capture(site, price);
+        }
+    }
+    site.populations.clear();
+    capture(site, None);
+    let mut reference = reference_output(Some("--province-tooltips"), &json!(fixtures).to_string());
+    // NaN remains undefined; native diagnostics normalize the platform's NaN sign/spelling.
+    for row in reference.as_array_mut().unwrap() {
+        for line in row.as_array_mut().unwrap() {
+            if line.as_str().is_some_and(|text| {
+                text.starts_with("Standard of Living: ")
+                    && text.to_ascii_lowercase().contains("nan")
+            }) {
+                *line = json!("Standard of Living: nan");
+            }
+        }
+    }
+    assert_eq!(json!(expected), reference);
+}
+
+#[test]
 #[ignore = "Run tools/build-reference.ps1 first; actual factory/name/modifier components with source-mapped tooltip projection"]
 fn factory_and_modifier_tooltip_fields_match_source() {
     use cqsp_core::{

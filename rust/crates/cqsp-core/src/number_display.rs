@@ -2,6 +2,16 @@
 pub fn human_integer(value: i64) -> String {
     scaled(value as f64, (value as f64).abs()).unwrap_or_else(|| value.to_string())
 }
+pub fn human_unsigned(value: u64) -> String {
+    scaled(value as f64, value as f64).unwrap_or_else(|| value.to_string())
+}
+pub fn fixed(value: f64, precision: usize) -> String {
+    if value.is_finite() {
+        format!("{value:.precision$}")
+    } else {
+        float(value)
+    }
+}
 
 pub fn human_float(value: f64) -> String {
     human_with_magnitude(value, value.abs())
@@ -64,5 +74,8 @@ mod tests {
         assert_eq!(human_float(0.00001), "1e-05");
         assert_eq!(human_float(0.0001), "0.0001");
         assert_eq!(human_float(-0.0), "-0");
+        assert_eq!(human_unsigned(u64::MAX), "18.45 Qn");
+        assert_eq!(fixed(12.345, 2), "12.35");
+        assert_eq!(fixed(f64::NAN, 2), "nan");
     }
 }
