@@ -191,21 +191,29 @@ pub(super) fn description(game: &Game) -> String {
     let Some(good) = game.simulation.catalog.goods.get(game.map_good.0) else {
         return "MAP · invalid good".into();
     };
-    let local = game.hovered.map_or(String::new(), |id| {
-        price_scale(&game.simulation, id, game.map_good).map_or(
-            "\nPrice scale unavailable (non-finite ratio).".into(),
-            |scale| {
-                format!(
-                    "\n{} · Price: {:.2}\nPrice / configured maximum: {} / {} = {}",
-                    game.simulation.settlements[id].name,
-                    scale.price,
-                    scale.price,
-                    scale.maximum,
-                    scale.ratio
-                )
-            },
-        )
-    });
+    let local = game
+        .hovered
+        .and_then(|id| {
+            let site = game.simulation.settlements.get(id)?;
+            let price = site
+                .market
+                .price
+                .values()
+                .get(game.map_good.0)
+                .copied()
+                .unwrap_or(f64::NAN);
+            let scale = price_scale(&game.simulation, id, game.map_good).map_or(
+                "Price scale unavailable (non-finite ratio).".into(),
+                |scale| {
+                    format!(
+                        "Price / configured maximum: {} / {} = {}",
+                        scale.price, scale.maximum, scale.ratio
+                    )
+                },
+            );
+            Some(format!("\n{} · Price: {:.2}\n{scale}", site.name, price))
+        })
+        .unwrap_or_default();
     format!(
         "MAP · {}\n{} · red: low price / green: high price{}",
         game.map_mode.name(),
@@ -343,6 +351,11 @@ mod tests {
             let good = game.map_good;
             game.simulation.settlements[0].market.price[good] = 12.345;
             assert!(description(&game).contains("Price: 12.35"));
+            game.simulation.catalog.goods[good.0].price = 0.0;
+            game.simulation.settlements[0].market.price[good] = 0.0;
+            let readout = description(&game);
+            assert!(readout.contains("Price: 0.00"));
+            assert!(readout.contains("Price scale unavailable"));
         }
         app.world_mut()
             .resource_mut::<ButtonInput<KeyCode>>()

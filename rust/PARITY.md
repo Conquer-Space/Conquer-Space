@@ -842,6 +842,14 @@ province/price rendering, including green-scale pixels and every visible good.
 Visual inspection confirms readable lists, local price and distinct low/high
 price regions in the explicitly controlled smoke fixture.
 
+The release bundle passes all 53 fresh offscreen captures, including all prior
+49 workflows and these four map captures. A subsequent display-only correction
+keeps the actual local price visible when its scale denominator is zero; the
+corrected bundle separately passes the four focused map captures, all 183 unit
+tests, formatting, warning-free Clippy and the silent dependency audit. Neither
+run creates a native game window. The full 53-capture run preceded that correction;
+it is not claimed as a second full run of the corrected bundle.
+
 This is Earth-map functionality, not all map-mode parity. Resource/science modes
 still need independently generated province amenability; other-body overlays,
 automatic selection/context transitions, colonization tints and live-window/DPI
