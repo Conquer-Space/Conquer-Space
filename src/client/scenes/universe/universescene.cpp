@@ -16,7 +16,6 @@
  */
 #include "client/scenes/universe/universescene.h"
 
-#include <algorithm>
 #include <cmath>
 #include <limits>
 #include <string>
@@ -62,7 +61,7 @@ namespace systems = client::systems;
 using core::systems::simulation::Simulation;
 
 namespace {
-double TickInterval(int speed) { return (speed < 0 ? 1 : speed) / 1000.0; }
+double TickInterval(int speed) { return speed < 0 ? 1 / 1000.f : static_cast<float>(speed) / 1000.f; }
 }  // namespace
 
 UniverseScene::UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
@@ -110,17 +109,7 @@ void UniverseScene::Update(float deltaTime) {
     }
 
     CheckUiReload();
-    const double now = GetApp().GetTime();
-    // Present completed work before starting another tick if an idle tick overran the frame deadline.
-    if (!ticked_since_update) {
-        UpdateSimulation();
-    }
-    ticked_since_update = false;
-    const auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
-    if (pause_opt.to_tick) {
-        const double interval = TickInterval(ctx::tick_speeds[pause_opt.tick_speed]);
-        GetUniverse().tick_fraction = interp ? std::clamp((now - last_tick) / interval, 0.0, 1.0) : 0;
-    }
+    UpdateSimulation();
 
     if (!game_halted) {
         system_renderer->Update(deltaTime);
@@ -184,9 +173,13 @@ void UniverseScene::UpdateSimulation() {
         last_tick = now;
     }
 
+    if (pause_opt.to_tick) {
+        GetUniverse().tick_fraction = (now - last_tick) / tick_length;
+        if (!interp) GetUniverse().tick_fraction = 0;
+    }
+
     // Check for last tick
     if (GetUniverse().ToTick() && !game_halted) {
-        ticked_since_update = true;
         // Game tick
         if (ctx::tick_speeds[pause_opt.tick_speed] < 0) {
             for (int i = 0; i < -ctx::tick_speeds[pause_opt.tick_speed]; i++) {

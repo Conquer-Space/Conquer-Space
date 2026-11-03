@@ -79,7 +79,7 @@ class GLWindow : public Window {
 
     void Destroy();
 
-    double GetTime() const;
+    float GetTime() const;
 
     void SetFullScreen(bool fullscreen) const;
 
