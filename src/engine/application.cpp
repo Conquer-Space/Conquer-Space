@@ -29,7 +29,6 @@
 #include <spdlog/spdlog.h>
 #include <stb_image.h>
 
-#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -49,6 +48,7 @@
 #include "engine/audio/audiointerface.h"
 #include "engine/cqspgui.h"
 #include "engine/enginelogger.h"
+#include "engine/framepacer.h"
 #include "engine/glfwwindow.h"
 #include "engine/ui/RmlUi_Platform_GLFW.h"
 #include "engine/ui/RmlUi_Renderer_GL3.h"
@@ -273,12 +273,12 @@ void Application::run() {
     }
     m_audio_interface->StartWorker();
 
-    double next_frame = 0;
+    FramePacer frame_pacer;
     while (ShouldExit()) {
         const double now = GetTime();
-        if (now < next_frame && !m_scene_manager.ToSwitchScene()) {
+        if (!frame_pacer.FrameDue(now) && !m_scene_manager.ToSwitchScene()) {
             auto* scene = m_scene_manager.GetScene();
-            const double wait = std::min(next_frame, scene->GetNextTickTime()) - now;
+            const double wait = frame_pacer.WaitTime(now, scene->GetNextTickTime());
             if (wait > 0) {
                 // Input events wake this wait without clearing unconsumed button edges.
                 glfwWaitEventsTimeout(wait);
@@ -290,7 +290,7 @@ void Application::run() {
         auto* monitor = glfwGetWindowMonitor(window(m_window));
         const auto* mode = glfwGetVideoMode(monitor ? monitor : glfwGetPrimaryMonitor());
         const double interval = 1.0 / (mode && mode->refreshRate > 0 ? mode->refreshRate : 60);
-        next_frame = now + interval;
+        frame_pacer.BeginFrame(now, interval);
         ComputeFramerate();
         CalculateProjections();
         UpdateFonts();
