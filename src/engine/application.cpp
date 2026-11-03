@@ -29,6 +29,7 @@
 #include <spdlog/spdlog.h>
 #include <stb_image.h>
 
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -272,7 +273,24 @@ void Application::run() {
     }
     m_audio_interface->StartWorker();
 
+    double next_frame = 0;
     while (ShouldExit()) {
+        const double now = GetTime();
+        if (now < next_frame && !m_scene_manager.ToSwitchScene()) {
+            auto* scene = m_scene_manager.GetScene();
+            const double wait = std::min(next_frame, scene->GetNextTickTime()) - now;
+            if (wait > 0) {
+                // Input events wake this wait without clearing unconsumed button edges.
+                glfwWaitEventsTimeout(wait);
+            } else {
+                scene->UpdateSimulation();
+            }
+            continue;
+        }
+        auto* monitor = glfwGetWindowMonitor(window(m_window));
+        const auto* mode = glfwGetVideoMode(monitor ? monitor : glfwGetPrimaryMonitor());
+        const double interval = 1.0 / (mode && mode->refreshRate > 0 ? mode->refreshRate : 60);
+        next_frame = now + interval;
         ComputeFramerate();
         CalculateProjections();
         UpdateFonts();

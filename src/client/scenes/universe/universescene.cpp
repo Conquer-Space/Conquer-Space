@@ -17,6 +17,7 @@
 #include "client/scenes/universe/universescene.h"
 
 #include <cmath>
+#include <limits>
 #include <string>
 
 #include "client/components/clientctx.h"
@@ -58,6 +59,10 @@ namespace bodies = components::bodies;
 namespace systems = client::systems;
 
 using core::systems::simulation::Simulation;
+
+namespace {
+double TickInterval(int speed) { return speed < 0 ? 1 / 1000.f : static_cast<float>(speed) / 1000.f; }
+}  // namespace
 
 UniverseScene::UniverseScene(engine::Application& app, std::unique_ptr<systems::SysStarSystemRenderer> renderer,
                              std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation)
@@ -104,7 +109,7 @@ void UniverseScene::Update(float deltaTime) {
     }
 
     CheckUiReload();
-    ManageTick();
+    UpdateSimulation();
 
     if (!game_halted) {
         system_renderer->Update(deltaTime);
@@ -148,20 +153,28 @@ void UniverseScene::DoScreenshot() {
     }
 }
 
-void UniverseScene::ManageTick() {
-    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
-    int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
-    double tick_length = static_cast<float>(tick_speed) / 1000.f;
-    if (tick_speed < 0) {
-        tick_length = 1 / 1000.f;
+double UniverseScene::GetNextTickTime() {
+    const auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    const int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
+    // Negative speeds intentionally execute batches per rendered frame.
+    if (!pause_opt.to_tick || game_halted || tick_speed < 0) {
+        return std::numeric_limits<double>::infinity();
     }
-    if (pause_opt.to_tick && GetApp().GetTime() - last_tick > tick_length) {
+    return last_tick + TickInterval(tick_speed);
+}
+
+void UniverseScene::UpdateSimulation() {
+    auto& pause_opt = GetUniverse().ctx().at<client::ctx::PauseOptions>();
+    const int tick_speed = ctx::tick_speeds[pause_opt.tick_speed];
+    const double tick_length = TickInterval(tick_speed);
+    const double now = GetApp().GetTime();
+    if (pause_opt.to_tick && now >= last_tick + tick_length) {
         GetUniverse().EnableTick();
-        last_tick = GetApp().GetTime();
+        last_tick = now;
     }
 
     if (pause_opt.to_tick) {
-        GetUniverse().tick_fraction = (GetApp().GetTime() - last_tick) / tick_length;
+        GetUniverse().tick_fraction = (now - last_tick) / tick_length;
         if (!interp) GetUniverse().tick_fraction = 0;
     }
 

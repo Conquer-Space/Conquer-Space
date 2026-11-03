@@ -244,8 +244,8 @@ bool GLWindow::InitWindow(int width, int height) {
 
     glfwMakeContextCurrent(window);
 
-    // Enable vsync
-    glfwSwapInterval(1);
+    // The application paces frames with an interruptible wait so ticks can run between frames.
+    glfwSwapInterval(0);
 
     // Add callbacks
     SetCallbacks();

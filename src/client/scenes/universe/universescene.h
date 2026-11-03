@@ -41,6 +41,8 @@ class UniverseScene : public RmlClientScene {
 
     void Init();
     void Update(float deltaTime);
+    void UpdateSimulation() override;
+    double GetNextTickTime() override;
     void Ui(float deltaTime);
     void Render(float deltaTime);
 
@@ -55,8 +57,6 @@ class UniverseScene : public RmlClientScene {
     void DoScreenshot();
 
     void InitializeScriptFunctions();
-
-    void ManageTick();
 
     std::unique_ptr<systems::SysStarSystemRenderer> system_renderer;
     std::unique_ptr<cqsp::core::systems::simulation::Simulation> simulation;
