@@ -16,6 +16,8 @@
  */
 #pragma once
 
+#include <limits>
+
 #include "engine/application.h"
 #include "engine/engine.h"
 
@@ -35,6 +37,9 @@ class Scene {
 
     virtual void Init() = 0;
     virtual void Update(float deltaTime) = 0;
+    // Called on the main thread when a simulation deadline precedes the next frame.
+    virtual void UpdateSimulation() {}
+    virtual double GetNextTickTime() { return std::numeric_limits<double>::infinity(); }
     virtual void Ui(float deltaTime) = 0;
     virtual void Render(float deltaTime) = 0;
 
