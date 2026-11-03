@@ -163,7 +163,7 @@ void GLWindow::Destroy() {
     glfwTerminate();
 }
 
-float GLWindow::GetTime() const { return static_cast<float>(glfwGetTime()); }
+double GLWindow::GetTime() const { return glfwGetTime(); }
 
 void GLWindow::SetFullScreen(bool fullscreen) const {
     if (fullscreen) {

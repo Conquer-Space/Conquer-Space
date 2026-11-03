@@ -63,6 +63,7 @@ class UniverseScene : public RmlClientScene {
     std::vector<std::unique_ptr<cqsp::client::systems::SysUserInterface>> user_interfaces;
 
     double last_tick = 0;
+    bool ticked_since_update = false;
 
     void ToggleTick();
 
